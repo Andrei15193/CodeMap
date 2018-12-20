@@ -1,0 +1,397 @@
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace CodeMap
+{
+    /// <summary>Resolves XML documentation canonical names from a given <see cref="MemberInfo"/>.</summary>
+    public class CanonicalNameResolver
+    {
+        private const BindingFlags _publicAndNonPublicBindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.IgnoreReturn;
+        private const BindingFlags _bestMatchStaticBindingFlags = BindingFlags.Static | _publicAndNonPublicBindingFlags;
+        private const BindingFlags _bestMatchInstanceBindingFlags = BindingFlags.Instance | _publicAndNonPublicBindingFlags;
+        private const BindingFlags _bestMatchBindingFlags = _bestMatchStaticBindingFlags | _bestMatchInstanceBindingFlags;
+        private const BindingFlags _ignoreCaseBindingFlags = _bestMatchBindingFlags | BindingFlags.IgnoreCase;
+
+        /// <summary>Gets the XML documentation canonical name for the given <paramref name="memberInfo"/>.</summary>
+        /// <param name="memberInfo">The <see cref="MemberInfo"/> for which to get the canonical name.</param>
+        /// <returns>Returns the canonical name for the given <paramref name="memberInfo"/>.</returns>
+        public string GetCanonicalNameFrom(MemberInfo memberInfo)
+        {
+            switch (memberInfo)
+            {
+                case null:
+                    throw new ArgumentNullException(nameof(memberInfo));
+
+                case Type type:
+                    return _GetTypeCanonicalNameFor(type);
+
+                case FieldInfo fieldInfo:
+                    return _GetFieldCanonicalNameFor(fieldInfo);
+
+                case EventInfo eventInfo:
+                    return _GetEventCanonicalNameFor(eventInfo);
+
+                case PropertyInfo propertyInfo:
+                    return _GetPropertyCanonicalNameFor(propertyInfo);
+
+                case MethodInfo methodInfo:
+                    return _GetMethodCanonicalNameFor(methodInfo);
+
+                case ConstructorInfo constructorInfo:
+                    return _GetConstructorCanonicalNameFor(constructorInfo);
+
+                default:
+                    return null;
+            }
+        }
+
+        public MemberInfo TryFindMemberInfoFor(string canonicalName, IEnumerable<Assembly> assemblies)
+        {
+            if (string.IsNullOrWhiteSpace(canonicalName))
+                throw new ArgumentException("Cannot be 'null', empty or white space.", nameof(canonicalName));
+            if (canonicalName.Length < 3)
+                throw new ArgumentException($"The canonical name must be at least three characters long, '{canonicalName}' given.", nameof(canonicalName));
+            if (canonicalName[1] != ':')
+                throw new ArgumentException($"The canonical name must be in the form '<member_type_identifier_character>:<canonical_name_identifier>' (e.g.: T:SomeNamespace.SomeClass), '{canonicalName}' given.", nameof(canonicalName));
+
+            var searchAssemblies = assemblies as IReadOnlyCollection<Assembly>
+                ?? assemblies?.ToList();
+            if (searchAssemblies == null)
+                throw new ArgumentNullException(nameof(assemblies));
+            if (searchAssemblies.Any(assembly => assembly == null))
+                throw new ArgumentException("Cannot contain 'null' values.", nameof(assemblies));
+
+            var memberFullName = canonicalName.Substring(2);
+            switch (canonicalName[0])
+            {
+                case 't':
+                case 'T':
+                    return _TryFindType(memberFullName, searchAssemblies);
+
+                case 'f':
+                case 'F':
+                    return _TryFindFieldInfo(memberFullName, searchAssemblies);
+
+                case 'e':
+                case 'E':
+                    return _TryFindEventInfo(memberFullName, searchAssemblies);
+
+                case 'p':
+                case 'P':
+                    return _TryFindPropertyInfo(memberFullName, searchAssemblies);
+
+                case 'm':
+                case 'M':
+                    return _TryFindMethodBase(memberFullName, searchAssemblies);
+
+                default:
+                    throw new ArgumentException($"Cannot find member type for '{canonicalName}' canonical name (T, F, E, P or M must be the first character in the canonical name).", nameof(canonicalName));
+            }
+        }
+
+        public MemberInfo GetMemberInfoFrom(string canonicalName, params Assembly[] assemblies)
+            => TryFindMemberInfoFor(canonicalName, assemblies.AsEnumerable());
+
+        private static string _GetTypeCanonicalNameFor(Type type)
+            => _AppendTypeName(new StringBuilder("T:"), type).ToString();
+
+        private static string _GetFieldCanonicalNameFor(FieldInfo fieldInfo)
+            => _AppendTypeName(new StringBuilder("F:"), fieldInfo.DeclaringType)
+                .Append('.')
+                .Append(fieldInfo.Name)
+                .ToString();
+
+        private static string _GetEventCanonicalNameFor(EventInfo eventInfo)
+            => _AppendTypeName(new StringBuilder("E:"), eventInfo.DeclaringType)
+                .Append('.')
+                .Append(eventInfo.Name)
+                .ToString();
+
+        private static string _GetPropertyCanonicalNameFor(PropertyInfo propertyInfo)
+        {
+            var propertyCanonicalNameBuilder = _AppendTypeName(new StringBuilder("P:"), propertyInfo.DeclaringType)
+                .Append('.')
+                .Append(propertyInfo.Name);
+
+            var parameters = propertyInfo.GetIndexParameters();
+            if (parameters.Length > 0)
+            {
+                propertyCanonicalNameBuilder.Append('(');
+                using (var parameter = parameters.AsEnumerable().GetEnumerator())
+                    if (parameter.MoveNext())
+                    {
+                        _AppendTypeName(propertyCanonicalNameBuilder, parameter.Current.ParameterType);
+                        while (parameter.MoveNext())
+                        {
+                            propertyCanonicalNameBuilder.Append(',');
+                            _AppendTypeName(propertyCanonicalNameBuilder, parameter.Current.ParameterType);
+                        }
+                    }
+                propertyCanonicalNameBuilder.Append(')');
+            }
+
+            return propertyCanonicalNameBuilder.ToString();
+        }
+
+        private static string _GetMethodCanonicalNameFor(MethodInfo methodInfo)
+        {
+            var methodCanonicalNameBuilder = _AppendTypeName(new StringBuilder("M:"), methodInfo.DeclaringType)
+                .Append('.')
+                .Append(methodInfo.Name);
+
+            var genericParameters = methodInfo.GetGenericArguments();
+            if (genericParameters.Length > 0)
+                methodCanonicalNameBuilder
+                    .Append("``")
+                    .Append(genericParameters.Length);
+
+            var parameters = methodInfo.GetParameters();
+            if (parameters.Length > 0)
+            {
+                methodCanonicalNameBuilder.Append('(');
+                using (var parameter = parameters.AsEnumerable().GetEnumerator())
+                    if (parameter.MoveNext())
+                    {
+                        _AppendTypeName(methodCanonicalNameBuilder, parameter.Current.ParameterType);
+                        while (parameter.MoveNext())
+                        {
+                            methodCanonicalNameBuilder.Append(',');
+                            _AppendTypeName(methodCanonicalNameBuilder, parameter.Current.ParameterType);
+                        }
+                    }
+                methodCanonicalNameBuilder.Append(')');
+            }
+
+            return methodCanonicalNameBuilder.ToString();
+        }
+
+        private static string _GetConstructorCanonicalNameFor(ConstructorInfo constructorInfo)
+        {
+            var methodCanonicalNameBuilder = _AppendTypeName(new StringBuilder("M:"), constructorInfo.DeclaringType);
+
+            if (constructorInfo.IsStatic)
+                methodCanonicalNameBuilder.Append(".#cctor");
+            else
+                methodCanonicalNameBuilder.Append(".#ctor");
+
+            var parameters = constructorInfo.GetParameters();
+            if (parameters.Length > 0)
+            {
+                methodCanonicalNameBuilder.Append('(');
+                using (var parameter = parameters.AsEnumerable().GetEnumerator())
+                    if (parameter.MoveNext())
+                    {
+                        _AppendTypeName(methodCanonicalNameBuilder, parameter.Current.ParameterType);
+                        while (parameter.MoveNext())
+                        {
+                            methodCanonicalNameBuilder.Append(',');
+                            _AppendTypeName(methodCanonicalNameBuilder, parameter.Current.ParameterType);
+                        }
+                    }
+                methodCanonicalNameBuilder.Append(')');
+            }
+
+            return methodCanonicalNameBuilder.ToString();
+        }
+
+        private static StringBuilder _AppendTypeName(StringBuilder stringBuilder, Type type)
+        {
+            if (type.IsGenericTypeParameter)
+                return stringBuilder.Append('`').Append(type.GenericParameterPosition);
+            if (type.IsGenericMethodParameter)
+                return stringBuilder.Append("``").Append(type.GenericParameterPosition);
+
+            if (!string.IsNullOrWhiteSpace(type.Namespace))
+                stringBuilder.Append(type.Namespace).Append('.');
+
+            if (type.DeclaringType != null)
+            {
+                var declaringTypes = new Stack<Type>();
+                var currentType = type.DeclaringType;
+                do
+                {
+                    declaringTypes.Push(currentType);
+                    currentType = currentType.DeclaringType;
+                } while (currentType != null);
+                do
+                    stringBuilder.Append(declaringTypes.Pop().Name).Append('.');
+                while (declaringTypes.Count > 0);
+            }
+
+            return stringBuilder.Append(type.Name);
+        }
+
+        private static Type _TryFindType(string typeFullName, IEnumerable<Assembly> assemblies)
+        {
+            Type result = null;
+            var foundBestMatch = false;
+
+            using (var type = assemblies.SelectMany(Extensions.GetAllDefinedTypes).Concat(assemblies.SelectMany(Extensions.GetAllForwardedTypes)).GetEnumerator())
+                while (type.MoveNext() && !foundBestMatch)
+                {
+                    var currentTypeFullName = _AppendTypeName(new StringBuilder(), type.Current).ToString();
+                    if (string.Equals(currentTypeFullName, typeFullName, StringComparison.Ordinal))
+                    {
+                        result = type.Current;
+                        foundBestMatch = true;
+                    }
+                    else if (result == null && string.Equals(currentTypeFullName, typeFullName, StringComparison.OrdinalIgnoreCase))
+                        result = type.Current;
+                }
+            return result;
+        }
+
+        private static Type _TryFindParameterType(string typeFullName, Type declaringType, IEnumerable<Assembly> assemblies)
+        {
+            if (typeFullName.StartsWith("``", StringComparison.OrdinalIgnoreCase)
+                && int.TryParse(
+                    typeFullName.AsSpan(2),
+                    NumberStyles.Integer,
+                    CultureInfo.InvariantCulture,
+                    out var genericMethodParameterPosition))
+                return Type.MakeGenericMethodParameter(genericMethodParameterPosition);
+
+            if (typeFullName.StartsWith("`", StringComparison.OrdinalIgnoreCase)
+                && int.TryParse(
+                    typeFullName.AsSpan(1),
+                    NumberStyles.Integer,
+                    CultureInfo.InvariantCulture,
+                    out var genericTypeParameterPosition))
+                return declaringType.GetGenericArguments()[genericTypeParameterPosition];
+
+            return _TryFindType(typeFullName, assemblies);
+        }
+
+        private static FieldInfo _TryFindFieldInfo(string memberFullName, IEnumerable<Assembly> assemblies)
+        {
+            var match = Regex.Match(
+                memberFullName,
+                @"^(?<declaringTypeFullName>[^\.]+(\.[^\.]+)*)\.(?<fieldName>[^\.]+)$",
+                RegexOptions.ExplicitCapture
+            );
+            if (!match.Success)
+                return null;
+
+            var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
+            var declaringType = _TryFindType(declaringTypeFullName, assemblies);
+            if (declaringType == null)
+                return null;
+
+            var fieldName = match.Groups["fieldName"].Value;
+            return declaringType.GetField(fieldName, _bestMatchBindingFlags) ?? declaringType.GetField(fieldName, _ignoreCaseBindingFlags);
+        }
+
+        private static EventInfo _TryFindEventInfo(string memberFullName, IEnumerable<Assembly> assemblies)
+        {
+            var match = Regex.Match(
+                memberFullName,
+                @"^(?<declaringTypeFullName>[^\.]+(\.[^\.]+)*)\.(?<eventName>[^\.]+)$",
+                RegexOptions.ExplicitCapture
+            );
+            if (!match.Success)
+                return null;
+
+            var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
+            var declaringType = _TryFindType(declaringTypeFullName, assemblies);
+            if (declaringType == null)
+                return null;
+
+            var eventName = match.Groups["eventName"].Value;
+            return declaringType.GetEvent(eventName, _bestMatchBindingFlags) ?? declaringType.GetEvent(eventName, _ignoreCaseBindingFlags);
+        }
+
+        private static PropertyInfo _TryFindPropertyInfo(string memberFullName, IEnumerable<Assembly> assemblies)
+        {
+            var match = Regex.Match(
+                memberFullName,
+                @"^ (?<declaringTypeFullName>
+                           [^\.()]+
+                        (\.[^\.()]+)*
+                    )\.
+                    (?<propertyName>[^\.()]+)
+                    (
+                        \(
+                              (?<parameterType>`\d+|[^,()`]+)
+                            (,(?<parameterType>`\d+|[^,()`]+))*
+                        \)
+                    )?$",
+                RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace
+            );
+            if (!match.Success)
+                return null;
+
+            var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
+            var declaringType = _TryFindType(declaringTypeFullName, assemblies);
+            if (declaringType == null)
+                return null;
+
+            var propertyParameterTypes = match
+                .Groups["parameterType"]
+                .Captures
+                .Select(parameterTypeFullName => _TryFindParameterType(parameterTypeFullName.Value, declaringType, assemblies))
+                .ToArray();
+            if (propertyParameterTypes.Any(propertyParameterType => propertyParameterType == null))
+                return null;
+
+            var propertyName = match.Groups["propertyName"].Value;
+            return declaringType.GetProperty(propertyName, _bestMatchBindingFlags, Type.DefaultBinder, null, propertyParameterTypes, null)
+                ?? declaringType.GetProperty(propertyName, _ignoreCaseBindingFlags, Type.DefaultBinder, null, propertyParameterTypes, null);
+        }
+
+        private static MethodBase _TryFindMethodBase(string memberFullName, IEnumerable<Assembly> assemblies)
+        {
+            var match = Regex.Match(
+                memberFullName,
+                @"^ (?<declaringTypeFullName>
+                           [^\.()]+
+                        (\.[^\.()]+)*
+                    )\.
+                    (?<methodName>\#cctor|\#ctor|[^\.()`]+)(``(?<genericParameterCount>\d+))?
+                    (
+                        \(
+                              (?<parameterType>`\d+|``\d+|[^,()`]+)
+                            (,(?<parameterType>`\d+|``\d+|[^,()`]+))*
+                        \)
+                    )?$",
+                RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture);
+            if (!match.Success)
+                return null;
+
+            var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
+            var declaringType = _TryFindType(declaringTypeFullName, assemblies);
+            if (declaringType == null)
+                return null;
+
+            var methodParameterTypes = match
+                .Groups["parameterType"]
+                .Captures
+                .Select(parameterTypeFullName => _TryFindParameterType(parameterTypeFullName.Value, declaringType, assemblies))
+                .ToArray();
+            if (methodParameterTypes.Any(propertyParameterType => propertyParameterType == null))
+                return null;
+
+            var methodName = match.Groups["methodName"].Value;
+            if ("#cctor".Equals(methodName, StringComparison.OrdinalIgnoreCase))
+                return declaringType.GetConstructor(_bestMatchStaticBindingFlags, Type.DefaultBinder, methodParameterTypes, null);
+            else if ("#ctor".Equals(methodName, StringComparison.OrdinalIgnoreCase))
+                return declaringType.GetConstructor(_bestMatchInstanceBindingFlags, Type.DefaultBinder, methodParameterTypes, null);
+            else
+            {
+                int.TryParse(
+                    match.Groups["genericParameterCount"].Value,
+                    NumberStyles.Integer,
+                    CultureInfo.InvariantCulture,
+                    out var genericParameterCount
+                );
+                return declaringType.GetMethod(methodName, genericParameterCount, _bestMatchBindingFlags, Type.DefaultBinder, CallingConventions.Any, methodParameterTypes, null)
+                    ?? declaringType.GetMethod(methodName, genericParameterCount, _ignoreCaseBindingFlags, Type.DefaultBinder, CallingConventions.Any, methodParameterTypes, null);
+            }
+        }
+    }
+}
