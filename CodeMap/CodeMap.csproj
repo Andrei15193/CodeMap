@@ -5,8 +5,7 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
-    <Description>A common set of interfaces and implementations for usual infrastructure needs.</Description>
-    <PackageDescription>A common set of interfaces and implementations for usual infrastructure needs.</PackageDescription>
+    <Description>An extensible tool for generating documentation for your .NET libraries. Generate HTML, Markdown or in any other format, customise the documentation at your discretion.</Description>
     <Authors>Andrei Fangli</Authors>
     <Copyright>Andrei Fangli</Copyright>
     <PackageProjectUrl>https://github.com/Andrei15193/CodeMap</PackageProjectUrl>
