@@ -1339,7 +1339,8 @@ namespace CodeMap.Tests
     [Test("string")]
     [Test(new object[] { "string", 1, true, typeof(string), StringComparison.Ordinal })]
     [return: Test(1)]
-    internal delegate void TestDelegate2(string parameter1, int parameter2);
+    [CLSCompliant(false)]
+    public delegate void TestDelegate2(string parameter1, int parameter2);
 
     namespace TestNamespace
     {
