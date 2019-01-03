@@ -513,9 +513,9 @@ namespace CodeMap.ElementsTests
         }
 
         [Fact]
-        public void CreatingDefinitionListElementWithNullContentThrowsException()
+        public void CreatingDefinitionListElementWithNullItemsThrowsException()
         {
-            var exception = Assert.Throws<ArgumentNullException>("items", () => DocumentationElement.DefinitionList(null));
+            var exception = Assert.Throws<ArgumentNullException>("items", () => DocumentationElement.DefinitionList((IEnumerable<DefinitionListItemDocumentationElement>)null));
 
             Assert.Equal(new ArgumentNullException("items").Message, exception.Message);
         }
@@ -986,6 +986,106 @@ namespace CodeMap.ElementsTests
                     new InvocationCheck(visitor => visitor.VisitTableRowEnding(), Times.Exactly(2)),
                     new InvocationCheck(visitor => visitor.VisitTableBodyEnding(), Times.Once()),
 
+                    new InvocationCheck(visitor => visitor.VisitTableEnding(), Times.Once())
+                }
+            );
+        }
+
+        [Fact]
+        public void CreatingHeaderlessTableElementWithNullRowsThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentNullException>("rows", () => DocumentationElement.Table((IEnumerable<TableRowDocumentationElement>)null));
+
+            Assert.Equal(new ArgumentNullException("rows").Message, exception.Message);
+        }
+
+        [Fact]
+        public void CreatinHeaderlessTableElementWithRowsContainingNullThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentException>(
+                "rows",
+                () => DocumentationElement.Table(
+                    new TableRowDocumentationElement[] { null }
+                )
+            );
+
+            Assert.Equal(new ArgumentException("Cannot contain 'null' rows.", "rows").Message, exception.Message);
+        }
+
+        [Fact]
+        public async Task HeaderlessTableElementCallsVisitorBeginningAndEndingMethods()
+        {
+            var visitorMock = new Mock<IDocumentationVisitor>();
+            var tableColumn = DocumentationElement.Table(
+                Enumerable.Empty<TableRowDocumentationElement>()
+            );
+
+            await visitorMock.VerifyAcceptMethods(
+                tableColumn,
+                visitor => visitor.VisitTableBeginning(),
+                visitor => visitor.VisitTableEnding()
+            );
+        }
+
+        [Fact]
+        public async Task HeaderlessTableElementCallsVisitorMethods()
+        {
+            var visitorMock = new Mock<IDocumentationVisitor>();
+            var table = DocumentationElement.Table(
+                DocumentationElement.TableRow(
+                    DocumentationElement.TableCell(
+                        Enumerable.Empty<InlineDocumentationElement>()
+                    )
+                ),
+                DocumentationElement.TableRow(
+                    DocumentationElement.TableCell(
+                        Enumerable.Empty<InlineDocumentationElement>()
+                    )
+                )
+            );
+
+            await visitorMock.VerifyAcceptMethods(
+                table,
+                new InvocationCheck(visitor => visitor.VisitTableBeginning(), Times.Once()),
+                new InvocationCheck(visitor => visitor.VisitTableBodyBeginning(), Times.Once()),
+
+                new InvocationCheck(visitor => visitor.VisitTableRowBeginning(), Times.Exactly(2)),
+                new InvocationCheck(visitor => visitor.VisitTableCellBeginning(), Times.Exactly(2)),
+                new InvocationCheck(visitor => visitor.VisitTableCellEnding(), Times.Exactly(2)),
+                new InvocationCheck(visitor => visitor.VisitTableRowEnding(), Times.Exactly(2)),
+
+                new InvocationCheck(visitor => visitor.VisitTableBodyEnding(), Times.Once()),
+                new InvocationCheck(visitor => visitor.VisitTableEnding(), Times.Once())
+            );
+        }
+
+        [Fact]
+        public async Task HeaderlessTableElementCallsVisitorMethodsForMissingCells()
+        {
+            var visitorMock = new Mock<IDocumentationVisitor>();
+            var table = DocumentationElement.Table(
+                DocumentationElement.TableRow(
+                    DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>()),
+                    DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>())
+                ),
+                DocumentationElement.TableRow(
+                    DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>())
+                )
+            );
+
+            await visitorMock.VerifyAcceptMethods(
+                table,
+                new[]
+                {
+                    new InvocationCheck(visitor => visitor.VisitTableBeginning(), Times.Once()),
+                    new InvocationCheck(visitor => visitor.VisitTableBodyBeginning(), Times.Once()),
+
+                    new InvocationCheck(visitor => visitor.VisitTableRowBeginning(), Times.Exactly(2)),
+                    new InvocationCheck(visitor => visitor.VisitTableCellBeginning(), Times.Exactly(4)),
+                    new InvocationCheck(visitor => visitor.VisitTableCellEnding(), Times.Exactly(4)),
+                    new InvocationCheck(visitor => visitor.VisitTableRowEnding(), Times.Exactly(2)),
+
+                    new InvocationCheck(visitor => visitor.VisitTableBodyEnding(), Times.Once()),
                     new InvocationCheck(visitor => visitor.VisitTableEnding(), Times.Once())
                 }
             );

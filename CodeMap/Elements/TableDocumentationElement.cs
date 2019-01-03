@@ -15,9 +15,6 @@ namespace CodeMap.Elements
     /// </remarks>
     public sealed class TableDocumentationElement : BlockDocumentationElement
     {
-        private static readonly TableColumnDocumentationElement _emptyColumn = TableColumn(Enumerable.Empty<InlineDocumentationElement>());
-        private static readonly TableCellDocumentationElement _emptyCell = TableCell(Enumerable.Empty<InlineDocumentationElement>());
-
         internal TableDocumentationElement(IEnumerable<TableColumnDocumentationElement> columns, IEnumerable<TableRowDocumentationElement> rows)
         {
             var columnsList = columns as IReadOnlyList<TableColumnDocumentationElement>
@@ -36,12 +33,43 @@ namespace CodeMap.Elements
 
             Columns = columnsList.Count == actualColumnCount
                 ? columnsList
-                : columnsList.Concat(Enumerable.Repeat(_emptyColumn, actualColumnCount - columnsList.Count)).ToList();
-            Rows = rowsList
+                : columnsList
+                    .Concat(
+                        Enumerable.Repeat(
+                            TableColumn(Enumerable.Empty<InlineDocumentationElement>()),
+                            actualColumnCount - columnsList.Count
+                        )
+                    )
+                    .ToList();
+            Rows = _EnsureRowCellsCount(rowsList, actualColumnCount);
+        }
+
+        internal TableDocumentationElement(IEnumerable<TableRowDocumentationElement> rows)
+        {
+            var rowsList = rows as IReadOnlyList<TableRowDocumentationElement>
+                ?? rows?.ToList()
+                ?? throw new ArgumentNullException(nameof(rows));
+            if (rowsList.Contains(null))
+                throw new ArgumentException("Cannot contain 'null' rows.", nameof(rows));
+
+            var actualColumnCount = rowsList.Max(row => (int?)row.Cells.Count) ?? 0;
+            Columns = Enumerable.Empty<TableColumnDocumentationElement>() as IReadOnlyList<TableColumnDocumentationElement>
+                ?? new List<TableColumnDocumentationElement>();
+            Rows = _EnsureRowCellsCount(rowsList, actualColumnCount);
+        }
+
+        private static IReadOnlyList<TableRowDocumentationElement> _EnsureRowCellsCount(IReadOnlyList<TableRowDocumentationElement> rowsList, int columnCount)
+        {
+            var emptyCell = TableCell(Enumerable.Empty<InlineDocumentationElement>());
+            return rowsList
                 .Select(
-                    row => row.Cells.Count == actualColumnCount
+                    row => row.Cells.Count >= columnCount
                         ? row
-                        : TableRow(row.Cells.Concat(Enumerable.Repeat(_emptyCell, actualColumnCount - row.Cells.Count)))
+                        : TableRow(
+                            row
+                                .Cells
+                                .Concat(Enumerable.Repeat(emptyCell, columnCount - row.Cells.Count))
+                        )
                 )
                 .ToList();
         }
