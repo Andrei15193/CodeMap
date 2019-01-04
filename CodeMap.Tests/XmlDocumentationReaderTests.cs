@@ -12,6 +12,111 @@ namespace CodeMap.Tests
     public class XmlDocumentationReaderTests
     {
         private static XmlDocumentationReader _XmlDocumentationReader { get; } = new XmlDocumentationReader();
+        private static readonly string _richInlineContent = @"
+                plain text
+                <paramref name=""parameter reference""/>
+                <typeparamref name=""generic parameter reference""/>
+                <see cref=""member reference""/>
+                <c>some code</c>"
+            .Trim();
+        private static readonly string _richBlockContent = $@"
+                {_richInlineContent}
+                <list type=""table"">
+                    <item>
+                        <description>{_richInlineContent}</description>
+                    </item>
+                    <item />
+                </list>
+                <code>
+                    some code in a block
+                </code>
+                <list type=""bullet"">
+                    <item>{_richInlineContent}</item>
+                    <item>
+                        <description>{_richInlineContent}</description>
+                    </item>
+                    <item />
+                </list>
+                <list type=""number"">
+                    <item>{_richInlineContent}</item>
+                    <item>
+                        <description>{_richInlineContent}</description>
+                    </item>
+                    <item />
+                </list>
+                {_richInlineContent}
+                <list>
+                    <listheader>{_richInlineContent}</listheader>
+                    <item>
+                        <term>{_richInlineContent}</term>
+                        <description>{_richInlineContent}</description>
+                    </item>
+                    <item>
+                    </item>
+                </list>"
+            .Trim();
+        private static readonly IEnumerable<InlineDocumentationElement> _richInlineElements = new InlineDocumentationElement[]
+        {
+                DocumentationElement.Text("plain text "),
+                DocumentationElement.ParameterReference("parameter reference"),
+                DocumentationElement.Text(" "),
+                DocumentationElement.GenericParameterReference("generic parameter reference"),
+                DocumentationElement.Text(" "),
+                DocumentationElement.MemberReference("member reference"),
+                DocumentationElement.Text(" "),
+                DocumentationElement.InlineCode("some code"),
+        };
+        private static readonly IEnumerable<BlockDocumentationElement> _richBlockElements = new BlockDocumentationElement[]
+        {
+                DocumentationElement.Paragraph(
+                    _richInlineElements
+                ),
+                DocumentationElement.Table(
+                    DocumentationElement.TableRow(
+                        DocumentationElement.TableCell(
+                            _richInlineElements
+                        )
+                    ),
+                    DocumentationElement.TableRow(
+                        DocumentationElement.TableCell()
+                    )
+                ),
+                DocumentationElement.CodeBlock(
+                    "some code in a block"
+                ),
+                DocumentationElement.UnorderedList(
+                    DocumentationElement.ListItem(
+                        _richInlineElements
+                    ),
+                    DocumentationElement.ListItem(
+                        _richInlineElements
+                    ),
+                    DocumentationElement.ListItem()
+                ),
+                DocumentationElement.OrderedList(
+                    DocumentationElement.ListItem(
+                        _richInlineElements
+                    ),
+                    DocumentationElement.ListItem(
+                        _richInlineElements
+                    ),
+                    DocumentationElement.ListItem()
+                ),
+                DocumentationElement.Paragraph(
+                    _richInlineElements
+                ),
+                DocumentationElement.DefinitionList(
+                    _richInlineElements,
+                    DocumentationElement.DefinitionListItem(
+                        _richInlineElements,
+                        _richInlineElements
+                    ),
+                    DocumentationElement.DefinitionListItem(
+                        Enumerable.Empty<InlineDocumentationElement>(),
+                        Enumerable.Empty<InlineDocumentationElement>()
+                    )
+                )
+        };
 
         [Fact]
         public async Task ReadEmptySummary()
@@ -195,7 +300,7 @@ namespace CodeMap.Tests
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Paragraph(
-                        DocumentationElement.Text("This contains"),
+                        DocumentationElement.Text("This contains "),
                         DocumentationElement.InlineCode("some code"),
                         DocumentationElement.Text(".")
                     )
@@ -259,7 +364,7 @@ namespace CodeMap.Tests
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Paragraph(
-                        DocumentationElement.Text("This contains a"),
+                        DocumentationElement.Text("This contains a "),
                         DocumentationElement.MemberReference("referred canonical name"),
                         DocumentationElement.Text(" reference.")
                     )
@@ -292,7 +397,7 @@ namespace CodeMap.Tests
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Paragraph(
-                        DocumentationElement.Text("This contains a"),
+                        DocumentationElement.Text("This contains a "),
                         DocumentationElement.ParameterReference("referred parameter name"),
                         DocumentationElement.Text(" reference.")
                     )
@@ -1273,6 +1378,300 @@ fourth line
         }
 
         [Fact]
+        public async Task ReadComplexSummary()
+        {
+            IReadOnlyList<MemberDocumentation> result;
+            using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"">
+            <summary>
+                {_richBlockContent}
+            </summary>
+        </member>
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Equal(1, result.Count);
+            _AssertAreEqual(
+                DocumentationElement.Summary(_richBlockElements),
+                result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Summary
+            );
+        }
+
+        [Fact]
+        public async Task ReadComplexTypeParameters()
+        {
+            IReadOnlyList<MemberDocumentation> result;
+            using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"">
+            <typeparam name=""typeParameter1"">{_richBlockContent}</typeparam>
+            <typeparam name=""typeParameter2"">{_richBlockContent}</typeparam>
+            <typeparam name=""typeParameter2"">{_richBlockContent}</typeparam>
+        </member>
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Equal(1, result.Count);
+            _AssertAreEqual(
+                new Dictionary<string, IEnumerable<BlockDocumentationElement>>(StringComparer.Ordinal)
+                {
+                    { "typeParameter1", _richBlockElements },
+                    { "typeParameter2", _richBlockElements.Concat(_richBlockElements) }
+                },
+                result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").GenericParameters
+            );
+        }
+
+        [Fact]
+        public async Task ReadComplexParameters()
+        {
+            IReadOnlyList<MemberDocumentation> result;
+            using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"">
+            <param name=""parameter1"">{_richBlockContent}</param>
+            <param name=""parameter2"">{_richBlockContent}</param>
+            <param name=""parameter2"">{_richBlockContent}</param>
+        </member>
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Equal(1, result.Count);
+            _AssertAreEqual(
+                new Dictionary<string, IEnumerable<BlockDocumentationElement>>(StringComparer.Ordinal)
+                {
+                    { "parameter1", _richBlockElements },
+                    { "parameter2", _richBlockElements.Concat(_richBlockElements) }
+                },
+                result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Parameters
+            );
+        }
+
+        [Fact]
+        public async Task ReadComplexReturns()
+        {
+            IReadOnlyList<MemberDocumentation> result;
+            using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"">
+            <returns>{_richBlockContent}</returns>
+        </member>
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Equal(1, result.Count);
+            _AssertAreEqual(
+                _richBlockElements,
+                result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Returns
+            );
+        }
+
+        [Fact]
+        public async Task ReadComplexExceptions()
+        {
+            IReadOnlyList<MemberDocumentation> result;
+            using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"">
+            <exception cref=""exception1"">{_richBlockContent}</exception>
+            <exception cref=""exception2"">{_richBlockContent}</exception>
+            <exception cref=""exception2"">{_richBlockContent}</exception>
+        </member>
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Equal(1, result.Count);
+            _AssertAreEqual(
+                new Dictionary<string, IEnumerable<BlockDocumentationElement>>(StringComparer.Ordinal)
+                {
+                    { "exception1", _richBlockElements },
+                    { "exception2", _richBlockElements.Concat(_richBlockElements) }
+                },
+                result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Exceptions
+            );
+        }
+
+        [Fact]
+        public async Task ReadComplexRemarks()
+        {
+            IReadOnlyList<MemberDocumentation> result;
+            using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"">
+            <remarks>
+                {_richBlockContent}
+            </remarks>
+        </member>
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Equal(1, result.Count);
+            _AssertAreEqual(
+                DocumentationElement.Remarks(_richBlockElements),
+                result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Remarks
+            );
+        }
+
+        [Fact]
+        public async Task ReadComplexExamples()
+        {
+            IReadOnlyList<MemberDocumentation> result;
+            using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"">
+            <example>
+                {_richBlockContent}
+            </example>
+            <example>
+                {_richBlockContent}
+                {_richBlockContent}
+            </example>
+        </member>
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Equal(1, result.Count);
+            _AssertAreEqual(
+                new[]
+                {
+                    DocumentationElement.Example(_richBlockElements),
+                    DocumentationElement.Example(_richBlockElements.Concat(_richBlockElements))
+                },
+                result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Examples
+            );
+        }
+
+        [Fact]
+        public async Task ReadComplexValue()
+        {
+            IReadOnlyList<MemberDocumentation> result;
+            using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"">
+            <value>
+                {_richBlockContent}
+            </value>
+        </member>
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Equal(1, result.Count);
+            _AssertAreEqual(
+                DocumentationElement.Value(_richBlockElements),
+                result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Value
+            );
+        }
+
+        [Fact]
+        public async Task ReadRelatedMembersList()
+        {
+            IReadOnlyList<MemberDocumentation> result;
+            using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"">
+            <seealso cref=""member1"" />
+            <seealso cref=""member2"" />
+            <seealso cref=""member2"" />
+        </member>
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Equal(1, result.Count);
+            _AssertAreEqual(
+                DocumentationElement.RelatedMembersList(
+                    DocumentationElement.MemberReference("member1"),
+                    DocumentationElement.MemberReference("member2"),
+                    DocumentationElement.MemberReference("member2")
+                ),
+                result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").RelatedMembersList
+            );
+        }
+
+        [Fact]
+        public async Task ReadEmptyMemberDocumentation()
+        {
+            IReadOnlyList<MemberDocumentation> result;
+            using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"" />
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Equal(1, result.Count);
+            var emptyMemberDocumentation = result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name");
+            Assert.Null(emptyMemberDocumentation.Summary);
+            Assert.Empty(emptyMemberDocumentation.GenericParameters);
+            Assert.Empty(emptyMemberDocumentation.Parameters);
+            Assert.Null(emptyMemberDocumentation.Returns);
+            Assert.Empty(emptyMemberDocumentation.Exceptions);
+            Assert.Null(emptyMemberDocumentation.Remarks);
+            Assert.Empty(emptyMemberDocumentation.Examples);
+            Assert.Null(emptyMemberDocumentation.Value);
+            Assert.Empty(emptyMemberDocumentation.RelatedMembersList);
+        }
+
+        [Fact]
         public async Task ReadingFromNullThrowsException()
         {
             var exception = await Assert.ThrowsAsync<ArgumentNullException>("textReader", () => _XmlDocumentationReader.ReadAsync(null));
@@ -1280,11 +1679,46 @@ fourth line
         }
 
         private static void _AssertAreEqual(SummaryDocumentationElement expected, SummaryDocumentationElement actual)
+            => _AssertAreEqual(expected.Content, actual.Content);
+
+        private static void _AssertAreEqual(IReadOnlyDictionary<string, IEnumerable<BlockDocumentationElement>> expected, ILookup<string, BlockDocumentationElement> actual)
         {
-            Assert.Equal(expected.Content.Count, actual.Content.Count);
-            foreach (var pair in expected.Content.Zip(actual.Content, (expectedContent, actualContent) => new { ExpectedContent = expectedContent, ActualContent = actualContent }))
+            Assert.Equal(expected.Count, actual.Count);
+
+            foreach (var pair in expected
+                .OrderBy(expectedParameter => expectedParameter.Key, StringComparer.Ordinal)
+                .Zip(
+                    actual.OrderBy(actualParameter => actualParameter.Key, StringComparer.Ordinal),
+                    (expectedParameter, actualParameter) => new
+                    {
+                        ExpectedParameter = expectedParameter.Key,
+                        ExpectedContent = expectedParameter.Value.ToList(),
+                        ActualParameter = actualParameter.Key,
+                        ActualContent = actualParameter.ToList()
+                    }
+                )
+            )
+            {
+                Assert.Equal(pair.ExpectedParameter, pair.ActualParameter);
                 _AssertAreEqual(pair.ExpectedContent, pair.ActualContent);
+            }
         }
+
+        private static void _AssertAreEqual(RemarksDocumentationElement expected, RemarksDocumentationElement actual)
+            => _AssertAreEqual(expected.Content, actual.Content);
+
+        private static void _AssertAreEqual(ExampleDocumentationElement expected, ExampleDocumentationElement actual)
+            => _AssertAreEqual(expected.Content, actual.Content);
+
+        private static void _AssertAreEqual(IEnumerable<ExampleDocumentationElement> expected, IEnumerable<ExampleDocumentationElement> actual)
+        {
+            Assert.Equal(expected.Count(), actual.Count());
+            foreach (var pair in expected.Zip(actual, (expectedElement, actualElement) => new { ExpectedElement = expectedElement, ActualElement = actualElement }))
+                _AssertAreEqual(pair.ExpectedElement, pair.ActualElement);
+        }
+
+        private static void _AssertAreEqual(ValueDocumentationElement expected, ValueDocumentationElement actual)
+            => _AssertAreEqual(expected.Content, actual.Content);
 
         private static void _AssertAreEqual(BlockDocumentationElement expectedContent, BlockDocumentationElement actualContent)
         {
@@ -1317,23 +1751,19 @@ fourth line
             }
         }
 
-        private static void _AssertAreEqual(ParagraphDocumentationElement expected, ParagraphDocumentationElement actual)
+        private static void _AssertAreEqual(IEnumerable<BlockDocumentationElement> expected, IEnumerable<BlockDocumentationElement> actual)
         {
-            Assert.Equal(expected.Content.Count, actual.Content.Count);
-            foreach (var pair in expected.Content.Zip(actual.Content, (expectedContent, actualContent) => new { ExpectedContent = expectedContent, ActualContent = actualContent }))
-                _AssertAreEqual(pair.ExpectedContent, pair.ActualContent);
+            Assert.Equal(expected.Count(), actual.Count());
+            foreach (var pair in expected.Zip(actual, (expectedElement, actualElement) => new { ExpectedElement = expectedElement, ActualElement = actualElement }))
+                _AssertAreEqual(pair.ExpectedElement, pair.ActualElement);
         }
+
+        private static void _AssertAreEqual(ParagraphDocumentationElement expected, ParagraphDocumentationElement actual)
+            => _AssertAreEqual(expected.Content, actual.Content);
 
         private static void _AssertAreEqual(CodeBlockDocumentationElement expected, CodeBlockDocumentationElement actual)
         {
             Assert.Equal(expected.Code, actual.Code);
-        }
-
-        private static void _AssertAreEqual(OrderedListDocumentationElement expected, OrderedListDocumentationElement actual)
-        {
-            Assert.Equal(expected.Items.Count, actual.Items.Count);
-            foreach (var pair in expected.Items.Zip(actual.Items, (expectedListItem, actualListItem) => new { ExpectedListItem = expectedListItem, ActualListItem = actualListItem }))
-                _AssertAreEqual(pair.ExpectedListItem, pair.ActualListItem);
         }
 
         private static void _AssertAreEqual(UnorderedListDocumentationElement expected, UnorderedListDocumentationElement actual)
@@ -1343,20 +1773,32 @@ fourth line
                 _AssertAreEqual(pair.ExpectedListItem, pair.ActualListItem);
         }
 
+        private static void _AssertAreEqual(OrderedListDocumentationElement expected, OrderedListDocumentationElement actual)
+        {
+            Assert.Equal(expected.Items.Count, actual.Items.Count);
+            foreach (var pair in expected.Items.Zip(actual.Items, (expectedListItem, actualListItem) => new { ExpectedListItem = expectedListItem, ActualListItem = actualListItem }))
+                _AssertAreEqual(pair.ExpectedListItem, pair.ActualListItem);
+        }
+
+        private static void _AssertAreEqual(ListItemDocumentationElement expected, ListItemDocumentationElement actual)
+            => _AssertAreEqual(expected.Content, actual.Content);
+
         private static void _AssertAreEqual(DefinitionListDocumentationElement expected, DefinitionListDocumentationElement actual)
         {
             if (expected.ListTitle == null)
                 Assert.Null(actual.ListTitle);
             else
-            {
-                Assert.Equal(expected.ListTitle.Count, actual.ListTitle.Count);
-                foreach (var pair in expected.ListTitle.Zip(actual.ListTitle, (expectedContent, actualContent) => new { ExpectedContent = expectedContent, ActualContent = actualContent }))
-                    _AssertAreEqual(pair.ExpectedContent, pair.ActualContent);
-            }
+                _AssertAreEqual(expected.ListTitle, actual.ListTitle);
 
             Assert.Equal(expected.Items.Count, actual.Items.Count);
             foreach (var pair in expected.Items.Zip(actual.Items, (expectedListItem, actualListItem) => new { ExpectedListItem = expectedListItem, ActualListItem = actualListItem }))
                 _AssertAreEqual(pair.ExpectedListItem, pair.ActualListItem);
+        }
+
+        private static void _AssertAreEqual(DefinitionListItemDocumentationElement expected, DefinitionListItemDocumentationElement actual)
+        {
+            _AssertAreEqual(expected.Term, actual.Term);
+            _AssertAreEqual(expected.Description, actual.Description);
         }
 
         private static void _AssertAreEqual(TableDocumentationElement expected, TableDocumentationElement actual)
@@ -1370,30 +1812,8 @@ fourth line
                 _AssertAreEqual(pair.ExpectedRow, pair.ActualRow);
         }
 
-        private static void _AssertAreEqual(ListItemDocumentationElement expected, ListItemDocumentationElement actual)
-        {
-            Assert.Equal(expected.Content.Count, actual.Content.Count);
-            foreach (var pair in expected.Content.Zip(actual.Content, (expectedContent, actualContent) => new { ExpectedContent = expectedContent, ActualContent = actualContent }))
-                _AssertAreEqual(pair.ExpectedContent, pair.ActualContent);
-        }
-
-        private static void _AssertAreEqual(DefinitionListItemDocumentationElement expected, DefinitionListItemDocumentationElement actual)
-        {
-            Assert.Equal(expected.Term.Count, actual.Term.Count);
-            foreach (var pair in expected.Term.Zip(actual.Term, (expectedContent, actualContent) => new { ExpectedContent = expectedContent, ActualContent = actualContent }))
-                _AssertAreEqual(pair.ExpectedContent, pair.ActualContent);
-
-            Assert.Equal(expected.Description.Count, actual.Description.Count);
-            foreach (var pair in expected.Description.Zip(actual.Description, (expectedContent, actualContent) => new { ExpectedContent = expectedContent, ActualContent = actualContent }))
-                _AssertAreEqual(pair.ExpectedContent, pair.ActualContent);
-        }
-
         private static void _AssertAreEqual(TableColumnDocumentationElement expected, TableColumnDocumentationElement actual)
-        {
-            Assert.Equal(expected.Name.Count, actual.Name.Count);
-            foreach (var pair in expected.Name.Zip(actual.Name, (expectedContent, actualContent) => new { ExpectedContent = expectedContent, ActualContent = actualContent }))
-                _AssertAreEqual(pair.ExpectedContent, pair.ActualContent);
-        }
+            => _AssertAreEqual(expected.Name, actual.Name);
 
         private static void _AssertAreEqual(TableRowDocumentationElement expected, TableRowDocumentationElement actual)
         {
@@ -1403,11 +1823,7 @@ fourth line
         }
 
         private static void _AssertAreEqual(TableCellDocumentationElement expected, TableCellDocumentationElement actual)
-        {
-            Assert.Equal(expected.Content.Count, actual.Content.Count);
-            foreach (var pair in expected.Content.Zip(actual.Content, (expectedContent, actualContent) => new { ExpectedContent = expectedContent, ActualContent = actualContent }))
-                _AssertAreEqual(pair.ExpectedContent, pair.ActualContent);
-        }
+            => _AssertAreEqual(expected.Content, actual.Content);
 
         private static void _AssertAreEqual(InlineDocumentationElement expected, InlineDocumentationElement actual)
         {
@@ -1438,6 +1854,13 @@ fourth line
                     _AssertAreEqual(expectedParameterReference, (ParameterReferenceDocumentationElement)actual);
                     break;
             }
+        }
+
+        private static void _AssertAreEqual(IEnumerable<InlineDocumentationElement> expected, IEnumerable<InlineDocumentationElement> actual)
+        {
+            Assert.Equal(expected.Count(), actual.Count());
+            foreach (var pair in expected.Zip(actual, (expectedElement, actualElement) => new { ExpectedElement = expectedElement, ActualElement = actualElement }))
+                _AssertAreEqual(pair.ExpectedElement, pair.ActualElement);
         }
 
         private static void _AssertAreEqual(TextDocumentationElement expected, TextDocumentationElement actual)

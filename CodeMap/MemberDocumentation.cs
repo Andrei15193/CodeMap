@@ -23,7 +23,7 @@ namespace CodeMap
             SummaryDocumentationElement summary,
             ILookup<string, BlockDocumentationElement> genericParameters,
             ILookup<string, BlockDocumentationElement> parameters,
-            ReturnsDocumentationElement returns,
+            IEnumerable<BlockDocumentationElement> returns,
             ILookup<string, BlockDocumentationElement> exceptions,
             RemarksDocumentationElement remarks,
             IEnumerable<ExampleDocumentationElement> examples,
@@ -34,7 +34,7 @@ namespace CodeMap
             Summary = summary;
             GenericParameters = genericParameters;
             Parameters = parameters;
-            Returns = returns;
+            Returns = returns as IReadOnlyList<BlockDocumentationElement> ?? returns?.ToList();
             Exceptions = exceptions;
             Remarks = remarks;
             Examples = (examples ?? Enumerable.Empty<ExampleDocumentationElement>()) as IReadOnlyList<ExampleDocumentationElement> ?? examples.ToList();
@@ -55,7 +55,7 @@ namespace CodeMap
         public ILookup<string, BlockDocumentationElement> Parameters { get; }
 
         /// <summary>The returns section.</summary>
-        public ReturnsDocumentationElement Returns { get; }
+        public IReadOnlyList<BlockDocumentationElement> Returns { get; }
 
         /// <summary>The exceptions documentation.</summary>
         public ILookup<string, BlockDocumentationElement> Exceptions { get; }
