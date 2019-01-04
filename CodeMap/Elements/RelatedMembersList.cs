@@ -6,7 +6,7 @@ using System.Linq;
 namespace CodeMap.Elements
 {
     /// <summary>Represents a list of references corresponding to all <c>seealso</c> XML elements specified on a member.</summary>
-    public sealed class RelatedMembersList : IReadOnlyList<MemberReferenceDocumentationElement>, IThreadSafe
+    public sealed class RelatedMembersList : IReadOnlyList<MemberReferenceDocumentationElement>
     {
         private readonly IReadOnlyList<MemberReferenceDocumentationElement> _relatedMembers;
 

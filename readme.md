@@ -183,12 +183,12 @@ Number (ordered) list:
 This is where it can get a bit confusing. The definition list is inferred by
 the given list type (`bullet` or `number`) or lack of this attribute.
 Definition lists cannot be ordered or unordered, they define a list of terms.
-This makes the type attribute rather useless in this case, it can safely
+This makes the type attribute rather useless in this case, it can be safely
 omitted since the default is `bullet` and alligns with the interpretation.
 
-To create a definition list, all items must contain both a `term` and a
-`description` element. If there is an item missing either element then the
-definition is ambiguous and an exception is thrown.
+To create a definition list it must either have a title or one of its items
+to contain the `term` element. The title is optional, however if the `list`
+element is empty it will not be inferred as a definition list!
 
 Optionally, a definition list can have a title which is defined using the
 `listheader` element. The title can be written directly in the element or
@@ -258,7 +258,7 @@ the documentation:
 </list>
 ```
 
-Ambiguous definition list, will generate exception:
+A definition list without a term for its second item:
 
 ```xml
 <list>
