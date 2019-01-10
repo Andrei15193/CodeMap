@@ -9,30 +9,38 @@ namespace CodeMap.Elements
     /// <summary>Represents a returns sections corresponding to the <c>returns</c> XML element.</summary>
     public sealed class ReturnsDocumentationElement : DocumentationElement
     {
-        internal ReturnsDocumentationElement(TypeReferenceData typeReferenceData, IEnumerable<BlockDocumentationElement> content)
+        internal ReturnsDocumentationElement(TypeReferenceDocumentationElement typeReferenceData, IEnumerable<AttributeData> attributes, IEnumerable<BlockDocumentationElement> description)
         {
             ReturnType = typeReferenceData ?? throw new ArgumentNullException(nameof(typeReferenceData));
-            if (ReturnType is VoidTypeReference)
+            if (ReturnType is VoidTypeReferenceDocumentationElement)
                 throw new ArgumentException("Cannot be 'void' return type.", nameof(typeReferenceData));
-            Content = content as IReadOnlyList<BlockDocumentationElement>
-                ?? content?.ToList()
-                ?? throw new ArgumentNullException(nameof(content));
-            if (Content.Contains(null))
-                throw new ArgumentException("Cannot contain 'null' elements.", nameof(content));
+
+            Attributes = attributes.AsReadOnlyCollection()
+                ?? throw new ArgumentNullException(nameof(attributes));
+            if (Attributes.Contains(null))
+                throw new ArgumentException("Cannot contain 'null' attributes.", nameof(attributes));
+
+            Description = description.AsReadOnlyList()
+                ?? throw new ArgumentNullException(nameof(description));
+            if (Description.Contains(null))
+                throw new ArgumentException("Cannot contain 'null' elements.", nameof(description));
         }
 
-        /// <summary>The return type of the method.</summary>
-        public TypeReferenceData ReturnType { get; }
+        /// <summary>The return type.</summary>
+        public TypeReferenceDocumentationElement ReturnType { get; }
+
+        /// <summary>The return attributes.</summary>
+        public IReadOnlyCollection<AttributeData> Attributes { get; }
 
         /// <summary>The content of the returns section.</summary>
-        public IReadOnlyList<BlockDocumentationElement> Content { get; }
+        public IReadOnlyList<BlockDocumentationElement> Description { get; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
             visitor.VisitReturnsBeginning(ReturnType);
-            foreach (var block in Content)
+            foreach (var block in Description)
                 block.Accept(visitor);
             visitor.VisitReturnsEnding();
         }
@@ -44,7 +52,7 @@ namespace CodeMap.Elements
         public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
             await visitor.VisitReturnsBeginningAsync(ReturnType, cancellationToken);
-            foreach (var block in Content)
+            foreach (var block in Description)
                 await block.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
             await visitor.VisitReturnsEndingAsync(cancellationToken);
         }

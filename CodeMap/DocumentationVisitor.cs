@@ -14,6 +14,29 @@ namespace CodeMap
         {
         }
 
+        /// <summary>Visits an assembly reference (dependency).</summary>
+        /// <param name="assemblyReference">The assembly reference to visit.</param>
+        protected internal virtual void VisitAssemblyReference(AssemblyReferenceDocumentationElement assemblyReference)
+        {
+        }
+
+        /// <summary>Visits an assembly reference (dependency).</summary>
+        /// <param name="assemblyReference">The assembly reference to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitAssemblyReferenceAsync(AssemblyReferenceDocumentationElement assemblyReference, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitAssemblyReference(assemblyReference);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
         /// <summary>Visits the beginning of a summary element.</summary>
         protected internal virtual void VisitSummaryBeginning()
         {
@@ -58,7 +81,7 @@ namespace CodeMap
 
         /// <summary>Visits the beginning of a returns element.</summary>
         /// <param name="returnType">The return type of the method.</param>
-        protected internal virtual void VisitReturnsBeginning(TypeReferenceData returnType)
+        protected internal virtual void VisitReturnsBeginning(TypeReferenceDocumentationElement returnType)
         {
         }
 
@@ -66,7 +89,7 @@ namespace CodeMap
         /// <param name="returnType">The return type of the method.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitReturnsBeginningAsync(TypeReferenceData returnType, CancellationToken cancellationToken)
+        protected internal virtual Task VisitReturnsBeginningAsync(TypeReferenceDocumentationElement returnType, CancellationToken cancellationToken)
         {
             try
             {

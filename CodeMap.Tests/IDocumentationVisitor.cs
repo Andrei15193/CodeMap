@@ -5,11 +5,13 @@ namespace CodeMap.ElementsTests
 {
     public interface IDocumentationVisitor
     {
+        void VisitAssemblyReference(AssemblyReferenceDocumentationElement assemblyReference);
+
         void VisitSummaryBeginning();
 
         void VisitSummaryEnding();
 
-        void VisitReturnsBeginning(TypeReferenceData returnType);
+        void VisitReturnsBeginning(TypeReferenceDocumentationElement returnType);
 
         void VisitReturnsEnding();
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CodeMap.Elements;
 
@@ -30,16 +31,16 @@ namespace CodeMap
             ValueDocumentationElement value,
             RelatedMembersList relatedMembersList)
         {
-            CanonicalName = canonicalName;
+            CanonicalName = canonicalName ?? throw new ArgumentNullException(nameof(canonicalName));
             Summary = summary;
-            GenericParameters = genericParameters;
-            Parameters = parameters;
-            Returns = returns as IReadOnlyList<BlockDocumentationElement> ?? returns?.ToList();
-            Exceptions = exceptions;
+            GenericParameters = genericParameters.OrEmpty();
+            Parameters = parameters.OrEmpty();
+            Returns = returns.AsReadOnlyListOrEmpty();
+            Exceptions = exceptions.OrEmpty();
             Remarks = remarks;
-            Examples = (examples ?? Enumerable.Empty<ExampleDocumentationElement>()) as IReadOnlyList<ExampleDocumentationElement> ?? examples.ToList();
+            Examples = examples.AsReadOnlyListOrEmpty();
             Value = value;
-            RelatedMembersList = relatedMembersList;
+            RelatedMembersList = relatedMembersList ?? new RelatedMembersList(Enumerable.Empty<MemberReferenceDocumentationElement>());
         }
 
         /// <summary>The canonical name of the documented member.</summary>

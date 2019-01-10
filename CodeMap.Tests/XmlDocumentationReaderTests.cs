@@ -1663,7 +1663,7 @@ fourth line
             Assert.Null(emptyMemberDocumentation.Summary);
             Assert.Empty(emptyMemberDocumentation.GenericParameters);
             Assert.Empty(emptyMemberDocumentation.Parameters);
-            Assert.Null(emptyMemberDocumentation.Returns);
+            Assert.Empty(emptyMemberDocumentation.Returns);
             Assert.Empty(emptyMemberDocumentation.Exceptions);
             Assert.Null(emptyMemberDocumentation.Remarks);
             Assert.Empty(emptyMemberDocumentation.Examples);

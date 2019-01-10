@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>A documentation element that is part of the documentation tree for an <see cref="Assembly"/> and associated XML documentation.</summary>
+    /// <summary>A documentation element that is part of the documentation tree for an <see cref="System.Reflection.Assembly"/> and associated XML documentation.</summary>
     public abstract class DocumentationElement
     {
         /// <summary>Creates a <see cref="SummaryDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
@@ -19,20 +20,6 @@ namespace CodeMap.Elements
         /// <returns>Returns a <see cref="SummaryDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
         public static SummaryDocumentationElement Summary(params BlockDocumentationElement[] content)
             => new SummaryDocumentationElement(content);
-
-        /// <summary>Creates a <see cref="ReturnsDocumentationElement"/> with the provided <paramref name="returnType"/> and <paramref name="content"/>.</summary>
-        /// <param name="returnType">The return type of the method.</param>
-        /// <param name="content">The content of the <c>returns</c> XML element.</param>
-        /// <returns>Returns a <see cref="ReturnsDocumentationElement"/> with the provided <paramref name="returnType"/> and <paramref name="content"/>.</returns>
-        public static ReturnsDocumentationElement Returns(TypeReferenceData returnType, IEnumerable<BlockDocumentationElement> content)
-            => new ReturnsDocumentationElement(returnType, content);
-
-        /// <summary>Creates a <see cref="ReturnsDocumentationElement"/> with the provided <paramref name="returnType"/> and <paramref name="content"/>.</summary>
-        /// <param name="returnType">The return type of the method.</param>
-        /// <param name="content">The content of the <c>returns</c> XML element.</param>
-        /// <returns>Returns a <see cref="ReturnsDocumentationElement"/> with the provided <paramref name="returnType"/> and <paramref name="content"/>.</returns>
-        public static ReturnsDocumentationElement Returns(TypeReferenceData returnType, params BlockDocumentationElement[] content)
-            => new ReturnsDocumentationElement(returnType, content);
 
         /// <summary>Creates a <see cref="RemarksDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
         /// <param name="content">The content of the <c>remarks</c> XML element.</param>

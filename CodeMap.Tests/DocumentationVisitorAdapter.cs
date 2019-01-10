@@ -12,6 +12,11 @@ namespace CodeMap.ElementsTests
             _documentationVisitor = documentationVisitor;
         }
 
+        protected override void VisitAssemblyReference(AssemblyReferenceDocumentationElement assemblyReference)
+        {
+            _documentationVisitor.VisitAssemblyReference(assemblyReference);
+        }
+
         protected override void VisitSummaryBeginning()
         {
             _documentationVisitor.VisitSummaryBeginning();
@@ -22,7 +27,7 @@ namespace CodeMap.ElementsTests
             _documentationVisitor.VisitSummaryEnding();
         }
 
-        protected override void VisitReturnsBeginning(TypeReferenceData returnType)
+        protected override void VisitReturnsBeginning(TypeReferenceDocumentationElement returnType)
         {
             _documentationVisitor.VisitReturnsBeginning(returnType);
         }

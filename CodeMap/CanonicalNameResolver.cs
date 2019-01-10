@@ -1,5 +1,4 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -51,6 +50,11 @@ namespace CodeMap
             }
         }
 
+        /// <summary>Attempts to find a <see cref="MemberInfo"/> with the provided <paramref name="canonicalName"/> searching through the provided <paramref name="assemblies"/>.</summary>
+        /// <param name="canonicalName">The canonical name of the member to search for.</param>
+        /// <param name="assemblies">The assemblies to search through.</param>
+        /// <returns>Returns the <see cref="MemberInfo"/> with the provided <paramref name="canonicalName"/> if found; otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentException">Thrown when the canonical name is invalid.</exception>
         public MemberInfo TryFindMemberInfoFor(string canonicalName, IEnumerable<Assembly> assemblies)
         {
             if (string.IsNullOrWhiteSpace(canonicalName))
@@ -95,6 +99,11 @@ namespace CodeMap
             }
         }
 
+        /// <summary>Attempts to find a <see cref="MemberInfo"/> with the provided <paramref name="canonicalName"/> searching through the provided <paramref name="assemblies"/>.</summary>
+        /// <param name="canonicalName">The canonical name of the member to search for.</param>
+        /// <param name="assemblies">The assemblies to search through.</param>
+        /// <returns>Returns the <see cref="MemberInfo"/> with the provided <paramref name="canonicalName"/> if found; otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentException">Thrown when the canonical name is invalid.</exception>
         public MemberInfo GetMemberInfoFrom(string canonicalName, params Assembly[] assemblies)
             => TryFindMemberInfoFor(canonicalName, assemblies.AsEnumerable());
 
