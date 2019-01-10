@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using CodeMap.Elements;
 
 namespace CodeMap
@@ -12,7 +13,8 @@ namespace CodeMap
     /// </summary>
     public class ReflectionDocumentationElementFactory
     {
-        private readonly DocumentationElementCache _referencesCahce = new DocumentationElementCache();
+        private readonly DynamicTypeReference _dynamicTypeReference = new DynamicTypeReference();
+        private readonly DocumentationElementCache _referencesCache = new DocumentationElementCache();
         private readonly MemberDocumentationCollection _membersDocumentation;
 
         /// <summary>Initializes a new instance of the <see cref="ReflectionDocumentationElementFactory"/> class.</summary>
@@ -25,7 +27,7 @@ namespace CodeMap
         /// <param name="membersDocumentation">A collection of <see cref="MemberDocumentation"/> to associate to created <see cref="DocumentationElement"/>s.</param>
         public ReflectionDocumentationElementFactory(MemberDocumentationCollection membersDocumentation)
         {
-            _referencesCahce = new DocumentationElementCache();
+            _referencesCache = new DocumentationElementCache();
             _membersDocumentation = membersDocumentation
                 ?? throw new ArgumentNullException(nameof(membersDocumentation));
         }
@@ -58,8 +60,8 @@ namespace CodeMap
             {
                 Name = enumType.Name,
                 AccessModifier = _GetAccessModifierFrom(enumType),
-                UnderlyingType = _referencesCahce.GetFor(enumType.GetEnumUnderlyingType(), _CreateTypeReference),
-                Attributes = _GetAttributesDataFrom(enumType.CustomAttributes),
+                UnderlyingType = _GetTypeReference(enumType.GetEnumUnderlyingType()),
+                Attributes = _MapAttributesDataFrom(enumType.CustomAttributes),
             };
             enumDocumentationElement.Members = enumType
                 .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField)
@@ -69,8 +71,10 @@ namespace CodeMap
                         Name = field.Name,
                         AccessModifier = _GetAccessModifierFrom(field),
                         Value = field.GetValue(null),
-                        Type = _referencesCahce.GetFor(field.FieldType, _CreateTypeReference),
-                        Attributes = _GetAttributesDataFrom(field.CustomAttributes),
+                        Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() != null
+                            ? _dynamicTypeReference
+                            : _GetTypeReference(field.FieldType),
+                        Attributes = _MapAttributesDataFrom(field.CustomAttributes),
                         DeclaringType = enumDocumentationElement
                     }
                 )
@@ -80,9 +84,31 @@ namespace CodeMap
             return enumDocumentationElement;
         }
 
-        private TypeDocumentationElement _CreateDelegate(Type type)
+        private DelegateDocumentationElement _CreateDelegate(Type delegateType)
         {
-            throw new NotImplementedException();
+            var invokeMethodInfo = delegateType.GetMethod(nameof(Action.Invoke), BindingFlags.Public | BindingFlags.Instance);
+            return new DelegateDocumentationElement
+            {
+                Name = delegateType.Name,
+                AccessModifier = _GetAccessModifierFrom(delegateType),
+                Attributes = _MapAttributesDataFrom(delegateType.CustomAttributes),
+                GenericParameters = delegateType
+                    .GetGenericArguments()
+                    .Select(_GetTypeReference)
+                    .Cast<GenericParameterDocumentationElement>()
+                    .AsReadOnlyList(),
+                Parameters = invokeMethodInfo
+                    .GetParameters()
+                    .Select(parameter => _CreateParameter(parameter))
+                    .AsReadOnlyList(),
+                Return = new ReturnsDocumentationElement
+                {
+                    Type = invokeMethodInfo.ReturnType == typeof(object) && invokeMethodInfo.ReturnParameter.GetCustomAttribute<DynamicAttribute>() != null
+                        ? _dynamicTypeReference
+                        : _GetTypeReference(invokeMethodInfo.ReturnType),
+                    Attributes = _MapAttributesDataFrom(invokeMethodInfo.ReturnParameter.CustomAttributes)
+                }
+            };
         }
 
         private TypeDocumentationElement _CreateInterface(Type type)
@@ -137,19 +163,57 @@ namespace CodeMap
                 return AccessModifier.Private;
         }
 
+        private TypeReferenceDocumentationElement _GetTypeReference(Type type)
+            => _referencesCache.GetFor(type, _CreateTypeReference, _InitializeTypeReference);
+
         private TypeReferenceDocumentationElement _CreateTypeReference(Type type)
         {
-            return new InstanceTypeDocumentationElement
-            {
-                Name = type.Name,
-                Namespace = type.Namespace,
-                GenericArguments = type
-                    .GetGenericArguments()
-                    .Select(genericArgument => _referencesCahce.GetFor(genericArgument, _CreateTypeReference))
-                    .AsReadOnlyList(),
-                Assembly = _referencesCahce.GetFor(type.Assembly.GetName(), _CreateAssemblyReference)
-            };
+            if (type.IsGenericParameter)
+                return new GenericParameterDocumentationElement();
+            else if (type == typeof(void))
+                return new VoidTypeReferenceDocumentationElement();
+            else
+                return new InstanceTypeDocumentationElement();
         }
+
+        private void _InitializeTypeReference(Type type, TypeReferenceDocumentationElement typeReference)
+        {
+            switch (typeReference)
+            {
+                case GenericParameterDocumentationElement genericParameter:
+                    var genericParameterAttributes = type.GenericParameterAttributes;
+                    genericParameter.Name = type.Name;
+                    genericParameter.IsCovariant = (genericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant;
+                    genericParameter.IsContravariant = (genericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant;
+                    genericParameter.HasNonNullableValueTypeConstraint = (genericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) == GenericParameterAttributes.NotNullableValueTypeConstraint;
+                    genericParameter.HasReferenceTypeConstraint = (genericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) == GenericParameterAttributes.ReferenceTypeConstraint;
+                    genericParameter.HasDefaultConstructorConstraint = (genericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) == GenericParameterAttributes.DefaultConstructorConstraint;
+                    genericParameter.TypeConstraints = type.GetGenericParameterConstraints().Select(_GetTypeReference).ToList();
+                    break;
+
+                case InstanceTypeDocumentationElement instanceType:
+                    instanceType.Name = type.Name;
+                    instanceType.Namespace = type.Namespace;
+                    instanceType.GenericArguments = type
+                        .GetGenericArguments()
+                        .Select(_GetTypeReference)
+                        .AsReadOnlyList();
+                    instanceType.Assembly = _referencesCache.GetFor(type.Assembly.GetName(), _CreateAssemblyReference);
+                    break;
+            }
+        }
+
+        private ParameterDocumentationElement _CreateParameter(ParameterInfo parameter)
+            => new ParameterDocumentationElement
+            {
+                Name = parameter.Name,
+                Type = parameter.ParameterType == typeof(object) && parameter.GetCustomAttribute<DynamicAttribute>() != null
+                    ? _dynamicTypeReference
+                    : _GetTypeReference(parameter.ParameterType),
+                Attributes = _MapAttributesDataFrom(parameter.CustomAttributes),
+                HasDefaultValue = parameter.HasDefaultValue,
+                DefaultValue = parameter.HasDefaultValue ? parameter.RawDefaultValue : null
+            };
 
         private AssemblyReferenceDocumentationElement _CreateAssemblyReference(AssemblyName assemblyName)
             => new AssemblyReferenceDocumentationElement
@@ -160,21 +224,22 @@ namespace CodeMap
                 PublicKeyToken = assemblyName.GetPublicKeyToken().ToBase16String()
             };
 
-        private IReadOnlyCollection<AttributeData> _GetAttributesDataFrom(IEnumerable<CustomAttributeData> customAttributes)
+        private IReadOnlyCollection<AttributeData> _MapAttributesDataFrom(IEnumerable<CustomAttributeData> customAttributes)
             => (
                 from customAttribute in customAttributes
                 let constructorParameters = customAttribute.Constructor.GetParameters()
                 select new AttributeData(
-                    _referencesCahce.GetFor(customAttribute.AttributeType, _CreateTypeReference),
+                    _GetTypeReference(customAttribute.AttributeType),
                     constructorParameters
                         .Zip(
                             customAttribute.ConstructorArguments,
                             (parameter, argument) =>
-                                new AttributeParameterData(
-                                    _referencesCahce.GetFor(parameter.ParameterType, _CreateTypeReference),
-                                    parameter.Name,
-                                    _GetAttributeValue(parameter.ParameterType, argument)
-                                )
+                                new AttributeParameterData
+                                {
+                                    Name = parameter.Name,
+                                    Type = _GetTypeReference(parameter.ParameterType),
+                                    Value = _CreateAttributeValue(parameter.ParameterType, argument)
+                                }
                         )
                         .ToList(),
                     customAttribute
@@ -185,11 +250,12 @@ namespace CodeMap
                                 var parameterType = namedArgument.IsField
                                     ? ((FieldInfo)namedArgument.MemberInfo).FieldType
                                     : ((PropertyInfo)namedArgument.MemberInfo).PropertyType;
-                                return new AttributeParameterData(
-                                    _referencesCahce.GetFor(parameterType, _CreateTypeReference),
-                                    namedArgument.MemberName,
-                                    _GetAttributeValue(parameterType, namedArgument.TypedValue.Value)
-                                );
+                                return new AttributeParameterData
+                                {
+                                    Name = namedArgument.MemberName,
+                                    Type = _GetTypeReference(parameterType),
+                                    Value = _CreateAttributeValue(parameterType, namedArgument.TypedValue.Value)
+                                };
                             }
                         )
                         .ToList()
@@ -197,7 +263,7 @@ namespace CodeMap
         )
         .ToList();
 
-        private static object _GetAttributeValue(Type type, CustomAttributeTypedArgument argument)
+        private static object _CreateAttributeValue(Type type, CustomAttributeTypedArgument argument)
         {
             if (argument.Value == null)
                 return null;
@@ -205,22 +271,22 @@ namespace CodeMap
             if (type == typeof(object[]))
                 return _GetAttributeValue(argument.ArgumentType, (object[])argument.Value);
             if (type == typeof(object))
-                return _GetAttributeValue(argument.ArgumentType, argument.Value);
+                return _CreateAttributeValue(argument.ArgumentType, argument.Value);
             if (type.IsArray)
                 return _GetAttributeValue(type, (object[])argument.Value);
 
-            return _GetAttributeValue(type, argument.Value);
+            return _CreateAttributeValue(type, argument.Value);
         }
 
         private static object _GetAttributeValue(Type type, object[] values)
         {
             var result = new object[values.Length];
             for (var index = 0; index < values.Length; index++)
-                result[index] = _GetAttributeValue(type, values[index]);
+                result[index] = _CreateAttributeValue(type, values[index]);
             return result;
         }
 
-        private static object _GetAttributeValue(Type type, object value)
+        private static object _CreateAttributeValue(Type type, object value)
         {
             if (value == null)
                 return null;

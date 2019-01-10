@@ -9,20 +9,42 @@ namespace CodeMap.Tests
 {
     public class ReflectionDocumentationElementFactoryTests
     {
+        private readonly ReflectionDocumentationElementFactory _factory = new ReflectionDocumentationElementFactory();
+
         [Fact]
-        public void CreatingEnumDocumentationNode()
+        public void CreatingEnumDocumentationElement()
         {
-            var factory = new ReflectionDocumentationElementFactory();
+            var enumDocumentationElement = _factory.Create(typeof(TestEnum)) as EnumDocumentationElement;
 
-            var enumDocumentationElement = factory.Create(typeof(CallingConventions)) as EnumDocumentationElement;
-
-            AssertTypeDefinition(typeof(CallingConventions), enumDocumentationElement);
+            AssertTypeDefinition(typeof(TestEnum), enumDocumentationElement);
+            AssertTypeReference(typeof(TestEnum).GetEnumUnderlyingType(), enumDocumentationElement.UnderlyingType);
             AssertConstantDefinitions(
                 enumDocumentationElement,
-                typeof(CallingConventions)
+                typeof(TestEnum)
                     .GetRuntimeFields()
-                    .Where(fieldInfo => Enum.TryParse<CallingConventions>(fieldInfo.Name, out var value)),
+                    .Where(fieldInfo => Enum.TryParse<TestEnum>(fieldInfo.Name, out var value)),
                 enumDocumentationElement.Members
+            );
+        }
+
+        [Fact]
+        public void CreatingDelegateDocumentationElement()
+        {
+            var delegateDocumentationElement = _factory.Create(typeof(TestDelegate<,,>)) as DelegateDocumentationElement;
+
+            AssertTypeDefinition(typeof(TestDelegate<,,>), delegateDocumentationElement);
+            AssertGenericParameters(typeof(TestDelegate<,,>).GetGenericArguments(), delegateDocumentationElement.GenericParameters);
+            AssertParameters(
+                typeof(TestDelegate<,,>).GetMethod(nameof(Action.Invoke)).GetParameters(),
+                delegateDocumentationElement.Parameters
+            );
+            AssertTypeReference(typeof(void), delegateDocumentationElement.Return.Type);
+            AssertAttributes(
+                typeof(TestDelegate<,,>)
+                    .GetMethod(nameof(Action.Invoke))
+                    .ReturnParameter
+                    .GetCustomAttributesData(),
+                delegateDocumentationElement.Return.Attributes
             );
         }
 

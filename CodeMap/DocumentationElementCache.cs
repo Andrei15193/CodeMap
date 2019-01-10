@@ -22,12 +22,13 @@ namespace CodeMap
             return assemblyReference;
         }
 
-        public TypeReferenceDocumentationElement GetFor(Type type, Func<Type, TypeReferenceDocumentationElement> factory)
+        public TypeReferenceDocumentationElement GetFor(Type type, Func<Type, TypeReferenceDocumentationElement> factory, Action<Type, TypeReferenceDocumentationElement> initializer)
         {
             if (!_typeReferencesCache.TryGetValue(type, out var typeReference))
             {
                 typeReference = factory(type);
                 _typeReferencesCache.Add(type, typeReference);
+                initializer(type, typeReference);
             }
             return typeReference;
         }

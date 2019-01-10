@@ -1,47 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents a returns sections corresponding to the <c>returns</c> XML element.</summary>
-    public sealed class ReturnsDocumentationElement : DocumentationElement
+    /// <summary>Represents a documented parameter.</summary>
+    public class ParameterDocumentationElement : DocumentationElement
     {
-        internal ReturnsDocumentationElement()
+        internal ParameterDocumentationElement()
         {
         }
 
-        /// <summary>The return type.</summary>
+        /// <summary>The parameter name.</summary>
+        public string Name { get; internal set; }
+
+        /// <summary>The parameter type.</summary>
         public TypeReferenceDocumentationElement Type { get; internal set; }
 
-        /// <summary>The return attributes.</summary>
+        /// <summary>The parameter attributes.</summary>
         public IReadOnlyCollection<AttributeData> Attributes { get; internal set; }
 
-        /// <summary>The content of the returns section.</summary>
+        /// <summary>The parameter description.</summary>
         public IReadOnlyList<BlockDocumentationElement> Description { get; internal set; }
+
+        /// <summary>Indicates whether the parameter has a default value.</summary>
+        public bool HasDefaultValue { get; internal set; }
+
+        /// <summary>The parameter default value</summary>
+        /// <remarks>
+        /// This property must be used in conjunction with <see cref="HasDefaultValue"/> as <c>null</c> can be a valid default value
+        /// and therefore cannot be used to determine whether there is a default value.
+        /// </remarks>
+        public object DefaultValue { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
-            visitor.VisitReturnsBeginning(Type);
-            foreach (var block in Description)
-                block.Accept(visitor);
-            visitor.VisitReturnsEnding();
+            throw new NotImplementedException();
         }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
+        public override Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
-            await visitor.VisitReturnsBeginningAsync(Type, cancellationToken);
-            foreach (var block in Description)
-                await block.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
-            await visitor.VisitReturnsEndingAsync(cancellationToken);
+            throw new NotImplementedException();
         }
     }
 }

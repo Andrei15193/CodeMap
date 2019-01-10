@@ -16,8 +16,8 @@ namespace CodeMap.Tests
             else
             {
                 Assert.NotNull(actual);
-                Assert.Equal(nameof(CallingConventions), actual.Name);
-                Assert.Equal(AccessModifier.Public, actual.AccessModifier);
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.IsPublic ? AccessModifier.Public : AccessModifier.Assembly, actual.AccessModifier);
                 Assert.Null(actual.DeclaringType);
                 AssertAttributes(CustomAttributeData.GetCustomAttributes(expected), actual.Attributes);
             }
@@ -30,6 +30,80 @@ namespace CodeMap.Tests
             Assert.Equal(expectedTypes.Count, actualTypes.Count);
             foreach (var pair in expectedTypes.Zip(actualTypes, (expectedType, actualType) => new { ExpectedType = expectedType, ActualType = actualType }))
                 AssertTypeDefinition(pair.ExpectedType, pair.ActualType);
+        }
+
+        public static void AssertGenericParameter(Type expected, GenericParameterDocumentationElement actual, IReadOnlyDictionary<Type, TypeReferenceDocumentationElement> visited = null)
+        {
+            if (expected == null)
+                Assert.Null(actual);
+            else
+            {
+                Assert.NotNull(actual);
+                Assert.True(expected.IsGenericParameter);
+                Assert.Equal(expected.Name, actual.Name);
+                _AssertGenericParameterAttribute(expected, GenericParameterAttributes.Covariant, () => actual.IsCovariant);
+                _AssertGenericParameterAttribute(expected, GenericParameterAttributes.Contravariant, () => actual.IsContravariant);
+                _AssertGenericParameterAttribute(expected, GenericParameterAttributes.ReferenceTypeConstraint, () => actual.HasReferenceTypeConstraint);
+                _AssertGenericParameterAttribute(expected, GenericParameterAttributes.NotNullableValueTypeConstraint, () => actual.HasNonNullableValueTypeConstraint);
+                _AssertGenericParameterAttribute(expected, GenericParameterAttributes.DefaultConstructorConstraint, () => actual.HasDefaultConstructorConstraint);
+                AssertTypeReferences(
+                    expected.GetGenericParameterConstraints(),
+                    actual.TypeConstraints,
+                    new Dictionary<Type, TypeReferenceDocumentationElement>(visited ?? Enumerable.Empty<KeyValuePair<Type, TypeReferenceDocumentationElement>>())
+                    {
+                        { expected, actual }
+                    }
+                );
+            }
+        }
+
+        public static void AssertGenericParameters(IEnumerable<Type> expected, IEnumerable<GenericParameterDocumentationElement> actual)
+        {
+            var expectedGenericParameters = expected as IReadOnlyCollection<Type> ?? expected.ToList();
+            var actualGenericParameters = actual as IReadOnlyCollection<GenericParameterDocumentationElement> ?? actual.ToList();
+            Assert.Equal(expectedGenericParameters.Count, actualGenericParameters.Count);
+            foreach (var pair in expectedGenericParameters.Zip(actualGenericParameters, (expectedGenericParameter, actualGenericParameter) => new { ExpectedGenericParameter = expectedGenericParameter, ActualGenericParameter = actualGenericParameter }))
+                AssertGenericParameter(pair.ExpectedGenericParameter, pair.ActualGenericParameter);
+        }
+
+        public static void AssertParameter(ParameterInfo expected, ParameterDocumentationElement actual)
+        {
+            if (expected == null)
+                Assert.Null(actual);
+            else
+            {
+                Assert.NotNull(actual);
+                Assert.Equal(expected.Name, actual.Name);
+                AssertTypeReference(expected.ParameterType, actual.Type);
+                if (expected.HasDefaultValue)
+                {
+                    Assert.True(actual.HasDefaultValue);
+                    Assert.Equal(expected.RawDefaultValue, actual.DefaultValue);
+                }
+                else
+                {
+                    Assert.False(actual.HasDefaultValue);
+                    Assert.Null(actual.DefaultValue);
+                }
+                AssertAttributes(expected.CustomAttributes, actual.Attributes);
+            }
+        }
+
+        public static void AssertParameters(IEnumerable<ParameterInfo> expected, IEnumerable<ParameterDocumentationElement> actual)
+        {
+            var expectedParameters = expected as IReadOnlyCollection<ParameterInfo> ?? expected.ToList();
+            var actualParameters = actual as IReadOnlyCollection<ParameterDocumentationElement> ?? actual.ToList();
+            Assert.Equal(expectedParameters.Count, actualParameters.Count);
+            foreach (var pair in expectedParameters.Zip(actualParameters, (expectedParameter, actualParameter) => new { ExpectedParameter = expectedParameter, ActualParameter = actualParameter }))
+                AssertParameter(pair.ExpectedParameter, pair.ActualParameter);
+        }
+
+        private static void _AssertGenericParameterAttribute(Type genericParameter, GenericParameterAttributes genericParameterAttribute, Func<bool> selector)
+        {
+            if (genericParameter.GenericParameterAttributes.HasFlag(genericParameterAttribute))
+                Assert.True(selector());
+            else
+                Assert.False(selector());
         }
 
         public static void AssertConstantDefinition(TypeDocumentationElement expectedDeclaringType, FieldInfo expected, ConstantDocumentationElement actual)
@@ -51,7 +125,7 @@ namespace CodeMap.Tests
                 AssertConstantDefinition(expectedDeclaringType, pair.ExpectedConstant, pair.ActualConstant);
         }
 
-        public static void AssertTypeReference(Type expected, TypeReferenceDocumentationElement actual)
+        public static void AssertTypeReference(Type expected, TypeReferenceDocumentationElement actual, IReadOnlyDictionary<Type, TypeReferenceDocumentationElement> visited = null)
         {
             if (expected == null)
                 Assert.Null(actual);
@@ -61,7 +135,20 @@ namespace CodeMap.Tests
                 switch (actual)
                 {
                     case InstanceTypeDocumentationElement actualInstanceTypeDocumentationElement:
-                        _AssertType(expected, actualInstanceTypeDocumentationElement);
+                        _AssertType(expected, actualInstanceTypeDocumentationElement, visited);
+                        break;
+
+                    case GenericParameterDocumentationElement genericParameterDocumentationElement:
+                        if (visited == null || !visited.ContainsKey(expected))
+                            AssertGenericParameter(expected, genericParameterDocumentationElement, visited);
+                        break;
+
+                    case VoidTypeReferenceDocumentationElement voidTypeReference:
+                        Assert.Equal(typeof(void), expected);
+                        break;
+
+                    case DynamicTypeReference dynamicTypeReference:
+                        Assert.Equal(typeof(object), expected);
                         break;
 
                     default:
@@ -70,13 +157,13 @@ namespace CodeMap.Tests
             }
         }
 
-        public static void AssertTypeReferences(IEnumerable<Type> expected, IEnumerable<TypeReferenceDocumentationElement> actual)
+        public static void AssertTypeReferences(IEnumerable<Type> expected, IEnumerable<TypeReferenceDocumentationElement> actual, IReadOnlyDictionary<Type, TypeReferenceDocumentationElement> visited = null)
         {
             var expectedTypes = expected as IReadOnlyCollection<Type> ?? expected.ToList();
             var actualTypes = actual as IReadOnlyCollection<TypeReferenceDocumentationElement> ?? actual.ToList();
             Assert.Equal(expectedTypes.Count, actualTypes.Count);
             foreach (var pair in expectedTypes.Zip(actualTypes, (expectedType, actualType) => new { ExpectedType = expectedType, ActualType = actualType }))
-                AssertTypeReference(pair.ExpectedType, pair.ActualType);
+                AssertTypeReference(pair.ExpectedType, pair.ActualType, visited);
         }
 
         public static void AssertAttribute(CustomAttributeData expected, AttributeData actual)
@@ -96,7 +183,7 @@ namespace CodeMap.Tests
                         (parameter, argument) => new ArgumentData
                         {
                             Name = parameter.Name,
-                            Type = argument.ArgumentType,
+                            Type = parameter.ParameterType,
                             Value = argument.Value
                         }
                     );
@@ -108,11 +195,11 @@ namespace CodeMap.Tests
                         namedArgument => new ArgumentData
                         {
                             Name = namedArgument.MemberName,
-                            Type = namedArgument.TypedValue.ArgumentType,
+                            Type = namedArgument.MemberInfo is FieldInfo fieldInfo ? fieldInfo.FieldType : ((PropertyInfo)namedArgument.MemberInfo).PropertyType,
                             Value = namedArgument.TypedValue.Value
                         }
                     );
-                _AssertArguments(namedArguments, actual.PositionalParameters);
+                _AssertArguments(namedArguments, actual.NamedParameters);
             }
         }
 
@@ -152,11 +239,11 @@ namespace CodeMap.Tests
                 AssertAssemblyReference(pair.ExpectedAssemblyReference, pair.ActualAssemblyReference);
         }
 
-        private static void _AssertType(Type expected, InstanceTypeDocumentationElement actual)
+        private static void _AssertType(Type expected, InstanceTypeDocumentationElement actual, IReadOnlyDictionary<Type, TypeReferenceDocumentationElement> visited)
         {
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.Namespace, actual.Namespace);
-            AssertTypeReferences(expected.GetGenericArguments(), actual.GenericArguments);
+            AssertTypeReferences(expected.GetGenericArguments(), actual.GenericArguments, visited);
             AssertTypeReference(expected.DeclaringType, actual.DeclaringType);
             AssertAssemblyReference(expected.Assembly.GetName(), actual.Assembly);
         }

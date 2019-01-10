@@ -8,7 +8,8 @@ using System.Reflection;
 namespace CodeMap.Tests
 {
     /// <summary>TestEnum summary.</summary>
-    internal enum TestEnum
+    [Test("test 1", Value2 = "test 2", Value3 = "test 3")]
+    internal enum TestEnum : byte
     {
         /// <summary>Enum test member 1.</summary>
         TestMember1,
@@ -22,7 +23,18 @@ namespace CodeMap.Tests
     internal delegate void TestDelegate();
 
     /// <summary>TestDelegate summary.</summary>
-    internal delegate void TestDelegate<TParam1>();
+    internal delegate void TestDelegate<TParam>();
+
+    /// <summary>TestDelegate summary.</summary>
+    [Test("test 1", Value2 = "test 2", Value3 = "test 3")]
+    [return: Test("return test 1", Value2 = "return test 2", Value3 = "return test 3")]
+    internal delegate void TestDelegate<out TParam1, in TParam2, TParam3>(
+        [Test("param test 1", Value2 = "param test 2", Value3 = "param test 3")]int param1,
+        TParam2 param2,
+        string param3 = "test"
+    )
+        where TParam1 : class, TParam2, IComparable<TParam1>, new()
+        where TParam3 : struct;
 
     /// <summary>ITestInterface summary.</summary>
     internal interface ITestInterface
@@ -1328,12 +1340,16 @@ namespace CodeMap.Tests
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     internal class TestAttribute : Attribute
     {
-        internal TestAttribute(object value)
+        public TestAttribute(object value1)
         {
-            Value = value;
+            Value1 = value1;
         }
 
-        internal object Value { get; }
+        public object Value1 { get; }
+
+        public object Value2 { get; set; }
+
+        public object Value3;
     }
 
     [Test("string")]
