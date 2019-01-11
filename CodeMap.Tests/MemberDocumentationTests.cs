@@ -24,7 +24,7 @@ namespace CodeMap.Tests
             Assert.Empty(memberDocumentation.Exceptions);
             Assert.Empty(memberDocumentation.GenericParameters);
             Assert.Empty(memberDocumentation.Parameters);
-            Assert.Empty(memberDocumentation.RelatedMembersList);
+            Assert.Empty(memberDocumentation.RelatedMembers);
             Assert.Empty(memberDocumentation.Returns);
         }
 

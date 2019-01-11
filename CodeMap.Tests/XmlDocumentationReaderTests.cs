@@ -1638,7 +1638,7 @@ fourth line
                     DocumentationElement.MemberReference("member2"),
                     DocumentationElement.MemberReference("member2")
                 ),
-                result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").RelatedMembersList
+                result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").RelatedMembers
             );
         }
 
@@ -1668,7 +1668,7 @@ fourth line
             Assert.Null(emptyMemberDocumentation.Remarks);
             Assert.Empty(emptyMemberDocumentation.Examples);
             Assert.Null(emptyMemberDocumentation.Value);
-            Assert.Empty(emptyMemberDocumentation.RelatedMembersList);
+            Assert.Empty(emptyMemberDocumentation.RelatedMembers);
         }
 
         [Fact]

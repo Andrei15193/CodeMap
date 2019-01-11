@@ -18,7 +18,7 @@ namespace CodeMap
         /// <param name="remarks">The remarks section.</param>
         /// <param name="examples">The examples sections.</param>
         /// <param name="value">The value section.</param>
-        /// <param name="relatedMembersList">The related members list.</param>
+        /// <param name="relatedMembers">The related members.</param>
         public MemberDocumentation(
             string canonicalName,
             SummaryDocumentationElement summary,
@@ -29,7 +29,7 @@ namespace CodeMap
             RemarksDocumentationElement remarks,
             IEnumerable<ExampleDocumentationElement> examples,
             ValueDocumentationElement value,
-            RelatedMembersList relatedMembersList)
+            RelatedMembersList relatedMembers)
         {
             CanonicalName = canonicalName ?? throw new ArgumentNullException(nameof(canonicalName));
             Summary = summary;
@@ -40,7 +40,7 @@ namespace CodeMap
             Remarks = remarks;
             Examples = examples.AsReadOnlyListOrEmpty();
             Value = value;
-            RelatedMembersList = relatedMembersList ?? new RelatedMembersList(Enumerable.Empty<MemberReferenceDocumentationElement>());
+            RelatedMembers = relatedMembers ?? new RelatedMembersList(Enumerable.Empty<MemberReferenceDocumentationElement>());
         }
 
         /// <summary>The canonical name of the documented member.</summary>
@@ -71,6 +71,6 @@ namespace CodeMap
         public ValueDocumentationElement Value { get; }
 
         /// <summary>The related members list.</summary>
-        public RelatedMembersList RelatedMembersList { get; }
+        public RelatedMembersList RelatedMembers { get; }
     }
 }

@@ -67,7 +67,7 @@ namespace CodeMap
                 Summary = memberDocumentation?.Summary,
                 Remarks = memberDocumentation?.Remarks,
                 Examples = memberDocumentation?.Examples,
-                RelatedMembers = memberDocumentation?.RelatedMembersList
+                RelatedMembers = memberDocumentation?.RelatedMembers
             };
             enumDocumentationElement.Members = enumType
                 .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField)
@@ -96,7 +96,7 @@ namespace CodeMap
                 Summary = memberDocumentation?.Summary,
                 Remarks = memberDocumentation?.Remarks,
                 Examples = memberDocumentation?.Examples,
-                RelatedMembers = memberDocumentation?.RelatedMembersList
+                RelatedMembers = memberDocumentation?.RelatedMembers
             };
         }
 
