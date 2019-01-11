@@ -12,6 +12,7 @@ namespace CodeMap.Tests
     internal enum TestEnum : byte
     {
         /// <summary>Enum test member 1.</summary>
+        [Test("member test 1", Value2 = "member test 2", Value3 = "member test 3")]
         TestMember1,
         /// <summary>Enum test member 2.</summary>
         TestMember2,

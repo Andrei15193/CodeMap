@@ -13,8 +13,8 @@ namespace CodeMap
     /// </summary>
     public class ReflectionDocumentationElementFactory
     {
-        private readonly DynamicTypeReference _dynamicTypeReference = new DynamicTypeReference();
-        private readonly DocumentationElementCache _referencesCache = new DocumentationElementCache();
+        private readonly DynamicTypeReference _dynamicTypeReference;
+        private readonly DocumentationElementCache _referencesCache;
         private readonly MemberDocumentationCollection _membersDocumentation;
 
         /// <summary>Initializes a new instance of the <see cref="ReflectionDocumentationElementFactory"/> class.</summary>
@@ -27,6 +27,7 @@ namespace CodeMap
         /// <param name="membersDocumentation">A collection of <see cref="MemberDocumentation"/> to associate to created <see cref="DocumentationElement"/>s.</param>
         public ReflectionDocumentationElementFactory(MemberDocumentationCollection membersDocumentation)
         {
+            _dynamicTypeReference = new DynamicTypeReference();
             _referencesCache = new DocumentationElementCache();
             _membersDocumentation = membersDocumentation
                 ?? throw new ArgumentNullException(nameof(membersDocumentation));
@@ -56,32 +57,47 @@ namespace CodeMap
 
         private EnumDocumentationElement _CreateEnum(Type enumType)
         {
+            _membersDocumentation.TryFind(enumType, out var memberDocumentation);
             var enumDocumentationElement = new EnumDocumentationElement
             {
                 Name = enumType.Name,
                 AccessModifier = _GetAccessModifierFrom(enumType),
                 UnderlyingType = _GetTypeReference(enumType.GetEnumUnderlyingType()),
                 Attributes = _MapAttributesDataFrom(enumType.CustomAttributes),
+                Summary = memberDocumentation?.Summary,
+                Remarks = memberDocumentation?.Remarks,
+                Examples = memberDocumentation?.Examples,
+                RelatedMembers = memberDocumentation?.RelatedMembersList
             };
             enumDocumentationElement.Members = enumType
                 .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField)
                 .Select(
-                    field => new ConstantDocumentationElement
-                    {
-                        Name = field.Name,
-                        AccessModifier = _GetAccessModifierFrom(field),
-                        Value = field.GetValue(null),
-                        Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() != null
-                            ? _dynamicTypeReference
-                            : _GetTypeReference(field.FieldType),
-                        Attributes = _MapAttributesDataFrom(field.CustomAttributes),
-                        DeclaringType = enumDocumentationElement
-                    }
+                    field => _CreateConstant(field, enumDocumentationElement)
                 )
                 .OrderBy(constant => constant.Value)
                 .AsReadOnlyList();
 
             return enumDocumentationElement;
+        }
+
+        private ConstantDocumentationElement _CreateConstant(FieldInfo field, TypeDocumentationElement declaringType)
+        {
+            _membersDocumentation.TryFind(field, out var memberDocumentation);
+            return new ConstantDocumentationElement
+            {
+                Name = field.Name,
+                AccessModifier = _GetAccessModifierFrom(field),
+                Value = field.GetValue(null),
+                Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() != null
+                                        ? _dynamicTypeReference
+                                        : _GetTypeReference(field.FieldType),
+                Attributes = _MapAttributesDataFrom(field.CustomAttributes),
+                DeclaringType = declaringType,
+                Summary = memberDocumentation?.Summary,
+                Remarks = memberDocumentation?.Remarks,
+                Examples = memberDocumentation?.Examples,
+                RelatedMembers = memberDocumentation?.RelatedMembersList
+            };
         }
 
         private DelegateDocumentationElement _CreateDelegate(Type delegateType)
