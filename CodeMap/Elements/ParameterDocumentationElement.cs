@@ -21,8 +21,14 @@ namespace CodeMap.Elements
         /// <summary>The parameter attributes.</summary>
         public IReadOnlyCollection<AttributeData> Attributes { get; internal set; }
 
-        /// <summary>The parameter description.</summary>
-        public IReadOnlyList<BlockDocumentationElement> Description { get; internal set; }
+        /// <summary>Indicates whether the parameter passed by reference and is input only (decorated with <c>in</c> in C#).</summary>
+        public bool IsInputByReference { get; internal set; }
+
+        /// <summary>Indicates whether the parameter passed by reference and is input and output (decorated with <c>ref</c> in C#).</summary>
+        public bool IsInputOutputByReference { get; internal set; }
+
+        /// <summary>Indicates whether the parameter passed by reference and is output only (decorated with <c>out</c> in C#).</summary>
+        public bool IsOutputByReference { get; internal set; }
 
         /// <summary>Indicates whether the parameter has a default value.</summary>
         public bool HasDefaultValue { get; internal set; }
@@ -33,6 +39,9 @@ namespace CodeMap.Elements
         /// and therefore cannot be used to determine whether there is a default value.
         /// </remarks>
         public object DefaultValue { get; internal set; }
+
+        /// <summary>The parameter description.</summary>
+        public IReadOnlyList<BlockDocumentationElement> Description { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>

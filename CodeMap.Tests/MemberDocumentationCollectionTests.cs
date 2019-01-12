@@ -9,12 +9,11 @@ namespace CodeMap.Tests
         [Fact]
         public void TryFindBestMatchMemberDocumentation()
         {
-            var memberInfo = typeof(string);
             var canonicalName = "T:System.String";
             var memberDocumentation = new MemberDocumentation(canonicalName, null, null, null, null, null, null, null, null, null);
             var collection = new MemberDocumentationCollection(new[] { memberDocumentation });
 
-            Assert.True(collection.TryFind(memberInfo, out var actualMemberDocumentation));
+            Assert.True(collection.TryFind(canonicalName, out var actualMemberDocumentation));
 
             Assert.Same(memberDocumentation, actualMemberDocumentation);
         }
@@ -22,12 +21,11 @@ namespace CodeMap.Tests
         [Fact]
         public void TryFindMemberDocumentationWhenBestMatchDoesNotExist()
         {
-            var memberInfo = typeof(string);
             var canonicalName = "T:System.String".ToLowerInvariant();
             var memberDocumentation = new MemberDocumentation(canonicalName.ToUpperInvariant(), null, null, null, null, null, null, null, null, null);
             var collection = new MemberDocumentationCollection(new[] { memberDocumentation });
 
-            Assert.True(collection.TryFind(memberInfo, out var actualMemberDocumentation));
+            Assert.True(collection.TryFind(canonicalName, out var actualMemberDocumentation));
 
             Assert.Same(memberDocumentation, actualMemberDocumentation);
         }
@@ -37,7 +35,7 @@ namespace CodeMap.Tests
         {
             var collection = new MemberDocumentationCollection(Enumerable.Empty<MemberDocumentation>());
 
-            Assert.False(collection.TryFind(typeof(string), out var actualMemberDocumentation));
+            Assert.False(collection.TryFind("T:System.String", out var actualMemberDocumentation));
 
             Assert.Null(actualMemberDocumentation);
         }

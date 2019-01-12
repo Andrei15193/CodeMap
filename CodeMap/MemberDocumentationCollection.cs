@@ -15,7 +15,6 @@ namespace CodeMap
     /// </remarks>
     public class MemberDocumentationCollection : IReadOnlyCollection<MemberDocumentation>
     {
-        private readonly CanonicalNameResolver _canonicalNameResolver = new CanonicalNameResolver();
         private readonly ILookup<string, MemberDocumentation> _membersDocumentation;
 
         /// <summary>Initializes a new instance of the <see cref="MemberDocumentationCollection"/> class.</summary>
@@ -35,14 +34,13 @@ namespace CodeMap
                 ?? throw new ArgumentNullException(nameof(membersDocumentation));
         }
 
-        /// <summary>Attempts to find a <see cref="MemberDocumentation"/> for the provided <paramref name="memberInfo"/>.</summary>
-        /// <param name="memberInfo">The <see cref="MemberInfo"/> to search the related documentation for.</param>
+        /// <summary>Attempts to find a <see cref="MemberDocumentation"/> for the provided <paramref name="canonicalName"/>.</summary>
+        /// <param name="canonicalName">The canonical name to search the related documentation for.</param>
         /// <param name="result">The related <see cref="MemberDocumentation"/> when found; <c>null</c> otherwise.</param>
         /// <returns>Returns <c>true</c> if a match was found; <c>false</c> otherwise.</returns>
-        public bool TryFind(MemberInfo memberInfo, out MemberDocumentation result)
+        public bool TryFind(string canonicalName, out MemberDocumentation result)
         {
             result = null;
-            var canonicalName = _canonicalNameResolver.GetCanonicalNameFrom(memberInfo);
             if (!_membersDocumentation.Contains(canonicalName))
                 return false;
 

@@ -1660,14 +1660,14 @@ fourth line
 
             Assert.Equal(1, result.Count);
             var emptyMemberDocumentation = result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name");
-            Assert.Null(emptyMemberDocumentation.Summary);
+            Assert.Empty(emptyMemberDocumentation.Summary.Content);
             Assert.Empty(emptyMemberDocumentation.GenericParameters);
             Assert.Empty(emptyMemberDocumentation.Parameters);
             Assert.Empty(emptyMemberDocumentation.Returns);
             Assert.Empty(emptyMemberDocumentation.Exceptions);
-            Assert.Null(emptyMemberDocumentation.Remarks);
+            Assert.Empty(emptyMemberDocumentation.Remarks.Content);
             Assert.Empty(emptyMemberDocumentation.Examples);
-            Assert.Null(emptyMemberDocumentation.Value);
+            Assert.Empty(emptyMemberDocumentation.Value.Content);
             Assert.Empty(emptyMemberDocumentation.RelatedMembers);
         }
 

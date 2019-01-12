@@ -13,8 +13,17 @@ namespace CodeMap
     /// </summary>
     public class ReflectionDocumentationElementFactory
     {
-        private readonly DynamicTypeReference _dynamicTypeReference;
-        private readonly DocumentationElementCache _referencesCache;
+        private readonly DynamicTypeReference _dynamicTypeReference = new DynamicTypeReference();
+        private readonly DocumentationElementCache _referencesCache = new DocumentationElementCache();
+        private readonly CanonicalNameResolver _canonicalNameResolver = new CanonicalNameResolver();
+        private readonly IReadOnlyCollection<Assembly> _searchAssemblies =
+            new[] { typeof(ReflectionDocumentationElementFactory).Assembly }
+                .Concat(typeof(ReflectionDocumentationElementFactory)
+                    .Assembly
+                    .GetReferencedAssemblies()
+                    .Select(Assembly.Load))
+                .ToList();
+        private readonly MemberDocumentation _emptyMemberDocumentation = new MemberDocumentation(string.Empty, null, null, null, null, null, null, null, null, null);
         private readonly MemberDocumentationCollection _membersDocumentation;
 
         /// <summary>Initializes a new instance of the <see cref="ReflectionDocumentationElementFactory"/> class.</summary>
@@ -27,8 +36,6 @@ namespace CodeMap
         /// <param name="membersDocumentation">A collection of <see cref="MemberDocumentation"/> to associate to created <see cref="DocumentationElement"/>s.</param>
         public ReflectionDocumentationElementFactory(MemberDocumentationCollection membersDocumentation)
         {
-            _dynamicTypeReference = new DynamicTypeReference();
-            _referencesCache = new DocumentationElementCache();
             _membersDocumentation = membersDocumentation
                 ?? throw new ArgumentNullException(nameof(membersDocumentation));
         }
@@ -57,17 +64,17 @@ namespace CodeMap
 
         private EnumDocumentationElement _CreateEnum(Type enumType)
         {
-            _membersDocumentation.TryFind(enumType, out var memberDocumentation);
+            var memberDocumentation = _GetMemberDocumentationFor(enumType);
             var enumDocumentationElement = new EnumDocumentationElement
             {
-                Name = enumType.Name,
+                Name = _GetTypeNameFor(enumType),
                 AccessModifier = _GetAccessModifierFrom(enumType),
                 UnderlyingType = _GetTypeReference(enumType.GetEnumUnderlyingType()),
                 Attributes = _MapAttributesDataFrom(enumType.CustomAttributes),
-                Summary = memberDocumentation?.Summary,
-                Remarks = memberDocumentation?.Remarks,
-                Examples = memberDocumentation?.Examples,
-                RelatedMembers = memberDocumentation?.RelatedMembers
+                Summary = memberDocumentation.Summary,
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
             };
             enumDocumentationElement.Members = enumType
                 .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField)
@@ -80,32 +87,13 @@ namespace CodeMap
             return enumDocumentationElement;
         }
 
-        private ConstantDocumentationElement _CreateConstant(FieldInfo field, TypeDocumentationElement declaringType)
-        {
-            _membersDocumentation.TryFind(field, out var memberDocumentation);
-            return new ConstantDocumentationElement
-            {
-                Name = field.Name,
-                AccessModifier = _GetAccessModifierFrom(field),
-                Value = field.GetValue(null),
-                Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() != null
-                                        ? _dynamicTypeReference
-                                        : _GetTypeReference(field.FieldType),
-                Attributes = _MapAttributesDataFrom(field.CustomAttributes),
-                DeclaringType = declaringType,
-                Summary = memberDocumentation?.Summary,
-                Remarks = memberDocumentation?.Remarks,
-                Examples = memberDocumentation?.Examples,
-                RelatedMembers = memberDocumentation?.RelatedMembers
-            };
-        }
-
         private DelegateDocumentationElement _CreateDelegate(Type delegateType)
         {
+            var memberDocumentation = _GetMemberDocumentationFor(delegateType);
             var invokeMethodInfo = delegateType.GetMethod(nameof(Action.Invoke), BindingFlags.Public | BindingFlags.Instance);
             return new DelegateDocumentationElement
             {
-                Name = delegateType.Name,
+                Name = _GetTypeNameFor(delegateType),
                 AccessModifier = _GetAccessModifierFrom(delegateType),
                 Attributes = _MapAttributesDataFrom(delegateType.CustomAttributes),
                 GenericParameters = delegateType
@@ -115,15 +103,21 @@ namespace CodeMap
                     .AsReadOnlyList(),
                 Parameters = invokeMethodInfo
                     .GetParameters()
-                    .Select(parameter => _CreateParameter(parameter))
+                    .Select(parameter => _CreateParameter(parameter, memberDocumentation))
                     .AsReadOnlyList(),
                 Return = new ReturnsDocumentationElement
                 {
                     Type = invokeMethodInfo.ReturnType == typeof(object) && invokeMethodInfo.ReturnParameter.GetCustomAttribute<DynamicAttribute>() != null
                         ? _dynamicTypeReference
                         : _GetTypeReference(invokeMethodInfo.ReturnType),
+                    Description = memberDocumentation.Returns,
                     Attributes = _MapAttributesDataFrom(invokeMethodInfo.ReturnParameter.CustomAttributes)
-                }
+                },
+                Summary = memberDocumentation.Summary,
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
+                RelatedMembers = memberDocumentation.RelatedMembers
             };
         }
 
@@ -140,6 +134,38 @@ namespace CodeMap
         private TypeDocumentationElement _CreateStruct(Type type)
         {
             throw new NotImplementedException();
+        }
+
+        private ConstantDocumentationElement _CreateConstant(FieldInfo field, TypeDocumentationElement declaringType)
+        {
+            var memberDocumentation = _GetMemberDocumentationFor(field);
+            return new ConstantDocumentationElement
+            {
+                Name = field.Name,
+                AccessModifier = _GetAccessModifierFrom(field),
+                Value = field.GetValue(null),
+                Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() != null
+                    ? _dynamicTypeReference
+                    : _GetTypeReference(field.FieldType),
+                Attributes = _MapAttributesDataFrom(field.CustomAttributes),
+                DeclaringType = declaringType,
+                Summary = memberDocumentation.Summary,
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
+            };
+        }
+
+        private string _GetTypeNameFor(Type type)
+        {
+            var name = type.Name;
+            var backtickIndex = name.IndexOf('`');
+            if (backtickIndex >= 0)
+                return name.Substring(0, backtickIndex);
+            else if (type.IsByRef)
+                return type.Name.Substring(0, type.Name.Length - 1);
+            else
+                return name;
         }
 
         private AccessModifier _GetAccessModifierFrom(Type type)
@@ -198,17 +224,35 @@ namespace CodeMap
             {
                 case GenericParameterDocumentationElement genericParameter:
                     var genericParameterAttributes = type.GenericParameterAttributes;
-                    genericParameter.Name = type.Name;
-                    genericParameter.IsCovariant = (genericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant;
-                    genericParameter.IsContravariant = (genericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant;
-                    genericParameter.HasNonNullableValueTypeConstraint = (genericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) == GenericParameterAttributes.NotNullableValueTypeConstraint;
-                    genericParameter.HasReferenceTypeConstraint = (genericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) == GenericParameterAttributes.ReferenceTypeConstraint;
-                    genericParameter.HasDefaultConstructorConstraint = (genericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) == GenericParameterAttributes.DefaultConstructorConstraint;
-                    genericParameter.TypeConstraints = type.GetGenericParameterConstraints().Select(_GetTypeReference).ToList();
+                    genericParameter.Name = _GetTypeNameFor(type);
+                    genericParameter.IsCovariant =
+                        (genericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant;
+                    genericParameter.IsContravariant =
+                        (genericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant;
+                    genericParameter.HasNonNullableValueTypeConstraint =
+                        (genericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) == GenericParameterAttributes.NotNullableValueTypeConstraint;
+                    genericParameter.HasReferenceTypeConstraint =
+                        (genericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) == GenericParameterAttributes.ReferenceTypeConstraint;
+                    genericParameter.HasDefaultConstructorConstraint =
+                        (genericParameterAttributes & (GenericParameterAttributes.DefaultConstructorConstraint | GenericParameterAttributes.NotNullableValueTypeConstraint)) == GenericParameterAttributes.DefaultConstructorConstraint;
+                    genericParameter.TypeConstraints =
+                        type
+                            .GetGenericParameterConstraints()
+                            .Where(genericParameterTypeConstraint => genericParameterTypeConstraint != typeof(ValueType))
+                            .Select(_GetTypeReference)
+                            .ToList();
+
+                    var memberDocumentation = _GetMemberDocumentationFor(type.DeclaringType);
+                    genericParameter.Description = (
+                            memberDocumentation.GenericParameters.Contains(genericParameter.Name)
+                            ? memberDocumentation.GenericParameters[genericParameter.Name]
+                            : Enumerable.Empty<BlockDocumentationElement>()
+                        )
+                        .AsReadOnlyList();
                     break;
 
                 case InstanceTypeDocumentationElement instanceType:
-                    instanceType.Name = type.Name;
+                    instanceType.Name = _GetTypeNameFor(type);
                     instanceType.Namespace = type.Namespace;
                     instanceType.GenericArguments = type
                         .GetGenericArguments()
@@ -219,7 +263,7 @@ namespace CodeMap
             }
         }
 
-        private ParameterDocumentationElement _CreateParameter(ParameterInfo parameter)
+        private ParameterDocumentationElement _CreateParameter(ParameterInfo parameter, MemberDocumentation memberDocumentation)
             => new ParameterDocumentationElement
             {
                 Name = parameter.Name,
@@ -227,8 +271,17 @@ namespace CodeMap
                     ? _dynamicTypeReference
                     : _GetTypeReference(parameter.ParameterType),
                 Attributes = _MapAttributesDataFrom(parameter.CustomAttributes),
+                IsInputByReference = parameter.ParameterType.IsByRef && parameter.IsIn,
+                IsInputOutputByReference = parameter.ParameterType.IsByRef && !parameter.IsIn && !parameter.IsOut,
+                IsOutputByReference = parameter.ParameterType.IsByRef && parameter.IsOut,
                 HasDefaultValue = parameter.HasDefaultValue,
-                DefaultValue = parameter.HasDefaultValue ? parameter.RawDefaultValue : null
+                DefaultValue = parameter.HasDefaultValue ? parameter.RawDefaultValue : null,
+                Description = (
+                        memberDocumentation.Parameters.Contains(parameter.Name)
+                        ? memberDocumentation.Parameters[parameter.Name]
+                        : Enumerable.Empty<BlockDocumentationElement>()
+                    )
+                    .AsReadOnlyList()
             };
 
         private AssemblyReferenceDocumentationElement _CreateAssemblyReference(AssemblyName assemblyName)
@@ -312,5 +365,20 @@ namespace CodeMap
 
             return value;
         }
+
+        private IReadOnlyCollection<ExceptionDocumentationElement> _MapExceptions(ILookup<string, BlockDocumentationElement> exceptions)
+            => (
+                from exception in exceptions
+                let exceptionType = _canonicalNameResolver.TryFindMemberInfoFor(exception.Key, _searchAssemblies) as Type
+                where exceptionType != null && typeof(Exception).IsAssignableFrom(exceptionType)
+                select new ExceptionDocumentationElement
+                {
+                    Type = _GetTypeReference(exceptionType),
+                    Description = exception.AsReadOnlyList()
+                }
+        ).ToList();
+
+        private MemberDocumentation _GetMemberDocumentationFor(MemberInfo memberInfo)
+            => _membersDocumentation.TryFind(_canonicalNameResolver.GetCanonicalNameFrom(memberInfo), out var memberDocumentation) ? memberDocumentation : _emptyMemberDocumentation;
     }
 }

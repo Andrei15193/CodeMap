@@ -32,7 +32,9 @@ namespace CodeMap.Tests
     internal delegate void TestDelegate<out TParam1, in TParam2, TParam3>(
         [Test("param test 1", Value2 = "param test 2", Value3 = "param test 3")]int param1,
         TParam2 param2,
-        string param3 = "test"
+        ref char param3,
+        out decimal param4,
+        string param5 = "test"
     )
         where TParam1 : class, TParam2, IComparable<TParam1>, new()
         where TParam3 : struct;

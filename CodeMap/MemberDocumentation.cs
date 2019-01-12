@@ -32,14 +32,14 @@ namespace CodeMap
             RelatedMembersList relatedMembers)
         {
             CanonicalName = canonicalName ?? throw new ArgumentNullException(nameof(canonicalName));
-            Summary = summary;
+            Summary = summary ?? DocumentationElement.Summary(Enumerable.Empty<BlockDocumentationElement>());
             GenericParameters = genericParameters.OrEmpty();
             Parameters = parameters.OrEmpty();
             Returns = returns.AsReadOnlyListOrEmpty();
             Exceptions = exceptions.OrEmpty();
-            Remarks = remarks;
+            Remarks = remarks ?? DocumentationElement.Remarks(Enumerable.Empty<BlockDocumentationElement>());
             Examples = examples.AsReadOnlyListOrEmpty();
-            Value = value;
+            Value = value ?? DocumentationElement.Value(Enumerable.Empty<BlockDocumentationElement>());
             RelatedMembers = relatedMembers ?? new RelatedMembersList(Enumerable.Empty<MemberReferenceDocumentationElement>());
         }
 
