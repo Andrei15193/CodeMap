@@ -158,14 +158,8 @@ namespace CodeMap
 
         private string _GetTypeNameFor(Type type)
         {
-            var name = type.Name;
-            var backtickIndex = name.IndexOf('`');
-            if (backtickIndex >= 0)
-                return name.Substring(0, backtickIndex);
-            else if (type.IsByRef)
-                return type.Name.Substring(0, type.Name.Length - 1);
-            else
-                return name;
+            var backtickIndex = type.Name.IndexOf('`');
+            return backtickIndex >= 0 ? type.Name.Substring(0, backtickIndex) : type.Name;
         }
 
         private AccessModifier _GetAccessModifierFrom(Type type)
@@ -206,7 +200,12 @@ namespace CodeMap
         }
 
         private TypeReferenceDocumentationElement _GetTypeReference(Type type)
-            => _referencesCache.GetFor(type, _CreateTypeReference, _InitializeTypeReference);
+        {
+            var typeToReference = type;
+            while (typeToReference.IsByRef)
+                typeToReference = typeToReference.GetElementType();
+            return _referencesCache.GetFor(typeToReference, _CreateTypeReference, _InitializeTypeReference);
+        }
 
         private TypeReferenceDocumentationElement _CreateTypeReference(Type type)
         {

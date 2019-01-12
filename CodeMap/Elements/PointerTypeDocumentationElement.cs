@@ -1,36 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents a reference to a concrete type.</summary>
-    public class InstanceTypeDocumentationElement : TypeReferenceDocumentationElement
+    /// <summary>Represents a reference to an array type.</summary>
+    public class PointerTypeDocumentationElement : TypeReferenceDocumentationElement
     {
-        internal InstanceTypeDocumentationElement()
+        internal PointerTypeDocumentationElement()
         {
         }
 
-        /// <summary>The type name.</summary>
-        public string Name { get; internal set; }
-
-        /// <summary>The type namespace.</summary>
-        public string Namespace { get; internal set; }
-
-        /// <summary>The type generic arguments.</summary>
-        public IReadOnlyList<TypeReferenceDocumentationElement> GenericArguments { get; internal set; }
-
-        /// <summary>The declaring type, if any.</summary>
-        public InstanceTypeDocumentationElement DeclaringType { get; internal set; }
-
-        /// <summary>The declaring assembly.</summary>
-        public AssemblyReferenceDocumentationElement Assembly { get; internal set; }
+        /// <summary>The instance type of the pointer.</summary>
+        public TypeReferenceDocumentationElement PointedType { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
@@ -39,7 +27,7 @@ namespace CodeMap.Elements
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         public override Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }
