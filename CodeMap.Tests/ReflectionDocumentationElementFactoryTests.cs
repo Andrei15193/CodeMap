@@ -661,6 +661,32 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public void CreateInterfaceDocumentationElementCheckBasicInformation()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Assembly)
+                .AssertNull(() => typeDocumentationElement.DeclaringType)
+                .AssertEmpty(() => typeDocumentationElement.Summary.Content)
+                .AssertEmpty(() => typeDocumentationElement.Remarks.Content)
+                .AssertEmpty(() => typeDocumentationElement.Examples)
+                .AssertEmpty(() => typeDocumentationElement.RelatedMembers)
+                .AssertIs<InterfaceDocumentationElement>(
+                    interfaceDocumentationElement =>
+                        interfaceDocumentationElement.AssertCollectionMember(
+                            () => interfaceDocumentationElement.BaseInterfaces,
+                            baseInterface => baseInterface
+                                .AssertTypeReference("CodeMap.Tests", "ITestExtendedInterface")
+                                .AssertTypeReferenceAssembly("CodeMap.Tests", new Version(1, 2, 3, 4))
+                        )
+                );
+        }
+
+        [Fact]
         public void ConstructorWithNullMembersDocumentationCollectionThrowsException()
         {
             var exception = Assert.Throws<ArgumentNullException>(() => new ReflectionDocumentationElementFactory(null));

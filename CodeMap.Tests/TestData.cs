@@ -64,6 +64,19 @@ namespace CodeMap.Tests
         object TestMethod(int param1, string param2);
     }
 
+    internal interface ITestBaseInterface
+    {
+    }
+
+    internal interface ITestExtendedInterface : ITestBaseInterface
+    {
+    }
+
+    /// <summary>ITestInterface summary.</summary>
+    internal interface ITestInterface<in TParam1, out TParam2, TParam3> : ITestExtendedInterface
+    {
+    }
+
     /// <summary>TestClass summary.</summary>
     internal class TestClass
     {

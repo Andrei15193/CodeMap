@@ -121,9 +121,32 @@ namespace CodeMap
             };
         }
 
-        private TypeDocumentationElement _CreateInterface(Type type)
+        private TypeDocumentationElement _CreateInterface(Type interfaceType)
         {
-            throw new NotImplementedException();
+            var memberDocumentation = _GetMemberDocumentationFor(interfaceType);
+            return new InterfaceDocumentationElement
+            {
+                Name = _GetTypeNameFor(interfaceType),
+                AccessModifier = _GetAccessModifierFrom(interfaceType),
+                Attributes = _MapAttributesDataFrom(interfaceType.CustomAttributes),
+                GenericParameters = interfaceType
+                    .GetGenericArguments()
+                    .Select(_GetTypeReference)
+                    .Cast<GenericParameterDocumentationElement>()
+                    .AsReadOnlyList(),
+                BaseInterfaces = interfaceType
+                    .GetInterfaces()
+                    .Except(interfaceType
+                        .GetInterfaces()
+                        .SelectMany(baseInterface => baseInterface.GetInterfaces())
+                    )
+                    .Select(_GetTypeReference)
+                    .AsReadOnlyCollection(),
+                Summary = memberDocumentation.Summary,
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
+            };
         }
 
         private TypeDocumentationElement _CreateClass(Type type)
