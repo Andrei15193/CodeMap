@@ -64,16 +64,20 @@ namespace CodeMap.Tests
         object TestMethod(int param1, string param2);
     }
 
+    /// <summary>ITestBaseInterface summary.</summary>
     internal interface ITestBaseInterface
     {
     }
 
+    /// <summary>ITestExtendedInterface summary.</summary>
     internal interface ITestExtendedInterface : ITestBaseInterface
     {
     }
 
     /// <summary>ITestInterface summary.</summary>
-    internal interface ITestInterface<in TParam1, out TParam2, TParam3> : ITestExtendedInterface
+    internal interface ITestInterface<out TParam1, in TParam2, TParam3> : ITestExtendedInterface
+        where TParam1 : class, TParam2, IComparable<TParam1>, new()
+        where TParam3 : struct
     {
     }
 

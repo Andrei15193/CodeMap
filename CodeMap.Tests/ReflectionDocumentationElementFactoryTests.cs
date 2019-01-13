@@ -687,6 +687,85 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public void CreateInterfaceDocumentationElementCheckDocumentation()
+        {
+            var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.ITestInterface`3");
+            var factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
+
+            var typeDocumentationElement = factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertSame(() => typeDocumentationElement.Summary, memberDocumentation.Summary)
+                .AssertSame(() => typeDocumentationElement.Remarks, memberDocumentation.Remarks)
+                .AssertSame(() => typeDocumentationElement.Examples, memberDocumentation.Examples)
+                .AssertSame(() => typeDocumentationElement.RelatedMembers, memberDocumentation.RelatedMembers);
+        }
+
+        [Fact]
+        public void CreateInterfaceDocumentationElementCheckGenericParameters()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Assembly)
+                .AssertNull(() => typeDocumentationElement.DeclaringType)
+                .AssertEmpty(() => typeDocumentationElement.Summary.Content)
+                .AssertEmpty(() => typeDocumentationElement.Remarks.Content)
+                .AssertEmpty(() => typeDocumentationElement.Examples)
+                .AssertEmpty(() => typeDocumentationElement.RelatedMembers)
+                .AssertIs<InterfaceDocumentationElement>(
+                    interfaceDocumentationElement =>
+                        interfaceDocumentationElement.AssertCollectionMember(
+                            () => interfaceDocumentationElement.GenericParameters,
+                            genericParameter =>
+                                genericParameter
+                                    .AssertEqual(() => genericParameter.Name, "TParam1")
+                                    .AssertTrue(() => genericParameter.IsCovariant)
+                                    .AssertFalse(() => genericParameter.IsContravariant)
+                                    .AssertTrue(() => genericParameter.HasReferenceTypeConstraint)
+                                    .AssertFalse(() => genericParameter.HasNonNullableValueTypeConstraint)
+                                    .AssertTrue(() => genericParameter.HasDefaultConstructorConstraint)
+                                    .AssertCollectionMember(
+                                        () => genericParameter.TypeConstraints,
+                                        typeConstraint => typeConstraint
+                                            .AssertSame(interfaceDocumentationElement.GenericParameters.ElementAt(1)),
+                                        typeConstraint => typeConstraint
+                                            .AssertTypeReference("System", "IComparable")
+                                            .AssertGenericArguments(
+                                                genericArgument => genericArgument.AssertSame(interfaceDocumentationElement.GenericParameters.ElementAt(0))
+                                            )
+                                            .AssertTypeReferenceAssembly("System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                    )
+                                    .AssertEmpty(() => genericParameter.Description),
+                            genericParameter =>
+                                genericParameter
+                                    .AssertEqual(() => genericParameter.Name, "TParam2")
+                                    .AssertFalse(() => genericParameter.IsCovariant)
+                                    .AssertTrue(() => genericParameter.IsContravariant)
+                                    .AssertFalse(() => genericParameter.HasReferenceTypeConstraint)
+                                    .AssertFalse(() => genericParameter.HasNonNullableValueTypeConstraint)
+                                    .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
+                                    .AssertEmpty(() => genericParameter.TypeConstraints)
+                                    .AssertEmpty(() => genericParameter.Description),
+                            genericParameter =>
+                                genericParameter
+                                    .AssertEqual(() => genericParameter.Name, "TParam3")
+                                    .AssertFalse(() => genericParameter.IsCovariant)
+                                    .AssertFalse(() => genericParameter.IsContravariant)
+                                    .AssertFalse(() => genericParameter.HasReferenceTypeConstraint)
+                                    .AssertTrue(() => genericParameter.HasNonNullableValueTypeConstraint)
+                                    .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
+                                    .AssertEmpty(() => genericParameter.TypeConstraints)
+                                    .AssertEmpty(() => genericParameter.Description)
+                    )
+                );
+        }
+
+        [Fact]
         public void ConstructorWithNullMembersDocumentationCollectionThrowsException()
         {
             var exception = Assert.Throws<ArgumentNullException>(() => new ReflectionDocumentationElementFactory(null));
