@@ -75,6 +75,7 @@ namespace CodeMap.Tests
     }
 
     /// <summary>ITestInterface summary.</summary>
+    [Test("test 1", Value2 = "test 2", Value3 = "test 3")]
     internal interface ITestInterface<out TParam1, in TParam2, TParam3> : ITestExtendedInterface
         where TParam1 : class, TParam2, IComparable<TParam1>, new()
         where TParam3 : struct

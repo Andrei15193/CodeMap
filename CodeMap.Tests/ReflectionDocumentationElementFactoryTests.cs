@@ -687,6 +687,45 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public void CreateInterfaceDocumentationElementCheckAttributes()
+        {
+            var _factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = _factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertCollectionMember(
+                    () => typeDocumentationElement.Attributes,
+                    attribute =>
+                        attribute
+                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests", "TestAttribute")
+                            .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
+                            .AssertCollectionMember(
+                                () => attribute.PositionalParameters,
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "value1")
+                                    .AssertEqual(() => parameter.Value, "test 1")
+                                    .AssertTypeReference(() => parameter.Type, "System", "Object")
+                                    .AssertTypeReferenceAssembly(() => parameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                            )
+                            .AssertCollectionMember(
+                                () => attribute.NamedParameters.OrderBy(namedParameter => namedParameter.Name),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "Value2")
+                                    .AssertEqual(() => parameter.Value, "test 2")
+                                    .AssertTypeReference(() => parameter.Type, "System", "Object")
+                                    .AssertTypeReferenceAssembly(() => parameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0)),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "Value3")
+                                    .AssertEqual(() => parameter.Value, "test 3")
+                                    .AssertTypeReference(() => parameter.Type, "System", "Object")
+                                    .AssertTypeReferenceAssembly(() => parameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                            )
+                );
+        }
+
+        [Fact]
         public void CreateInterfaceDocumentationElementCheckDocumentation()
         {
             var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.ITestInterface`3");
