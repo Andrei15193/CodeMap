@@ -40,7 +40,7 @@ namespace CodeMap
             Remarks = remarks ?? DocumentationElement.Remarks(Enumerable.Empty<BlockDocumentationElement>());
             Examples = examples.AsReadOnlyListOrEmpty();
             Value = value ?? DocumentationElement.Value(Enumerable.Empty<BlockDocumentationElement>());
-            RelatedMembers = relatedMembers?.AsReadOnlyListOrEmpty();
+            RelatedMembers = relatedMembers.AsReadOnlyListOrEmpty();
         }
 
         /// <summary>The canonical name of the documented member.</summary>
