@@ -1633,11 +1633,12 @@ fourth line
 
             Assert.Equal(1, result.Count);
             _AssertAreEqual(
-                DocumentationElement.RelatedMembersList(
+                new[]
+                {
                     DocumentationElement.MemberReference("member1"),
                     DocumentationElement.MemberReference("member2"),
                     DocumentationElement.MemberReference("member2")
-                ),
+                },
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").RelatedMembers
             );
         }

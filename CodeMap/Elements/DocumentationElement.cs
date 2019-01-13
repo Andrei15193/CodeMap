@@ -57,18 +57,6 @@ namespace CodeMap.Elements
         public static ValueDocumentationElement Value(params BlockDocumentationElement[] content)
             => new ValueDocumentationElement(content);
 
-        /// <summary>Creates a <see cref="Elements.RelatedMembersList"/> for the provided <paramref name="relatedMembers"/>.</summary>
-        /// <param name="relatedMembers">The referenced members using the <c>seealso</c> XML element.</param>
-        /// <returns>Returns a <see cref="Elements.RelatedMembersList"/> for the provided <paramref name="relatedMembers"/>.</returns>
-        public static RelatedMembersList RelatedMembersList(IEnumerable<MemberReferenceDocumentationElement> relatedMembers)
-            => new RelatedMembersList(relatedMembers);
-
-        /// <summary>Creates a <see cref="Elements.RelatedMembersList"/> for the provided <paramref name="relatedMembers"/>.</summary>
-        /// <param name="relatedMembers">The referenced members using the <c>seealso</c> XML element.</param>
-        /// <returns>Returns a <see cref="Elements.RelatedMembersList"/> for the provided <paramref name="relatedMembers"/>.</returns>
-        public static RelatedMembersList RelatedMembersList(params MemberReferenceDocumentationElement[] relatedMembers)
-            => new RelatedMembersList(relatedMembers);
-
         /// <summary>Creates a <see cref="ParagraphDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
         /// <param name="content">The content of the <c>para</c> XML element.</param>
         /// <returns>Returns a <see cref="ParagraphDocumentationElement"/> with the provided <paramref name="content"/>.</returns>

@@ -165,13 +165,14 @@ namespace CodeMap
             return DocumentationElement.Value(_ReadBlocks(valueXmlElement));
         }
 
-        private RelatedMembersList _ReadRelatedMembers(XElement memberDocumentationXmlElement)
-            => DocumentationElement.RelatedMembersList(
+        private IReadOnlyList<MemberReferenceDocumentationElement> _ReadRelatedMembers(XElement memberDocumentationXmlElement)
+            => (
                 from relatedMemberXmlElement in memberDocumentationXmlElement.Elements("seealso")
                 let relatedMemberCrefAttribute = relatedMemberXmlElement.Attribute("cref")
                 where relatedMemberCrefAttribute != null
                 select DocumentationElement.MemberReference(relatedMemberCrefAttribute.Value)
-            );
+            )
+            .ToList();
 
         private IReadOnlyList<BlockDocumentationElement> _ReadBlocks(XElement sectionXmlElement)
         {

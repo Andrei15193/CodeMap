@@ -8,11 +8,6 @@ namespace CodeMap.Tests
 {
     public class ReflectionDocumentationElementFactoryTests
     {
-        private readonly SummaryDocumentationElement _summaryDocumentationElement = DocumentationElement.Summary();
-        private readonly RemarksDocumentationElement _remarksDocumentationElement = DocumentationElement.Remarks();
-        private readonly IReadOnlyCollection<ExampleDocumentationElement> _exampleDocumentationElements = new[] { DocumentationElement.Example() };
-        private readonly RelatedMembersList _relatedMembersList = DocumentationElement.RelatedMembersList(Enumerable.Empty<MemberReferenceDocumentationElement>());
-
         [Fact]
         public void CreateEnumDocumentationElementCheckBasicInformation()
         {
@@ -831,7 +826,7 @@ namespace CodeMap.Tests
                 DocumentationElement.Remarks(DocumentationElement.Paragraph()),
                 new[] { DocumentationElement.Example(DocumentationElement.Paragraph()) },
                 DocumentationElement.Value(DocumentationElement.Paragraph()),
-                DocumentationElement.RelatedMembersList(DocumentationElement.MemberReference(typeof(object)))
+                new[] { DocumentationElement.MemberReference(typeof(object)) }
             );
     }
 }

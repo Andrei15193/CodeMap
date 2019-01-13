@@ -1374,42 +1374,5 @@ namespace CodeMap.ElementsTests
                 visitor => visitor.VisitValueEnding()
             );
         }
-
-        [Fact]
-        public void CreatingRelatedMembersListElementWithNullCollectionThrowsException()
-        {
-            var exception = Assert.Throws<ArgumentNullException>("relatedMembers", () => DocumentationElement.RelatedMembersList(null));
-
-            Assert.Equal(new ArgumentNullException("relatedMembers").Message, exception.Message);
-        }
-
-        [Fact]
-        public void CreatingRelatedMembersListElementWithReferencesContainingNullThrowsException()
-        {
-            var exception = Assert.Throws<ArgumentException>("relatedMembers", () => DocumentationElement.RelatedMembersList(new MemberReferenceDocumentationElement[] { null }));
-
-            Assert.Equal(new ArgumentException("Cannot contain 'null' references.", "relatedMembers").Message, exception.Message);
-        }
-
-        [Fact]
-        public void RelatedMembersList()
-        {
-            var objectMemberReference = DocumentationElement.MemberReference(typeof(object));
-            var stringMemberReference = DocumentationElement.MemberReference(typeof(string));
-
-            var relatedMembers = DocumentationElement.RelatedMembersList(
-                new[]
-                {
-                    objectMemberReference,
-                    stringMemberReference
-                }
-            );
-
-            Assert.Equal(2, relatedMembers.Count);
-            Assert.Same(objectMemberReference, relatedMembers[0]);
-            Assert.Same(stringMemberReference, relatedMembers[1]);
-            Assert.Throws<ArgumentOutOfRangeException>(() => relatedMembers[-1]);
-            Assert.Throws<ArgumentOutOfRangeException>(() => relatedMembers[2]);
-        }
     }
 }

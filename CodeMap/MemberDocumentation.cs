@@ -29,7 +29,7 @@ namespace CodeMap
             RemarksDocumentationElement remarks,
             IEnumerable<ExampleDocumentationElement> examples,
             ValueDocumentationElement value,
-            RelatedMembersList relatedMembers)
+            IEnumerable<MemberReferenceDocumentationElement> relatedMembers)
         {
             CanonicalName = canonicalName ?? throw new ArgumentNullException(nameof(canonicalName));
             Summary = summary ?? DocumentationElement.Summary(Enumerable.Empty<BlockDocumentationElement>());
@@ -40,7 +40,7 @@ namespace CodeMap
             Remarks = remarks ?? DocumentationElement.Remarks(Enumerable.Empty<BlockDocumentationElement>());
             Examples = examples.AsReadOnlyListOrEmpty();
             Value = value ?? DocumentationElement.Value(Enumerable.Empty<BlockDocumentationElement>());
-            RelatedMembers = relatedMembers ?? new RelatedMembersList(Enumerable.Empty<MemberReferenceDocumentationElement>());
+            RelatedMembers = relatedMembers?.AsReadOnlyListOrEmpty();
         }
 
         /// <summary>The canonical name of the documented member.</summary>
@@ -71,6 +71,6 @@ namespace CodeMap
         public ValueDocumentationElement Value { get; }
 
         /// <summary>The related members list.</summary>
-        public RelatedMembersList RelatedMembers { get; }
+        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; }
     }
 }
