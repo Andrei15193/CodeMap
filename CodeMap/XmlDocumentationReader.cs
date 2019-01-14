@@ -30,14 +30,14 @@ namespace CodeMap
         /// <summary>Reads the XML documentation into <see cref="MemberDocumentation"/> items.</summary>
         /// <param name="textReader">The <see cref="TextReader"/> from which to load <see cref="MemberDocumentation"/> items.</param>
         /// <returns>Returns a collection of <see cref="MemberDocumentation"/> loaded from the provided <paramref name="textReader"/> wrapped in a <see cref="Task{TResult}"/>.</returns>
-        public Task<IReadOnlyList<MemberDocumentation>> ReadAsync(TextReader textReader)
+        public Task<MemberDocumentationCollection> ReadAsync(TextReader textReader)
             => ReadAsync(textReader, CancellationToken.None);
 
         /// <summary>Reads the XML documentation into <see cref="MemberDocumentation"/> items.</summary>
         /// <param name="textReader">The <see cref="TextReader"/> from which to load <see cref="MemberDocumentation"/> items.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a collection of <see cref="MemberDocumentation"/> loaded from the provided <paramref name="textReader"/> wrapped in a <see cref="Task{TResult}"/>.</returns>
-        public async Task<IReadOnlyList<MemberDocumentation>> ReadAsync(TextReader textReader, CancellationToken cancellationToken)
+        public async Task<MemberDocumentationCollection> ReadAsync(TextReader textReader, CancellationToken cancellationToken)
         {
             if (textReader == null)
                 throw new ArgumentNullException(nameof(textReader));
@@ -46,13 +46,14 @@ namespace CodeMap
             using (var xmlReader = XmlReader.Create(textReader, new XmlReaderSettings { Async = true }))
                 documentation = await XDocument.LoadAsync(xmlReader, LoadOptions.PreserveWhitespace, cancellationToken).ConfigureAwait(false);
 
-            return documentation
-                .Root
-                .Element("members")
-                .Elements("member")
-                .Where(member => member.Attribute("name") != null)
-                .Select(_ReadMemberDocumentation)
-                .ToList();
+            return new MemberDocumentationCollection(
+                documentation
+                    .Root
+                    .Element("members")
+                    .Elements("member")
+                    .Where(member => member.Attribute("name") != null)
+                    .Select(_ReadMemberDocumentation)
+                );
         }
 
         private MemberDocumentation _ReadMemberDocumentation(XElement memberDocumentationXmlElement)

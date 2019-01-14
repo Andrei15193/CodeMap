@@ -121,7 +121,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ReadEmptySummary()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -137,7 +137,7 @@ namespace CodeMap.Tests
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(),
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Summary
@@ -147,7 +147,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ReadSummaryWithOneParagraph()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -162,7 +162,7 @@ namespace CodeMap.Tests
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Paragraph(
@@ -176,7 +176,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ReadSummaryWithMultiParagraphSummarySection()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -197,7 +197,7 @@ namespace CodeMap.Tests
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Paragraph(
@@ -217,7 +217,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ReadSummaryWithEmptyParagraph()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -235,7 +235,7 @@ namespace CodeMap.Tests
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Paragraph()
@@ -247,7 +247,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ReadSummaryWithMultilineParagraphCollapsesWhiteSpace()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -265,7 +265,7 @@ namespace CodeMap.Tests
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Paragraph(
@@ -279,7 +279,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ReadSummaryWithInlineCode()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -296,7 +296,7 @@ namespace CodeMap.Tests
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Paragraph(
@@ -312,7 +312,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ReadSummaryDoesNotCollapseInlineCodeWhiteSpace()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -329,7 +329,7 @@ namespace CodeMap.Tests
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Paragraph(
@@ -343,7 +343,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ReadSummaryWithMemberReference()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -360,7 +360,7 @@ namespace CodeMap.Tests
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Paragraph(
@@ -376,7 +376,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ReadSummaryWithParameterReference()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -393,7 +393,7 @@ namespace CodeMap.Tests
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Paragraph(
@@ -409,7 +409,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ReadSummaryCodeBlock()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -428,7 +428,7 @@ namespace CodeMap.Tests
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.CodeBlock("this is a code block")
@@ -440,7 +440,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ReadSummaryCodeBlockWithMultilineAndIndentedCode()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -461,7 +461,7 @@ namespace CodeMap.Tests
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.CodeBlock(@"
@@ -477,7 +477,7 @@ and 3 lines".Trim().Replace("\r", string.Empty)
         [Fact]
         public async Task ReadSummaryCodeBlockWithMultilineNormalizesSpacesToLineFeed()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -496,7 +496,7 @@ and 3 lines".Trim().Replace("\r", string.Empty)
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.CodeBlock(@"
@@ -514,7 +514,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryCodeBlockOnOneLinePreservesWhiteSpace()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -531,7 +531,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.CodeBlock("  this contains some white space  ")
@@ -543,7 +543,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryCodeBlockPreservesWhiteSpaceOnTheSameLineWithCodeTag()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -562,7 +562,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.CodeBlock("  this contains some white space  \nthe second line")
@@ -574,7 +574,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryCodeBlockWithCodeOnSameLineWithCodeEndingTag()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -592,7 +592,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.CodeBlock("start\nend")
@@ -604,7 +604,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryUnorderedList()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -632,7 +632,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.UnorderedList(
@@ -657,7 +657,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryEmptyUnorderedList()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -675,7 +675,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.UnorderedList()
@@ -687,7 +687,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryExplicitUnorderedList()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -715,7 +715,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.UnorderedList(
@@ -740,7 +740,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryOrderedList()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -768,7 +768,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.OrderedList(
@@ -793,7 +793,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryEmptyOrderedList()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -811,7 +811,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.OrderedList()
@@ -823,7 +823,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryDefinitionList()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -864,7 +864,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
@@ -897,7 +897,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryDefinitionListWithTypeBullet()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -923,7 +923,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
@@ -944,7 +944,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryDefinitionListWithTypeNumber()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -970,7 +970,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
@@ -991,7 +991,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryDefinitionListWithTitle()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1020,7 +1020,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
@@ -1042,7 +1042,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryDefinitionListWithTitleUsingTerm()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1071,7 +1071,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
@@ -1093,7 +1093,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryEmptyDefinitionList()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1114,7 +1114,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
@@ -1128,7 +1128,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryEmptyDefinitionListWithEmptyTitle()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1148,7 +1148,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
@@ -1162,7 +1162,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryTable()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1192,7 +1192,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Table(
@@ -1230,7 +1230,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryTableWithoutEqualNumberOfColumns()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1258,7 +1258,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Table(
@@ -1296,7 +1296,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryTableWithoutHeader()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1321,7 +1321,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Table(
@@ -1350,7 +1350,7 @@ fourth line
         [Fact]
         public async Task ReadSummaryEmptyTable()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1368,7 +1368,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.Table()
@@ -1380,7 +1380,7 @@ fourth line
         [Fact]
         public async Task ReadComplexSummary()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1397,7 +1397,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Summary(_richBlockElements),
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Summary
@@ -1407,7 +1407,7 @@ fourth line
         [Fact]
         public async Task ReadComplexTypeParameters()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1424,7 +1424,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 new Dictionary<string, IEnumerable<BlockDocumentationElement>>(StringComparer.Ordinal)
                 {
@@ -1438,7 +1438,7 @@ fourth line
         [Fact]
         public async Task ReadComplexParameters()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1455,7 +1455,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 new Dictionary<string, IEnumerable<BlockDocumentationElement>>(StringComparer.Ordinal)
                 {
@@ -1469,7 +1469,7 @@ fourth line
         [Fact]
         public async Task ReadComplexReturns()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1484,7 +1484,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 _richBlockElements,
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Returns
@@ -1494,7 +1494,7 @@ fourth line
         [Fact]
         public async Task ReadComplexExceptions()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1511,7 +1511,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 new Dictionary<string, IEnumerable<BlockDocumentationElement>>(StringComparer.Ordinal)
                 {
@@ -1525,7 +1525,7 @@ fourth line
         [Fact]
         public async Task ReadComplexRemarks()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1542,7 +1542,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Remarks(_richBlockElements),
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Remarks
@@ -1552,7 +1552,7 @@ fourth line
         [Fact]
         public async Task ReadComplexExamples()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1573,7 +1573,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 new[]
                 {
@@ -1587,7 +1587,7 @@ fourth line
         [Fact]
         public async Task ReadComplexValue()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1604,7 +1604,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 DocumentationElement.Value(_richBlockElements),
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Value
@@ -1614,7 +1614,7 @@ fourth line
         [Fact]
         public async Task ReadRelatedMembersList()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1631,7 +1631,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             _AssertAreEqual(
                 new[]
                 {
@@ -1646,7 +1646,7 @@ fourth line
         [Fact]
         public async Task ReadEmptyMemberDocumentation()
         {
-            IReadOnlyList<MemberDocumentation> result;
+            MemberDocumentationCollection result;
             using (var stringReader = new StringReader(@"<?xml version=""1.0""?>
 <doc>
     <assembly>
@@ -1659,7 +1659,7 @@ fourth line
 "))
                 result = await _XmlDocumentationReader.ReadAsync(stringReader);
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             var emptyMemberDocumentation = result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name");
             Assert.Empty(emptyMemberDocumentation.Summary.Content);
             Assert.Empty(emptyMemberDocumentation.GenericParameters);
