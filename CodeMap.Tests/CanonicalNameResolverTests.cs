@@ -8,7 +8,15 @@ namespace CodeMap.Tests
     [CLSCompliant(false)]
     public class CanonicalNameResolverTests
     {
-        private static CanonicalNameResolver _CanonicalNameResolver { get; } = new CanonicalNameResolver();
+        private static CanonicalNameResolver _CanonicalNameResolver { get; } = new CanonicalNameResolver(
+                new[] { typeof(CanonicalNameResolverTests).Assembly }
+                    .Concat(
+                        typeof(CanonicalNameResolverTests)
+                            .Assembly
+                            .GetReferencedAssemblies()
+                            .Select(Assembly.Load)
+                    )
+            );
 
         [Fact]
         public void TryingToGetCanonicalNameFromNullThrowsException()
@@ -27,7 +35,7 @@ namespace CodeMap.Tests
         [InlineData("\n")]
         public void TryingToGetMemberInfoFromEmptyOrWhiteSpaceCanonicalNameThrowsException(string canonicalName)
         {
-            var exception = Assert.Throws<ArgumentException>(() => _CanonicalNameResolver.GetMemberInfoFrom(canonicalName));
+            var exception = Assert.Throws<ArgumentException>(() => _CanonicalNameResolver.TryFindMemberInfoFor(canonicalName));
 
             Assert.Equal(new ArgumentException("Cannot be 'null', empty or white space.", "canonicalName").Message, exception.Message);
         }
@@ -37,7 +45,7 @@ namespace CodeMap.Tests
         [InlineData("te")]
         public void TryingToGetMemberInfoFromCanonicalNameWithAtMostTwoCharactersThrowsException(string canonicalName)
         {
-            var exception = Assert.Throws<ArgumentException>(() => _CanonicalNameResolver.GetMemberInfoFrom(canonicalName));
+            var exception = Assert.Throws<ArgumentException>(() => _CanonicalNameResolver.TryFindMemberInfoFor(canonicalName));
 
             Assert.Equal(new ArgumentException($"The canonical name must be at least three characters long, '{canonicalName}' given.", "canonicalName").Message, exception.Message);
         }
@@ -47,7 +55,7 @@ namespace CodeMap.Tests
         [InlineData("T.wrong_separator")]
         public void TryingToGetMemberInfoFromIllFormedCanonicalNameThrowsException(string canonicalName)
         {
-            var exception = Assert.Throws<ArgumentException>(() => _CanonicalNameResolver.GetMemberInfoFrom(canonicalName));
+            var exception = Assert.Throws<ArgumentException>(() => _CanonicalNameResolver.TryFindMemberInfoFor(canonicalName));
 
             Assert.Equal(
                 new ArgumentException(
@@ -61,7 +69,7 @@ namespace CodeMap.Tests
         [Fact]
         public void TryingToGetMemberInfoFromUnknownMemberTypeThrowsException()
         {
-            var exception = Assert.Throws<ArgumentException>(() => _CanonicalNameResolver.GetMemberInfoFrom("K:wrong_member_type"));
+            var exception = Assert.Throws<ArgumentException>(() => _CanonicalNameResolver.TryFindMemberInfoFor("K:wrong_member_type"));
 
             Assert.Equal(
                 new ArgumentException(
@@ -73,19 +81,19 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public void TryingToGetMemberInfoFromNullAssemblyCollectionThrowsException()
+        public void TryingToCreateResolverWithNullAssemblyCollectionThrowsException()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => _CanonicalNameResolver.GetMemberInfoFrom("t:test", null));
+            var exception = Assert.Throws<ArgumentNullException>("searchAssemblies", () => new CanonicalNameResolver(null));
 
-            Assert.Equal(new ArgumentNullException("assemblies").Message, exception.Message);
+            Assert.Equal(new ArgumentNullException("searchAssemblies").Message, exception.Message);
         }
 
         [Fact]
-        public void TryingToGetMemberInfoFromAssemblyCollectionContainingNullThrowsException()
+        public void TryingToCreateResolverWithAssemblyCollectionContainingNullThrowsException()
         {
-            var exception = Assert.Throws<ArgumentException>(() => _CanonicalNameResolver.GetMemberInfoFrom("t:test", new Assembly[] { null }));
+            var exception = Assert.Throws<ArgumentException>("searchAssemblies", () => new CanonicalNameResolver(new Assembly[] { null }));
 
-            Assert.Equal(new ArgumentException("Cannot contain 'null' values.", "assemblies").Message, exception.Message);
+            Assert.Equal(new ArgumentException("Cannot contain 'null' assemblies.", "searchAssemblies").Message, exception.Message);
         }
 
         [Fact]
@@ -2828,13 +2836,7 @@ namespace CodeMap.Tests
         [InlineData("M:TestMethod")]
         public void TryingToGetMemberInfoFromCanonicalNameThatDoesNotResolveToOneReturnsNull(string canonicalName)
         {
-            var memberInfo = _CanonicalNameResolver.TryFindMemberInfoFor(
-                canonicalName,
-                new[] { typeof(CanonicalNameResolverTests).Assembly }
-                    .Concat(typeof(CanonicalNameResolverTests).Assembly.GetReferencedAssemblies().Select(Assembly.Load))
-                    .ToList()
-            );
-
+            var memberInfo = _CanonicalNameResolver.TryFindMemberInfoFor(canonicalName);
             Assert.Null(memberInfo);
         }
 
@@ -2843,11 +2845,7 @@ namespace CodeMap.Tests
             var actualCanonicalName = _CanonicalNameResolver.GetCanonicalNameFrom(memberInfo);
             Assert.Equal(canonicalName, actualCanonicalName);
 
-            var actualMemberInfo = _CanonicalNameResolver.TryFindMemberInfoFor(
-                canonicalName.ToLowerInvariant(),
-                new[] { typeof(CanonicalNameResolverTests).Assembly }
-                    .Concat(typeof(CanonicalNameResolverTests).Assembly.GetReferencedAssemblies().Select(Assembly.Load))
-                    .ToList());
+            var actualMemberInfo = _CanonicalNameResolver.TryFindMemberInfoFor(canonicalName.ToLowerInvariant());
             Assert.Equal(memberInfo, actualMemberInfo);
         }
     }

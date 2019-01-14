@@ -25,8 +25,7 @@ namespace CodeMap
             _membersDocumentation = membersDocumentation
                 ?.ToLookup(
                     memberDocumentation => (
-                            memberDocumentation
-                            ?? throw new ArgumentException("Cannot contain 'null' member documentation items.", nameof(membersDocumentation))
+                            memberDocumentation ?? throw new ArgumentException("Cannot contain 'null' member documentation items.", nameof(membersDocumentation))
                         )
                         .CanonicalName,
                     StringComparer.OrdinalIgnoreCase

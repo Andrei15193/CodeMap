@@ -17,6 +17,20 @@ namespace CodeMap
         private const BindingFlags _bestMatchBindingFlags = _bestMatchStaticBindingFlags | _bestMatchInstanceBindingFlags;
         private const BindingFlags _ignoreCaseBindingFlags = _bestMatchBindingFlags | BindingFlags.IgnoreCase;
 
+        private readonly IReadOnlyCollection<Assembly> _searchAssemblies;
+
+        /// <summary>Initializes a new instance of the <see cref="CanonicalNameResolver"/> class.</summary>
+        /// <param name="searchAssemblies">The assemblies to search in for <see cref="MemberInfo"/>s.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="searchAssemblies"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="searchAssemblies"/> contains <c>null</c>.</exception>
+        public CanonicalNameResolver(IEnumerable<Assembly> searchAssemblies)
+        {
+            _searchAssemblies = searchAssemblies.AsReadOnlyCollection()
+                ?? throw new ArgumentNullException(nameof(searchAssemblies));
+            if (_searchAssemblies.Contains(null))
+                throw new ArgumentException("Cannot contain 'null' assemblies.", nameof(searchAssemblies));
+        }
+
         /// <summary>Gets the XML documentation canonical name for the given <paramref name="memberInfo"/>.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> for which to get the canonical name.</param>
         /// <returns>Returns the canonical name for the given <paramref name="memberInfo"/>.</returns>
@@ -50,12 +64,11 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Attempts to find a <see cref="MemberInfo"/> with the provided <paramref name="canonicalName"/> searching through the provided <paramref name="assemblies"/>.</summary>
+        /// <summary>Attempts to find a <see cref="MemberInfo"/> with the provided <paramref name="canonicalName"/>.</summary>
         /// <param name="canonicalName">The canonical name of the member to search for.</param>
-        /// <param name="assemblies">The assemblies to search through.</param>
         /// <returns>Returns the <see cref="MemberInfo"/> with the provided <paramref name="canonicalName"/> if found; otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentException">Thrown when the canonical name is invalid.</exception>
-        public MemberInfo TryFindMemberInfoFor(string canonicalName, IEnumerable<Assembly> assemblies)
+        public MemberInfo TryFindMemberInfoFor(string canonicalName)
         {
             if (string.IsNullOrWhiteSpace(canonicalName))
                 throw new ArgumentException("Cannot be 'null', empty or white space.", nameof(canonicalName));
@@ -64,48 +77,33 @@ namespace CodeMap
             if (canonicalName[1] != ':')
                 throw new ArgumentException($"The canonical name must be in the form '<member_type_identifier_character>:<canonical_name_identifier>' (e.g.: T:SomeNamespace.SomeClass), '{canonicalName}' given.", nameof(canonicalName));
 
-            var searchAssemblies = assemblies as IReadOnlyCollection<Assembly>
-                ?? assemblies?.ToList();
-            if (searchAssemblies == null)
-                throw new ArgumentNullException(nameof(assemblies));
-            if (searchAssemblies.Any(assembly => assembly == null))
-                throw new ArgumentException("Cannot contain 'null' values.", nameof(assemblies));
-
             var memberFullName = canonicalName.Substring(2);
             switch (canonicalName[0])
             {
                 case 't':
                 case 'T':
-                    return _TryFindType(memberFullName, searchAssemblies);
+                    return _TryFindType(memberFullName);
 
                 case 'f':
                 case 'F':
-                    return _TryFindFieldInfo(memberFullName, searchAssemblies);
+                    return _TryFindFieldInfo(memberFullName);
 
                 case 'e':
                 case 'E':
-                    return _TryFindEventInfo(memberFullName, searchAssemblies);
+                    return _TryFindEventInfo(memberFullName);
 
                 case 'p':
                 case 'P':
-                    return _TryFindPropertyInfo(memberFullName, searchAssemblies);
+                    return _TryFindPropertyInfo(memberFullName);
 
                 case 'm':
                 case 'M':
-                    return _TryFindMethodBase(memberFullName, searchAssemblies);
+                    return _TryFindMethodBase(memberFullName);
 
                 default:
                     throw new ArgumentException($"Cannot find member type for '{canonicalName}' canonical name (T, F, E, P or M must be the first character in the canonical name).", nameof(canonicalName));
             }
         }
-
-        /// <summary>Attempts to find a <see cref="MemberInfo"/> with the provided <paramref name="canonicalName"/> searching through the provided <paramref name="assemblies"/>.</summary>
-        /// <param name="canonicalName">The canonical name of the member to search for.</param>
-        /// <param name="assemblies">The assemblies to search through.</param>
-        /// <returns>Returns the <see cref="MemberInfo"/> with the provided <paramref name="canonicalName"/> if found; otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentException">Thrown when the canonical name is invalid.</exception>
-        public MemberInfo GetMemberInfoFrom(string canonicalName, params Assembly[] assemblies)
-            => TryFindMemberInfoFor(canonicalName, assemblies.AsEnumerable());
 
         private static string _GetTypeCanonicalNameFor(Type type)
             => _AppendTypeName(new StringBuilder("T:"), type).ToString();
@@ -236,12 +234,12 @@ namespace CodeMap
             return stringBuilder.Append(type.Name);
         }
 
-        private static Type _TryFindType(string typeFullName, IEnumerable<Assembly> assemblies)
+        private Type _TryFindType(string typeFullName)
         {
             Type result = null;
             var foundBestMatch = false;
 
-            using (var type = assemblies.SelectMany(Extensions.GetAllDefinedTypes).Concat(assemblies.SelectMany(Extensions.GetAllForwardedTypes)).GetEnumerator())
+            using (var type = _searchAssemblies.SelectMany(Extensions.GetAllDefinedTypes).Concat(_searchAssemblies.SelectMany(Extensions.GetAllForwardedTypes)).GetEnumerator())
                 while (type.MoveNext() && !foundBestMatch)
                 {
                     var currentTypeFullName = _AppendTypeName(new StringBuilder(), type.Current).ToString();
@@ -256,7 +254,7 @@ namespace CodeMap
             return result;
         }
 
-        private static Type _TryFindParameterType(string typeFullName, Type declaringType, IEnumerable<Assembly> assemblies)
+        private Type _TryFindParameterType(string typeFullName, Type declaringType)
         {
             if (typeFullName.StartsWith("``", StringComparison.OrdinalIgnoreCase)
                 && int.TryParse(
@@ -274,10 +272,10 @@ namespace CodeMap
                     out var genericTypeParameterPosition))
                 return declaringType.GetGenericArguments()[genericTypeParameterPosition];
 
-            return _TryFindType(typeFullName, assemblies);
+            return _TryFindType(typeFullName);
         }
 
-        private static FieldInfo _TryFindFieldInfo(string memberFullName, IEnumerable<Assembly> assemblies)
+        private FieldInfo _TryFindFieldInfo(string memberFullName)
         {
             var match = Regex.Match(
                 memberFullName,
@@ -288,7 +286,7 @@ namespace CodeMap
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, assemblies);
+            var declaringType = _TryFindType(declaringTypeFullName);
             if (declaringType == null)
                 return null;
 
@@ -296,7 +294,7 @@ namespace CodeMap
             return declaringType.GetField(fieldName, _bestMatchBindingFlags) ?? declaringType.GetField(fieldName, _ignoreCaseBindingFlags);
         }
 
-        private static EventInfo _TryFindEventInfo(string memberFullName, IEnumerable<Assembly> assemblies)
+        private EventInfo _TryFindEventInfo(string memberFullName)
         {
             var match = Regex.Match(
                 memberFullName,
@@ -307,7 +305,7 @@ namespace CodeMap
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, assemblies);
+            var declaringType = _TryFindType(declaringTypeFullName);
             if (declaringType == null)
                 return null;
 
@@ -315,7 +313,7 @@ namespace CodeMap
             return declaringType.GetEvent(eventName, _bestMatchBindingFlags) ?? declaringType.GetEvent(eventName, _ignoreCaseBindingFlags);
         }
 
-        private static PropertyInfo _TryFindPropertyInfo(string memberFullName, IEnumerable<Assembly> assemblies)
+        private PropertyInfo _TryFindPropertyInfo(string memberFullName)
         {
             var match = Regex.Match(
                 memberFullName,
@@ -336,14 +334,14 @@ namespace CodeMap
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, assemblies);
+            var declaringType = _TryFindType(declaringTypeFullName);
             if (declaringType == null)
                 return null;
 
             var propertyParameterTypes = match
                 .Groups["parameterType"]
                 .Captures
-                .Select(parameterTypeFullName => _TryFindParameterType(parameterTypeFullName.Value, declaringType, assemblies))
+                .Select(parameterTypeFullName => _TryFindParameterType(parameterTypeFullName.Value, declaringType))
                 .ToArray();
             if (propertyParameterTypes.Any(propertyParameterType => propertyParameterType == null))
                 return null;
@@ -353,7 +351,7 @@ namespace CodeMap
                 ?? declaringType.GetProperty(propertyName, _ignoreCaseBindingFlags, Type.DefaultBinder, null, propertyParameterTypes, null);
         }
 
-        private static MethodBase _TryFindMethodBase(string memberFullName, IEnumerable<Assembly> assemblies)
+        private MethodBase _TryFindMethodBase(string memberFullName)
         {
             var match = Regex.Match(
                 memberFullName,
@@ -373,14 +371,14 @@ namespace CodeMap
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, assemblies);
+            var declaringType = _TryFindType(declaringTypeFullName);
             if (declaringType == null)
                 return null;
 
             var methodParameterTypes = match
                 .Groups["parameterType"]
                 .Captures
-                .Select(parameterTypeFullName => _TryFindParameterType(parameterTypeFullName.Value, declaringType, assemblies))
+                .Select(parameterTypeFullName => _TryFindParameterType(parameterTypeFullName.Value, declaringType))
                 .ToArray();
             if (methodParameterTypes.Any(propertyParameterType => propertyParameterType == null))
                 return null;

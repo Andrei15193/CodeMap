@@ -15,14 +15,13 @@ namespace CodeMap
     {
         private readonly DynamicTypeReference _dynamicTypeReference = new DynamicTypeReference();
         private readonly DocumentationElementCache _referencesCache = new DocumentationElementCache();
-        private readonly CanonicalNameResolver _canonicalNameResolver = new CanonicalNameResolver();
-        private readonly IReadOnlyCollection<Assembly> _searchAssemblies =
+        private readonly CanonicalNameResolver _canonicalNameResolver = new CanonicalNameResolver(
             new[] { typeof(ReflectionDocumentationElementFactory).Assembly }
                 .Concat(typeof(ReflectionDocumentationElementFactory)
                     .Assembly
                     .GetReferencedAssemblies()
                     .Select(Assembly.Load))
-                .ToList();
+            );
         private readonly MemberDocumentation _emptyMemberDocumentation = new MemberDocumentation(string.Empty, null, null, null, null, null, null, null, null, null);
         private readonly MemberDocumentationCollection _membersDocumentation;
 
@@ -391,7 +390,7 @@ namespace CodeMap
         private IReadOnlyCollection<ExceptionDocumentationElement> _MapExceptions(ILookup<string, BlockDocumentationElement> exceptions)
             => (
                 from exception in exceptions
-                let exceptionType = _canonicalNameResolver.TryFindMemberInfoFor(exception.Key, _searchAssemblies) as Type
+                let exceptionType = _canonicalNameResolver.TryFindMemberInfoFor(exception.Key) as Type
                 where exceptionType != null && typeof(Exception).IsAssignableFrom(exceptionType)
                 select new ExceptionDocumentationElement
                 {
