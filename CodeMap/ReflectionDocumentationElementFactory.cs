@@ -123,7 +123,7 @@ namespace CodeMap
         private TypeDocumentationElement _CreateInterface(Type interfaceType)
         {
             var memberDocumentation = _GetMemberDocumentationFor(interfaceType);
-            return new InterfaceDocumentationElement
+            var interfaceDocumentationElement = new InterfaceDocumentationElement
             {
                 Name = _GetTypeNameFor(interfaceType),
                 AccessModifier = _GetAccessModifierFrom(interfaceType),
@@ -146,6 +146,13 @@ namespace CodeMap
                 Examples = memberDocumentation.Examples,
                 RelatedMembers = memberDocumentation.RelatedMembers
             };
+
+            interfaceDocumentationElement.Events = interfaceType
+                .GetEvents(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Select(@event => _GetEvent(@event, interfaceDocumentationElement))
+                .AsReadOnlyCollection();
+
+            return interfaceDocumentationElement;
         }
 
         private TypeDocumentationElement _CreateClass(Type type)
@@ -172,6 +179,39 @@ namespace CodeMap
                 Attributes = _MapAttributesDataFrom(field.CustomAttributes),
                 DeclaringType = declaringType,
                 Summary = memberDocumentation.Summary,
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
+            };
+        }
+
+        private EventDocumentationElement _GetEvent(EventInfo @event, TypeDocumentationElement declaringType)
+        {
+            var memberDocumentation = _GetMemberDocumentationFor(@event);
+            return new EventDocumentationElement
+            {
+                Name = @event.Name,
+                AccessModifier = AccessModifier.Public,
+                Type = _GetTypeReference(@event.EventHandlerType),
+                Attributes = _MapAttributesDataFrom(@event.CustomAttributes),
+                DeclaringType = declaringType,
+                IsStatic = false,
+                IsAbstract = false,
+                IsVirtual = false,
+                IsOverride = false,
+                IsSealed = false,
+                Adder = new EventAccessorData
+                {
+                    Attributes = _MapAttributesDataFrom(@event.AddMethod.CustomAttributes),
+                    ReturnAttributes = _MapAttributesDataFrom(@event.AddMethod.ReturnParameter.CustomAttributes)
+                },
+                Remover = new EventAccessorData
+                {
+                    Attributes = _MapAttributesDataFrom(@event.RemoveMethod.CustomAttributes),
+                    ReturnAttributes = _MapAttributesDataFrom(@event.RemoveMethod.ReturnParameter.CustomAttributes)
+                },
+                Summary = memberDocumentation.Summary,
+                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
                 Remarks = memberDocumentation.Remarks,
                 Examples = memberDocumentation.Examples,
                 RelatedMembers = memberDocumentation.RelatedMembers

@@ -18,6 +18,9 @@ namespace CodeMap.Elements
         /// <summary>The base interfaces.</summary>
         public IReadOnlyCollection<TypeReferenceDocumentationElement> BaseInterfaces { get; internal set; }
 
+        /// <summary>The declared events.</summary>
+        public IReadOnlyCollection<EventDocumentationElement> Events { get; internal set; }
+
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)

@@ -42,10 +42,17 @@ namespace CodeMap.Tests
         }
 
         public static TInstance AssertGenericArguments<TInstance>(this TInstance instance, params Action<TypeReferenceDocumentationElement>[] callbacks)
+            where TInstance : TypeReferenceDocumentationElement
         {
             instance.AssertIs<InstanceTypeDocumentationElement>(
                 instanceTypeReference => instanceTypeReference.AssertCollectionMember(() => instanceTypeReference.GenericArguments, callbacks)
             );
+            return instance;
+        }
+
+        public static TInstance AssertGenericArguments<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector, params Action<TypeReferenceDocumentationElement>[] callbacks)
+        {
+            selector().AssertGenericArguments(callbacks);
             return instance;
         }
 

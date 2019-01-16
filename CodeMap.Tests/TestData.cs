@@ -80,6 +80,8 @@ namespace CodeMap.Tests
         where TParam1 : class, TParam2, IComparable<TParam1>, new()
         where TParam3 : struct
     {
+        [Test("event test 1", Value2 = "event test 2", Value3 = "event test 3")]
+        event EventHandler<EventArgs> TestEvent;
     }
 
     /// <summary>TestClass summary.</summary>

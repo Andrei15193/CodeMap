@@ -800,6 +800,141 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public void CreateInterfaceDocumentationElementCheckEventBasicInformation()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertIs<InterfaceDocumentationElement>(
+                    interfaceDocumentationElement =>
+                        interfaceDocumentationElement.AssertCollectionMember(
+                            () => interfaceDocumentationElement.Events,
+                            @event =>
+                                @event
+                                    .AssertEqual(() => @event.Name, "TestEvent")
+                                    .AssertEqual(() => @event.AccessModifier, AccessModifier.Public)
+                                    .AssertSame(() => @event.DeclaringType, interfaceDocumentationElement)
+                                    .AssertTypeReference(() => @event.Type, "System", "EventHandler")
+                                    .AssertTypeReferenceAssembly(() => @event.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                    .AssertGenericArguments(
+                                        () => @event.Type,
+                                        genericArgument => genericArgument
+                                            .AssertTypeReference("System", "EventArgs")
+                                            .AssertTypeReferenceAssembly("System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                    )
+                                    .AssertFalse(() => @event.IsStatic)
+                                    .AssertFalse(() => @event.IsAbstract)
+                                    .AssertFalse(() => @event.IsVirtual)
+                                    .AssertFalse(() => @event.IsOverride)
+                                    .AssertFalse(() => @event.IsSealed)
+                                    .AssertEmpty(() => @event.Summary.Content)
+                                    .AssertEmpty(() => @event.Remarks.Content)
+                                    .AssertEmpty(() => @event.Examples)
+                                    .AssertEmpty(() => @event.Exceptions)
+                    )
+                );
+        }
+
+        [Fact]
+        public void CreateInterfaceDocumentationElementCheckEventAttributes()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertIs<InterfaceDocumentationElement>(
+                    interfaceDocumentationElement =>
+                        interfaceDocumentationElement.AssertCollectionMember(
+                            () => interfaceDocumentationElement.Events,
+                            @event =>
+                                @event
+                                    .AssertEqual(() => @event.Name, "TestEvent")
+                                    .AssertCollectionMember(
+                                        () => @event.Attributes,
+                                        attribute => attribute
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests", "TestAttribute")
+                                            .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
+                                            .AssertCollectionMember(
+                                                () => attribute.PositionalParameters,
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "value1")
+                                                    .AssertEqual(() => attributeParameter.Value, "event test 1")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                            .AssertCollectionMember(
+                                                () => attribute.NamedParameters.OrderBy(attributeParameter => attributeParameter.Name),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value2")
+                                                    .AssertEqual(() => attributeParameter.Value, "event test 2")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0)),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value3")
+                                                    .AssertEqual(() => attributeParameter.Value, "event test 3")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                    )
+                                    .AssertCollectionMember(
+                                        () => @event.Adder.Attributes,
+                                        attribute => attribute
+                                            .AssertTypeReference(() => attribute.Type, "System.Runtime.CompilerServices", "CompilerGeneratedAttribute")
+                                            .AssertTypeReferenceAssembly(() => attribute.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            .AssertEmpty(() => attribute.PositionalParameters)
+                                            .AssertEmpty(() => attribute.NamedParameters)
+                                    )
+                                    .AssertEmpty(() => @event.Adder.ReturnAttributes)
+                                    .AssertCollectionMember(
+                                        () => @event.Remover.Attributes,
+                                        attribute => attribute
+                                            .AssertTypeReference(() => attribute.Type, "System.Runtime.CompilerServices", "CompilerGeneratedAttribute")
+                                            .AssertTypeReferenceAssembly(() => attribute.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            .AssertEmpty(() => attribute.PositionalParameters)
+                                            .AssertEmpty(() => attribute.NamedParameters)
+                                    )
+                                    .AssertEmpty(() => @event.Remover.ReturnAttributes)
+                    )
+                );
+        }
+
+        [Fact]
+        public void CreateInterfaceDocumentationElementCheckEventDocumentation()
+        {
+            var memberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.ITestInterface`3.TestEvent", exceptions: new[] { "T:System.ArgumentException" });
+            var factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
+
+            var typeDocumentationElement = factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertIs<InterfaceDocumentationElement>(
+                    interfaceDocumentationElement =>
+                        interfaceDocumentationElement.AssertCollectionMember(
+                            () => interfaceDocumentationElement.Events,
+                            @event =>
+                                @event
+                                    .AssertEqual(() => @event.Name, "TestEvent")
+                                    .AssertSame(() => @event.Summary, memberDocumentation.Summary)
+                                    .AssertSame(() => @event.Remarks, memberDocumentation.Remarks)
+                                    .AssertSame(() => @event.Examples, memberDocumentation.Examples)
+                                    .AssertCollectionMember(
+                                        () => @event.Exceptions,
+                                        exception => exception
+                                            .AssertTypeReference(() => exception.Type, "System", "ArgumentException")
+                                            .AssertTypeReferenceAssembly(() => exception.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            .AssertSameItems(() => exception.Description, memberDocumentation.Exceptions["T:System.ArgumentException"])
+                                    )
+                    )
+                );
+        }
+
+        [Fact]
         public void ConstructorWithNullMembersDocumentationCollectionThrowsException()
         {
             var exception = Assert.Throws<ArgumentNullException>(() => new ReflectionDocumentationElementFactory(null));
