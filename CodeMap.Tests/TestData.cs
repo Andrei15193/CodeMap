@@ -7,26 +7,19 @@ using System.Reflection;
 
 namespace CodeMap.Tests
 {
-    /// <summary>TestEnum summary.</summary>
     [Test("test 1", Value2 = "test 2", Value3 = "test 3")]
     internal enum TestEnum : byte
     {
-        /// <summary>Enum test member 1.</summary>
         [Test("member test 1", Value2 = "member test 2", Value3 = "member test 3")]
         TestMember1,
-        /// <summary>Enum test member 2.</summary>
         TestMember2,
-        /// <summary>Enum test member 3.</summary>
         TestMember3,
     }
 
-    /// <summary>TestDelegate summary.</summary>
     internal delegate void TestDelegate();
 
-    /// <summary>TestDelegate summary.</summary>
     internal delegate void TestDelegate<TParam>();
 
-    /// <summary>TestDelegate summary.</summary>
     [Test("test 1", Value2 = "test 2", Value3 = "test 3")]
     [return: Test("return test 1", Value2 = "return test 2", Value3 = "return test 3")]
     internal delegate void TestDelegate<out TParam1, in TParam2, TParam3>(
@@ -38,6 +31,37 @@ namespace CodeMap.Tests
     )
         where TParam1 : class, TParam2, IComparable<TParam1>, new()
         where TParam3 : struct;
+
+    internal interface ITestBaseInterface
+    {
+        event EventHandler<EventArgs> TestBaseEvent;
+
+        int TestBaseProperty { get; set; }
+    }
+
+    internal interface ITestExtendedInterface : ITestBaseInterface
+    {
+    }
+
+    [Test("test 1", Value2 = "test 2", Value3 = "test 3")]
+    internal interface ITestInterface<out TParam1, in TParam2, TParam3> : ITestExtendedInterface
+        where TParam1 : class, TParam2, IComparable<TParam1>, new()
+        where TParam3 : struct
+    {
+        [Test("event test 1", Value2 = "event test 2", Value3 = "event test 3")]
+        event EventHandler<EventArgs> TestEvent;
+
+        [Test("property test 1", Value2 = "property test 2", Value3 = "property test 3")]
+        int TestProperty
+        {
+            [Test("property getter test 1", Value2 = "property getter test 2", Value3 = "property getter test 3")]
+            [return: Test("return property getter test 1", Value2 = "return property getter test 2", Value3 = "return property getter test 3")]
+            get;
+            [Test("property setter test 1", Value2 = "property setter test 2", Value3 = "property setter test 3")]
+            [return: Test("return property setter test 1", Value2 = "return property setter test 2", Value3 = "return property setter test 3")]
+            set;
+        }
+    }
 
     /// <summary>ITestInterface summary.</summary>
     internal interface ITestInterface
@@ -62,26 +86,6 @@ namespace CodeMap.Tests
 
         /// <summary>TestMethod summary 3.</summary>
         object TestMethod(int param1, string param2);
-    }
-
-    /// <summary>ITestBaseInterface summary.</summary>
-    internal interface ITestBaseInterface
-    {
-    }
-
-    /// <summary>ITestExtendedInterface summary.</summary>
-    internal interface ITestExtendedInterface : ITestBaseInterface
-    {
-    }
-
-    /// <summary>ITestInterface summary.</summary>
-    [Test("test 1", Value2 = "test 2", Value3 = "test 3")]
-    internal interface ITestInterface<out TParam1, in TParam2, TParam3> : ITestExtendedInterface
-        where TParam1 : class, TParam2, IComparable<TParam1>, new()
-        where TParam3 : struct
-    {
-        [Test("event test 1", Value2 = "event test 2", Value3 = "event test 3")]
-        event EventHandler<EventArgs> TestEvent;
     }
 
     /// <summary>TestClass summary.</summary>

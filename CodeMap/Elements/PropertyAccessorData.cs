@@ -2,12 +2,15 @@
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents accessor information (adder and remover) for an event.</summary>
-    public sealed class EventAccessorData
+    /// <summary>Represents accessor information (getter and setter) for a property.</summary>
+    public sealed class PropertyAccessorData
     {
-        internal EventAccessorData()
+        internal PropertyAccessorData()
         {
         }
+
+        /// <summary>The property accessor modifier.</summary>
+        public AccessModifier AccessModifier { get; internal set; }
 
         /// <summary>The accessor attributes.</summary>
         public IReadOnlyCollection<AttributeData> Attributes { get; internal set; }

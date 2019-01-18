@@ -5,38 +5,41 @@ using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents an event declared by a type.</summary>
-    public sealed class EventDocumentationElement : MemberDocumentationElement
+    /// <summary>Represents a property declared by a type.</summary>{
+    public sealed class PropertyDocumentationElement : MemberDocumentationElement
     {
-        internal EventDocumentationElement()
+        internal PropertyDocumentationElement()
         {
         }
 
-        /// <summary>The event type.</summary>
+        /// <summary>The property type.</summary>
         public TypeReferenceDocumentationElement Type { get; internal set; }
 
-        /// <summary>Indicates whether the event is static.</summary>
+        /// <summary>Indicates whether the property is static.</summary>
         public bool IsStatic { get; internal set; }
 
-        /// <summary>Indicates whether the event has been marked as virtual.</summary>
+        /// <summary>Indicates whether the property has been marked as virtual.</summary>
         public bool IsVirtual { get; internal set; }
 
-        /// <summary>Indicates whether the event has been marked as abstract.</summary>
+        /// <summary>Indicates whether the property has been marked as abstract.</summary>
         public bool IsAbstract { get; internal set; }
 
-        /// <summary>Indicates whether the event is an override.</summary>
+        /// <summary>Indicates whether the property is an override.</summary>
         public bool IsOverride { get; internal set; }
 
-        /// <summary>Indicates whether the event has been marked as sealed.</summary>
+        /// <summary>Indicates whether the property has been marked as sealed.</summary>
         public bool IsSealed { get; internal set; }
 
-        /// <summary>Information about the adder accessor.</summary>
-        public EventAccessorData Adder { get; internal set; }
+        /// <summary>Information about the getter accessor.</summary>
+        public PropertyAccessorData Getter { get; internal set; }
 
-        /// <summary>Information about the remover accessor.</summary>
-        public EventAccessorData Remover { get; internal set; }
+        /// <summary>Information about the setter accessor.</summary>
+        public PropertyAccessorData Setter { get; internal set; }
 
-        /// <summary>Documented exceptions that might be thrown by subscribers.</summary>
+        /// <summary>Documentation about the how the value of the property is calculated.</summary>
+        new public ValueDocumentationElement Value { get; internal set; }
+
+        /// <summary>Documented exceptions that might be thrown when using the property.</summary>
         public IReadOnlyCollection<ExceptionDocumentationElement> Exceptions { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>

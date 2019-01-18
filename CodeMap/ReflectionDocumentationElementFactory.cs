@@ -151,6 +151,10 @@ namespace CodeMap
                 .GetEvents(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .Select(@event => _GetEvent(@event, interfaceDocumentationElement))
                 .AsReadOnlyCollection();
+            interfaceDocumentationElement.Properties = interfaceType
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Select(property => _GetProperty(property, interfaceDocumentationElement))
+                .AsReadOnlyCollection();
 
             return interfaceDocumentationElement;
         }
@@ -191,7 +195,7 @@ namespace CodeMap
             return new EventDocumentationElement
             {
                 Name = @event.Name,
-                AccessModifier = AccessModifier.Public,
+                AccessModifier = _GetAccessModifierFrom(@event),
                 Type = _GetTypeReference(@event.EventHandlerType),
                 Attributes = _MapAttributesDataFrom(@event.CustomAttributes),
                 DeclaringType = declaringType,
@@ -200,21 +204,66 @@ namespace CodeMap
                 IsVirtual = false,
                 IsOverride = false,
                 IsSealed = false,
-                Adder = new EventAccessorData
-                {
-                    Attributes = _MapAttributesDataFrom(@event.AddMethod.CustomAttributes),
-                    ReturnAttributes = _MapAttributesDataFrom(@event.AddMethod.ReturnParameter.CustomAttributes)
-                },
-                Remover = new EventAccessorData
-                {
-                    Attributes = _MapAttributesDataFrom(@event.RemoveMethod.CustomAttributes),
-                    ReturnAttributes = _MapAttributesDataFrom(@event.RemoveMethod.ReturnParameter.CustomAttributes)
-                },
+                Adder = _GetEventAccessorData(@event.AddMethod),
+                Remover = _GetEventAccessorData(@event.RemoveMethod),
                 Summary = memberDocumentation.Summary,
                 Exceptions = _MapExceptions(memberDocumentation.Exceptions),
                 Remarks = memberDocumentation.Remarks,
                 Examples = memberDocumentation.Examples,
                 RelatedMembers = memberDocumentation.RelatedMembers
+            };
+        }
+
+        private EventAccessorData _GetEventAccessorData(MethodInfo accessorMethod)
+        {
+            return new EventAccessorData
+            {
+                Attributes = _MapAttributesDataFrom(accessorMethod.CustomAttributes),
+                ReturnAttributes = _MapAttributesDataFrom(accessorMethod.ReturnParameter.CustomAttributes)
+            };
+        }
+
+        private PropertyDocumentationElement _GetProperty(PropertyInfo property, TypeDocumentationElement declaringType)
+        {
+            var memberDocumentation = _GetMemberDocumentationFor(property);
+
+            var getterInfo = _GetPropertyAccessorData(property.GetMethod);
+            var setterInfo = _GetPropertyAccessorData(property.SetMethod);
+            return new PropertyDocumentationElement
+            {
+                Name = property.Name,
+                AccessModifier = setterInfo == null || (getterInfo != null && getterInfo.AccessModifier >= setterInfo.AccessModifier)
+                    ? getterInfo.AccessModifier
+                    : setterInfo.AccessModifier,
+                Type = _GetTypeReference(property.PropertyType),
+                Attributes = _MapAttributesDataFrom(property.CustomAttributes),
+                DeclaringType = declaringType,
+                IsStatic = false,
+                IsAbstract = false,
+                IsVirtual = false,
+                IsOverride = false,
+                IsSealed = false,
+                Getter = getterInfo,
+                Setter = setterInfo,
+                Summary = memberDocumentation.Summary,
+                Value = memberDocumentation.Value,
+                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
+            };
+        }
+
+        private PropertyAccessorData _GetPropertyAccessorData(MethodInfo accessorMethod)
+        {
+            if (accessorMethod == null)
+                return null;
+
+            return new PropertyAccessorData
+            {
+                AccessModifier = _GetAccessModifierFrom(accessorMethod),
+                Attributes = _MapAttributesDataFrom(accessorMethod.CustomAttributes),
+                ReturnAttributes = _MapAttributesDataFrom(accessorMethod.ReturnParameter.CustomAttributes)
             };
         }
 
@@ -256,6 +305,25 @@ namespace CodeMap
             else if (field.IsFamilyAndAssembly)
                 return AccessModifier.AssemblyAndFamily;
             else if (field.IsAssembly)
+                return AccessModifier.Assembly;
+            else
+                return AccessModifier.Private;
+        }
+
+        private AccessModifier _GetAccessModifierFrom(EventInfo @event)
+            => _GetAccessModifierFrom(@event.AddMethod ?? @event.RemoveMethod);
+
+        private AccessModifier _GetAccessModifierFrom(MethodBase method)
+        {
+            if (method.IsPublic)
+                return AccessModifier.Public;
+            else if (method.IsFamily)
+                return AccessModifier.Family;
+            else if (method.IsFamilyOrAssembly)
+                return AccessModifier.AssemblyOrFamily;
+            else if (method.IsFamilyAndAssembly)
+                return AccessModifier.AssemblyAndFamily;
+            else if (method.IsAssembly)
                 return AccessModifier.Assembly;
             else
                 return AccessModifier.Private;

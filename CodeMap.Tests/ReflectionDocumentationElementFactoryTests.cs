@@ -935,6 +935,267 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public void CreateInterfaceDocumentationElementCheckPropertyBasicInformation()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertIs<InterfaceDocumentationElement>(
+                    interfaceDocumentationElement =>
+                        interfaceDocumentationElement.AssertCollectionMember(
+                            () => interfaceDocumentationElement.Properties,
+                            property =>
+                                property
+                                    .AssertEqual(() => property.Name, "TestProperty")
+                                    .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
+                                    .AssertSame(() => property.DeclaringType, interfaceDocumentationElement)
+                                    .AssertTypeReference(() => property.Type, "System", "Int32")
+                                    .AssertTypeReferenceAssembly(() => property.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                    .AssertFalse(() => property.IsStatic)
+                                    .AssertFalse(() => property.IsAbstract)
+                                    .AssertFalse(() => property.IsVirtual)
+                                    .AssertFalse(() => property.IsOverride)
+                                    .AssertFalse(() => property.IsSealed)
+                                    .AssertEmpty(() => property.Summary.Content)
+                                    .AssertEmpty(() => property.Value.Content)
+                                    .AssertEmpty(() => property.Remarks.Content)
+                                    .AssertEmpty(() => property.Examples)
+                                    .AssertEmpty(() => property.Exceptions)
+                    )
+                );
+        }
+
+        [Fact]
+        public void CreateInterfaceDocumentationElementCheckPropertyAttributes()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertIs<InterfaceDocumentationElement>(
+                    interfaceDocumentationElement =>
+                        interfaceDocumentationElement.AssertCollectionMember(
+                            () => interfaceDocumentationElement.Properties,
+                            property =>
+                                property
+                                    .AssertEqual(() => property.Name, "TestProperty")
+                                    .AssertCollectionMember(
+                                        () => property.Attributes,
+                                        attribute => attribute
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests", "TestAttribute")
+                                            .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
+                                            .AssertCollectionMember(
+                                                () => attribute.PositionalParameters,
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "value1")
+                                                    .AssertEqual(() => attributeParameter.Value, "property test 1")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                            .AssertCollectionMember(
+                                                () => attribute.NamedParameters.OrderBy(attributeParameter => attributeParameter.Name),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value2")
+                                                    .AssertEqual(() => attributeParameter.Value, "property test 2")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0)),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value3")
+                                                    .AssertEqual(() => attributeParameter.Value, "property test 3")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                    )
+                    )
+                );
+        }
+
+        [Fact]
+        public void CreateInterfaceDocumentationElementCheckPropertyGetterAttributes()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertIs<InterfaceDocumentationElement>(
+                    interfaceDocumentationElement =>
+                        interfaceDocumentationElement.AssertCollectionMember(
+                            () => interfaceDocumentationElement.Properties,
+                            property =>
+                                property
+                                    .AssertEqual(() => property.Name, "TestProperty")
+                                    .AssertCollectionMember(
+                                        () => property.Getter.Attributes,
+                                        attribute => attribute
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests", "TestAttribute")
+                                            .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
+                                            .AssertCollectionMember(
+                                                () => attribute.PositionalParameters,
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "value1")
+                                                    .AssertEqual(() => attributeParameter.Value, "property getter test 1")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                            .AssertCollectionMember(
+                                                () => attribute.NamedParameters.OrderBy(attributeParameter => attributeParameter.Name),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value2")
+                                                    .AssertEqual(() => attributeParameter.Value, "property getter test 2")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0)),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value3")
+                                                    .AssertEqual(() => attributeParameter.Value, "property getter test 3")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                    )
+                                    .AssertCollectionMember(
+                                        () => property.Getter.ReturnAttributes,
+                                        attribute => attribute
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests", "TestAttribute")
+                                            .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
+                                            .AssertCollectionMember(
+                                                () => attribute.PositionalParameters,
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "value1")
+                                                    .AssertEqual(() => attributeParameter.Value, "return property getter test 1")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                            .AssertCollectionMember(
+                                                () => attribute.NamedParameters.OrderBy(attributeParameter => attributeParameter.Name),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value2")
+                                                    .AssertEqual(() => attributeParameter.Value, "return property getter test 2")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0)),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value3")
+                                                    .AssertEqual(() => attributeParameter.Value, "return property getter test 3")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                    )
+                    )
+                );
+        }
+
+        [Fact]
+        public void CreateInterfaceDocumentationElementCheckPropertySetterAttributes()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertIs<InterfaceDocumentationElement>(
+                    interfaceDocumentationElement =>
+                        interfaceDocumentationElement.AssertCollectionMember(
+                            () => interfaceDocumentationElement.Properties,
+                            property =>
+                                property
+                                    .AssertEqual(() => property.Name, "TestProperty")
+                                    .AssertCollectionMember(
+                                        () => property.Setter.Attributes,
+                                        attribute => attribute
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests", "TestAttribute")
+                                            .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
+                                            .AssertCollectionMember(
+                                                () => attribute.PositionalParameters,
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "value1")
+                                                    .AssertEqual(() => attributeParameter.Value, "property setter test 1")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                            .AssertCollectionMember(
+                                                () => attribute.NamedParameters.OrderBy(attributeParameter => attributeParameter.Name),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value2")
+                                                    .AssertEqual(() => attributeParameter.Value, "property setter test 2")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0)),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value3")
+                                                    .AssertEqual(() => attributeParameter.Value, "property setter test 3")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                    )
+                                    .AssertCollectionMember(
+                                        () => property.Setter.ReturnAttributes,
+                                        attribute => attribute
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests", "TestAttribute")
+                                            .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
+                                            .AssertCollectionMember(
+                                                () => attribute.PositionalParameters,
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "value1")
+                                                    .AssertEqual(() => attributeParameter.Value, "return property setter test 1")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                            .AssertCollectionMember(
+                                                () => attribute.NamedParameters.OrderBy(attributeParameter => attributeParameter.Name),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value2")
+                                                    .AssertEqual(() => attributeParameter.Value, "return property setter test 2")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0)),
+                                                attributeParameter => attributeParameter
+                                                    .AssertEqual(() => attributeParameter.Name, "Value3")
+                                                    .AssertEqual(() => attributeParameter.Value, "return property setter test 3")
+                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
+                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            )
+                                    )
+                    )
+                );
+        }
+
+        [Fact]
+        public void CreateInterfaceDocumentationElementCheckPropertyDocumentation()
+        {
+            var memberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.ITestInterface`3.TestProperty", exceptions: new[] { "T:System.ArgumentException" });
+            var factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
+
+            var typeDocumentationElement = factory.Create(typeof(ITestInterface<,,>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertIs<InterfaceDocumentationElement>(
+                    interfaceDocumentationElement =>
+                        interfaceDocumentationElement.AssertCollectionMember(
+                            () => interfaceDocumentationElement.Properties,
+                            property =>
+                                property
+                                    .AssertEqual(() => property.Name, "TestProperty")
+                                    .AssertSame(() => property.Summary, memberDocumentation.Summary)
+                                    .AssertSame(() => property.Value, memberDocumentation.Value)
+                                    .AssertSame(() => property.Remarks, memberDocumentation.Remarks)
+                                    .AssertSame(() => property.Examples, memberDocumentation.Examples)
+                                    .AssertCollectionMember(
+                                        () => property.Exceptions,
+                                        exception => exception
+                                            .AssertTypeReference(() => exception.Type, "System", "ArgumentException")
+                                            .AssertTypeReferenceAssembly(() => exception.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
+                                            .AssertSameItems(() => exception.Description, memberDocumentation.Exceptions["T:System.ArgumentException"])
+                                    )
+                    )
+                );
+        }
+
+        [Fact]
         public void ConstructorWithNullMembersDocumentationCollectionThrowsException()
         {
             var exception = Assert.Throws<ArgumentNullException>(() => new ReflectionDocumentationElementFactory(null));
