@@ -227,11 +227,48 @@ namespace CodeMap
                     currentType = currentType.DeclaringType;
                 } while (currentType != null);
                 do
-                    stringBuilder.Append(declaringTypes.Pop().Name).Append('.');
+                    _AppendName(declaringTypes.Pop()).Append('.');
                 while (declaringTypes.Count > 0);
             }
 
-            return stringBuilder.Append(type.Name);
+            return _AppendName(type);
+
+            StringBuilder _AppendName(Type sourceType)
+            {
+                if (sourceType.IsConstructedGenericType)
+                {
+                    var backTickIndex = sourceType.Name.IndexOf('`');
+                    if (backTickIndex >= 0)
+                    {
+                        stringBuilder
+                            .Append(sourceType.Name.Substring(0, backTickIndex))
+                            .Append('{');
+                        using (var genericArgument = sourceType
+                                .GetGenericArguments()
+                                .OfType<Type>()
+                                .GetEnumerator())
+                            if (genericArgument.MoveNext())
+                            {
+                                _AppendTypeName(stringBuilder, genericArgument.Current);
+                                while (genericArgument.MoveNext())
+                                    _AppendTypeName(stringBuilder.Append(','), genericArgument.Current);
+                            }
+                        return stringBuilder.Append('}');
+                    }
+                }
+
+                return stringBuilder.Append(sourceType.Name);
+            }
+        }
+
+        private class NestG<TParam1>
+        {
+            internal class NestedG2<TParam2>
+            {
+                internal class NestedG3
+                {
+                }
+            }
         }
 
         private Type _TryFindType(string typeFullName)
@@ -239,19 +276,81 @@ namespace CodeMap
             Type result = null;
             var foundBestMatch = false;
 
+            var genericTypeData = _GetGenericTypeDefinitionFullName(typeFullName);
+
             using (var type = _searchAssemblies.SelectMany(Extensions.GetAllDefinedTypes).Concat(_searchAssemblies.SelectMany(Extensions.GetAllForwardedTypes)).GetEnumerator())
                 while (type.MoveNext() && !foundBestMatch)
                 {
                     var currentTypeFullName = _AppendTypeName(new StringBuilder(), type.Current).ToString();
-                    if (string.Equals(currentTypeFullName, typeFullName, StringComparison.Ordinal))
+                    if (string.Equals(currentTypeFullName, genericTypeData.TypeDefinitionFullName, StringComparison.Ordinal))
                     {
                         result = type.Current;
                         foundBestMatch = true;
                     }
-                    else if (result == null && string.Equals(currentTypeFullName, typeFullName, StringComparison.OrdinalIgnoreCase))
+                    else if (result == null && string.Equals(currentTypeFullName, genericTypeData.TypeDefinitionFullName, StringComparison.OrdinalIgnoreCase))
                         result = type.Current;
                 }
+
+            if (genericTypeData.GenericArguments.Any())
+                return result.MakeGenericType(genericTypeData.GenericArguments.ToArray());
+
             return result;
+        }
+
+        private TypeSearchResult _GetGenericTypeDefinitionFullName(string typeFullName)
+        {
+            var genericArgumentDepth = 0;
+            var genericArgumentStartIndex = 0;
+            var currentTypeGenericArgumentsCount = 0;
+            var genericArguments = new List<Type>();
+            var genericTypeDefinitionFullNameBuilder = new StringBuilder();
+            for (var index = 0; index < typeFullName.Length; index++)
+                switch (typeFullName[index])
+                {
+                    case '{':
+                        if (genericArgumentDepth == 0)
+                        {
+                            currentTypeGenericArgumentsCount = 1;
+                            genericArgumentStartIndex = index + 1;
+                        }
+                        genericArgumentDepth++;
+                        break;
+
+                    case ',' when genericArgumentDepth == 1:
+                        genericArguments.Add(
+                            _TryFindType(
+                                typeFullName.Substring(genericArgumentStartIndex, index - genericArgumentStartIndex)
+                            )
+                        );
+                        currentTypeGenericArgumentsCount++;
+                        genericArgumentStartIndex = index + 1;
+                        break;
+
+                    case '}':
+                        genericArgumentDepth--;
+                        if (genericArgumentDepth == 0)
+                        {
+                            genericArguments.Add(
+                                _TryFindType(
+                                    typeFullName.Substring(genericArgumentStartIndex, index - genericArgumentStartIndex)
+                                )
+                            );
+                            genericTypeDefinitionFullNameBuilder
+                                .Append('`')
+                                .Append(currentTypeGenericArgumentsCount);
+                        }
+                        break;
+
+                    default:
+                        if (genericArgumentDepth == 0)
+                            genericTypeDefinitionFullNameBuilder.Append(typeFullName[index]);
+                        break;
+                }
+
+            return new TypeSearchResult(
+                genericTypeDefinitionFullNameBuilder.ToString(),
+                genericArguments.AsEnumerable()
+            );
         }
 
         private Type _TryFindParameterType(string typeFullName, Type declaringType)
@@ -324,8 +423,8 @@ namespace CodeMap
                     (?<propertyName>[^\.()]+)
                     (
                         \(
-                              (?<parameterType>`\d+|[^,()`]+)
-                            (,(?<parameterType>`\d+|[^,()`]+))*
+                              (?<parameterType>`\d+|``\d+|((?(open)(?!))[^,(){}]|(?(open)[^(){}])|(?'open'\{)|(?'close-open'\}))+(?(open)(?!)))
+                            (,(?<parameterType>`\d+|``\d+|((?(open)(?!))[^,(){}]|(?(open)[^(){}])|(?'open'\{)|(?'close-open'\}))+(?(open)(?!))))*
                         \)
                     )?$",
                 RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace
@@ -362,8 +461,8 @@ namespace CodeMap
                     (?<methodName>\#cctor|\#ctor|[^\.()`]+)(``(?<genericParameterCount>\d+))?
                     (
                         \(
-                              (?<parameterType>`\d+|``\d+|[^,()`]+)
-                            (,(?<parameterType>`\d+|``\d+|[^,()`]+))*
+                              (?<parameterType>`\d+|``\d+|((?(open)(?!))[^,(){}]|(?(open)[^(){}])|(?'open'\{)|(?'close-open'\}))+(?(open)(?!)))
+                            (,(?<parameterType>`\d+|``\d+|((?(open)(?!))[^,(){}]|(?(open)[^(){}])|(?'open'\{)|(?'close-open'\}))+(?(open)(?!))))*
                         \)
                     )?$",
                 RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture);
@@ -399,6 +498,20 @@ namespace CodeMap
                 return declaringType.GetMethod(methodName, genericParameterCount, _bestMatchBindingFlags, Type.DefaultBinder, CallingConventions.Any, methodParameterTypes, null)
                     ?? declaringType.GetMethod(methodName, genericParameterCount, _ignoreCaseBindingFlags, Type.DefaultBinder, CallingConventions.Any, methodParameterTypes, null);
             }
+        }
+
+        private struct TypeSearchResult
+        {
+            public TypeSearchResult(string typeDefinitionFullName, IEnumerable<Type> genericArguments)
+            {
+                TypeDefinitionFullName = typeDefinitionFullName;
+                GenericArguments = genericArguments
+                    .AsReadOnlyCollection();
+            }
+
+            public string TypeDefinitionFullName { get; }
+
+            public IReadOnlyCollection<Type> GenericArguments { get; }
         }
     }
 }

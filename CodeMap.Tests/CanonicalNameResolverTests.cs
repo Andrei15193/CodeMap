@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Xunit;
@@ -2838,6 +2839,22 @@ namespace CodeMap.Tests
         {
             var memberInfo = _CanonicalNameResolver.TryFindMemberInfoFor(canonicalName);
             Assert.Null(memberInfo);
+        }
+
+        [Fact]
+        public void GettingCanonicalNameForTestClassTestMethodWithParameterBeingGenericParameter()
+        {
+            _AssertResolver(
+                "M:CodeMap.Tests.Test.TestMethod(System.Collections.Generic.IReadOnlyDictionary{System.Int32,System.Collections.Generic.IEnumerable{System.String}},System.Collections.Generic.IEnumerable{System.Double})",
+                typeof(Test)
+                    .GetMethod(
+                        "TestMethod",
+                        BindingFlags.NonPublic | BindingFlags.Instance,
+                        Type.DefaultBinder,
+                        new[] { typeof(IReadOnlyDictionary<int,IEnumerable<string>>), typeof(IEnumerable<double>) },
+                        null
+                    )
+            );
         }
 
         private static void _AssertResolver(string canonicalName, MemberInfo memberInfo)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 [assembly: AssemblyVersion("1.2.3.4")]
@@ -41,6 +42,13 @@ namespace CodeMap.Tests
 
     internal interface ITestExtendedInterface : ITestBaseInterface
     {
+    }
+
+    internal class Test
+    {
+        internal void TestMethod(IReadOnlyDictionary<int, IEnumerable<string>> param1, IEnumerable<double> param2)
+        {
+        }
     }
 
     [Test("test 1", Value2 = "test 2", Value3 = "test 3")]
