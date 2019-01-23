@@ -209,18 +209,21 @@ namespace CodeMap
 
         private static StringBuilder _AppendTypeName(StringBuilder stringBuilder, Type type)
         {
-            if (type.IsGenericTypeParameter)
-                return stringBuilder.Append('`').Append(type.GenericParameterPosition);
-            if (type.IsGenericMethodParameter)
-                return stringBuilder.Append("``").Append(type.GenericParameterPosition);
+            var isByRef = type.IsByRef;
+            var concreteType = isByRef ? type.GetElementType() : type;
 
-            if (!string.IsNullOrWhiteSpace(type.Namespace))
-                stringBuilder.Append(type.Namespace).Append('.');
+            if (concreteType.IsGenericTypeParameter)
+                return stringBuilder.Append('`').Append(concreteType.GenericParameterPosition);
+            if (concreteType.IsGenericMethodParameter)
+                return stringBuilder.Append("``").Append(concreteType.GenericParameterPosition);
 
-            if (type.DeclaringType != null)
+            if (!string.IsNullOrWhiteSpace(concreteType.Namespace))
+                stringBuilder.Append(concreteType.Namespace).Append('.');
+
+            if (concreteType.DeclaringType != null)
             {
                 var declaringTypes = new Stack<Type>();
-                var currentType = type.DeclaringType;
+                var currentType = concreteType.DeclaringType;
                 do
                 {
                     declaringTypes.Push(currentType);
@@ -231,7 +234,10 @@ namespace CodeMap
                 while (declaringTypes.Count > 0);
             }
 
-            return _AppendName(type);
+            _AppendName(concreteType);
+            if (isByRef)
+                stringBuilder.Append('@');
+            return stringBuilder;
 
             StringBuilder _AppendName(Type sourceType)
             {
@@ -276,29 +282,31 @@ namespace CodeMap
             Type result = null;
             var foundBestMatch = false;
 
-            var genericTypeData = _GetGenericTypeDefinitionFullName(typeFullName);
-
+            var parameterTypeInfo = _GetParameterTypeInfo(typeFullName);
             using (var type = _searchAssemblies.SelectMany(Extensions.GetAllDefinedTypes).Concat(_searchAssemblies.SelectMany(Extensions.GetAllForwardedTypes)).GetEnumerator())
                 while (type.MoveNext() && !foundBestMatch)
                 {
                     var currentTypeFullName = _AppendTypeName(new StringBuilder(), type.Current).ToString();
-                    if (string.Equals(currentTypeFullName, genericTypeData.TypeDefinitionFullName, StringComparison.Ordinal))
+                    if (string.Equals(currentTypeFullName, parameterTypeInfo.TypeDefinitionFullName, StringComparison.Ordinal))
                     {
                         result = type.Current;
                         foundBestMatch = true;
                     }
-                    else if (result == null && string.Equals(currentTypeFullName, genericTypeData.TypeDefinitionFullName, StringComparison.OrdinalIgnoreCase))
+                    else if (result == null && string.Equals(currentTypeFullName, parameterTypeInfo.TypeDefinitionFullName, StringComparison.OrdinalIgnoreCase))
                         result = type.Current;
                 }
 
-            if (genericTypeData.GenericArguments.Any())
-                return result.MakeGenericType(genericTypeData.GenericArguments.ToArray());
+            if (parameterTypeInfo.GenericArguments.Any())
+                result = result.MakeGenericType(parameterTypeInfo.GenericArguments.ToArray());
+            if (parameterTypeInfo.IsByReference)
+                result = result.MakeByRefType();
 
             return result;
         }
 
-        private TypeSearchResult _GetGenericTypeDefinitionFullName(string typeFullName)
+        private ParameterTypeInfo _GetParameterTypeInfo(string typeFullName)
         {
+            var isByReference = false;
             var genericArgumentDepth = 0;
             var genericArgumentStartIndex = 0;
             var currentTypeGenericArgumentsCount = 0;
@@ -341,14 +349,19 @@ namespace CodeMap
                         }
                         break;
 
+                    case '@' when index == typeFullName.Length - 1:
+                        isByReference = true;
+                        break;
+
                     default:
                         if (genericArgumentDepth == 0)
                             genericTypeDefinitionFullNameBuilder.Append(typeFullName[index]);
                         break;
                 }
 
-            return new TypeSearchResult(
+            return new ParameterTypeInfo(
                 genericTypeDefinitionFullNameBuilder.ToString(),
+                isByReference,
                 genericArguments.AsEnumerable()
             );
         }
@@ -500,16 +513,19 @@ namespace CodeMap
             }
         }
 
-        private struct TypeSearchResult
+        private struct ParameterTypeInfo
         {
-            public TypeSearchResult(string typeDefinitionFullName, IEnumerable<Type> genericArguments)
+            public ParameterTypeInfo(string typeDefinitionFullName, bool isByReference, IEnumerable<Type> genericArguments)
             {
                 TypeDefinitionFullName = typeDefinitionFullName;
+                IsByReference = isByReference;
                 GenericArguments = genericArguments
                     .AsReadOnlyCollection();
             }
 
             public string TypeDefinitionFullName { get; }
+
+            public bool IsByReference { get; }
 
             public IReadOnlyCollection<Type> GenericArguments { get; }
         }

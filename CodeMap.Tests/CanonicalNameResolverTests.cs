@@ -2851,7 +2851,23 @@ namespace CodeMap.Tests
                         "TestMethod",
                         BindingFlags.NonPublic | BindingFlags.Instance,
                         Type.DefaultBinder,
-                        new[] { typeof(IReadOnlyDictionary<int,IEnumerable<string>>), typeof(IEnumerable<double>) },
+                        new[] { typeof(IReadOnlyDictionary<int, IEnumerable<string>>), typeof(IEnumerable<double>) },
+                        null
+                    )
+            );
+        }
+
+        [Fact]
+        public void GettingCanonicalNameForTestClassTestMethodWithByRefParameter()
+        {
+            _AssertResolver(
+                "M:CodeMap.Tests.Test.TestMethod(System.Int32@,System.String@)",
+                typeof(Test)
+                    .GetMethod(
+                        "TestMethod",
+                        BindingFlags.NonPublic | BindingFlags.Instance,
+                        Type.DefaultBinder,
+                        new[] { typeof(int).MakeByRefType(), typeof(string).MakeByRefType() },
                         null
                     )
             );

@@ -49,6 +49,11 @@ namespace CodeMap.Tests
         internal void TestMethod(IReadOnlyDictionary<int, IEnumerable<string>> param1, IEnumerable<double> param2)
         {
         }
+
+        internal void TestMethod(ref int param1, out string param2)
+        {
+            param2 = default(string);
+        }
     }
 
     [Test("test 1", Value2 = "test 2", Value3 = "test 3")]
