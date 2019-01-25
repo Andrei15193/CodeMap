@@ -22,7 +22,7 @@ namespace CodeMap.Tests.TestData
 
         private static string StaticTestField;
 
-        new protected int ShadowedTestField = 0;
+        new protected int ShadowedTestField;
 
         [Test("class event test 1", Value2 = "class event test 2", Value3 = "class event test 3")]
         public event EventHandler<EventArgs> TestEvent

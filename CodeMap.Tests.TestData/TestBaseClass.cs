@@ -2,7 +2,7 @@
 {
     internal abstract class TestBaseClass
     {
-        protected int ShadowedTestField = 0;
+        protected int ShadowedTestField;
 
         public static int StaticTestProperty { get; set; }
 
