@@ -11,8 +11,8 @@ namespace CodeMap.Elements
         {
         }
 
-        /// <summary>The instance type of the pointer.</summary>
-        public TypeReferenceDocumentationElement PointedType { get; internal set; }
+        /// <summary>The type of the pointer.</summary>
+        public TypeReferenceDocumentationElement ReferentType { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents an event declared by a type.</summary>
+    /// <summary>Represents a documented event declared by a type.</summary>
     public sealed class EventDocumentationElement : MemberDocumentationElement
     {
         internal EventDocumentationElement()

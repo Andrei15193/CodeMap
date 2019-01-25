@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CodeMap.Tests.TestData
+namespace CodeMap.Tests.Data
 {
     [Test("class test 1", Value2 = "class test 2", Value3 = "class test 3")]
     internal unsafe class TestClass<TParam1> : TestBaseClass, ITestExtendedBaseInterface

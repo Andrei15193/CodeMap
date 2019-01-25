@@ -6,7 +6,6 @@ using Xunit;
 
 namespace CodeMap.Tests
 {
-    [CLSCompliant(false)]
     public class CanonicalNameResolverTests
     {
         private static CanonicalNameResolver _CanonicalNameResolver { get; } = new CanonicalNameResolver(

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CodeMap.Tests.TestData
+namespace CodeMap.Tests.Data
 {
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     internal class TestAttribute : Attribute

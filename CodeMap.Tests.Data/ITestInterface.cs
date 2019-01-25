@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CodeMap.Tests.TestData
+namespace CodeMap.Tests.Data
 {
     internal unsafe interface ITestInterface<TParam1> : ITestExtendedBaseInterface
     {

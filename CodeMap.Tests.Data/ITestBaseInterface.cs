@@ -1,4 +1,4 @@
-﻿namespace CodeMap.Tests.TestData
+﻿namespace CodeMap.Tests.Data
 {
     internal interface ITestBaseInterface
     {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using CodeMap.Elements;
 using Moq;
@@ -9,7 +8,6 @@ using Xunit;
 
 namespace CodeMap.ElementsTests
 {
-    [CLSCompliant(false)]
     public class DocumentationElementTests
     {
         [Fact]

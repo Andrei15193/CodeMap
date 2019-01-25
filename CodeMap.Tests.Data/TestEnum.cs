@@ -1,4 +1,4 @@
-﻿namespace CodeMap.Tests.TestData
+﻿namespace CodeMap.Tests.Data
 {
     [Test("enum test 1", Value2 = "enum test 2", Value3 = "enum test 3")]
     internal enum TestEnum : byte

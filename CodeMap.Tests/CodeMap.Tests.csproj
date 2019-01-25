@@ -4,6 +4,13 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <IsPackable>false</IsPackable>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CodeMap\CodeMap.csproj" />
-    <ProjectReference Include="..\CodeMap.Tests.TestData\CodeMap.Tests.TestData.csproj" />
+    <ProjectReference Include="..\CodeMap.Tests.Data\CodeMap.Tests.Data.csproj" />
   </ItemGroup>
 
 </Project>

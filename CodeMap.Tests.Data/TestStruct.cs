@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CodeMap.Tests.TestData
+namespace CodeMap.Tests.Data
 {
     [Test("struct test 1", Value2 = "struct test 2", Value3 = "struct test 3")]
     internal unsafe struct TestStruct<TParam1>

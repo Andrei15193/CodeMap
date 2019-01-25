@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents a property declared by a type.</summary>{
+    /// <summary>Represents a documented property declared by a type.</summary>{
     public sealed class PropertyDocumentationElement : MemberDocumentationElement
     {
         internal PropertyDocumentationElement()
@@ -35,6 +35,9 @@ namespace CodeMap.Elements
 
         /// <summary>Information about the setter accessor.</summary>
         public PropertyAccessorData Setter { get; internal set; }
+
+        /// <summary>The method parameters.</summary>
+        public IReadOnlyList<ParameterDocumentationElement> Parameters { get; internal set; }
 
         /// <summary>Documentation about the how the value of the property is calculated.</summary>
         new public ValueDocumentationElement Value { get; internal set; }

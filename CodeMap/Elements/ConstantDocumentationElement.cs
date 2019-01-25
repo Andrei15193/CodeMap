@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents a constant declared by a type.</summary>
+    /// <summary>Represents a documented constant declared by a type.</summary>
     public class ConstantDocumentationElement : MemberDocumentationElement
     {
         internal ConstantDocumentationElement()

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CodeMap.Tests.TestData
+namespace CodeMap.Tests.Data
 {
     internal interface ITestGenericParameter<out TParam1, in TParam2, TParam3, TParam4, TParam5, TParam6>
         where TParam2 : class
