@@ -8,7 +8,21 @@ namespace CodeMap.Tests.TestData
     [Test("class test 1", Value2 = "class test 2", Value3 = "class test 3")]
     internal unsafe class TestClass<TParam1> : TestBaseClass, ITestExtendedBaseInterface
     {
+        public enum NestedTestEnum
+        {
+        }
+
+        public delegate void NestedTestDelegate();
+
+        public interface INestedTestInterface
+        {
+        }
+
         public class NestedTestClass<TParam2, TParam3>
+        {
+        }
+
+        public struct NestedTestStruct
         {
         }
 
