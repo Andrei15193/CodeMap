@@ -231,10 +231,22 @@ namespace CodeMap.Tests
         [InlineData("M:CodeMap.Tests.Data.TestExplicitClass.CodeMap#Tests#Data#ITestExplicitInterface#TestMethod", typeof(TestExplicitClass), "CodeMap.Tests.Data.ITestExplicitInterface.TestMethod")]
         public void TestMemberCanonicalNameResolution(string canonicalName, Type declaringType, string memberName)
         {
-            var member = declaringType
-                .GetMember(memberName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                .Single();
-            _AssertResolver(canonicalName, member);
+            var members = declaringType
+                .GetMember(memberName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            switch (members.Length)
+            {
+                case 2:
+                    var eventInfo = members.OfType<EventInfo>().Single();
+                    var fieldInfo = members.OfType<FieldInfo>().Single();
+                    Assert.Equal(eventInfo.EventHandlerType, fieldInfo.FieldType);
+                    _AssertResolver(canonicalName, eventInfo);
+                    break;
+
+                default:
+                    _AssertResolver(canonicalName, members.Single());
+                    break;
+            }
+
         }
 
         [Fact]
