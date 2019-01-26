@@ -11,7 +11,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
-    <NoWarn>1701;1702;CS0169;CS0649</NoWarn>
+    <NoWarn>1701;1702;CS0067;CS0169;CS0649</NoWarn>
   </PropertyGroup>
 
 </Project>

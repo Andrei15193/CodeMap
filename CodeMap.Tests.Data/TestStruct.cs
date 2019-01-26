@@ -87,7 +87,7 @@ namespace CodeMap.Tests.Data
             => base.ToString();
 
         /// <summary/>
-        new public bool Equals(object obj)
+        public new bool Equals(object obj)
             => base.Equals(obj);
 
         /// <summary/>

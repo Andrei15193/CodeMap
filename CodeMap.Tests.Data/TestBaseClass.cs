@@ -1,10 +1,15 @@
-﻿namespace CodeMap.Tests.Data
+﻿using System;
+
+namespace CodeMap.Tests.Data
 {
     /// <summary/>
     public abstract class TestBaseClass
     {
         /// <summary/>
         protected int ShadowedTestField;
+
+        /// <summary/>
+        public event EventHandler ClassShadowedTestEvent;
 
         /// <summary/>
         public static int StaticTestProperty { get; set; }

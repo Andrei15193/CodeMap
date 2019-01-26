@@ -11,6 +11,9 @@ namespace CodeMap.Tests.Data
         event EventHandler<EventArgs> TestEvent;
 
         /// <summary/>
+        new event EventHandler InterfaceShadowedTestEvent;
+
+        /// <summary/>
         [Test("interface property test 1", Value2 = "interface property test 2", Value3 = "interface property test 3")]
         byte TestProperty
         {

@@ -177,6 +177,7 @@ namespace CodeMap.Tests
         [InlineData("M:CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestMethod", typeof(ITestBaseInterface), "InterfaceShadowedTestMethod")]
 
         [InlineData("E:CodeMap.Tests.Data.ITestInterface`1.TestEvent", typeof(ITestInterface<>), "TestEvent")]
+        [InlineData("E:CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestEvent", typeof(ITestInterface<>), "InterfaceShadowedTestEvent")]
         [InlineData("P:CodeMap.Tests.Data.ITestInterface`1.TestProperty", typeof(ITestInterface<>), "TestProperty")]
         [InlineData("P:CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestProperty", typeof(ITestInterface<>), "InterfaceShadowedTestProperty")]
         [InlineData("P:CodeMap.Tests.Data.ITestInterface`1.Item(" + _indexerParameters + ")", typeof(ITestInterface<>), "Item")]
@@ -203,6 +204,7 @@ namespace CodeMap.Tests
         [InlineData("F:CodeMap.Tests.Data.TestClass`1.StaticTestField", typeof(TestClass<>), "StaticTestField")]
         [InlineData("F:CodeMap.Tests.Data.TestClass`1.ShadowedTestField", typeof(TestClass<>), "ShadowedTestField")]
         [InlineData("E:CodeMap.Tests.Data.TestClass`1.TestEvent", typeof(TestClass<>), "TestEvent")]
+        [InlineData("E:CodeMap.Tests.Data.TestClass`1.ClassShadowedTestEvent", typeof(TestClass<>), "ClassShadowedTestEvent")]
         [InlineData("P:CodeMap.Tests.Data.TestClass`1.AbstractTestProperty", typeof(TestClass<>), "AbstractTestProperty")]
         [InlineData("P:CodeMap.Tests.Data.TestClass`1.VirtualTestProperty", typeof(TestClass<>), "VirtualTestProperty")]
         [InlineData("P:CodeMap.Tests.Data.TestClass`1.InterfaceShadowedTestProperty", typeof(TestClass<>), "InterfaceShadowedTestProperty")]
@@ -212,8 +214,6 @@ namespace CodeMap.Tests
         [InlineData("M:CodeMap.Tests.Data.TestClass`1.AbstractTestMethod", typeof(TestClass<>), "AbstractTestMethod")]
         [InlineData("M:CodeMap.Tests.Data.TestClass`1.VirtualTestMethod", typeof(TestClass<>), "VirtualTestMethod")]
         [InlineData("M:CodeMap.Tests.Data.TestClass`1.TestMethod``1(" + _methodParameters + ")", typeof(TestClass<>), "TestMethod")]
-        [InlineData("M:CodeMap.Tests.Data.TestClass`1.CodeMap#Tests#Data#ITestBaseInterface#InterfaceShadowedTestMethod", typeof(TestClass<>), "CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestMethod")]
-        [InlineData("M:CodeMap.Tests.Data.TestClass`1.CodeMap#Tests#Data#ITestBaseInterface#BaseTestMethod", typeof(TestClass<>), "CodeMap.Tests.Data.ITestBaseInterface.BaseTestMethod")]
 
         [InlineData("F:CodeMap.Tests.Data.TestStruct`1.TestConstant", typeof(TestStruct<>), "TestConstant")]
         [InlineData("F:CodeMap.Tests.Data.TestStruct`1.TestField", typeof(TestStruct<>), "TestField")]
@@ -225,6 +225,10 @@ namespace CodeMap.Tests
         [InlineData("M:CodeMap.Tests.Data.TestStruct`1.ToString", typeof(TestStruct<>), "ToString")]
         [InlineData("M:CodeMap.Tests.Data.TestStruct`1.Equals(System.Object)", typeof(TestStruct<>), "Equals")]
         [InlineData("M:CodeMap.Tests.Data.TestStruct`1.TestMethod``1(" + _methodParameters + ")", typeof(TestStruct<>), "TestMethod")]
+
+        [InlineData("E:CodeMap.Tests.Data.TestExplicitClass.CodeMap#Tests#Data#ITestExplicitInterface#TestEvent", typeof(TestExplicitClass), "CodeMap.Tests.Data.ITestExplicitInterface.TestEvent")]
+        [InlineData("P:CodeMap.Tests.Data.TestExplicitClass.CodeMap#Tests#Data#ITestExplicitInterface#TestProperty", typeof(TestExplicitClass), "CodeMap.Tests.Data.ITestExplicitInterface.TestProperty")]
+        [InlineData("M:CodeMap.Tests.Data.TestExplicitClass.CodeMap#Tests#Data#ITestExplicitInterface#TestMethod", typeof(TestExplicitClass), "CodeMap.Tests.Data.ITestExplicitInterface.TestMethod")]
         public void TestMemberCanonicalNameResolution(string canonicalName, Type declaringType, string memberName)
         {
             var member = declaringType

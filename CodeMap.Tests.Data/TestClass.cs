@@ -47,7 +47,7 @@ namespace CodeMap.Tests.Data
         private static string StaticTestField;
 
         /// <summary/>
-        new protected int ShadowedTestField;
+        protected new int ShadowedTestField;
 
         /// <summary/>
         static TestClass()
@@ -110,6 +110,9 @@ namespace CodeMap.Tests.Data
             param36 = default(void**[]);
             param39 = default(TParam1);
         }
+
+        /// <summary/>
+        public new event EventHandler ClassShadowedTestEvent;
 
         /// <summary/>
         [Test("class event test 1", Value2 = "class event test 2", Value3 = "class event test 3")]
@@ -180,7 +183,7 @@ namespace CodeMap.Tests.Data
         }
 
         /// <summary/>
-        new public void ClassShadowedTestMethod()
+        public new void ClassShadowedTestMethod()
         {
         }
 
@@ -255,6 +258,9 @@ namespace CodeMap.Tests.Data
             param38 = default(void**[]);
             param41 = default(TParam1);
         }
+
+        /// <summary/>
+        event EventHandler ITestBaseInterface.InterfaceShadowedTestEvent { add { } remove { } }
 
         /// <summary/>
         void ITestBaseInterface.InterfaceShadowedTestMethod()

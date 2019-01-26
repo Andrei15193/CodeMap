@@ -115,32 +115,30 @@ namespace CodeMap
                 .ToString();
 
         private static string _GetEventCanonicalNameFor(EventInfo eventInfo)
-            => _AppendTypeName(new StringBuilder("E:"), eventInfo.DeclaringType)
-                .Append('.')
-                .Append(eventInfo.Name)
+        {
+            var eventCanonicalNameBuilder = _AppendTypeName(new StringBuilder("E:"), eventInfo.DeclaringType)
+                .Append('.');
+            return _AppendMemberName(eventCanonicalNameBuilder, eventInfo)
                 .ToString();
+        }
 
         private static string _GetPropertyCanonicalNameFor(PropertyInfo propertyInfo)
         {
             var propertyCanonicalNameBuilder = _AppendTypeName(new StringBuilder("P:"), propertyInfo.DeclaringType)
-                .Append('.')
-                .Append(propertyInfo.Name);
+                .Append('.');
+            _AppendMemberName(propertyCanonicalNameBuilder, propertyInfo);
 
             var parameters = propertyInfo.GetIndexParameters();
             if (parameters.Length > 0)
             {
-                propertyCanonicalNameBuilder.Append('(');
-                using (var parameter = parameters.AsEnumerable().GetEnumerator())
-                    if (parameter.MoveNext())
-                    {
-                        _AppendTypeName(propertyCanonicalNameBuilder, parameter.Current.ParameterType);
-                        while (parameter.MoveNext())
-                        {
-                            propertyCanonicalNameBuilder.Append(',');
-                            _AppendTypeName(propertyCanonicalNameBuilder, parameter.Current.ParameterType);
-                        }
-                    }
-                propertyCanonicalNameBuilder.Append(')');
+                propertyCanonicalNameBuilder
+                    .Append('(')
+                    .Join(
+                        ',',
+                        parameters,
+                        parameter => _AppendTypeName(propertyCanonicalNameBuilder, parameter.ParameterType)
+                    )
+                    .Append(')');
             }
 
             return propertyCanonicalNameBuilder.ToString();
@@ -149,8 +147,8 @@ namespace CodeMap
         private static string _GetMethodCanonicalNameFor(MethodInfo methodInfo)
         {
             var methodCanonicalNameBuilder = _AppendTypeName(new StringBuilder("M:"), methodInfo.DeclaringType)
-                .Append('.')
-                .Append(methodInfo.Name);
+                .Append('.');
+            _AppendMemberName(methodCanonicalNameBuilder, methodInfo);
 
             var genericParameters = methodInfo.GetGenericArguments();
             if (genericParameters.Length > 0)
@@ -161,18 +159,14 @@ namespace CodeMap
             var parameters = methodInfo.GetParameters();
             if (parameters.Length > 0)
             {
-                methodCanonicalNameBuilder.Append('(');
-                using (var parameter = parameters.AsEnumerable().GetEnumerator())
-                    if (parameter.MoveNext())
-                    {
-                        _AppendTypeName(methodCanonicalNameBuilder, parameter.Current.ParameterType);
-                        while (parameter.MoveNext())
-                        {
-                            methodCanonicalNameBuilder.Append(',');
-                            _AppendTypeName(methodCanonicalNameBuilder, parameter.Current.ParameterType);
-                        }
-                    }
-                methodCanonicalNameBuilder.Append(')');
+                methodCanonicalNameBuilder
+                    .Append('(')
+                    .Join(
+                        ',',
+                        parameters,
+                        parameter => _AppendTypeName(methodCanonicalNameBuilder, parameter.ParameterType)
+                    )
+                    .Append(')');
             }
 
             return methodCanonicalNameBuilder.ToString();
@@ -180,101 +174,145 @@ namespace CodeMap
 
         private static string _GetConstructorCanonicalNameFor(ConstructorInfo constructorInfo)
         {
-            var methodCanonicalNameBuilder = _AppendTypeName(new StringBuilder("M:"), constructorInfo.DeclaringType);
-
-            if (constructorInfo.IsStatic)
-                methodCanonicalNameBuilder.Append(".#cctor");
-            else
-                methodCanonicalNameBuilder.Append(".#ctor");
+            var methodCanonicalNameBuilder = _AppendTypeName(new StringBuilder("M:"), constructorInfo.DeclaringType)
+                .Append(constructorInfo.IsStatic ? ".#cctor" : ".#ctor");
 
             var parameters = constructorInfo.GetParameters();
             if (parameters.Length > 0)
             {
-                methodCanonicalNameBuilder.Append('(');
-                using (var parameter = parameters.AsEnumerable().GetEnumerator())
-                    if (parameter.MoveNext())
-                    {
-                        _AppendTypeName(methodCanonicalNameBuilder, parameter.Current.ParameterType);
-                        while (parameter.MoveNext())
-                        {
-                            methodCanonicalNameBuilder.Append(',');
-                            _AppendTypeName(methodCanonicalNameBuilder, parameter.Current.ParameterType);
-                        }
-                    }
-                methodCanonicalNameBuilder.Append(')');
+                methodCanonicalNameBuilder
+                    .Append('(')
+                    .Join(
+                        ',',
+                        parameters,
+                        parameter => _AppendTypeName(methodCanonicalNameBuilder, parameter.ParameterType)
+                    )
+                    .Append(')');
             }
 
             return methodCanonicalNameBuilder.ToString();
         }
 
-        private static StringBuilder _AppendTypeName(StringBuilder stringBuilder, Type type)
+        private static StringBuilder _AppendTypeName(StringBuilder stringBuilder, Type type, char identifierSeparator = '.')
         {
-            var isByRef = type.IsByRef;
-            var concreteType = isByRef ? type.GetElementType() : type;
-
-            if (concreteType.IsGenericTypeParameter)
-                return stringBuilder.Append('`').Append(concreteType.GenericParameterPosition);
-            if (concreteType.IsGenericMethodParameter)
-                return stringBuilder.Append("``").Append(concreteType.GenericParameterPosition);
-
-            if (!string.IsNullOrWhiteSpace(concreteType.Namespace))
-                stringBuilder.Append(concreteType.Namespace).Append('.');
-
-            if (concreteType.DeclaringType != null)
+            if (type.IsByRef)
+                return _AppendTypeName(stringBuilder, type.GetElementType())
+                    .Append('@');
+            else if (type.IsPointer)
+                return _AppendTypeName(stringBuilder, type.GetElementType())
+                    .Append('*');
+            else if (type.IsArray)
             {
-                var declaringTypes = new Stack<Type>();
-                var currentType = concreteType.DeclaringType;
-                do
-                {
-                    declaringTypes.Push(currentType);
-                    currentType = currentType.DeclaringType;
-                } while (currentType != null);
-                do
-                    _AppendName(declaringTypes.Pop()).Append('.');
-                while (declaringTypes.Count > 0);
+                var arrayRank = type.GetArrayRank();
+                if (arrayRank == 1)
+                    return _AppendTypeName(stringBuilder, type.GetElementType())
+                        .Append("[]");
+                else
+                    return _AppendTypeName(stringBuilder, type.GetElementType())
+                        .Append('[')
+                        .Join(
+                            ',',
+                            Enumerable.Range(0, arrayRank),
+                            dimension => stringBuilder.Append("0:")
+                        )
+                        .Append(']');
             }
-
-            _AppendName(concreteType);
-            if (isByRef)
-                stringBuilder.Append('@');
-            return stringBuilder;
-
-            StringBuilder _AppendName(Type sourceType)
+            else if (type.IsGenericTypeParameter)
+                return stringBuilder
+                    .Append('`')
+                    .Append(type.GenericParameterPosition);
+            if (type.IsGenericMethodParameter)
+                return stringBuilder
+                    .Append("``")
+                    .Append(type.GenericParameterPosition);
+            else
             {
-                if (sourceType.IsConstructedGenericType)
-                {
-                    var backTickIndex = sourceType.Name.IndexOf('`');
-                    if (backTickIndex >= 0)
-                    {
-                        stringBuilder
-                            .Append(sourceType.Name.Substring(0, backTickIndex))
-                            .Append('{');
-                        using (var genericArgument = sourceType
-                                .GetGenericArguments()
-                                .OfType<Type>()
-                                .GetEnumerator())
-                            if (genericArgument.MoveNext())
-                            {
-                                _AppendTypeName(stringBuilder, genericArgument.Current);
-                                while (genericArgument.MoveNext())
-                                    _AppendTypeName(stringBuilder.Append(','), genericArgument.Current);
-                            }
-                        return stringBuilder.Append('}');
-                    }
-                }
+                if (!string.IsNullOrWhiteSpace(type.Namespace))
+                    stringBuilder
+                        .Append(type.Namespace.Replace('.', identifierSeparator))
+                        .Append(identifierSeparator);
 
-                return stringBuilder.Append(sourceType.Name);
+                var genericArgumentOffset = 0;
+                var genericArguments = type.GetGenericArguments();
+                return stringBuilder.Join(
+                    identifierSeparator,
+                    type.GetNestingChain(),
+                    currentType =>
+                    {
+                        var backTickIndex = currentType.Name.IndexOf('`');
+                        if (type.IsConstructedGenericType && currentType.IsGenericType)
+                        {
+                            var genericArgumentsCount = currentType.GetGenericArguments().Length;
+                            stringBuilder
+                                .Append(currentType
+                                    .Name
+                                    .AsSpan(
+                                        0,
+                                        backTickIndex >= 0 ? backTickIndex : currentType.Name.Length
+                                    )
+                                )
+                                .Append('{')
+                                .Join(
+                                    ',',
+                                    Enumerable.Range(genericArgumentOffset, genericArgumentsCount - genericArgumentOffset),
+                                    genericArgumentIndex => _AppendTypeName(stringBuilder, genericArguments[genericArgumentIndex])
+                                )
+                                .Append('}');
+                            genericArgumentOffset += genericArgumentsCount;
+                        }
+                        else
+                            stringBuilder.Append(currentType.Name);
+                    }
+                );
             }
         }
 
-        private class NestG<TParam1>
+        private static StringBuilder _AppendMemberName(StringBuilder stringBuilder, MemberInfo memberInfo)
         {
-            internal class NestedG2<TParam2>
+            Type baseInterface = null;
+            switch (memberInfo)
             {
-                internal class NestedG3
-                {
-                }
+                case MethodInfo methodInfo:
+                    baseInterface = _TryGetInterfaceIfExplicitImplementation(methodInfo);
+                    break;
+
+                case PropertyInfo propertyInfo:
+                    baseInterface = _TryGetInterfaceIfExplicitImplementation(propertyInfo.GetMethod ?? propertyInfo.SetMethod);
+                    break;
+
+                case EventInfo eventInfo:
+                    baseInterface = _TryGetInterfaceIfExplicitImplementation(eventInfo.AddMethod ?? eventInfo.RemoveMethod);
+                    break;
             }
+            if (baseInterface != null)
+            {
+                var memberNameStartIndex = memberInfo.Name.LastIndexOf('.') + 1;
+                _AppendTypeName(stringBuilder, baseInterface, '#')
+                    .Append('#')
+                    .Append(
+                        memberInfo.Name,
+                        memberNameStartIndex,
+                        memberInfo.Name.Length - memberNameStartIndex
+                    );
+            }
+            else
+                stringBuilder.Append(memberInfo.Name);
+
+            return stringBuilder;
+
+            Type _TryGetInterfaceIfExplicitImplementation(MethodInfo methodInfo)
+                => methodInfo.IsPrivate
+                    ? memberInfo
+                        .DeclaringType
+                        .GetInterfaces()
+                        .Select(memberInfo.DeclaringType.GetInterfaceMap)
+                        .Where(
+                            interfaceMap => interfaceMap.TargetType == methodInfo.DeclaringType
+                                && interfaceMap.TargetMethods.Any(targetMethodInfo => methodInfo == targetMethodInfo)
+                        )
+                        .Select(interfaceMap => interfaceMap.InterfaceType)
+                        .SingleOrDefault()
+                    : null;
         }
 
         private Type _TryFindType(string typeFullName)
