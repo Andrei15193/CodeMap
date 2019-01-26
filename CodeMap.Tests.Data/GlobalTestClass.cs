@@ -1,0 +1,4 @@
+﻿/// <summary/>
+public class GlobalTestClass
+{
+}

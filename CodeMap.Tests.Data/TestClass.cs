@@ -5,39 +5,113 @@ using System.Collections.Generic;
 
 namespace CodeMap.Tests.Data
 {
+    /// <summary/>
     [Test("class test 1", Value2 = "class test 2", Value3 = "class test 3")]
-    internal unsafe class TestClass<TParam1> : TestBaseClass, ITestExtendedBaseInterface
+    public unsafe class TestClass<TParam1> : TestBaseClass, ITestExtendedBaseInterface
     {
+        /// <summary/>
         public enum NestedTestEnum
         {
         }
 
+        /// <summary/>
         public delegate void NestedTestDelegate();
 
+        /// <summary/>
         public interface INestedTestInterface
         {
         }
 
+        /// <summary/>
         public class NestedTestClass<TParam2, TParam3>
         {
         }
 
+        /// <summary/>
         public struct NestedTestStruct
         {
         }
 
+        /// <summary/>
         [Test("class constant test 1", Value2 = "class constant test 2", Value3 = "class constant test 3")]
         private const double TestConstant = 1;
 
+        /// <summary/>
         [Test("class field test 1", Value2 = "class field test 2", Value3 = "class field test 3")]
         private byte TestField;
 
+        /// <summary/>
         private readonly char ReadonlyTestField;
 
+        /// <summary/>
         private static string StaticTestField;
 
+        /// <summary/>
         new protected int ShadowedTestField;
 
+        /// <summary/>
+        static TestClass()
+        {
+        }
+
+        /// <summary/>
+        [Test("class method test 1", Value2 = "class method test 2", Value3 = "class method test 3")]
+        public TestClass(
+            [Test("class method parameter test 1", Value2 = "class method parameter test 2", Value3 = "class method parameter test 3")]
+            int param1,
+            byte[] param2,
+            char[][] param3,
+            double[,] param4,
+            ref int param5,
+            ref byte[] param6,
+            ref char[][] param7,
+            ref double[,] param8,
+            out int param9,
+            out byte[] param10,
+            out char[][] param11,
+            out double[,] param12,
+            TestClass<int>.NestedTestClass<byte[], IEnumerable<string>> param13,
+            TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[] param14,
+            ref TestClass<int>.NestedTestClass<byte[], IEnumerable<string>> param15,
+            out TestClass<int>.NestedTestClass<byte[], IEnumerable<string>> param16,
+            ref TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[] param17,
+            out TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[] param18,
+            dynamic param19,
+            ref dynamic param20,
+            out dynamic param21,
+            int* param24,
+            byte*[] param25,
+            ref char* param26,
+            out double* param27,
+            ref decimal*[] param28,
+            out short*[] param29,
+            void* param30,
+            void** param31,
+            ref void** param32,
+            out void** param33,
+            void**[] param34,
+            ref void**[] param35,
+            out void**[] param36,
+            TParam1 param37,
+            ref TParam1 param38,
+            out TParam1 param39,
+            string param40 = "test")
+        {
+            param9 = default(int);
+            param10 = default(byte[]);
+            param11 = default(char[][]);
+            param12 = default(double[,]);
+            param16 = default(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>);
+            param18 = default(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]);
+            param21 = default(dynamic);
+            param27 = default(double*);
+            param29 = default(short*[]);
+            param33 = default(void**);
+            param36 = default(void**[]);
+            param39 = default(TParam1);
+        }
+
+        /// <summary/>
         [Test("class event test 1", Value2 = "class event test 2", Value3 = "class event test 3")]
         public event EventHandler<EventArgs> TestEvent
         {
@@ -53,20 +127,24 @@ namespace CodeMap.Tests.Data
             }
         }
 
+        /// <summary/>
         public override byte AbstractTestProperty { get; set; }
 
+        /// <summary/>
         public sealed override string VirtualTestProperty { get; set; }
 
+        /// <summary/>
         public int InterfaceShadowedTestProperty { get; set; }
 
+        /// <summary/>
         [Test("class indexer test 1", Value2 = "class indexer test 2", Value3 = "class indexer test 3")]
         public int this[
             int param1,
             byte[] param2,
             char[][] param3,
             double[,] param4,
-            TestClass<int>.NestedTestClass<byte, IEnumerable<string>> param5,
-            TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[] param6,
+            TestClass<int>.NestedTestClass<byte[], IEnumerable<string>> param5,
+            TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[] param6,
             dynamic param7,
             int* param8,
             byte*[] param9,
@@ -89,6 +167,7 @@ namespace CodeMap.Tests.Data
             }
         }
 
+        /// <summary/>
         [Test("class property test 1", Value2 = "class property test 2", Value3 = "class property test 3")]
         public byte TestProperty
         {
@@ -100,18 +179,22 @@ namespace CodeMap.Tests.Data
             set;
         }
 
+        /// <summary/>
         new public void ClassShadowedTestMethod()
         {
         }
 
+        /// <summary/>
         public override void AbstractTestMethod()
         {
         }
 
+        /// <summary/>
         public sealed override void VirtualTestMethod()
         {
         }
 
+        /// <summary/>
         [Test("class method test 1", Value2 = "class method test 2", Value3 = "class method test 3")]
         [return: Test("class method return test 1", Value2 = "class method return test 2", Value3 = "class method return test 3")]
         public void TestMethod<TMethodParam1>(
@@ -128,12 +211,12 @@ namespace CodeMap.Tests.Data
             out byte[] param10,
             out char[][] param11,
             out double[,] param12,
-            TestClass<int>.NestedTestClass<byte, IEnumerable<string>> param13,
-            TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[] param14,
-            ref TestClass<int>.NestedTestClass<byte, IEnumerable<string>> param15,
-            out TestClass<int>.NestedTestClass<byte, IEnumerable<string>> param16,
-            ref TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[] param17,
-            out TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[] param18,
+            TestClass<int>.NestedTestClass<byte[], IEnumerable<string>> param13,
+            TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[] param14,
+            ref TestClass<int>.NestedTestClass<byte[], IEnumerable<string>> param15,
+            out TestClass<int>.NestedTestClass<byte[], IEnumerable<string>> param16,
+            ref TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[] param17,
+            out TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[] param18,
             dynamic param19,
             ref dynamic param20,
             out dynamic param21,
@@ -162,8 +245,8 @@ namespace CodeMap.Tests.Data
             param10 = default(byte[]);
             param11 = default(char[][]);
             param12 = default(double[,]);
-            param16 = default(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>);
-            param18 = default(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]);
+            param16 = default(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>);
+            param18 = default(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]);
             param21 = default(dynamic);
             pram24 = default(TMethodParam1);
             param29 = default(double*);
@@ -173,10 +256,12 @@ namespace CodeMap.Tests.Data
             param41 = default(TParam1);
         }
 
+        /// <summary/>
         void ITestBaseInterface.InterfaceShadowedTestMethod()
         {
         }
 
+        /// <summary/>
         void ITestBaseInterface.BaseTestMethod()
         {
         }

@@ -1,6 +1,7 @@
 ﻿namespace CodeMap.Tests.Data
 {
-    internal sealed class TestSealedClass
+    /// <summary/>
+    public sealed class TestSealedClass
     {
     }
 }

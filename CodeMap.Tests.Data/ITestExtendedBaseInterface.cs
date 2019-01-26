@@ -1,6 +1,7 @@
 ﻿namespace CodeMap.Tests.Data
 {
-    internal interface ITestExtendedBaseInterface : ITestBaseInterface
+    /// <summary/>
+    public interface ITestExtendedBaseInterface : ITestBaseInterface
     {
     }
 }

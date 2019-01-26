@@ -2,7 +2,8 @@
 
 namespace CodeMap.Tests.Data
 {
-    internal unsafe delegate void TestDelegate<TMethodParam1>(
+    /// <summary/>
+    public unsafe delegate void TestDelegate<TMethodParam1>(
         int param1,
         byte[] param2,
         char[][] param3,
