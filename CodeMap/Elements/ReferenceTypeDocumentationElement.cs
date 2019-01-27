@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents a reference to a pointer type.</summary>
-    public class PointerTypeDocumentationElement : TypeReferenceDocumentationElement
+    /// <summary>Represents a reference to a type that is passed by reference (<c>in</c>, <c>ref</c> or <c>out</c> parameters).</summary>
+    public class ReferenceTypeDocumentationElement : TypeReferenceDocumentationElement
     {
-        internal PointerTypeDocumentationElement()
+        internal ReferenceTypeDocumentationElement()
         {
         }
 
-        /// <summary>The type of the pointer.</summary>
+        /// <summary>The type passed by reference.</summary>
         public TypeReferenceDocumentationElement ReferentType { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
@@ -35,7 +35,7 @@ namespace CodeMap.Elements
         /// <returns>Returns <c>true</c> if the current <see cref="PointerTypeDocumentationElement"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(Type type)
         {
-            if (type == null || !type.IsPointer)
+            if (type == null || !type.IsByRef)
                 return false;
 
             return ReferentType == type.GetElementType();

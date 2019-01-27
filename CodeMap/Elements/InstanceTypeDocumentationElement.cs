@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,6 +41,23 @@ namespace CodeMap.Elements
         public override Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
+        }
+
+        /// <summary>Determines whether the current <see cref="InstanceTypeDocumentationElement"/> is equal to the provided <paramref name="type"/>.</summary>
+        /// <param name="type">The <see cref="Type"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="InstanceTypeDocumentationElement"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
+        public override bool Equals(Type type)
+        {
+            if (type == null || type.IsPointer || type.IsArray || type.IsByRef || type.IsGenericParameter || (type.IsGenericType && !type.IsGenericTypeDefinition))
+                return false;
+
+            var backTickIndex = type.Name.LastIndexOf('`');
+            return
+                string.Equals(Name, (backTickIndex >= 0 ? type.Name.Substring(0, backTickIndex) : type.Name), StringComparison.OrdinalIgnoreCase)
+                && string.Equals(Namespace, type.Namespace, StringComparison.OrdinalIgnoreCase)
+                && DeclaringType == type.DeclaringType
+                && GenericArguments.Count == type.GetGenericArguments().Length
+                && Assembly == type.Assembly.GetName();
         }
     }
 }

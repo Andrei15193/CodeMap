@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace CodeMap.Elements
 {
     /// <summary>Represents a documented generic parameter.</summary>
-    public sealed class GenericParameterDocumentationElement : TypeReferenceDocumentationElement
+    public abstract class GenericParameterDocumentationElement : TypeReferenceDocumentationElement
     {
         internal GenericParameterDocumentationElement()
         {
@@ -14,6 +14,9 @@ namespace CodeMap.Elements
 
         /// <summary>The name of the generic parameter.</summary>
         public string Name { get; internal set; }
+
+        /// <summary>The position of the generic parameter.</summary>
+        public int Position { get; internal set; }
 
         /// <summary>Indicates whether the parameter is covariant.</summary>
         public bool IsCovariant { get; internal set; }

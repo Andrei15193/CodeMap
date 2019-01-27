@@ -32,5 +32,16 @@ namespace CodeMap.Elements
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>Determines whether the current <see cref="ArrayTypeDocumentationElement"/> is equal to the provided <paramref name="type"/>.</summary>
+        /// <param name="type">The <see cref="Type"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="ArrayTypeDocumentationElement"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
+        public override bool Equals(Type type)
+        {
+            if (type == null || !type.IsArray)
+                return false;
+
+            return type.GetArrayRank() == Rank && type.GetElementType() == ItemType;
+        }
     }
 }

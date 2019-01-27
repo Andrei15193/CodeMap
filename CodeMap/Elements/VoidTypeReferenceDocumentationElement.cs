@@ -1,13 +1,14 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents a <c>dynamic</c> type reference.</summary>
-    public sealed class DynamicTypeReference : TypeReferenceDocumentationElement
+    /// <summary>Represents the type reference for <c>void</c>.</summary>
+    public sealed class VoidTypeReferenceDocumentationElement : TypeReferenceDocumentationElement
     {
-        /// <summary>Initializes a new instance of the <see cref="DynamicTypeReference"/> class.</summary>
-        public DynamicTypeReference()
+        /// <summary>Initializes a new instance of the <see cref="VoidTypeReferenceDocumentationElement"/></summary>
+        public VoidTypeReferenceDocumentationElement()
         {
         }
 
@@ -17,7 +18,7 @@ namespace CodeMap.Elements
         {
             throw new System.NotImplementedException();
         }
-        
+
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
@@ -26,5 +27,11 @@ namespace CodeMap.Elements
         {
             throw new System.NotImplementedException();
         }
+
+        /// <summary>Determines whether the current <see cref="VoidTypeReferenceDocumentationElement"/> is equal to the provided <paramref name="type"/>.</summary>
+        /// <param name="type">The <see cref="Type"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="VoidTypeReferenceDocumentationElement"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
+        public override bool Equals(Type type)
+            => type == typeof(void);
     }
 }

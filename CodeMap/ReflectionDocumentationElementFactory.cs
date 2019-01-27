@@ -13,7 +13,7 @@ namespace CodeMap
     /// </summary>
     public class ReflectionDocumentationElementFactory
     {
-        private readonly DynamicTypeReference _dynamicTypeReference = new DynamicTypeReference();
+        private readonly DynamicTypeReferenceDocumentationElement _dynamicTypeReference = new DynamicTypeReferenceDocumentationElement();
         private readonly DocumentationElementCache _referencesCache = new DocumentationElementCache();
         private readonly CanonicalNameResolver _canonicalNameResolver = new CanonicalNameResolver(
             new[] { typeof(ReflectionDocumentationElementFactory).Assembly }
@@ -340,7 +340,7 @@ namespace CodeMap
         private TypeReferenceDocumentationElement _CreateTypeReference(Type type)
         {
             if (type.IsGenericParameter)
-                return new GenericParameterDocumentationElement();
+                return new TypeGenericParameterDocumentationElement();
             else if (type == typeof(void))
                 return new VoidTypeReferenceDocumentationElement();
             else

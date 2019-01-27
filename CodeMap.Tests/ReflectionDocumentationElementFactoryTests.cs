@@ -9,8 +9,8 @@ namespace CodeMap.Tests
 {
     public class ReflectionDocumentationElementFactoryTests
     {
-        [Fact(Skip = "under refactorment")]
-        public void CreateEnumDocumentationElementCheckBasicInformation()
+        [Fact]
+        public void EnumDocumentationElement()
         {
             var factory = new ReflectionDocumentationElementFactory();
 
@@ -18,74 +18,84 @@ namespace CodeMap.Tests
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestEnum")
-                .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Assembly)
+                .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
-                .AssertEmpty(() => typeDocumentationElement.Summary.Content)
-                .AssertEmpty(() => typeDocumentationElement.Remarks.Content)
-                .AssertEmpty(() => typeDocumentationElement.Examples)
-                .AssertEmpty(() => typeDocumentationElement.RelatedMembers)
+                .AssertAttributes(() => typeDocumentationElement.Attributes, "enum")
                 .AssertIs<EnumDocumentationElement>(
                     enumDocumentationElement => enumDocumentationElement
-                        .AssertTypeReference(() => enumDocumentationElement.UnderlyingType, "System", "Byte")
-                        .AssertTypeReferenceAssembly(() => enumDocumentationElement.UnderlyingType, "System.Private.CoreLib", new Version(4, 0, 0, 0))
-                );
+                        .AssertType(() => enumDocumentationElement.UnderlyingType, typeof(byte))
+                        .AssertCollectionMember(
+                            () => enumDocumentationElement.Members,
+                            enumMember => enumMember
+                                .AssertEqual(() => enumMember.Name, "TestMember1")
+                                .AssertAttributes(() => enumMember.Attributes, "enum member")
+                                .AssertEqual(() => enumMember.AccessModifier, AccessModifier.Public)
+                                .AssertSame(() => enumMember.DeclaringType, enumDocumentationElement)
+                                .AssertType(() => enumMember.Type, typeof(TestEnum))
+                                .AssertEqual(() => enumMember.Value, TestEnum.TestMember1)
+                                .AssertNoDocumentation(),
+                            enumMember => enumMember
+                                .AssertEqual(() => enumMember.Name, "TestMember2")
+                                .AssertEmpty(() => enumMember.Attributes)
+                                .AssertEqual(() => enumMember.AccessModifier, AccessModifier.Public)
+                                .AssertSame(() => enumMember.DeclaringType, enumDocumentationElement)
+                                .AssertType(() => enumMember.Type, typeof(TestEnum))
+                                .AssertEqual(() => enumMember.Value, TestEnum.TestMember2)
+                                .AssertNoDocumentation(),
+                            enumMember => enumMember
+                                .AssertEqual(() => enumMember.Name, "TestMember3")
+                                .AssertEmpty(() => enumMember.Attributes)
+                                .AssertEqual(() => enumMember.AccessModifier, AccessModifier.Public)
+                                .AssertSame(() => enumMember.DeclaringType, enumDocumentationElement)
+                                .AssertType(() => enumMember.Type, typeof(TestEnum))
+                                .AssertEqual(() => enumMember.Value, TestEnum.TestMember3)
+                                .AssertNoDocumentation()
+                        )
+                )
+                .AssertNoDocumentation();
         }
 
-        [Fact(Skip = "under refactorment")]
-        public void CreateEnumDocumentationElementCheckDocumentation()
+        [Fact]
+        public void EnumDocumentationElementDocumentation()
         {
-            var enumDocumentationMember = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.TestEnum");
+            var enumDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.TestEnum");
+            var enumMember1Documentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestEnum.TestMember1");
+            var enumMember2Documentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestEnum.TestMember2");
+            var enumMember3Documentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestEnum.TestMember3");
             var factory = new ReflectionDocumentationElementFactory(
-                new MemberDocumentationCollection(new[] { enumDocumentationMember })
+                new MemberDocumentationCollection(
+                    new[] {
+                        enumDocumentation,
+                        enumMember1Documentation,
+                        enumMember2Documentation,
+                        enumMember3Documentation
+                    }
+                )
             );
 
             var typeDocumentationElement = factory.Create(typeof(TestEnum));
 
             typeDocumentationElement
-                .AssertSame(() => typeDocumentationElement.Summary, enumDocumentationMember.Summary)
-                .AssertSame(() => typeDocumentationElement.Remarks, enumDocumentationMember.Remarks)
-                .AssertSame(() => typeDocumentationElement.Examples, enumDocumentationMember.Examples)
-                .AssertSame(() => typeDocumentationElement.RelatedMembers, enumDocumentationMember.RelatedMembers);
+                .AssertEqual(() => typeDocumentationElement.Name, "TestEnum")
+                .AssertIs<EnumDocumentationElement>(
+                    enumDocumentationElement => enumDocumentationElement
+                        .AssertCollectionMember(
+                            () => enumDocumentationElement.Members,
+                            enumMember => enumMember
+                                .AssertEqual(() => enumMember.Name, "TestMember1")
+                                .AssertDocumentation(enumMember1Documentation),
+                            enumMember => enumMember
+                                .AssertEqual(() => enumMember.Name, "TestMember2")
+                                .AssertDocumentation(enumMember2Documentation),
+                            enumMember => enumMember
+                                .AssertEqual(() => enumMember.Name, "TestMember3")
+                                .AssertDocumentation(enumMember3Documentation)
+                        )
+                )
+                .AssertDocumentation(enumDocumentation);
         }
 
-        [Fact(Skip = "under refactorment")]
-        public void CreateEnumDocumentationElementCheckAttributes()
-        {
-            var factory = new ReflectionDocumentationElementFactory();
-
-            var typeDocumentationElement = factory.Create(typeof(TestEnum));
-
-            typeDocumentationElement
-                .AssertCollectionMember(
-                    () => typeDocumentationElement.Attributes,
-                    attribute => attribute
-                        .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
-                        .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
-                        .AssertCollectionMember(
-                            () => attribute.PositionalParameters,
-                            positionalParameter => positionalParameter
-                                .AssertEqual(() => positionalParameter.Name, "value1")
-                                .AssertEqual(() => positionalParameter.Value, "test 1")
-                                .AssertTypeReference(() => positionalParameter.Type, "System", "Object")
-                                .AssertTypeReferenceAssembly(() => positionalParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
-                        )
-                        .AssertCollectionMember(
-                            () => attribute.NamedParameters.OrderBy(namedParameter => namedParameter.Name),
-                            namedParameter => namedParameter
-                                .AssertEqual(() => namedParameter.Name, "Value2")
-                                .AssertEqual(() => namedParameter.Value, "test 2")
-                                .AssertTypeReference(() => namedParameter.Type, "System", "Object")
-                                .AssertTypeReferenceAssembly(() => namedParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0)),
-                            namedParameter => namedParameter
-                                .AssertEqual(() => namedParameter.Name, "Value3")
-                                .AssertEqual(() => namedParameter.Value, "test 3")
-                                .AssertTypeReference(() => namedParameter.Type, "System", "Object")
-                                .AssertTypeReferenceAssembly(() => namedParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
-                        )
-                );
-        }
-
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateEnumDocumentationElementCheckMembers()
         {
             var factory = new ReflectionDocumentationElementFactory();
@@ -101,7 +111,7 @@ namespace CodeMap.Tests
                                 .AssertEqual(() => enumMember.Name, "TestMember1")
                                 .AssertEqual(() => enumMember.AccessModifier, AccessModifier.Public)
                                 .AssertSame(() => enumMember.DeclaringType, enumDocumentationElement)
-                                .AssertTypeReference(() => enumMember.Type, "CodeMap.Tests.Data", "TestEnum")
+                                .AssertTypeReference(() => enumMember.Type, "CodeMap.Tests.CodeDocumentation", "TestEnum")
                                 .AssertTypeReferenceAssembly(() => enumMember.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                 .AssertEqual(() => enumMember.Value, TestEnum.TestMember1)
                                 .AssertEmpty(() => enumMember.Summary.Content)
@@ -112,7 +122,7 @@ namespace CodeMap.Tests
                                 .AssertEqual(() => enumMember.Name, "TestMember2")
                                 .AssertEqual(() => enumMember.AccessModifier, AccessModifier.Public)
                                 .AssertSame(() => enumMember.DeclaringType, enumDocumentationElement)
-                                .AssertTypeReference(() => enumMember.Type, "CodeMap.Tests.Data", "TestEnum")
+                                .AssertTypeReference(() => enumMember.Type, "CodeMap.Tests.CodeDocumentation", "TestEnum")
                                 .AssertTypeReferenceAssembly(() => enumMember.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                 .AssertEqual(() => enumMember.Value, TestEnum.TestMember2)
                                 .AssertEmpty(() => enumMember.Summary.Content)
@@ -123,7 +133,7 @@ namespace CodeMap.Tests
                                 .AssertEqual(() => enumMember.Name, "TestMember3")
                                 .AssertEqual(() => enumMember.AccessModifier, AccessModifier.Public)
                                 .AssertSame(() => enumMember.DeclaringType, enumDocumentationElement)
-                                .AssertTypeReference(() => enumMember.Type, "CodeMap.Tests.Data", "TestEnum")
+                                .AssertTypeReference(() => enumMember.Type, "CodeMap.Tests.CodeDocumentation", "TestEnum")
                                 .AssertTypeReferenceAssembly(() => enumMember.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                 .AssertEqual(() => enumMember.Value, TestEnum.TestMember3)
                                 .AssertEmpty(() => enumMember.Summary.Content)
@@ -134,7 +144,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateEnumDocumentationElementCheckMemberAttributes()
         {
             var factory = new ReflectionDocumentationElementFactory();
@@ -151,7 +161,7 @@ namespace CodeMap.Tests
                                 .AssertCollectionMember(
                                     () => enumMember.Attributes,
                                     attribute => attribute
-                                        .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
+                                        .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.CodeDocumentation", "TestAttribute")
                                         .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                         .AssertCollectionMember(
                                             () => attribute.PositionalParameters,
@@ -185,10 +195,10 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateEnumDocumentationElementCheckMemberDocumentation()
         {
-            var enumMemberDocumentationMember = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestEnum.TestMember1");
+            var enumMemberDocumentationMember = _CreateMemberDocumentationMock("F:CodeMap.Tests.CodeDocumentation.TestEnum.TestMember1");
             var factory = new ReflectionDocumentationElementFactory(
                 new MemberDocumentationCollection(new[] { enumMemberDocumentationMember })
             );
@@ -224,7 +234,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateDelegateDocumentationElementCheckBasicInformation()
         {
             var _factory = new ReflectionDocumentationElementFactory();
@@ -244,11 +254,11 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateDelegateDocumentationElementCheckDocumentation()
         {
             var memberDocumentation = _CreateMemberDocumentationMock(
-                "T:CodeMap.Tests.Data.TestDelegate`3",
+                "T:CodeMap.Tests.CodeDocumentation.TestDelegate`3",
                 exceptions: new[] { "T:System.ArgumentException" }
             );
             var _factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
@@ -272,7 +282,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateDelegateDocumentationElementCheckAttributes()
         {
             var _factory = new ReflectionDocumentationElementFactory();
@@ -285,7 +295,7 @@ namespace CodeMap.Tests
                     () => typeDocumentationElement.Attributes,
                     attribute =>
                         attribute
-                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
+                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.CodeDocumentation", "TestAttribute")
                             .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                             .AssertCollectionMember(
                                 () => attribute.PositionalParameters,
@@ -311,7 +321,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateDelegateDocumentationElementCheckReturnType()
         {
             var _factory = new ReflectionDocumentationElementFactory();
@@ -325,10 +335,10 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateDelegateDocumentationElementCheckReturnDocumentation()
         {
-            var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.TestDelegate`3");
+            var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.CodeDocumentation.TestDelegate`3");
             var _factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
 
             var typeDocumentationElement = _factory.Create(typeof(TestDelegate<>));
@@ -341,7 +351,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateDelegateDocumentationElementCheckReturnAttributes()
         {
             var _factory = new ReflectionDocumentationElementFactory();
@@ -356,7 +366,7 @@ namespace CodeMap.Tests
                             () => delegateDocumentationElement.Return.Attributes,
                             attribute =>
                                 attribute
-                                    .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
+                                    .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.CodeDocumentation", "TestAttribute")
                                     .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                     .AssertCollectionMember(
                                         () => attribute.PositionalParameters,
@@ -383,7 +393,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateDelegateDocumentationElementCheckGenericParameters()
         {
             var _factory = new ReflectionDocumentationElementFactory();
@@ -440,10 +450,10 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateDelegateDocumentationElementCheckGenericParametersDocumentation()
         {
-            var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.TestDelegate`3", genericParameters: new[] { "TParam1" });
+            var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.CodeDocumentation.TestDelegate`3", genericParameters: new[] { "TParam1" });
             var _factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
 
             var typeDocumentationElement = _factory.Create(typeof(TestDelegate<>));
@@ -470,7 +480,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateDelegateDocumentationElementCheckParameters()
         {
             var _factory = new ReflectionDocumentationElementFactory();
@@ -541,7 +551,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateDelegateDocumentationElementCheckParameterAttributes()
         {
             var _factory = new ReflectionDocumentationElementFactory();
@@ -560,7 +570,7 @@ namespace CodeMap.Tests
                                     .AssertCollectionMember(
                                         () => parameter.Attributes,
                                         attribute => attribute
-                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.CodeDocumentation", "TestAttribute")
                                             .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                             .AssertCollectionMember(
                                                 () => attribute.PositionalParameters,
@@ -618,10 +628,10 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateDelegateDocumentationElementCheckParametersDocumentation()
         {
-            var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.TestDelegate`3", parameters: new[] { "param1" });
+            var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.CodeDocumentation.TestDelegate`3", parameters: new[] { "param1" });
             var _factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
 
             var typeDocumentationElement = _factory.Create(typeof(TestDelegate<>));
@@ -656,7 +666,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckBasicInformation()
         {
             var factory = new ReflectionDocumentationElementFactory();
@@ -676,13 +686,13 @@ namespace CodeMap.Tests
                         interfaceDocumentationElement.AssertCollectionMember(
                             () => interfaceDocumentationElement.BaseInterfaces,
                             baseInterface => baseInterface
-                                .AssertTypeReference("CodeMap.Tests.Data", "ITestExtendedInterface")
+                                .AssertTypeReference("CodeMap.Tests.CodeDocumentation", "ITestExtendedInterface")
                                 .AssertTypeReferenceAssembly("CodeMap.Tests", new Version(1, 2, 3, 4))
                         )
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckAttributes()
         {
             var _factory = new ReflectionDocumentationElementFactory();
@@ -695,7 +705,7 @@ namespace CodeMap.Tests
                     () => typeDocumentationElement.Attributes,
                     attribute =>
                         attribute
-                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
+                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.CodeDocumentation", "TestAttribute")
                             .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                             .AssertCollectionMember(
                                 () => attribute.PositionalParameters,
@@ -721,10 +731,10 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckDocumentation()
         {
-            var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.ITestInterface`3");
+            var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.CodeDocumentation.ITestInterface`3");
             var factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
 
             var typeDocumentationElement = factory.Create(typeof(ITestInterface<>));
@@ -737,7 +747,7 @@ namespace CodeMap.Tests
                 .AssertSame(() => typeDocumentationElement.RelatedMembers, memberDocumentation.RelatedMembers);
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckGenericParameters()
         {
             var factory = new ReflectionDocumentationElementFactory();
@@ -800,7 +810,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckEventBasicInformation()
         {
             var factory = new ReflectionDocumentationElementFactory();
@@ -839,7 +849,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckEventAttributes()
         {
             var factory = new ReflectionDocumentationElementFactory();
@@ -858,7 +868,7 @@ namespace CodeMap.Tests
                                     .AssertCollectionMember(
                                         () => @event.Attributes,
                                         attribute => attribute
-                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.CodeDocumentation", "TestAttribute")
                                             .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                             .AssertCollectionMember(
                                                 () => attribute.PositionalParameters,
@@ -904,10 +914,10 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckEventDocumentation()
         {
-            var memberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.Data.ITestInterface`3.TestEvent", exceptions: new[] { "T:System.ArgumentException" });
+            var memberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.CodeDocumentation.ITestInterface`3.TestEvent", exceptions: new[] { "T:System.ArgumentException" });
             var factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
 
             var typeDocumentationElement = factory.Create(typeof(ITestInterface<>));
@@ -935,7 +945,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckPropertyBasicInformation()
         {
             var factory = new ReflectionDocumentationElementFactory();
@@ -969,7 +979,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckPropertyAttributes()
         {
             var factory = new ReflectionDocumentationElementFactory();
@@ -988,7 +998,7 @@ namespace CodeMap.Tests
                                     .AssertCollectionMember(
                                         () => property.Attributes,
                                         attribute => attribute
-                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.CodeDocumentation", "TestAttribute")
                                             .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                             .AssertCollectionMember(
                                                 () => attribute.PositionalParameters,
@@ -1016,7 +1026,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckPropertyGetterAttributes()
         {
             var factory = new ReflectionDocumentationElementFactory();
@@ -1035,7 +1045,7 @@ namespace CodeMap.Tests
                                     .AssertCollectionMember(
                                         () => property.Getter.Attributes,
                                         attribute => attribute
-                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.CodeDocumentation", "TestAttribute")
                                             .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                             .AssertCollectionMember(
                                                 () => attribute.PositionalParameters,
@@ -1062,7 +1072,7 @@ namespace CodeMap.Tests
                                     .AssertCollectionMember(
                                         () => property.Getter.ReturnAttributes,
                                         attribute => attribute
-                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.CodeDocumentation", "TestAttribute")
                                             .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                             .AssertCollectionMember(
                                                 () => attribute.PositionalParameters,
@@ -1090,7 +1100,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckPropertySetterAttributes()
         {
             var factory = new ReflectionDocumentationElementFactory();
@@ -1109,7 +1119,7 @@ namespace CodeMap.Tests
                                     .AssertCollectionMember(
                                         () => property.Setter.Attributes,
                                         attribute => attribute
-                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.CodeDocumentation", "TestAttribute")
                                             .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                             .AssertCollectionMember(
                                                 () => attribute.PositionalParameters,
@@ -1136,7 +1146,7 @@ namespace CodeMap.Tests
                                     .AssertCollectionMember(
                                         () => property.Setter.ReturnAttributes,
                                         attribute => attribute
-                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
+                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.CodeDocumentation", "TestAttribute")
                                             .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
                                             .AssertCollectionMember(
                                                 () => attribute.PositionalParameters,
@@ -1164,10 +1174,10 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Obsolete, Fact(Skip = "under refactorment")]
         public void CreateInterfaceDocumentationElementCheckPropertyDocumentation()
         {
-            var memberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.ITestInterface`3.TestProperty", exceptions: new[] { "T:System.ArgumentException" });
+            var memberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.CodeDocumentation.ITestInterface`3.TestProperty", exceptions: new[] { "T:System.ArgumentException" });
             var factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
 
             var typeDocumentationElement = factory.Create(typeof(ITestInterface<>));
@@ -1196,7 +1206,7 @@ namespace CodeMap.Tests
                 );
         }
 
-        [Fact(Skip = "under refactorment")]
+        [Fact]
         public void ConstructorWithNullMembersDocumentationCollectionThrowsException()
         {
             var exception = Assert.Throws<ArgumentNullException>(() => new ReflectionDocumentationElementFactory(null));
@@ -1207,19 +1217,26 @@ namespace CodeMap.Tests
             => new MemberDocumentation(
                 canonicalName,
                 DocumentationElement.Summary(DocumentationElement.Paragraph()),
-                genericParameters?.ToLookup(
-                    genericParameter => genericParameter,
-                    genericParameter => DocumentationElement.Paragraph() as BlockDocumentationElement
-                ),
-                parameters?.ToLookup(
-                    parameter => parameter,
-                    parameter => DocumentationElement.Paragraph() as BlockDocumentationElement
-                ),
+                Enumerable
+                    .Range(1, 6)
+                    .Select(genericParameterNumber => $"TParam{genericParameterNumber}")
+                    .ToLookup(
+                        genericParameter => genericParameter,
+                        genericParameter => DocumentationElement.Paragraph() as BlockDocumentationElement
+                    ),
+                Enumerable
+                    .Range(1, 42)
+                    .Select(parameterNumber => $"param{parameterNumber}")
+                    .ToLookup(
+                        parameter => parameter,
+                        parameter => DocumentationElement.Paragraph() as BlockDocumentationElement
+                    ),
                 new[] { DocumentationElement.Paragraph() },
-                exceptions?.ToLookup(
-                    exception => exception,
-                    exception => DocumentationElement.Paragraph() as BlockDocumentationElement
-                ),
+                new[] { "T:System.ArgumentException", "T:System.ArgumentNullException" }
+                    .ToLookup(
+                        exception => exception,
+                        exception => DocumentationElement.Paragraph() as BlockDocumentationElement
+                    ),
                 DocumentationElement.Remarks(DocumentationElement.Paragraph()),
                 new[] { DocumentationElement.Example(DocumentationElement.Paragraph()) },
                 DocumentationElement.Value(DocumentationElement.Paragraph()),
