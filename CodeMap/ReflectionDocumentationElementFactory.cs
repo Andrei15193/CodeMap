@@ -90,16 +90,11 @@ namespace CodeMap
         {
             var memberDocumentation = _GetMemberDocumentationFor(delegateType);
             var invokeMethodInfo = delegateType.GetMethod(nameof(Action.Invoke), BindingFlags.Public | BindingFlags.Instance);
-            return new DelegateDocumentationElement
+            var delegateDocumentationElement = new DelegateDocumentationElement
             {
                 Name = _GetTypeNameFor(delegateType),
                 AccessModifier = _GetAccessModifierFrom(delegateType),
                 Attributes = _MapAttributesDataFrom(delegateType.CustomAttributes),
-                GenericParameters = delegateType
-                    .GetGenericArguments()
-                    .Select(_GetTypeReference)
-                    .Cast<GenericParameterDocumentationElement>()
-                    .AsReadOnlyList(),
                 Parameters = invokeMethodInfo
                     .GetParameters()
                     .Select(parameter => _CreateParameter(parameter, memberDocumentation))
@@ -118,6 +113,13 @@ namespace CodeMap
                 Exceptions = _MapExceptions(memberDocumentation.Exceptions),
                 RelatedMembers = memberDocumentation.RelatedMembers
             };
+
+            delegateDocumentationElement.GenericParameters = delegateType
+                .GetGenericArguments()
+                .Select(typeGenericParameter => _GetTypeGenericParameter(typeGenericParameter, delegateDocumentationElement))
+                .AsReadOnlyList();
+
+            return delegateDocumentationElement;
         }
 
         private TypeDocumentationElement _CreateInterface(Type interfaceType)
@@ -128,11 +130,6 @@ namespace CodeMap
                 Name = _GetTypeNameFor(interfaceType),
                 AccessModifier = _GetAccessModifierFrom(interfaceType),
                 Attributes = _MapAttributesDataFrom(interfaceType.CustomAttributes),
-                GenericParameters = interfaceType
-                    .GetGenericArguments()
-                    .Select(_GetTypeReference)
-                    .Cast<GenericParameterDocumentationElement>()
-                    .AsReadOnlyList(),
                 BaseInterfaces = interfaceType
                     .GetInterfaces()
                     .Except(interfaceType
@@ -147,6 +144,10 @@ namespace CodeMap
                 RelatedMembers = memberDocumentation.RelatedMembers
             };
 
+            interfaceDocumentationElement.GenericParameters = interfaceType
+                .GetGenericArguments()
+                .Select(typeGenericParameter => _GetTypeGenericParameter(typeGenericParameter, interfaceDocumentationElement))
+                .AsReadOnlyList();
             interfaceDocumentationElement.Events = interfaceType
                 .GetEvents(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .Select(@event => _GetEvent(@event, interfaceDocumentationElement))
@@ -330,11 +331,21 @@ namespace CodeMap
         }
 
         private TypeReferenceDocumentationElement _GetTypeReference(Type type)
+            => _referencesCache.GetFor(_UnwrapeByRef(type), _CreateTypeReference, _InitializeTypeReference);
+
+        private TypeGenericParameterDocumentationElement _GetTypeGenericParameter(Type type, TypeDocumentationElement declaringType)
         {
-            var typeToReference = type;
-            while (typeToReference.IsByRef)
-                typeToReference = typeToReference.GetElementType();
-            return _referencesCache.GetFor(typeToReference, _CreateTypeReference, _InitializeTypeReference);
+            var typeGenericParameter = (TypeGenericParameterDocumentationElement)_GetTypeReference(type);
+            typeGenericParameter.DeclaringType = declaringType;
+            return typeGenericParameter;
+        }
+
+        private static Type _UnwrapeByRef(Type type)
+        {
+            var referentType = type;
+            while (referentType.IsByRef)
+                referentType = referentType.GetElementType();
+            return referentType;
         }
 
         private TypeReferenceDocumentationElement _CreateTypeReference(Type type)
@@ -343,6 +354,10 @@ namespace CodeMap
                 return new TypeGenericParameterDocumentationElement();
             else if (type == typeof(void))
                 return new VoidTypeReferenceDocumentationElement();
+            else if (type.IsPointer)
+                return new PointerTypeDocumentationElement();
+            else if (type.IsArray)
+                return new ArrayTypeDocumentationElement();
             else
                 return new InstanceTypeDocumentationElement();
         }
@@ -380,8 +395,27 @@ namespace CodeMap
                         .AsReadOnlyList();
                     break;
 
+                case PointerTypeDocumentationElement pointerType:
+                    pointerType.ReferentType = _GetTypeReference(type.GetElementType());
+                    break;
+
+                case ArrayTypeDocumentationElement arrayType:
+                    arrayType.Rank = type.GetArrayRank();
+                    arrayType.ItemType = _GetTypeReference(type.GetElementType());
+                    break;
+
                 case InstanceTypeDocumentationElement instanceType:
                     instanceType.Name = _GetTypeNameFor(type);
+                    instanceType.DeclaringType = type.DeclaringType != null
+                        ? (InstanceTypeDocumentationElement)_GetTypeReference(
+                            type.DeclaringType.MakeGenericType(
+                                type
+                                    .GetGenericArguments()
+                                    .Take(type.DeclaringType.GetGenericArguments().Length)
+                                    .ToArray()
+                            )
+                        )
+                        : null;
                     instanceType.Namespace = type.Namespace;
                     instanceType.GenericArguments = type
                         .GetGenericArguments()
@@ -396,7 +430,7 @@ namespace CodeMap
             => new ParameterDocumentationElement
             {
                 Name = parameter.Name,
-                Type = parameter.ParameterType == typeof(object) && parameter.GetCustomAttribute<DynamicAttribute>() != null
+                Type = _UnwrapeByRef(parameter.ParameterType) == typeof(object) && parameter.GetCustomAttribute<DynamicAttribute>() != null
                     ? _dynamicTypeReference
                     : _GetTypeReference(parameter.ParameterType),
                 Attributes = _MapAttributesDataFrom(parameter.CustomAttributes),
@@ -436,7 +470,7 @@ namespace CodeMap
                                 {
                                     Name = parameter.Name,
                                     Type = _GetTypeReference(parameter.ParameterType),
-                                    Value = _CreateAttributeValue(parameter.ParameterType, argument)
+                                    Value = _GetAttributeValue(parameter.ParameterType, argument)
                                 }
                         )
                         .ToList(),
@@ -452,7 +486,7 @@ namespace CodeMap
                                 {
                                     Name = namedArgument.MemberName,
                                     Type = _GetTypeReference(parameterType),
-                                    Value = _CreateAttributeValue(parameterType, namedArgument.TypedValue.Value)
+                                    Value = _GetAttributeValue(parameterType, namedArgument.TypedValue)
                                 };
                             }
                         )
@@ -461,38 +495,30 @@ namespace CodeMap
         )
         .ToList();
 
-        private static object _CreateAttributeValue(Type type, CustomAttributeTypedArgument argument)
+        private static object _GetAttributeValue(Type type, CustomAttributeTypedArgument argument)
         {
             if (argument.Value == null)
                 return null;
-
-            if (type == typeof(object[]))
-                return _GetAttributeValue(argument.ArgumentType, (object[])argument.Value);
-            if (type == typeof(object))
-                return _CreateAttributeValue(argument.ArgumentType, argument.Value);
-            if (type.IsArray)
-                return _GetAttributeValue(type, (object[])argument.Value);
-
-            return _CreateAttributeValue(type, argument.Value);
-        }
-
-        private static object _GetAttributeValue(Type type, object[] values)
-        {
-            var result = new object[values.Length];
-            for (var index = 0; index < values.Length; index++)
-                result[index] = _CreateAttributeValue(type, values[index]);
-            return result;
-        }
-
-        private static object _CreateAttributeValue(Type type, object value)
-        {
-            if (value == null)
-                return null;
-
+            if (argument.ArgumentType.IsArray)
+                return _GetAttributeValues(type, (IEnumerable<CustomAttributeTypedArgument>)argument.Value);
             if (type.IsEnum)
-                return Enum.Parse(type, Convert.ToString(value));
+                return Enum.Parse(type, Convert.ToString(argument.Value));
 
-            return value;
+            return argument.Value;
+        }
+
+        private static object _GetAttributeValues(Type attributeParameterType, IEnumerable<CustomAttributeTypedArgument> values)
+        {
+            var valuesCollection = values.AsReadOnlyList();
+            var result = Array.CreateInstance(
+                attributeParameterType.IsArray ? attributeParameterType.GetElementType() : attributeParameterType,
+                valuesCollection.Count
+            );
+
+            for (var index = 0; index < valuesCollection.Count; index++)
+                result.SetValue(_GetAttributeValue(attributeParameterType, valuesCollection[index]), index);
+
+            return result;
         }
 
         private IReadOnlyCollection<ExceptionDocumentationElement> _MapExceptions(ILookup<string, BlockDocumentationElement> exceptions)

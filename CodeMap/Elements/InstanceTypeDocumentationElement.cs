@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,14 +49,19 @@ namespace CodeMap.Elements
         /// <returns>Returns <c>true</c> if the current <see cref="InstanceTypeDocumentationElement"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(Type type)
         {
-            if (type == null || type.IsPointer || type.IsArray || type.IsByRef || type.IsGenericParameter || (type.IsGenericType && !type.IsGenericTypeDefinition))
+            if (type == null || type.IsPointer || type.IsArray || type.IsByRef || type.IsGenericParameter || (type.IsGenericType && !type.IsConstructedGenericType))
                 return false;
 
             var backTickIndex = type.Name.LastIndexOf('`');
             return
                 string.Equals(Name, (backTickIndex >= 0 ? type.Name.Substring(0, backTickIndex) : type.Name), StringComparison.OrdinalIgnoreCase)
                 && string.Equals(Namespace, type.Namespace, StringComparison.OrdinalIgnoreCase)
-                && DeclaringType == type.DeclaringType
+                && DeclaringType == type.DeclaringType?.MakeGenericType(
+                    type
+                        .GetGenericArguments()
+                        .Take(type.DeclaringType.GetGenericArguments().Length)
+                        .ToArray()
+                )
                 && GenericArguments.Count == type.GetGenericArguments().Length
                 && Assembly == type.Assembly.GetName();
         }
