@@ -30,6 +30,9 @@ namespace CodeMap.Elements
         /// <summary>Indicates whether the event has been marked as sealed.</summary>
         public bool IsSealed { get; internal set; }
 
+        /// <summary>Indicates whether the event hides one from a base interface with the same name.</summary>
+        public bool IsShadowing { get; internal set; }
+
         /// <summary>Information about the adder accessor.</summary>
         public EventAccessorData Adder { get; internal set; }
 

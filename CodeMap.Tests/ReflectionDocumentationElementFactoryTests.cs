@@ -20,7 +20,10 @@ namespace CodeMap.Tests
                 .AssertEqual(() => typeDocumentationElement.Name, "TestEnum")
                 .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
-                .AssertAttributes(() => typeDocumentationElement.Attributes, "enum")
+                .AssertCollectionMember(
+                    () => typeDocumentationElement.Attributes,
+                    attribute => attribute.AssertTestAttribute("enum")
+                )
                 .AssertIs<EnumDocumentationElement>(
                     enumDocumentationElement => enumDocumentationElement
                         .AssertType(() => enumDocumentationElement.UnderlyingType, typeof(byte))
@@ -28,7 +31,10 @@ namespace CodeMap.Tests
                             () => enumDocumentationElement.Members,
                             enumMember => enumMember
                                 .AssertEqual(() => enumMember.Name, "TestMember1")
-                                .AssertAttributes(() => enumMember.Attributes, "enum member")
+                                .AssertCollectionMember(
+                                    () => enumMember.Attributes,
+                                    attribute => attribute.AssertTestAttribute("enum member")
+                                )
                                 .AssertEqual(() => enumMember.AccessModifier, AccessModifier.Public)
                                 .AssertSame(() => enumMember.DeclaringType, enumDocumentationElement)
                                 .AssertType(() => enumMember.Type, typeof(TestEnum))
@@ -102,14 +108,17 @@ namespace CodeMap.Tests
             var _factory = new ReflectionDocumentationElementFactory();
 
             var delegateType = typeof(TestDelegate<>);
-            var genericParameter = delegateType.GetGenericArguments().Single();
+            var genericParameterType = delegateType.GetGenericArguments().Single();
             var typeDocumentationElement = _factory.Create(delegateType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestDelegate")
                 .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
-                .AssertAttributes(() => typeDocumentationElement.Attributes, "delegate")
+                .AssertCollectionMember(
+                    () => typeDocumentationElement.Attributes,
+                    attribute => attribute.AssertTestAttribute("delegate")
+                )
                 .AssertIs<DelegateDocumentationElement>(
                     delegateDocumentationElement => delegateDocumentationElement
                         .AssertType(() => delegateDocumentationElement.Return.Type, typeof(void))
@@ -117,10 +126,13 @@ namespace CodeMap.Tests
                             () => delegateDocumentationElement.Return.Type,
                             returnType => returnType.AssertIs<VoidTypeReferenceDocumentationElement>()
                         )
-                        .AssertAttributes(() => delegateDocumentationElement.Return.Attributes, "delegate return")
+                        .AssertCollectionMember(
+                            () => delegateDocumentationElement.Return.Attributes,
+                            attribute => attribute.AssertTestAttribute("delegate return")
+                        )
                         .AssertTypeGenericParameters(() => delegateDocumentationElement.GenericParameters)
                 )
-                .AssertDelegateParameters(genericParameter)
+                .AssertDelegateParameters(genericParameterType)
                 .AssertNoDocumentation();
         }
 
@@ -138,7 +150,6 @@ namespace CodeMap.Tests
             );
 
             var delegateType = typeof(TestDelegate<>);
-            var genericParameter = delegateType.GetGenericArguments().Single();
             var typeDocumentationElement = _factory.Create(delegateType);
 
             typeDocumentationElement
@@ -147,8 +158,8 @@ namespace CodeMap.Tests
                 .AssertDocumentation(memberDocumentation);
         }
 
-        [Obsolete, Fact(Skip = "under refactorment")]
-        public void CreateInterfaceDocumentationElementCheckBasicInformation()
+        [Fact]
+        public void CreateInterfaceDocumentationElement()
         {
             var factory = new ReflectionDocumentationElementFactory();
 
@@ -156,274 +167,24 @@ namespace CodeMap.Tests
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
-                .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Assembly)
+                .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
-                .AssertEmpty(() => typeDocumentationElement.Summary.Content)
-                .AssertEmpty(() => typeDocumentationElement.Remarks.Content)
-                .AssertEmpty(() => typeDocumentationElement.Examples)
-                .AssertEmpty(() => typeDocumentationElement.RelatedMembers)
-                .AssertIs<InterfaceDocumentationElement>(
-                    interfaceDocumentationElement =>
-                        interfaceDocumentationElement.AssertCollectionMember(
-                            () => interfaceDocumentationElement.BaseInterfaces,
-                            baseInterface => baseInterface
-                                .AssertTypeReference("CodeMap.Tests.Data", "ITestExtendedInterface")
-                                .AssertTypeReferenceAssembly("CodeMap.Tests", new Version(1, 2, 3, 4))
-                        )
-                );
-        }
-
-        [Obsolete, Fact(Skip = "under refactorment")]
-        public void CreateInterfaceDocumentationElementCheckAttributes()
-        {
-            var _factory = new ReflectionDocumentationElementFactory();
-
-            var typeDocumentationElement = _factory.Create(typeof(ITestInterface<>));
-
-            typeDocumentationElement
-                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
                 .AssertCollectionMember(
                     () => typeDocumentationElement.Attributes,
-                    attribute =>
-                        attribute
-                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
-                            .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
-                            .AssertCollectionMember(
-                                () => attribute.PositionalParameters,
-                                parameter => parameter
-                                    .AssertEqual(() => parameter.Name, "value1")
-                                    .AssertEqual(() => parameter.Value, "test 1")
-                                    .AssertTypeReference(() => parameter.Type, "System", "Object")
-                                    .AssertTypeReferenceAssembly(() => parameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
-                            )
-                            .AssertCollectionMember(
-                                () => attribute.NamedParameters.OrderBy(namedParameter => namedParameter.Name),
-                                parameter => parameter
-                                    .AssertEqual(() => parameter.Name, "Value2")
-                                    .AssertEqual(() => parameter.Value, "test 2")
-                                    .AssertTypeReference(() => parameter.Type, "System", "Object")
-                                    .AssertTypeReferenceAssembly(() => parameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0)),
-                                parameter => parameter
-                                    .AssertEqual(() => parameter.Name, "Value3")
-                                    .AssertEqual(() => parameter.Value, "test 3")
-                                    .AssertTypeReference(() => parameter.Type, "System", "Object")
-                                    .AssertTypeReferenceAssembly(() => parameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
-                            )
-                );
-        }
-
-        [Obsolete, Fact(Skip = "under refactorment")]
-        public void CreateInterfaceDocumentationElementCheckDocumentation()
-        {
-            var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.ITestInterface`3");
-            var factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
-
-            var typeDocumentationElement = factory.Create(typeof(ITestInterface<>));
-
-            typeDocumentationElement
-                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
-                .AssertSame(() => typeDocumentationElement.Summary, memberDocumentation.Summary)
-                .AssertSame(() => typeDocumentationElement.Remarks, memberDocumentation.Remarks)
-                .AssertSame(() => typeDocumentationElement.Examples, memberDocumentation.Examples)
-                .AssertSame(() => typeDocumentationElement.RelatedMembers, memberDocumentation.RelatedMembers);
-        }
-
-        [Obsolete, Fact(Skip = "under refactorment")]
-        public void CreateInterfaceDocumentationElementCheckGenericParameters()
-        {
-            var factory = new ReflectionDocumentationElementFactory();
-
-            var typeDocumentationElement = factory.Create(typeof(ITestInterface<>));
-
-            typeDocumentationElement
-                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
-                .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Assembly)
-                .AssertNull(() => typeDocumentationElement.DeclaringType)
-                .AssertEmpty(() => typeDocumentationElement.Summary.Content)
-                .AssertEmpty(() => typeDocumentationElement.Remarks.Content)
-                .AssertEmpty(() => typeDocumentationElement.Examples)
-                .AssertEmpty(() => typeDocumentationElement.RelatedMembers)
+                    attribute => attribute.AssertDefaultMemberAttribute(),
+                    attribute => attribute.AssertTestAttribute("interface")
+                )
                 .AssertIs<InterfaceDocumentationElement>(
-                    interfaceDocumentationElement =>
-                        interfaceDocumentationElement.AssertCollectionMember(
-                            () => interfaceDocumentationElement.GenericParameters,
-                            genericParameter =>
-                                genericParameter
-                                    .AssertEqual(() => genericParameter.Name, "TParam1")
-                                    .AssertTrue(() => genericParameter.IsCovariant)
-                                    .AssertFalse(() => genericParameter.IsContravariant)
-                                    .AssertTrue(() => genericParameter.HasReferenceTypeConstraint)
-                                    .AssertFalse(() => genericParameter.HasNonNullableValueTypeConstraint)
-                                    .AssertTrue(() => genericParameter.HasDefaultConstructorConstraint)
-                                    .AssertCollectionMember(
-                                        () => genericParameter.TypeConstraints,
-                                        typeConstraint => typeConstraint
-                                            .AssertSame(interfaceDocumentationElement.GenericParameters.ElementAt(1)),
-                                        typeConstraint => typeConstraint
-                                            .AssertTypeReference("System", "IComparable")
-                                            .AssertGenericArguments(
-                                                genericArgument => genericArgument.AssertSame(interfaceDocumentationElement.GenericParameters.ElementAt(0))
-                                            )
-                                            .AssertTypeReferenceAssembly("System.Private.CoreLib", new Version(4, 0, 0, 0))
-                                    )
-                                    .AssertEmpty(() => genericParameter.Description),
-                            genericParameter =>
-                                genericParameter
-                                    .AssertEqual(() => genericParameter.Name, "TParam2")
-                                    .AssertFalse(() => genericParameter.IsCovariant)
-                                    .AssertTrue(() => genericParameter.IsContravariant)
-                                    .AssertFalse(() => genericParameter.HasReferenceTypeConstraint)
-                                    .AssertFalse(() => genericParameter.HasNonNullableValueTypeConstraint)
-                                    .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
-                                    .AssertEmpty(() => genericParameter.TypeConstraints)
-                                    .AssertEmpty(() => genericParameter.Description),
-                            genericParameter =>
-                                genericParameter
-                                    .AssertEqual(() => genericParameter.Name, "TParam3")
-                                    .AssertFalse(() => genericParameter.IsCovariant)
-                                    .AssertFalse(() => genericParameter.IsContravariant)
-                                    .AssertFalse(() => genericParameter.HasReferenceTypeConstraint)
-                                    .AssertTrue(() => genericParameter.HasNonNullableValueTypeConstraint)
-                                    .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
-                                    .AssertEmpty(() => genericParameter.TypeConstraints)
-                                    .AssertEmpty(() => genericParameter.Description)
-                    )
-                );
-        }
-
-        [Obsolete, Fact(Skip = "under refactorment")]
-        public void CreateInterfaceDocumentationElementCheckEventBasicInformation()
-        {
-            var factory = new ReflectionDocumentationElementFactory();
-
-            var typeDocumentationElement = factory.Create(typeof(ITestInterface<>));
-
-            typeDocumentationElement
-                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
-                .AssertIs<InterfaceDocumentationElement>(
-                    interfaceDocumentationElement =>
-                        interfaceDocumentationElement.AssertCollectionMember(
-                            () => interfaceDocumentationElement.Events,
-                            @event =>
-                                @event
-                                    .AssertEqual(() => @event.Name, "TestEvent")
-                                    .AssertEqual(() => @event.AccessModifier, AccessModifier.Public)
-                                    .AssertSame(() => @event.DeclaringType, interfaceDocumentationElement)
-                                    .AssertTypeReference(() => @event.Type, "System", "EventHandler")
-                                    .AssertTypeReferenceAssembly(() => @event.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
-                                    .AssertGenericArguments(
-                                        () => @event.Type,
-                                        genericArgument => genericArgument
-                                            .AssertTypeReference("System", "EventArgs")
-                                            .AssertTypeReferenceAssembly("System.Private.CoreLib", new Version(4, 0, 0, 0))
-                                    )
-                                    .AssertFalse(() => @event.IsStatic)
-                                    .AssertFalse(() => @event.IsAbstract)
-                                    .AssertFalse(() => @event.IsVirtual)
-                                    .AssertFalse(() => @event.IsOverride)
-                                    .AssertFalse(() => @event.IsSealed)
-                                    .AssertEmpty(() => @event.Summary.Content)
-                                    .AssertEmpty(() => @event.Remarks.Content)
-                                    .AssertEmpty(() => @event.Examples)
-                                    .AssertEmpty(() => @event.Exceptions)
-                    )
-                );
-        }
-
-        [Obsolete, Fact(Skip = "under refactorment")]
-        public void CreateInterfaceDocumentationElementCheckEventAttributes()
-        {
-            var factory = new ReflectionDocumentationElementFactory();
-
-            var typeDocumentationElement = factory.Create(typeof(ITestInterface<>));
-
-            typeDocumentationElement
-                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
-                .AssertIs<InterfaceDocumentationElement>(
-                    interfaceDocumentationElement =>
-                        interfaceDocumentationElement.AssertCollectionMember(
-                            () => interfaceDocumentationElement.Events,
-                            @event =>
-                                @event
-                                    .AssertEqual(() => @event.Name, "TestEvent")
-                                    .AssertCollectionMember(
-                                        () => @event.Attributes,
-                                        attribute => attribute
-                                            .AssertTypeReference(() => attribute.Type, "CodeMap.Tests.Data", "TestAttribute")
-                                            .AssertTypeReferenceAssembly(() => attribute.Type, "CodeMap.Tests", new Version(1, 2, 3, 4))
-                                            .AssertCollectionMember(
-                                                () => attribute.PositionalParameters,
-                                                attributeParameter => attributeParameter
-                                                    .AssertEqual(() => attributeParameter.Name, "value1")
-                                                    .AssertEqual(() => attributeParameter.Value, "event test 1")
-                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
-                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
-                                            )
-                                            .AssertCollectionMember(
-                                                () => attribute.NamedParameters.OrderBy(attributeParameter => attributeParameter.Name),
-                                                attributeParameter => attributeParameter
-                                                    .AssertEqual(() => attributeParameter.Name, "Value2")
-                                                    .AssertEqual(() => attributeParameter.Value, "event test 2")
-                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
-                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0)),
-                                                attributeParameter => attributeParameter
-                                                    .AssertEqual(() => attributeParameter.Name, "Value3")
-                                                    .AssertEqual(() => attributeParameter.Value, "event test 3")
-                                                    .AssertTypeReference(() => attributeParameter.Type, "System", "Object")
-                                                    .AssertTypeReferenceAssembly(() => attributeParameter.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
-                                            )
-                                    )
-                                    .AssertCollectionMember(
-                                        () => @event.Adder.Attributes,
-                                        attribute => attribute
-                                            .AssertTypeReference(() => attribute.Type, "System.Runtime.CompilerServices", "CompilerGeneratedAttribute")
-                                            .AssertTypeReferenceAssembly(() => attribute.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
-                                            .AssertEmpty(() => attribute.PositionalParameters)
-                                            .AssertEmpty(() => attribute.NamedParameters)
-                                    )
-                                    .AssertEmpty(() => @event.Adder.ReturnAttributes)
-                                    .AssertCollectionMember(
-                                        () => @event.Remover.Attributes,
-                                        attribute => attribute
-                                            .AssertTypeReference(() => attribute.Type, "System.Runtime.CompilerServices", "CompilerGeneratedAttribute")
-                                            .AssertTypeReferenceAssembly(() => attribute.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
-                                            .AssertEmpty(() => attribute.PositionalParameters)
-                                            .AssertEmpty(() => attribute.NamedParameters)
-                                    )
-                                    .AssertEmpty(() => @event.Remover.ReturnAttributes)
-                    )
-                );
-        }
-
-        [Obsolete, Fact(Skip = "under refactorment")]
-        public void CreateInterfaceDocumentationElementCheckEventDocumentation()
-        {
-            var memberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.Data.ITestInterface`3.TestEvent", exceptions: new[] { "T:System.ArgumentException" });
-            var factory = new ReflectionDocumentationElementFactory(new MemberDocumentationCollection(new[] { memberDocumentation }));
-
-            var typeDocumentationElement = factory.Create(typeof(ITestInterface<>));
-
-            typeDocumentationElement
-                .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
-                .AssertIs<InterfaceDocumentationElement>(
-                    interfaceDocumentationElement =>
-                        interfaceDocumentationElement.AssertCollectionMember(
-                            () => interfaceDocumentationElement.Events,
-                            @event =>
-                                @event
-                                    .AssertEqual(() => @event.Name, "TestEvent")
-                                    .AssertSame(() => @event.Summary, memberDocumentation.Summary)
-                                    .AssertSame(() => @event.Remarks, memberDocumentation.Remarks)
-                                    .AssertSame(() => @event.Examples, memberDocumentation.Examples)
-                                    .AssertCollectionMember(
-                                        () => @event.Exceptions,
-                                        exception => exception
-                                            .AssertTypeReference(() => exception.Type, "System", "ArgumentException")
-                                            .AssertTypeReferenceAssembly(() => exception.Type, "System.Private.CoreLib", new Version(4, 0, 0, 0))
-                                            .AssertSameItems(() => exception.Description, memberDocumentation.Exceptions["T:System.ArgumentException"])
-                                    )
-                    )
-                );
+                    interfaceDocumentationElement => interfaceDocumentationElement
+                        .AssertTypeGenericParameters(() => interfaceDocumentationElement.GenericParameters)
+                        .AssertCollectionMember(
+                            () => interfaceDocumentationElement.BaseInterfaces,
+                            baseInterface => baseInterface.AssertType(typeof(ITestExtendedBaseInterface))
+                        )
+                        .AssertTestEvent(() => interfaceDocumentationElement.Events, "interface event")
+                        .AssertShadowingEvent(() => interfaceDocumentationElement.Events, "InterfaceShadowedTestEvent")
+                )
+                .AssertNoDocumentation();
         }
 
         [Obsolete, Fact(Skip = "under refactorment")]

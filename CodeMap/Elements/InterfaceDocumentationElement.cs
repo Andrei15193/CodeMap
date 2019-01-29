@@ -13,7 +13,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The interface generic parameters.</summary>
-        public IReadOnlyList<GenericParameterDocumentationElement> GenericParameters { get; internal set; }
+        public IReadOnlyList<TypeGenericParameterDocumentationElement> GenericParameters { get; internal set; }
 
         /// <summary>The base interfaces.</summary>
         public IReadOnlyCollection<TypeReferenceDocumentationElement> BaseInterfaces { get; internal set; }

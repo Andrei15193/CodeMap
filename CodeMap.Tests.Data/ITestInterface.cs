@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace CodeMap.Tests.Data
 {
     /// <summary/>
+    [Test("interface test 1", Value2 = "interface test 2", Value3 = "interface test 3")]
     public unsafe interface ITestInterface<TParam1> : ITestExtendedBaseInterface
     {
         /// <summary/>

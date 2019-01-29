@@ -205,6 +205,7 @@ namespace CodeMap
                 IsVirtual = false,
                 IsOverride = false,
                 IsSealed = false,
+                IsShadowing = IsShadowing(@event),
                 Adder = _GetEventAccessorData(@event.AddMethod),
                 Remover = _GetEventAccessorData(@event.RemoveMethod),
                 Summary = memberDocumentation.Summary,
@@ -213,6 +214,43 @@ namespace CodeMap
                 Examples = memberDocumentation.Examples,
                 RelatedMembers = memberDocumentation.RelatedMembers
             };
+        }
+
+        private bool IsShadowing(MemberInfo memberInfo)
+        {
+            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
+            var inheritedMembers = memberInfo
+                .DeclaringType
+                .GetInterfaces()
+                .SelectMany(baseInterface => baseInterface.GetMembers(bindingFlags));
+
+            if (memberInfo.DeclaringType.BaseType != null)
+                inheritedMembers = inheritedMembers.Concat(
+                    memberInfo
+                        .DeclaringType
+                        .BaseType
+                        .GetMembers(bindingFlags)
+                );
+
+            return memberInfo is MethodInfo methodInfo
+                ? inheritedMembers
+                    .OfType<MethodInfo>()
+                    .Any(
+                        inheritedMethodInfo =>
+                            string.Equals(methodInfo.Name, inheritedMethodInfo.Name, StringComparison.OrdinalIgnoreCase)
+                            && methodInfo
+                                .GetParameters()
+                                .Select(parameter => _UnwrapeByRef(parameter.ParameterType))
+                                .SequenceEqual(
+                                    inheritedMethodInfo
+                                        .GetParameters()
+                                        .Select(parameter => _UnwrapeByRef(parameter.ParameterType))
+                                )
+                    )
+                : inheritedMembers.Any(
+                    inheritedMemberInfo =>
+                        string.Equals(memberInfo.Name, inheritedMemberInfo.Name, StringComparison.OrdinalIgnoreCase)
+                );
         }
 
         private EventAccessorData _GetEventAccessorData(MethodInfo accessorMethod)

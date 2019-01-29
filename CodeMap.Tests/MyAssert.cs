@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CodeMap.Elements;
@@ -182,35 +183,43 @@ namespace CodeMap.Tests
             return memberDocumentationElement;
         }
 
-        public static TInstance AssertAttributes<TInstance>(this TInstance instance, Func<IEnumerable<AttributeData>> selector, string valuePrefix)
-            => instance
+        public static AttributeData AssertTestAttribute(this AttributeData attributeData, string valuePrefix)
+            => attributeData
+                .AssertType(() => attributeData.Type, typeof(TestAttribute))
                 .AssertCollectionMember(
-                    selector,
-                    attribute => attribute
-                        .AssertType(() => attribute.Type, typeof(TestAttribute))
-                        .AssertCollectionMember(
-                            () => attribute.PositionalParameters,
-                            positionalParameter => positionalParameter
-                                .AssertEqual(() => positionalParameter.Name, "value1")
-                                .AssertEqual(() => positionalParameter.Value, $"{valuePrefix} test 1")
-                                .AssertType(() => positionalParameter.Type, typeof(object))
-                        )
-                        .AssertCollectionMember(
-                            () => attribute.NamedParameters.OrderBy(namedParameter => namedParameter.Name),
-                            namedParameter => namedParameter
-                                .AssertEqual(() => namedParameter.Name, "Value2")
-                                .AssertEqual(() => namedParameter.Value, $"{valuePrefix} test 2")
-                                .AssertType(() => namedParameter.Type, typeof(object)),
-                            namedParameter => namedParameter
-                                .AssertEqual(() => namedParameter.Name, "Value3")
-                                .AssertEqual(() => namedParameter.Value, $"{valuePrefix} test 3")
-                                .AssertType(() => namedParameter.Type, typeof(object))
-                        )
+                    () => attributeData.PositionalParameters,
+                    positionalParameter => positionalParameter
+                        .AssertEqual(() => positionalParameter.Name, "value1")
+                        .AssertEqual(() => positionalParameter.Value, $"{valuePrefix} test 1")
+                        .AssertType(() => positionalParameter.Type, typeof(object))
+                )
+                .AssertCollectionMember(
+                    () => attributeData.NamedParameters.OrderBy(namedParameter => namedParameter.Name),
+                    namedParameter => namedParameter
+                        .AssertEqual(() => namedParameter.Name, "Value2")
+                        .AssertEqual(() => namedParameter.Value, $"{valuePrefix} test 2")
+                        .AssertType(() => namedParameter.Type, typeof(object)),
+                    namedParameter => namedParameter
+                        .AssertEqual(() => namedParameter.Name, "Value3")
+                        .AssertEqual(() => namedParameter.Value, $"{valuePrefix} test 3")
+                        .AssertType(() => namedParameter.Type, typeof(object))
                 );
 
-        public static TInstance AssertType<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector, Type type)
+        public static AttributeData AssertDefaultMemberAttribute(this AttributeData attributeData)
+            => attributeData
+                .AssertType(() => attributeData.Type, typeof(DefaultMemberAttribute))
+                .AssertCollectionMember(
+                    () => attributeData.PositionalParameters,
+                    positionalParameter => positionalParameter
+                        .AssertEqual(() => positionalParameter.Name, "memberName")
+                        .AssertEqual(() => positionalParameter.Value, "Item")
+                        .AssertType(() => positionalParameter.Type, typeof(string))
+                )
+                .AssertEmpty(() => attributeData.NamedParameters);
+
+        public static TTypeReference AssertType<TTypeReference>(this TTypeReference typeReference, Type type)
+            where TTypeReference : TypeReferenceDocumentationElement
         {
-            var typeReference = selector();
             Assert.True(typeReference == type);
             Assert.True(type == typeReference);
             Assert.False(typeReference != type);
@@ -219,6 +228,79 @@ namespace CodeMap.Tests
             var otherType = type == typeof(object) ? typeof(string) : typeof(object);
             Assert.True(typeReference != otherType);
             Assert.True(otherType != typeReference);
+            return typeReference;
+        }
+
+        public static TTypeDocumentationElement AssertTestEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string attributeValuePrefix, bool checkAccessors = false)
+            where TTypeDocumentationElement : TypeDocumentationElement
+        {
+            typeDocumentationElement
+                .AssertCollectionMember(
+                    () => selector().Where(@event => @event.Name == "TestEvent"),
+                    eventDocumentationElement =>
+                    {
+                        eventDocumentationElement
+                            .AssertType(() => eventDocumentationElement.Type, typeof(EventHandler<EventArgs>))
+                            .AssertEqual(() => eventDocumentationElement.AccessModifier, AccessModifier.Public)
+                            .AssertSame(() => eventDocumentationElement.DeclaringType, typeDocumentationElement)
+                            .AssertFalse(() => eventDocumentationElement.IsStatic)
+                            .AssertFalse(() => eventDocumentationElement.IsVirtual)
+                            .AssertFalse(() => eventDocumentationElement.IsAbstract)
+                            .AssertFalse(() => eventDocumentationElement.IsOverride)
+                            .AssertFalse(() => eventDocumentationElement.IsSealed)
+                            .AssertFalse(() => eventDocumentationElement.IsShadowing);
+
+                        if (checkAccessors)
+                            eventDocumentationElement
+                                .AssertCollectionMember(
+                                    () => eventDocumentationElement.Adder.Attributes,
+                                    attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} adder")
+                                )
+                                .AssertCollectionMember(
+                                    () => eventDocumentationElement.Adder.ReturnAttributes,
+                                    attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} adder return")
+                                )
+                                .AssertCollectionMember(
+                                    () => eventDocumentationElement.Adder.Attributes,
+                                    attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} remover")
+                                )
+                                .AssertCollectionMember(
+                                    () => eventDocumentationElement.Adder.ReturnAttributes,
+                                    attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} remover return")
+                                );
+                    }
+                );
+
+            return typeDocumentationElement;
+        }
+
+        public static TTypeDocumentationElement AssertShadowingEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string eventName)
+            where TTypeDocumentationElement : TypeDocumentationElement
+        {
+            typeDocumentationElement
+                .AssertCollectionMember(
+                    () => selector().Where(@event => @event.Name == eventName),
+                    eventDocumentationElement =>
+                    {
+                        eventDocumentationElement
+                            .AssertType(() => eventDocumentationElement.Type, typeof(EventHandler))
+                            .AssertEqual(() => eventDocumentationElement.AccessModifier, AccessModifier.Public)
+                            .AssertSame(() => eventDocumentationElement.DeclaringType, typeDocumentationElement)
+                            .AssertFalse(() => eventDocumentationElement.IsStatic)
+                            .AssertFalse(() => eventDocumentationElement.IsVirtual)
+                            .AssertFalse(() => eventDocumentationElement.IsAbstract)
+                            .AssertFalse(() => eventDocumentationElement.IsOverride)
+                            .AssertFalse(() => eventDocumentationElement.IsSealed)
+                            .AssertTrue(() => eventDocumentationElement.IsShadowing);
+                    }
+                );
+
+            return typeDocumentationElement;
+        }
+
+        public static TInstance AssertType<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector, Type type)
+        {
+            selector().AssertType(type);
             return instance;
         }
 
@@ -270,13 +352,14 @@ namespace CodeMap.Tests
                         .AssertEmpty(() => attribute.NamedParameters)
                 );
 
-        public static TTypeDocumentationElement AssertTypeGenericParameters<TTypeDocumentationElement>(this TTypeDocumentationElement typeDcouemntationElement, Func<IEnumerable<GenericParameterDocumentationElement>> selector)
+        public static TTypeDocumentationElement AssertTypeGenericParameters<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<TypeGenericParameterDocumentationElement>> selector)
             where TTypeDocumentationElement : TypeDocumentationElement
-            => typeDcouemntationElement
+            => typeDocumentationElement
                 .AssertCollectionMember(
                     selector,
                     genericParameter => genericParameter
                         .AssertEqual(() => genericParameter.Name, "TParam1")
+                        .AssertSame(() => genericParameter.DeclaringType, typeDocumentationElement)
                         .AssertEqual(() => genericParameter.Position, 0)
                         .AssertFalse(() => genericParameter.IsCovariant)
                         .AssertFalse(() => genericParameter.IsContravariant)
@@ -284,9 +367,6 @@ namespace CodeMap.Tests
                         .AssertFalse(() => genericParameter.HasNonNullableValueTypeConstraint)
                         .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
                         .AssertEmpty(() => genericParameter.TypeConstraints)
-                        .AssertIs<TypeGenericParameterDocumentationElement>(
-                            typeGenericParameter => typeGenericParameter.AssertSame(() => typeGenericParameter.DeclaringType, typeDcouemntationElement)
-                        )
                 );
 
         public static DelegateDocumentationElement AssertDelegateParameters(this DelegateDocumentationElement delegateDocumentationElement, Type genericParameter)
@@ -295,7 +375,10 @@ namespace CodeMap.Tests
                     () => delegateDocumentationElement.Parameters,
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param1")
-                        .AssertAttributes(() => parameter.Attributes, "delegate parameter")
+                        .AssertCollectionMember(
+                            () => delegateDocumentationElement.Attributes,
+                            attribute => attribute.AssertTestAttribute($"delegate")
+                        )
                         .AssertType(() => parameter.Type, typeof(int))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
