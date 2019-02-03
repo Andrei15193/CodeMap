@@ -17,7 +17,7 @@ namespace CodeMap.Elements
         /// <returns>Returns <c>true</c> if the current <see cref="TypeGenericParameterDocumentationElement"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(Type type)
         {
-            if (type == null || !type.IsGenericParameter || type.IsGenericMethodParameter)
+            if (type == null || !type.IsGenericTypeParameter)
                 return false;
 
             return string.Equals(Name, type.Name, StringComparison.OrdinalIgnoreCase)

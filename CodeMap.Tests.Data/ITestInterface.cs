@@ -32,6 +32,7 @@ namespace CodeMap.Tests.Data
         /// <summary/>
         [Test("interface indexer test 1", Value2 = "interface indexer test 2", Value3 = "interface indexer test 3")]
         int this[
+            [Test("interface indexer parameter test 1", Value2 = "interface indexer parameter test 2", Value3 = "interface indexer parameter test 3")]
             int param1,
             byte[] param2,
             char[][] param3,
@@ -84,9 +85,9 @@ namespace CodeMap.Tests.Data
             dynamic param19,
             ref dynamic param20,
             out dynamic param21,
-            TMethodParam1 param22,
-            ref TMethodParam1 param23,
-            out TMethodParam1 pram24,
+            TParam1 param22,
+            ref TParam1 param23,
+            out TParam1 param24,
             int* param25,
             byte*[] param26,
             ref char* param27,
@@ -100,9 +101,9 @@ namespace CodeMap.Tests.Data
             void**[] param35,
             ref void**[] param36,
             out void**[] param37,
-            TParam1 param38,
-            ref TParam1 param39,
-            out TParam1 param40,
+            TMethodParam1 param38,
+            ref TMethodParam1 param39,
+            out TMethodParam1 param40,
             string param41 = "test");
     }
 }

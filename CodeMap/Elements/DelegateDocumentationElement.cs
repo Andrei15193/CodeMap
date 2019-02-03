@@ -18,7 +18,7 @@ namespace CodeMap.Elements
         /// <summary>The delegate parameters.</summary>
         public IReadOnlyList<ParameterDocumentationElement> Parameters { get; internal set; }
 
-        /// <summary>The delegate documented return value.</summary>
+        /// <summary>The documented delegate return value.</summary>
         public ReturnsDocumentationElement Return { get; internal set; }
 
         /// <summary>The delegate documented exceptions.</summary>

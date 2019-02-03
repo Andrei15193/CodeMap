@@ -156,6 +156,10 @@ namespace CodeMap
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .Select(property => _GetProperty(property, interfaceDocumentationElement))
                 .AsReadOnlyCollection();
+            interfaceDocumentationElement.Methods = interfaceType
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Select(method => _GetMethod(method, interfaceDocumentationElement))
+                .AsReadOnlyCollection();
 
             return interfaceDocumentationElement;
         }
@@ -205,7 +209,7 @@ namespace CodeMap
                 IsVirtual = false,
                 IsOverride = false,
                 IsSealed = false,
-                IsShadowing = IsShadowing(@event),
+                IsShadowing = _IsShadowing(@event),
                 Adder = _GetEventAccessorData(@event.AddMethod),
                 Remover = _GetEventAccessorData(@event.RemoveMethod),
                 Summary = memberDocumentation.Summary,
@@ -214,43 +218,6 @@ namespace CodeMap
                 Examples = memberDocumentation.Examples,
                 RelatedMembers = memberDocumentation.RelatedMembers
             };
-        }
-
-        private bool IsShadowing(MemberInfo memberInfo)
-        {
-            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
-            var inheritedMembers = memberInfo
-                .DeclaringType
-                .GetInterfaces()
-                .SelectMany(baseInterface => baseInterface.GetMembers(bindingFlags));
-
-            if (memberInfo.DeclaringType.BaseType != null)
-                inheritedMembers = inheritedMembers.Concat(
-                    memberInfo
-                        .DeclaringType
-                        .BaseType
-                        .GetMembers(bindingFlags)
-                );
-
-            return memberInfo is MethodInfo methodInfo
-                ? inheritedMembers
-                    .OfType<MethodInfo>()
-                    .Any(
-                        inheritedMethodInfo =>
-                            string.Equals(methodInfo.Name, inheritedMethodInfo.Name, StringComparison.OrdinalIgnoreCase)
-                            && methodInfo
-                                .GetParameters()
-                                .Select(parameter => _UnwrapeByRef(parameter.ParameterType))
-                                .SequenceEqual(
-                                    inheritedMethodInfo
-                                        .GetParameters()
-                                        .Select(parameter => _UnwrapeByRef(parameter.ParameterType))
-                                )
-                    )
-                : inheritedMembers.Any(
-                    inheritedMemberInfo =>
-                        string.Equals(memberInfo.Name, inheritedMemberInfo.Name, StringComparison.OrdinalIgnoreCase)
-                );
         }
 
         private EventAccessorData _GetEventAccessorData(MethodInfo accessorMethod)
@@ -276,12 +243,17 @@ namespace CodeMap
                     : setterInfo.AccessModifier,
                 Type = _GetTypeReference(property.PropertyType),
                 Attributes = _MapAttributesDataFrom(property.CustomAttributes),
+                Parameters = property
+                    .GetIndexParameters()
+                    .Select(parameter => _CreateParameter(parameter, memberDocumentation))
+                    .AsReadOnlyList(),
                 DeclaringType = declaringType,
                 IsStatic = false,
                 IsAbstract = false,
                 IsVirtual = false,
                 IsOverride = false,
                 IsSealed = false,
+                IsShadowing = _IsShadowing(property),
                 Getter = getterInfo,
                 Setter = setterInfo,
                 Summary = memberDocumentation.Summary,
@@ -291,6 +263,49 @@ namespace CodeMap
                 Examples = memberDocumentation.Examples,
                 RelatedMembers = memberDocumentation.RelatedMembers
             };
+        }
+
+        private MethodDocumentationElement _GetMethod(MethodInfo method, TypeDocumentationElement declaringType)
+        {
+            var memberDocumentation = _GetMemberDocumentationFor(method);
+
+            var methodDocumentationElement = new MethodDocumentationElement
+            {
+                Name = method.Name,
+                AccessModifier = _GetAccessModifierFrom(method),
+                Attributes = _MapAttributesDataFrom(method.CustomAttributes),
+                DeclaringType = declaringType,
+                IsStatic = false,
+                IsAbstract = false,
+                IsVirtual = false,
+                IsOverride = false,
+                IsSealed = false,
+                IsShadowing = _IsShadowing(method),
+                Parameters = method
+                    .GetParameters()
+                    .Select(parameter => _CreateParameter(parameter, memberDocumentation))
+                    .AsReadOnlyList(),
+                Return = new ReturnsDocumentationElement
+                {
+                    Type = method.ReturnType == typeof(object) && method.ReturnParameter.GetCustomAttribute<DynamicAttribute>() != null
+                        ? _dynamicTypeReference
+                        : _GetTypeReference(method.ReturnType),
+                    Description = memberDocumentation.Returns,
+                    Attributes = _MapAttributesDataFrom(method.ReturnParameter.CustomAttributes)
+                },
+                Summary = memberDocumentation.Summary,
+                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
+            };
+
+            methodDocumentationElement.GenericParameters = method
+                .GetGenericArguments()
+                .Select(typeGenericParameter => _GetMethodGenericParameter(typeGenericParameter, methodDocumentationElement))
+                .AsReadOnlyList();
+
+            return methodDocumentationElement;
         }
 
         private PropertyAccessorData _GetPropertyAccessorData(MethodInfo accessorMethod)
@@ -368,6 +383,43 @@ namespace CodeMap
                 return AccessModifier.Private;
         }
 
+        private bool _IsShadowing(MemberInfo memberInfo)
+        {
+            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
+            var inheritedMembers = memberInfo
+                .DeclaringType
+                .GetInterfaces()
+                .SelectMany(baseInterface => baseInterface.GetMembers(bindingFlags));
+
+            if (memberInfo.DeclaringType.BaseType != null)
+                inheritedMembers = inheritedMembers.Concat(
+                    memberInfo
+                        .DeclaringType
+                        .BaseType
+                        .GetMembers(bindingFlags)
+                );
+
+            return memberInfo is MethodInfo methodInfo
+                ? inheritedMembers
+                    .OfType<MethodInfo>()
+                    .Any(
+                        inheritedMethodInfo =>
+                            string.Equals(methodInfo.Name, inheritedMethodInfo.Name, StringComparison.OrdinalIgnoreCase)
+                            && methodInfo
+                                .GetParameters()
+                                .Select(parameter => _UnwrapeByRef(parameter.ParameterType))
+                                .SequenceEqual(
+                                    inheritedMethodInfo
+                                        .GetParameters()
+                                        .Select(parameter => _UnwrapeByRef(parameter.ParameterType))
+                                )
+                    )
+                : inheritedMembers.Any(
+                    inheritedMemberInfo =>
+                        string.Equals(memberInfo.Name, inheritedMemberInfo.Name, StringComparison.OrdinalIgnoreCase)
+                );
+        }
+
         private TypeReferenceDocumentationElement _GetTypeReference(Type type)
             => _referencesCache.GetFor(_UnwrapeByRef(type), _CreateTypeReference, _InitializeTypeReference);
 
@@ -375,6 +427,13 @@ namespace CodeMap
         {
             var typeGenericParameter = (TypeGenericParameterDocumentationElement)_GetTypeReference(type);
             typeGenericParameter.DeclaringType = declaringType;
+            return typeGenericParameter;
+        }
+
+        private MethodGenericParameterDocumentationElement _GetMethodGenericParameter(Type type, MethodDocumentationElement declaringMethod)
+        {
+            var typeGenericParameter = (MethodGenericParameterDocumentationElement)_GetTypeReference(type);
+            typeGenericParameter.DeclaringMethod = declaringMethod;
             return typeGenericParameter;
         }
 
@@ -388,8 +447,10 @@ namespace CodeMap
 
         private TypeReferenceDocumentationElement _CreateTypeReference(Type type)
         {
-            if (type.IsGenericParameter)
+            if (type.IsGenericTypeParameter)
                 return new TypeGenericParameterDocumentationElement();
+            else if (type.IsGenericMethodParameter)
+                return new MethodGenericParameterDocumentationElement();
             else if (type == typeof(void))
                 return new VoidTypeReferenceDocumentationElement();
             else if (type.IsPointer)

@@ -161,6 +161,9 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateInterfaceDocumentationElement()
         {
+            var interfaceType = typeof(ITestInterface<>);
+            var typeGenericParameter = interfaceType.GetGenericArguments().Single();
+            var methodGenericParameter = interfaceType.GetMethod("TestMethod").GetGenericArguments().Single();
             var factory = new ReflectionDocumentationElementFactory();
 
             var typeDocumentationElement = factory.Create(typeof(ITestInterface<>));
@@ -181,8 +184,13 @@ namespace CodeMap.Tests
                             () => interfaceDocumentationElement.BaseInterfaces,
                             baseInterface => baseInterface.AssertType(typeof(ITestExtendedBaseInterface))
                         )
-                        .AssertTestEvent(() => interfaceDocumentationElement.Events, "interface event")
+                        .AssertTestEvent(() => interfaceDocumentationElement.Events, "TestEvent", "interface event")
                         .AssertShadowingEvent(() => interfaceDocumentationElement.Events, "InterfaceShadowedTestEvent")
+                        .AssertTestProperty(() => interfaceDocumentationElement.Properties, "TestProperty", "interface property")
+                        .AssertIndexProperty(() => interfaceDocumentationElement.Properties, typeGenericParameter, "interface indexer")
+                        .AssertShadowingProperty(() => interfaceDocumentationElement.Properties, "InterfaceShadowedTestProperty")
+                        .AssertTestMethod(() => interfaceDocumentationElement.Methods, "TestMethod", typeGenericParameter, methodGenericParameter, "interface method")
+                        .AssertShadowingMethod(() => interfaceDocumentationElement.Methods, "InterfaceShadowedTestMethod")
                 )
                 .AssertNoDocumentation();
         }

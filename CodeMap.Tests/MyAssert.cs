@@ -104,7 +104,49 @@ namespace CodeMap.Tests
         public static InterfaceDocumentationElement AssertNoDocumentation(this InterfaceDocumentationElement interfaceDocumentationElement)
         {
             _AssertNoDocumentation(interfaceDocumentationElement);
+            foreach (var genericParameter in interfaceDocumentationElement.GenericParameters)
+                Assert.Empty(genericParameter.Description);
+            foreach (var @event in interfaceDocumentationElement.Events)
+                _AssertNoDocumentation(@event);
+            foreach (var property in interfaceDocumentationElement.Properties)
+                _AssertNoDocumentation(property);
+            foreach (var method in interfaceDocumentationElement.Methods)
+                _AssertNoDocumentation(method);
             return interfaceDocumentationElement;
+        }
+
+        private static void _AssertNoDocumentation(EventDocumentationElement @event)
+        {
+            Assert.Empty(@event.Summary.Content);
+            Assert.Empty(@event.Remarks.Content);
+            Assert.Empty(@event.Examples);
+            Assert.Empty(@event.RelatedMembers);
+            Assert.Empty(@event.Exceptions);
+        }
+
+        private static void _AssertNoDocumentation(PropertyDocumentationElement property)
+        {
+            Assert.Empty(property.Summary.Content);
+            foreach (var parameter in property.Parameters)
+                Assert.Empty(parameter.Description);
+            Assert.Empty(property.Value.Content);
+            Assert.Empty(property.Exceptions);
+            Assert.Empty(property.Remarks.Content);
+            Assert.Empty(property.Examples);
+            Assert.Empty(property.RelatedMembers);
+        }
+
+        private static void _AssertNoDocumentation(MethodDocumentationElement method)
+        {
+            Assert.Empty(method.Summary.Content);
+            foreach (var genericParameter in method.GenericParameters)
+                Assert.Empty(genericParameter.Description);
+            foreach (var parameter in method.Parameters)
+                Assert.Empty(parameter.Description);
+            Assert.Empty(method.Exceptions);
+            Assert.Empty(method.Remarks.Content);
+            Assert.Empty(method.Examples);
+            Assert.Empty(method.RelatedMembers);
         }
 
         private static TypeDocumentationElement _AssertNoDocumentation(TypeDocumentationElement typeDocumentationElement)
@@ -159,7 +201,7 @@ namespace CodeMap.Tests
 
         public static EventDocumentationElement AssertNoDocumentation(this EventDocumentationElement eventDocumentationElement)
         {
-            _AssertNoDocumentation(eventDocumentationElement);
+            _AssertNoDocumentation((MemberDocumentationElement)eventDocumentationElement);
             Assert.Empty(eventDocumentationElement.Exceptions);
             return eventDocumentationElement;
         }
@@ -183,25 +225,25 @@ namespace CodeMap.Tests
             return memberDocumentationElement;
         }
 
-        public static AttributeData AssertTestAttribute(this AttributeData attributeData, string valuePrefix)
+        public static AttributeData AssertTestAttribute(this AttributeData attributeData, string attributeValuePrefix)
             => attributeData
                 .AssertType(() => attributeData.Type, typeof(TestAttribute))
                 .AssertCollectionMember(
                     () => attributeData.PositionalParameters,
                     positionalParameter => positionalParameter
                         .AssertEqual(() => positionalParameter.Name, "value1")
-                        .AssertEqual(() => positionalParameter.Value, $"{valuePrefix} test 1")
+                        .AssertEqual(() => positionalParameter.Value, $"{attributeValuePrefix} test 1")
                         .AssertType(() => positionalParameter.Type, typeof(object))
                 )
                 .AssertCollectionMember(
                     () => attributeData.NamedParameters.OrderBy(namedParameter => namedParameter.Name),
                     namedParameter => namedParameter
                         .AssertEqual(() => namedParameter.Name, "Value2")
-                        .AssertEqual(() => namedParameter.Value, $"{valuePrefix} test 2")
+                        .AssertEqual(() => namedParameter.Value, $"{attributeValuePrefix} test 2")
                         .AssertType(() => namedParameter.Type, typeof(object)),
                     namedParameter => namedParameter
                         .AssertEqual(() => namedParameter.Name, "Value3")
-                        .AssertEqual(() => namedParameter.Value, $"{valuePrefix} test 3")
+                        .AssertEqual(() => namedParameter.Value, $"{attributeValuePrefix} test 3")
                         .AssertType(() => namedParameter.Type, typeof(object))
                 );
 
@@ -231,12 +273,12 @@ namespace CodeMap.Tests
             return typeReference;
         }
 
-        public static TTypeDocumentationElement AssertTestEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string attributeValuePrefix, bool checkAccessors = false)
+        public static TTypeDocumentationElement AssertTestEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string eventName, string attributeValuePrefix, bool checkAccessors = false)
             where TTypeDocumentationElement : TypeDocumentationElement
         {
             typeDocumentationElement
                 .AssertCollectionMember(
-                    () => selector().Where(@event => @event.Name == "TestEvent"),
+                    () => selector().Where(@event => @event.Name == eventName),
                     eventDocumentationElement =>
                     {
                         eventDocumentationElement
@@ -298,59 +340,298 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
+        public static TTypeDocumentationElement AssertTestProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDocumentationElement>> selector, string propertyName, string attributeValuePrefix)
+            where TTypeDocumentationElement : TypeDocumentationElement
+        {
+            typeDocumentationElement
+                .AssertCollectionMember(
+                    () => selector().Where(property => property.Name == propertyName),
+                    property =>
+                    {
+                        property
+                            .AssertType(() => property.Type, typeof(byte))
+                            .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
+                            .AssertEqual(() => property.Getter.AccessModifier, AccessModifier.Public)
+                            .AssertEqual(() => property.Setter.AccessModifier, AccessModifier.Public)
+                            .AssertSame(() => property.DeclaringType, typeDocumentationElement)
+                            .AssertFalse(() => property.IsStatic)
+                            .AssertFalse(() => property.IsVirtual)
+                            .AssertFalse(() => property.IsAbstract)
+                            .AssertFalse(() => property.IsOverride)
+                            .AssertFalse(() => property.IsSealed)
+                            .AssertFalse(() => property.IsShadowing)
+                            .AssertCollectionMember(
+                                () => property.Getter.Attributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} getter")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Getter.ReturnAttributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} getter return")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Setter.Attributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} setter")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Setter.ReturnAttributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} setter return")
+                            );
+                    }
+                );
+
+            return typeDocumentationElement;
+        }
+
+        public static TTypeDocumentationElement AssertIndexProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDocumentationElement>> selector, Type typeGenericParameter, string attributeValuePrefix)
+            where TTypeDocumentationElement : TypeDocumentationElement
+        {
+            typeDocumentationElement
+                .AssertCollectionMember(
+                    () => selector().Where(property => property.Name == "Item"),
+                    property =>
+                        property
+                            .AssertType(() => property.Type, typeof(int))
+                            .AssertCollectionMember(
+                                () => property.Attributes,
+                                attribute => attribute.AssertTestAttribute(attributeValuePrefix)
+                            )
+                            .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
+                            .AssertEqual(() => property.Getter.AccessModifier, AccessModifier.Public)
+                            .AssertEqual(() => property.Setter.AccessModifier, AccessModifier.Public)
+                            .AssertSame(() => property.DeclaringType, typeDocumentationElement)
+                            .AssertFalse(() => property.IsStatic)
+                            .AssertFalse(() => property.IsVirtual)
+                            .AssertFalse(() => property.IsAbstract)
+                            .AssertFalse(() => property.IsOverride)
+                            .AssertFalse(() => property.IsSealed)
+                            .AssertFalse(() => property.IsShadowing)
+                            .AssertCollectionMember(
+                                () => property.Getter.Attributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} getter")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Getter.ReturnAttributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} getter return")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Setter.Attributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} setter")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Setter.ReturnAttributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} setter return")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Parameters,
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param1")
+                                    .AssertType(() => parameter.Type, typeof(int))
+                                    .AssertCollectionMember(
+                                        () => parameter.Attributes,
+                                        attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} parameter")
+                                    )
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param2")
+                                    .AssertType(() => parameter.Type, typeof(byte[]))
+                                    .AssertEmpty(() => parameter.Attributes)
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param3")
+                                    .AssertType(() => parameter.Type, typeof(char[][]))
+                                    .AssertEmpty(() => parameter.Attributes)
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param4")
+                                    .AssertType(() => parameter.Type, typeof(double[,]))
+                                    .AssertEmpty(() => parameter.Attributes)
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param5")
+                                    .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
+                                    .AssertEmpty(() => parameter.Attributes)
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param6")
+                                    .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
+                                    .AssertEmpty(() => parameter.Attributes)
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param7")
+                                    .AssertDynamicType(() => parameter.Type)
+                                    .AssertCollectionMember(
+                                        () => parameter.Attributes,
+                                        attribute => attribute.AssertDynamicTypeAttribute()
+                                    )
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param8")
+                                    .AssertType(() => parameter.Type, typeof(int*))
+                                    .AssertEmpty(() => parameter.Attributes)
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param9")
+                                    .AssertType(() => parameter.Type, typeof(byte*[]))
+                                    .AssertEmpty(() => parameter.Attributes)
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param10")
+                                    .AssertType(() => parameter.Type, typeof(void*))
+                                    .AssertEmpty(() => parameter.Attributes)
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param11")
+                                    .AssertType(() => parameter.Type, typeof(void**))
+                                    .AssertEmpty(() => parameter.Attributes)
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param12")
+                                    .AssertType(() => parameter.Type, typeof(void**[]))
+                                    .AssertEmpty(() => parameter.Attributes)
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param13")
+                                    .AssertType(() => parameter.Type, typeGenericParameter)
+                                    .AssertEmpty(() => parameter.Attributes)
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertFalse(() => parameter.HasDefaultValue)
+                                    .AssertNull(() => parameter.DefaultValue),
+                                parameter => parameter
+                                    .AssertEqual(() => parameter.Name, "param14")
+                                    .AssertType(() => parameter.Type, typeof(string))
+                                    .AssertCollectionMember(
+                                        () => parameter.Attributes,
+                                        attribute => attribute.AssertOptionalParameterAttribute()
+                                    )
+                                    .AssertFalse(() => parameter.IsInputByReference)
+                                    .AssertFalse(() => parameter.IsInputOutputByReference)
+                                    .AssertFalse(() => parameter.IsOutputByReference)
+                                    .AssertTrue(() => parameter.HasDefaultValue)
+                                    .AssertEqual(() => parameter.DefaultValue, "test")
+                            )
+                );
+
+            return typeDocumentationElement;
+        }
+
+        public static TTypeDocumentationElement AssertShadowingProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDocumentationElement>> selector, string propertyName)
+            where TTypeDocumentationElement : TypeDocumentationElement
+        {
+            typeDocumentationElement
+                .AssertCollectionMember(
+                    () => selector().Where(property => property.Name == propertyName),
+                    property =>
+                    {
+                        property
+                            .AssertType(() => property.Type, typeof(int))
+                            .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
+                            .AssertSame(() => property.DeclaringType, typeDocumentationElement)
+                            .AssertFalse(() => property.IsStatic)
+                            .AssertFalse(() => property.IsVirtual)
+                            .AssertFalse(() => property.IsAbstract)
+                            .AssertFalse(() => property.IsOverride)
+                            .AssertFalse(() => property.IsSealed)
+                            .AssertTrue(() => property.IsShadowing);
+                    }
+                );
+
+            return typeDocumentationElement;
+        }
+
         public static TInstance AssertType<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector, Type type)
         {
             selector().AssertType(type);
             return instance;
         }
 
-        public static TInstance AssertDynamicType<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> typeSelector, Func<IEnumerable<AttributeData>> attributesSelector, bool[] transformFlags = null)
+        public static TInstance AssertDynamicType<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector)
             => instance
-                .AssertType(typeSelector, typeof(object))
-                .AssertMember(typeSelector, type => type.AssertIs<DynamicTypeReferenceDocumentationElement>())
-                .AssertCollectionMemberContains(
-                    attributesSelector,
-                    attribute => attribute
-                        .AssertType(() => attribute.Type, typeof(DynamicAttribute))
-                        .AssertMember(
-                            () => attribute.PositionalParameters,
-                            positionalParameters =>
-                            {
-                                if (transformFlags == null)
-                                    positionalParameters.AssertEmpty(() => positionalParameters);
-                                else
-                                    positionalParameters.AssertCollectionMember(
-                                        () => positionalParameters,
-                                        positionalParameter =>
-                                            positionalParameter
-                                                .AssertEqual(() => positionalParameter.Name, "transformFlags")
-                                                .AssertType(() => positionalParameter.Type, typeof(bool[]))
-                                                .AssertEqual(() => positionalParameter.Value, transformFlags)
-                                    );
-                            }
-                        )
-                        .AssertEmpty(() => attribute.NamedParameters)
-                );
+                .AssertType(selector, typeof(object))
+                .AssertMember(selector, type => type.AssertIs<DynamicTypeReferenceDocumentationElement>());
 
-        public static TInstance AssertOutputParameterAttribute<TInstance>(this TInstance instance, Func<IEnumerable<AttributeData>> attributesSelector)
-            => instance
-                .AssertCollectionMemberContains(
-                    attributesSelector,
-                    attribute => attribute
-                        .AssertType(() => attribute.Type, typeof(OutAttribute))
-                        .AssertEmpty(() => attribute.PositionalParameters)
-                        .AssertEmpty(() => attribute.NamedParameters)
-                );
+        public static AttributeData AssertDynamicTypeAttribute(this AttributeData attribute, bool[] transformFlags = null)
+            => attribute
+                .AssertType(() => attribute.Type, typeof(DynamicAttribute))
+                .AssertMember(
+                    () => attribute.PositionalParameters,
+                    positionalParameters =>
+                    {
+                        if (transformFlags == null)
+                            positionalParameters.AssertEmpty(() => positionalParameters);
+                        else
+                            positionalParameters.AssertCollectionMember(
+                                () => positionalParameters,
+                                positionalParameter =>
+                                    positionalParameter
+                                        .AssertEqual(() => positionalParameter.Name, "transformFlags")
+                                        .AssertType(() => positionalParameter.Type, typeof(bool[]))
+                                        .AssertEqual(() => positionalParameter.Value, transformFlags)
+                            );
+                    }
+                )
+                .AssertEmpty(() => attribute.NamedParameters);
 
-        public static TInstance AssertOptionalParameterAttribute<TInstance>(this TInstance instance, Func<IEnumerable<AttributeData>> attributesSelector)
-            => instance
-                .AssertCollectionMemberContains(
-                    attributesSelector,
-                    attribute => attribute
-                        .AssertType(() => attribute.Type, typeof(OptionalAttribute))
-                        .AssertEmpty(() => attribute.PositionalParameters)
-                        .AssertEmpty(() => attribute.NamedParameters)
-                );
+        public static AttributeData AssertOutputParameterAttribute(this AttributeData attributeData)
+            => attributeData
+                .AssertType(() => attributeData.Type, typeof(OutAttribute))
+                .AssertEmpty(() => attributeData.PositionalParameters)
+                .AssertEmpty(() => attributeData.NamedParameters);
+
+        public static AttributeData AssertOptionalParameterAttribute(this AttributeData attributeData)
+            => attributeData
+                .AssertType(() => attributeData.Type, typeof(OptionalAttribute))
+                .AssertEmpty(() => attributeData.PositionalParameters)
+                .AssertEmpty(() => attributeData.NamedParameters);
 
         public static TTypeDocumentationElement AssertTypeGenericParameters<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<TypeGenericParameterDocumentationElement>> selector)
             where TTypeDocumentationElement : TypeDocumentationElement
@@ -450,8 +731,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param9")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, typeof(int))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -460,8 +743,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param10")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, typeof(byte[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -470,8 +755,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param11")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, typeof(char[][]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -480,8 +767,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param12")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, typeof(double[,]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -517,8 +806,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param16")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -536,8 +827,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param18")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -546,8 +839,11 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param19")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertDynamicType(() => parameter.Type, () => parameter.Attributes)
+                        .AssertDynamicType(() => parameter.Type)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertDynamicTypeAttribute()
+                        )
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -555,8 +851,11 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param20")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertDynamicType(() => parameter.Type, () => parameter.Attributes, new[] { false, true })
+                        .AssertDynamicType(() => parameter.Type)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertDynamicTypeAttribute(new[] { false, true })
+                        )
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -564,9 +863,12 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param21")
-                        .AssertEqual(() => parameter.Attributes.Count, 2)
-                        .AssertDynamicType(() => parameter.Type, () => parameter.Attributes, new[] { false, true })
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertDynamicType(() => parameter.Type)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute(),
+                            attribute => attribute.AssertDynamicTypeAttribute(new[] { false, true })
+                        )
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -592,8 +894,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param24")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, genericParameter)
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -629,8 +933,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param28")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, typeof(double*))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -648,8 +954,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param30")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, typeof(short*[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -685,8 +993,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param34")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, typeof(void**))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -713,8 +1023,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param37")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOutputParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOutputParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, typeof(void**[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -723,8 +1035,10 @@ namespace CodeMap.Tests
                         .AssertNull(() => parameter.DefaultValue),
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param38")
-                        .AssertEqual(() => parameter.Attributes.Count, 1)
-                        .AssertOptionalParameterAttribute(() => parameter.Attributes)
+                        .AssertCollectionMember(
+                            () => parameter.Attributes,
+                            attribute => attribute.AssertOptionalParameterAttribute()
+                        )
                         .AssertType(() => parameter.Type, typeof(string))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -732,6 +1046,492 @@ namespace CodeMap.Tests
                         .AssertTrue(() => parameter.HasDefaultValue)
                         .AssertEqual(() => parameter.DefaultValue, "test")
                 );
+
+        public static TTypeDocumentationElement AssertTestMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDocumentationElement>> selector, string methodName, Type typeGenericParameter, Type methodGenericParameter, string attributeValuePrefix)
+            where TTypeDocumentationElement : TypeDocumentationElement
+            => typeDocumentationElement
+                .AssertCollectionMember(
+                    () => selector().Where(method => method.Name == methodName),
+                    method => method
+                        .AssertCollectionMember(
+                            () => method.Attributes,
+                            attribute => attribute.AssertTestAttribute(attributeValuePrefix)
+                        )
+                        .AssertCollectionMember(
+                            () => method.Return.Attributes,
+                            attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} return")
+                        )
+                        .AssertMember(
+                            () => method.Return.Type,
+                            returnType => returnType
+                                .AssertType(typeof(void))
+                                .AssertIs<VoidTypeReferenceDocumentationElement>()
+                        )
+                        .AssertCollectionMember(
+                            () => method.GenericParameters,
+                            genericParameter =>
+                                genericParameter
+                                    .AssertEqual(() => genericParameter.Name, "TMethodParam1")
+                                    .AssertEqual(() => genericParameter.Position, 0)
+                                    .AssertFalse(() => genericParameter.IsCovariant)
+                                    .AssertFalse(() => genericParameter.IsContravariant)
+                                    .AssertFalse(() => genericParameter.HasReferenceTypeConstraint)
+                                    .AssertFalse(() => genericParameter.HasNonNullableValueTypeConstraint)
+                                    .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
+                                    .AssertEmpty(() => genericParameter.TypeConstraints)
+                        )
+                        .AssertSame(() => method.DeclaringType, typeDocumentationElement)
+                        .AssertCollectionMember(
+                            () => method.Parameters,
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param1")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} parameter")
+                                )
+                                .AssertType(() => parameter.Type, typeof(int))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param2")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(byte[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param3")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(char[][]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param4")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(double[,]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param5")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(int))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param6")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(byte[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param7")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(char[][]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param8")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(double[,]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param9")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeof(int))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param10")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeof(byte[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param11")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeof(char[][]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param12")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeof(double[,]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param13")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param14")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param15")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param16")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param17")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param18")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param19")
+                                .AssertDynamicType(() => parameter.Type)
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertDynamicTypeAttribute()
+                                )
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param20")
+                                .AssertDynamicType(() => parameter.Type)
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertDynamicTypeAttribute(new[] { false, true })
+                                )
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param21")
+                                .AssertDynamicType(() => parameter.Type)
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute(),
+                                    attribute => attribute.AssertDynamicTypeAttribute(new[] { false, true })
+                                )
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param22")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeGenericParameter)
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param23")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeGenericParameter)
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param24")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeGenericParameter)
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param25")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(int*))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param26")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(byte*[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param27")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(char*))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param28")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeof(double*))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param29")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(decimal*[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param30")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeof(short*[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param31")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(void*))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param32")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(void**))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param33")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(void**))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param34")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeof(void**))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param35")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(void**[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param36")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, typeof(void**[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param37")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeof(void**[]))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param38")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, methodGenericParameter)
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param39")
+                                .AssertEmpty(() => parameter.Attributes)
+                                .AssertType(() => parameter.Type, methodGenericParameter)
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertTrue(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param40")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOutputParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, methodGenericParameter)
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertTrue(() => parameter.IsOutputByReference)
+                                .AssertFalse(() => parameter.HasDefaultValue)
+                                .AssertNull(() => parameter.DefaultValue),
+                            parameter => parameter
+                                .AssertEqual(() => parameter.Name, "param41")
+                                .AssertCollectionMember(
+                                    () => parameter.Attributes,
+                                    attribute => attribute.AssertOptionalParameterAttribute()
+                                )
+                                .AssertType(() => parameter.Type, typeof(string))
+                                .AssertFalse(() => parameter.IsInputByReference)
+                                .AssertFalse(() => parameter.IsInputOutputByReference)
+                                .AssertFalse(() => parameter.IsOutputByReference)
+                                .AssertTrue(() => parameter.HasDefaultValue)
+                                .AssertEqual(() => parameter.DefaultValue, "test")
+                        )
+                );
+
+        public static TTypeDocumentationElement AssertShadowingMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDocumentationElement>> selector, string methodName)
+            where TTypeDocumentationElement : TypeDocumentationElement
+        {
+            typeDocumentationElement
+                .AssertCollectionMember(
+                    () => selector().Where(method => method.Name == methodName),
+                    method =>
+                    {
+                        method
+                            .AssertEmpty(() => method.GenericParameters)
+                            .AssertEmpty(() => method.Parameters)
+                            .AssertType(() => method.Return.Type, typeof(void))
+                            .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
+                            .AssertSame(() => method.DeclaringType, typeDocumentationElement)
+                            .AssertFalse(() => method.IsStatic)
+                            .AssertFalse(() => method.IsVirtual)
+                            .AssertFalse(() => method.IsAbstract)
+                            .AssertFalse(() => method.IsOverride)
+                            .AssertFalse(() => method.IsSealed)
+                            .AssertTrue(() => method.IsShadowing);
+                    }
+                );
+
+            return typeDocumentationElement;
+        }
 
         public static TConcrete AssertIs<TConcrete>(this object instance)
         {

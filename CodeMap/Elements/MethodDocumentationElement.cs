@@ -5,15 +5,12 @@ using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents a documented property declared by a type.</summary>
-    public sealed class PropertyDocumentationElement : MemberDocumentationElement
+    /// <summary>Represents a documented method declared by a type.</summary>
+    public class MethodDocumentationElement : MemberDocumentationElement
     {
-        internal PropertyDocumentationElement()
+        internal MethodDocumentationElement()
         {
         }
-
-        /// <summary>The property type.</summary>
-        public TypeReferenceDocumentationElement Type { get; internal set; }
 
         /// <summary>Indicates whether the property is static.</summary>
         public bool IsStatic { get; internal set; }
@@ -33,19 +30,16 @@ namespace CodeMap.Elements
         /// <summary>Indicates whether the event hides one from a base interface with the same name.</summary>
         public bool IsShadowing { get; internal set; }
 
-        /// <summary>Information about the getter accessor.</summary>
-        public PropertyAccessorData Getter { get; internal set; }
-
-        /// <summary>Information about the setter accessor.</summary>
-        public PropertyAccessorData Setter { get; internal set; }
+        /// <summary>The method generic parameters.</summary>
+        public IReadOnlyList<MethodGenericParameterDocumentationElement> GenericParameters { get; internal set; }
 
         /// <summary>The method parameters.</summary>
         public IReadOnlyList<ParameterDocumentationElement> Parameters { get; internal set; }
 
-        /// <summary>Documentation about the how the value of the property is calculated.</summary>
-        new public ValueDocumentationElement Value { get; internal set; }
+        /// <summary>The documented method return value.</summary>
+        public ReturnsDocumentationElement Return { get; internal set; }
 
-        /// <summary>Documented exceptions that might be thrown when using the property.</summary>
+        /// <summary>Documented exceptions that might be thrown when calling the method.</summary>
         public IReadOnlyCollection<ExceptionDocumentationElement> Exceptions { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>

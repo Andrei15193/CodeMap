@@ -102,9 +102,9 @@ namespace CodeMap.Tests
             "System.Object," +
             "System.Object@," +
             "System.Object@," +
-            "``0," +
-            "``0@," +
-            "``0@," +
+            "`0," +
+            "`0@," +
+            "`0@," +
             "System.Int32*," +
             "System.Byte*[]," +
             "System.Char*@," +
@@ -118,9 +118,9 @@ namespace CodeMap.Tests
             "System.Void**[]," +
             "System.Void**[]@," +
             "System.Void**[]@," +
-            "`0," +
-            "`0@," +
-            "`0@," +
+            "``0," +
+            "``0@," +
+            "``0@," +
             "System.String";
 
         [Theory]

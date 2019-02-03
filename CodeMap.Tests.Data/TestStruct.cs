@@ -116,26 +116,26 @@ namespace CodeMap.Tests.Data
             dynamic param19,
             ref dynamic param20,
             out dynamic param21,
-            TMethodParam1 param22,
-            ref TMethodParam1 param23,
-            out TMethodParam1 pram24,
+            TParam1 param22,
+            ref TParam1 param23,
+            out TParam1 param24,
             int* param25,
             byte*[] param26,
             ref char* param27,
-            out double* param29,
-            ref decimal*[] param30,
-            out short*[] param31,
-            void* param32,
-            void** param33,
-            ref void** param34,
-            out void** param35,
-            void**[] param36,
-            ref void**[] param37,
-            out void**[] param38,
-            TParam1 param39,
-            ref TParam1 param40,
-            out TParam1 param41,
-            string param42 = "test")
+            out double* param28,
+            ref decimal*[] param29,
+            out short*[] param30,
+            void* param31,
+            void** param32,
+            ref void** param33,
+            out void** param34,
+            void**[] param35,
+            ref void**[] param36,
+            out void**[] param37,
+            TMethodParam1 param38,
+            ref TMethodParam1 param39,
+            out TMethodParam1 param40,
+            string param41 = "test")
         {
             param9 = default(int);
             param10 = default(byte[]);
@@ -144,12 +144,12 @@ namespace CodeMap.Tests.Data
             param16 = default(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>);
             param18 = default(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]);
             param21 = default(dynamic);
-            pram24 = default(TMethodParam1);
-            param29 = default(double*);
-            param31 = default(short*[]);
-            param35 = default(void**);
-            param38 = default(void**[]);
-            param41 = default(TParam1);
+            param24 = default(TParam1);
+            param28 = default(double*);
+            param30 = default(short*[]);
+            param34 = default(void**);
+            param37 = default(void**[]);
+            param40 = default(TMethodParam1);
         }
     }
 }
