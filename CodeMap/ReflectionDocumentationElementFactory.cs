@@ -158,6 +158,7 @@ namespace CodeMap
                 .AsReadOnlyCollection();
             interfaceDocumentationElement.Methods = interfaceType
                 .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Where(method => !method.IsSpecialName)
                 .Select(method => _GetMethod(method, interfaceDocumentationElement))
                 .AsReadOnlyCollection();
 

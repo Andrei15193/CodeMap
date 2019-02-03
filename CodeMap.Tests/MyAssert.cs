@@ -71,6 +71,21 @@ namespace CodeMap.Tests
         public static InterfaceDocumentationElement AssertDocumentation(this InterfaceDocumentationElement interfaceDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(interfaceDocumentationElement, memberDocumentation);
+
+            foreach (var genericParameterPosition in Enumerable.Range(0, 1))
+            {
+                var genericParameterName = $"TParam{genericParameterPosition + 1}";
+                Assert.Contains(
+                    interfaceDocumentationElement.GenericParameters,
+                    genericParameter => genericParameter.Name == genericParameterName
+                );
+
+                memberDocumentation.AssertSameItems(
+                    () => memberDocumentation.GenericParameters[genericParameterName],
+                    interfaceDocumentationElement.GenericParameters[genericParameterPosition].Description
+                );
+            }
+
             return interfaceDocumentationElement;
         }
 
@@ -167,7 +182,21 @@ namespace CodeMap.Tests
         public static EventDocumentationElement AssertDocumentation(this EventDocumentationElement eventDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(eventDocumentationElement, memberDocumentation);
-            Assert.Same(memberDocumentation.Exceptions, eventDocumentationElement.Exceptions);
+            memberDocumentation
+                .AssertSameItems(
+                    () => memberDocumentation.Exceptions["T:System.ArgumentException"],
+                    eventDocumentationElement
+                        .Exceptions
+                        .Single(exception => exception.Type == typeof(ArgumentException))
+                        .Description
+                )
+                .AssertSameItems(
+                    () => memberDocumentation.Exceptions["T:System.ArgumentNullException"],
+                    eventDocumentationElement
+                        .Exceptions
+                        .Single(exception => exception.Type == typeof(ArgumentNullException))
+                        .Description
+                );
             return eventDocumentationElement;
         }
 
@@ -177,11 +206,59 @@ namespace CodeMap.Tests
             foreach (var parameter in propertyDocumentationElement.Parameters)
             {
                 Assert.True(memberDocumentation.Parameters.Contains(parameter.Name));
-                Assert.Same(memberDocumentation.Parameters[parameter.Name], parameter.Description);
+                memberDocumentation
+                    .AssertSameItems(
+                        () => memberDocumentation.Parameters[parameter.Name],
+                        parameter.Description
+                    );
             }
             Assert.Same(memberDocumentation.Value, propertyDocumentationElement.Value);
-            Assert.Same(memberDocumentation.Exceptions, propertyDocumentationElement.Exceptions);
+            memberDocumentation
+                .AssertSameItems(
+                    () => memberDocumentation.Exceptions["T:System.ArgumentException"],
+                    propertyDocumentationElement
+                        .Exceptions
+                        .Single(exception => exception.Type == typeof(ArgumentException))
+                        .Description
+                )
+                .AssertSameItems(
+                    () => memberDocumentation.Exceptions["T:System.ArgumentNullException"],
+                    propertyDocumentationElement
+                        .Exceptions
+                        .Single(exception => exception.Type == typeof(ArgumentNullException))
+                        .Description
+                );
             return propertyDocumentationElement;
+        }
+
+        public static MethodDocumentationElement AssertDocumentation(this MethodDocumentationElement methodDocumentationElement, MemberDocumentation memberDocumentation)
+        {
+            _AssertDocumentation(methodDocumentationElement, memberDocumentation);
+            foreach (var parameter in methodDocumentationElement.Parameters)
+            {
+                Assert.True(memberDocumentation.Parameters.Contains(parameter.Name));
+                memberDocumentation
+                    .AssertSameItems(
+                        () => memberDocumentation.Parameters[parameter.Name],
+                        parameter.Description
+                    );
+            }
+            memberDocumentation
+                .AssertSameItems(
+                    () => memberDocumentation.Exceptions["T:System.ArgumentException"],
+                    methodDocumentationElement
+                        .Exceptions
+                        .Single(exception => exception.Type == typeof(ArgumentException))
+                        .Description
+                )
+                .AssertSameItems(
+                    () => memberDocumentation.Exceptions["T:System.ArgumentNullException"],
+                    methodDocumentationElement
+                        .Exceptions
+                        .Single(exception => exception.Type == typeof(ArgumentNullException))
+                        .Description
+                );
+            return methodDocumentationElement;
         }
 
         private static MemberDocumentationElement _AssertDocumentation(this MemberDocumentationElement typeDocumentationElement, MemberDocumentation memberDocumentation)
