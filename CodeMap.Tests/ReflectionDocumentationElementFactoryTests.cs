@@ -514,6 +514,44 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public void CreateClassDocumentationElementNestedTypes()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(TestClass<>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "TestClass")
+                .AssertIs<ClassDocumentationElement>(
+                    classDocumentationElement => classDocumentationElement
+                        .AssertCollectionMember(
+                            () => classDocumentationElement.NestedEnums,
+                            @enum => @enum
+                                .AssertEqual(() => @enum.Name, "NestedTestEnum")
+                                .AssertSame(() => @enum.DeclaringType, classDocumentationElement)
+                        )
+                        .AssertCollectionMember(
+                            () => classDocumentationElement.NestedDelegates,
+                            @delegate => @delegate
+                                .AssertEqual(() => @delegate.Name, "NestedTestDelegate")
+                                .AssertSame(() => @delegate.DeclaringType, classDocumentationElement)
+                        )
+                        .AssertCollectionMember(
+                            () => classDocumentationElement.NestedInterfaces,
+                            @interface => @interface
+                                .AssertEqual(() => @interface.Name, "INestedTestInterface")
+                                .AssertSame(() => @interface.DeclaringType, classDocumentationElement)
+                        )
+                        .AssertCollectionMember(
+                            () => classDocumentationElement.NestedClasses,
+                            @class => @class
+                                .AssertEqual(() => @class.Name, "NestedTestClass")
+                                .AssertSame(() => @class.DeclaringType, classDocumentationElement)
+                        )
+                );
+        }
+
+        [Fact]
         public void ConstructorWithNullMembersDocumentationCollectionThrowsException()
         {
             var exception = Assert.Throws<ArgumentNullException>(() => new ReflectionDocumentationElementFactory(null));

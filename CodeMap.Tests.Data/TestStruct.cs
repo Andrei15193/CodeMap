@@ -10,6 +10,24 @@ namespace CodeMap.Tests.Data
     public unsafe struct TestStruct<TParam1>
     {
         /// <summary/>
+        public enum NestedTestEnum
+        {
+        }
+
+        /// <summary/>
+        public delegate void NestedTestDelegate();
+
+        /// <summary/>
+        public interface INestedTestInterface
+        {
+        }
+
+        /// <summary/>
+        public struct NestedTestStruct
+        {
+        }
+
+        /// <summary/>
         [Test("struct constant test 1", Value2 = "struct constant test 2", Value3 = "struct constant test 3")]
         private const double TestConstant = 1;
 

@@ -5,27 +5,15 @@ using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents a documented class declaration.</summary>
-    public sealed class ClassDocumentationElement : TypeDocumentationElement
+    /// <summary>Represents a documented struct declaration.</summary>
+    public sealed class StructDocumentationElement : TypeDocumentationElement
     {
-        internal ClassDocumentationElement()
+        internal StructDocumentationElement()
         {
         }
 
-        /// <summary>Indicates whether the class is abstract.</summary>
-        public bool IsAbstract { get; internal set; }
-
-        /// <summary>Indicates whether the class is sealed.</summary>
-        public bool IsSealed { get; internal set; }
-
-        /// <summary>Indicates whether the class is static.</summary>
-        public bool IsStatic { get; internal set; }
-
-        /// <summary>The class generic parameters.</summary>
+        /// <summary>The struct generic parameters.</summary>
         public IReadOnlyList<TypeGenericParameterDocumentationElement> GenericParameters { get; internal set; }
-
-        /// <summary>The base type.</summary>
-        public TypeReferenceDocumentationElement BaseClass { get; internal set; }
 
         /// <summary>The implemented interfaces.</summary>
         public IReadOnlyCollection<TypeReferenceDocumentationElement> ImplementedInterfaces { get; internal set; }
@@ -79,9 +67,9 @@ namespace CodeMap.Elements
             throw new NotImplementedException();
         }
 
-        /// <summary>Determines whether the current <see cref="ClassDocumentationElement"/> is equal to the provided <paramref name="type"/>.</summary>
+        /// <summary>Determines whether the current <see cref="StructDocumentationElement"/> is equal to the provided <paramref name="type"/>.</summary>
         /// <param name="type">The <see cref="Type"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="ClassDocumentationElement"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
+        /// <returns>Returns <c>true</c> if the current <see cref="StructDocumentationElement"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(Type type)
             => base.Equals(type)
             && GenericParameters.Count == type.GetGenericArguments().Length;

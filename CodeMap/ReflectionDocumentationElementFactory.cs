@@ -43,22 +43,29 @@ namespace CodeMap
         /// <param name="type">The <see cref="Type"/> from which to create a <see cref="TypeDocumentationElement"/>.</param>
         /// <returns>Returns a <see cref="TypeDocumentationElement"/> from the provided <paramref name="type"/>.</returns>
         public TypeDocumentationElement Create(Type type)
+            => _Create(type, null);
+
+        private TypeDocumentationElement _Create(Type type, TypeDocumentationElement declaringType)
         {
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
+            TypeDocumentationElement typeDocumentationElement;
             if (type.IsEnum)
-                return _CreateEnum(type);
+                typeDocumentationElement = _CreateEnum(type);
             else if (typeof(Delegate).IsAssignableFrom(type))
-                return _CreateDelegate(type);
+                typeDocumentationElement = _CreateDelegate(type);
             else if (type.IsInterface)
-                return _CreateInterface(type);
+                typeDocumentationElement = _CreateInterface(type);
             else if (type.IsClass)
-                return _CreateClass(type);
+                typeDocumentationElement = _CreateClass(type);
             else if (type.IsValueType)
-                return _CreateStruct(type);
+                typeDocumentationElement = _CreateStruct(type);
+            else
+                throw new ArgumentException($"Unknown type: '{type.Name}'.", nameof(type));
 
-            throw new ArgumentException($"Unknown type: '{type.Name}'.", nameof(type));
+            typeDocumentationElement.DeclaringType = declaringType;
+            return typeDocumentationElement;
         }
 
         private EnumDocumentationElement _CreateEnum(Type enumType)
@@ -229,13 +236,53 @@ namespace CodeMap
                 .Select(method => _GetMethod(method, classDocumentationElement))
                 .AsReadOnlyCollection();
 
+            var nestedTypes = _GetNestedTypes(classDocumentationElement, classType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic));
+            classDocumentationElement.NestedEnums = nestedTypes[typeof(EnumDocumentationElement)]
+                .Cast<EnumDocumentationElement>()
+                .AsReadOnlyCollection();
+            classDocumentationElement.NestedDelegates = nestedTypes[typeof(DelegateDocumentationElement)]
+                .Cast<DelegateDocumentationElement>()
+                .AsReadOnlyCollection();
+            classDocumentationElement.NestedInterfaces = nestedTypes[typeof(InterfaceDocumentationElement)]
+                .Cast<InterfaceDocumentationElement>()
+                .AsReadOnlyCollection();
+            classDocumentationElement.NestedClasses = nestedTypes[typeof(ClassDocumentationElement)]
+                .Cast<ClassDocumentationElement>()
+                .AsReadOnlyCollection();
+            classDocumentationElement.NestedStructs = nestedTypes[typeof(StructDocumentationElement)]
+                .Cast<StructDocumentationElement>()
+                .AsReadOnlyCollection();
+
             return classDocumentationElement;
         }
 
-        private TypeDocumentationElement _CreateStruct(Type type)
+        private TypeDocumentationElement _CreateStruct(Type structType)
         {
-            throw new NotImplementedException();
+            return new StructDocumentationElement
+            {
+                Name = _GetTypeNameFor(structType)
+            };
         }
+
+        private IReadOnlyDictionary<Type, IEnumerable<TypeDocumentationElement>> _GetNestedTypes(TypeDocumentationElement declaringType, IEnumerable<Type> nestedTypes)
+            => (
+                from elementType in new[]
+                    {
+                        typeof(EnumDocumentationElement),
+                        typeof(DelegateDocumentationElement),
+                        typeof(InterfaceDocumentationElement),
+                        typeof(ClassDocumentationElement),
+                        typeof(StructDocumentationElement)
+                    }
+                join nestedType in nestedTypes.Select(nestedType => _Create(nestedType, declaringType))
+                    on elementType equals nestedType.GetType() into nestedElementsByType
+                select new
+                {
+                    ElementType = elementType,
+                    NestedTypeDocumentationElements = nestedElementsByType
+                }
+            )
+            .ToDictionary(pair => pair.ElementType, pair => pair.NestedTypeDocumentationElements);
 
         private ConstantDocumentationElement _GetConstant(FieldInfo field, TypeDocumentationElement declaringType)
         {
