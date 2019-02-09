@@ -1,24 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
-    /// <summary>Represents a documented constant declared by a type.</summary>
-    public class ConstantDocumentationElement : MemberDocumentationElement
+    /// <summary>Represents a documented constructor declared by a type.</summary>
+    public class ConstructorDocumentationElement : MemberDocumentationElement
     {
-        internal ConstantDocumentationElement()
+        internal ConstructorDocumentationElement()
         {
         }
 
-        /// <summary>Indicates whether the constant hides a member from a base type.</summary>
-        public bool IsShadowing { get; internal set; }
+        /// <summary>The constructor parameters.</summary>
+        public IReadOnlyList<ParameterDocumentationElement> Parameters { get; internal set; }
 
-        /// <summary>The constant value.</summary>
-        new public object Value { get; internal set; }
-
-        /// <summary>The constant type.</summary>
-        public TypeReferenceDocumentationElement Type { get; internal set; }
+        /// <summary>Documented exceptions that might be thrown when calling the constructor.</summary>
+        public IReadOnlyCollection<ExceptionDocumentationElement> Exceptions { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>

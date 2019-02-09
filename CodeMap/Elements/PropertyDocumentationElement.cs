@@ -30,7 +30,7 @@ namespace CodeMap.Elements
         /// <summary>Indicates whether the property has been marked as sealed.</summary>
         public bool IsSealed { get; internal set; }
 
-        /// <summary>Indicates whether the event hides one from a base interface with the same name.</summary>
+        /// <summary>Indicates whether the property hides a member from a base type.</summary>
         public bool IsShadowing { get; internal set; }
 
         /// <summary>Information about the getter accessor.</summary>

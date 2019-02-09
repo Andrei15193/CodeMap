@@ -248,6 +248,218 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public void CreateClassDocumentationElement()
+        {
+            var classType = typeof(TestClass<>);
+            var typeGenericParameter = classType.GetGenericArguments().Single();
+            var methodGenericParameter = classType.GetMethod("TestMethod").GetGenericArguments().Single();
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(classType);
+            var baseTypeDocumentationElement = factory.Create(typeof(TestBaseClass));
+
+            baseTypeDocumentationElement
+                .AssertEqual(() => baseTypeDocumentationElement.Name, "TestBaseClass")
+                .AssertIs<ClassDocumentationElement>(
+                    baseClassDocumentationElement => baseClassDocumentationElement
+                        .AssertType(() => baseClassDocumentationElement.BaseClass, typeof(object))
+                        .AssertAbstractEvent(() => baseClassDocumentationElement.Events, "AbstractTestEvent")
+                        .AssertVirtualEvent(() => baseClassDocumentationElement.Events, "VirtualTestEvent")
+
+                        .AssertAbstractProperty(() => baseClassDocumentationElement.Properties, "AbstractTestProperty")
+                        .AssertVirtualProperty(() => baseClassDocumentationElement.Properties, "VirtualTestProperty")
+                        .AssertStaticProperty(() => baseClassDocumentationElement.Properties, "StaticTestProperty")
+
+                        .AssertAbstractMethod(() => baseClassDocumentationElement.Methods, "AbstractTestMethod")
+                        .AssertVirtualMethod(() => baseClassDocumentationElement.Methods, "VirtualTestMethod")
+                        .AssertStaticMethod(() => baseClassDocumentationElement.Methods, "StaticTestMethod")
+                );
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "TestClass")
+                .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
+                .AssertNull(() => typeDocumentationElement.DeclaringType)
+                .AssertCollectionMember(
+                    () => typeDocumentationElement.Attributes,
+                    attribute => attribute.AssertDefaultMemberAttribute(),
+                    attribute => attribute.AssertTestAttribute("class")
+                )
+                .AssertIs<ClassDocumentationElement>(
+                    classDocumentationElement => classDocumentationElement
+                        .AssertTypeGenericParameters(() => classDocumentationElement.GenericParameters)
+                        .AssertType(() => classDocumentationElement.BaseClass, typeof(TestBaseClass))
+                        .AssertCollectionMember(
+                            () => classDocumentationElement.ImplementedInterfaces,
+                            baseInterface => baseInterface.AssertType(typeof(ITestExtendedBaseInterface))
+                        )
+                        .AssertCollectionMember(
+                            () => classDocumentationElement.Constants,
+                            constant => constant
+                                .AssertEqual(() => constant.Name, "TestConstant")
+                                .AssertCollectionMember(
+                                    () => constant.Attributes,
+                                    attribute => attribute.AssertTestAttribute("class constant")
+                                )
+                                .AssertEqual(() => constant.AccessModifier, AccessModifier.Private)
+                                .AssertSame(() => constant.DeclaringType, classDocumentationElement)
+                                .AssertType(() => constant.Type, typeof(double))
+                                .AssertEqual(() => constant.Value, 1.0)
+                                .AssertNoDocumentation()
+                        )
+                        .AssertTestFields(() => classDocumentationElement.Fields)
+                        .AssertTestEvent(() => classDocumentationElement.Events, "TestEvent", "class event")
+
+                        .AssertCollectionMember(
+                            () => classDocumentationElement.Constructors,
+                            constructor => constructor.AssertTestConstructor(classDocumentationElement, typeGenericParameter, "class constructor")
+                        )
+
+                        .AssertOverrideEvent(() => classDocumentationElement.Events, "AbstractTestEvent")
+                        .AssertSealedEvent(() => classDocumentationElement.Events, "VirtualTestEvent")
+                        .AssertStaticEvent(() => classDocumentationElement.Events, "StaticTestEvent")
+                        .AssertShadowingEvent(() => classDocumentationElement.Events, "ClassShadowedTestEvent")
+
+                        .AssertTestProperty(() => classDocumentationElement.Properties, "TestProperty", "class property")
+                        .AssertIndexProperty(() => classDocumentationElement.Properties, typeGenericParameter, "class indexer")
+                        .AssertOverrideProperty(() => classDocumentationElement.Properties, "AbstractTestProperty")
+                        .AssertSealedProperty(() => classDocumentationElement.Properties, "VirtualTestProperty")
+                        .AssertShadowingProperty(() => classDocumentationElement.Properties, "ClassShadowedTestProperty")
+
+                        .AssertTestMethod(() => classDocumentationElement.Methods, "TestMethod", typeGenericParameter, methodGenericParameter, "class method")
+                        .AssertOverrideMethod(() => classDocumentationElement.Methods, "AbstractTestMethod")
+                        .AssertSealedMethod(() => classDocumentationElement.Methods, "VirtualTestMethod")
+                        .AssertShadowingMethod(() => classDocumentationElement.Methods, "ClassShadowedTestMethod")
+                )
+                .AssertNoDocumentation();
+        }
+
+        [Fact]
+        public void CreateClassDocumentationElementDocumentation()
+        {
+            var classMemberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.TestClass`1");
+
+            var testConstantMemberDocumentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestClass`1.TestConstant");
+
+            var readonlyTestFieldMemberDocumentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestClass`1.ReadonlyTestField");
+            var shadowedTestFieldMemberDocumentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestClass`1.ShadowedTestField");
+            var staticTestFieldMemberDocumentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestClass`1.StaticTestField");
+            var testFieldMemberDocumentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestClass`1.TestField");
+
+            var constructorMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.#ctor(" + CanonicalNameResolverTests.ConstructorParameters + ")");
+
+            var abstractTestEventMemberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.Data.TestClass`1.AbstractTestEvent");
+            var shadowingEventMemberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.Data.TestClass`1.ClassShadowedTestEvent");
+            var interfaceShadowedTestEventMemberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.Data.TestClass`1.CodeMap#Tests#Data#ITestBaseInterface#InterfaceShadowedTestEvent");
+            var staticTestEventMemberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.Data.TestClass`1.StaticTestEvent");
+            var testEventMemberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.Data.TestClass`1.TestEvent");
+            var virtualTestEventMemberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.Data.TestClass`1.VirtualTestEvent");
+
+            var abstractTestPropertyMemberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.TestClass`1.AbstractTestProperty");
+            var shadowingPropertyMemberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.TestClass`1.ClassShadowedTestProperty");
+            var interfaceShadowedTestPropertyMemberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.TestClass`1.InterfaceShadowedTestProperty");
+            var indexerPropertyMemberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.TestClass`1.Item(" + CanonicalNameResolverTests.IndexerParameters + ")");
+            var testPropertyMemberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.TestClass`1.TestProperty");
+            var virtualTestPropertyMemberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.TestClass`1.VirtualTestProperty");
+
+            var abstractTestMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.AbstractTestMethod");
+            var shadowingMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.ClassShadowedTestMethod");
+            var baseTestMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.CodeMap#Tests#Data#ITestBaseInterface#BaseTestMethod");
+            var interfaceShadowedTestMethod = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.CodeMap#Tests#Data#ITestBaseInterface#InterfaceShadowedTestMethod");
+            var testMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.TestMethod``1(" + CanonicalNameResolverTests.MethodParameters + ")");
+            var virtualTestMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.VirtualTestMethod");
+
+            var factory = new ReflectionDocumentationElementFactory(
+                new MemberDocumentationCollection(
+                    new[]
+                    {
+                        classMemberDocumentation,
+
+                        testConstantMemberDocumentation,
+
+                        readonlyTestFieldMemberDocumentation,
+                        shadowedTestFieldMemberDocumentation,
+                        staticTestFieldMemberDocumentation,
+                        testFieldMemberDocumentation,
+
+                        constructorMemberDocumentation,
+
+                        abstractTestEventMemberDocumentation,
+                        shadowingEventMemberDocumentation,
+                        interfaceShadowedTestEventMemberDocumentation,
+                        staticTestEventMemberDocumentation,
+                        testEventMemberDocumentation,
+                        virtualTestEventMemberDocumentation,
+
+                        abstractTestPropertyMemberDocumentation,
+                        shadowingPropertyMemberDocumentation,
+                        interfaceShadowedTestPropertyMemberDocumentation,
+                        indexerPropertyMemberDocumentation,
+                        testPropertyMemberDocumentation,
+                        virtualTestPropertyMemberDocumentation,
+
+                        abstractTestMethodMemberDocumentation,
+                        shadowingMethodMemberDocumentation,
+                        baseTestMethodMemberDocumentation,
+                        interfaceShadowedTestMethod,
+                        testMethodMemberDocumentation,
+                        virtualTestMethodMemberDocumentation
+                    }
+                )
+            );
+
+            var typeDocumentationElement = factory.Create(typeof(TestClass<>));
+
+            typeDocumentationElement
+                .AssertIs<ClassDocumentationElement>(
+                    classDocumentationElement =>
+                        classDocumentationElement
+                            .AssertCollectionMember(
+                                () => classDocumentationElement.Constants.OrderBy(constant => constant.Name),
+                                constant => constant.AssertDocumentation(testConstantMemberDocumentation)
+                            )
+                            .AssertCollectionMember(
+                                () => classDocumentationElement.Fields.OrderBy(field => field.Name),
+                                field => field.AssertDocumentation(readonlyTestFieldMemberDocumentation),
+                                field => field.AssertDocumentation(shadowedTestFieldMemberDocumentation),
+                                field => field.AssertDocumentation(staticTestFieldMemberDocumentation),
+                                field => field.AssertDocumentation(testFieldMemberDocumentation)
+                            )
+                            .AssertCollectionMember(
+                                () => classDocumentationElement.Constructors,
+                                field => field.AssertDocumentation(constructorMemberDocumentation)
+                            )
+                            .AssertCollectionMember(
+                                () => classDocumentationElement.Events.OrderBy(@event => @event.Name),
+                                @event => @event.AssertDocumentation(abstractTestEventMemberDocumentation),
+                                @event => @event.AssertDocumentation(shadowingEventMemberDocumentation),
+                                @event => @event.AssertDocumentation(interfaceShadowedTestEventMemberDocumentation),
+                                @event => @event.AssertDocumentation(staticTestEventMemberDocumentation),
+                                @event => @event.AssertDocumentation(testEventMemberDocumentation),
+                                @event => @event.AssertDocumentation(virtualTestEventMemberDocumentation)
+                            )
+                            .AssertCollectionMember(
+                                () => classDocumentationElement.Properties.OrderBy(property => property.Name),
+                                property => property.AssertDocumentation(abstractTestPropertyMemberDocumentation),
+                                property => property.AssertDocumentation(shadowingPropertyMemberDocumentation),
+                                property => property.AssertDocumentation(interfaceShadowedTestPropertyMemberDocumentation),
+                                property => property.AssertDocumentation(indexerPropertyMemberDocumentation),
+                                property => property.AssertDocumentation(testPropertyMemberDocumentation),
+                                property => property.AssertDocumentation(virtualTestPropertyMemberDocumentation)
+                            )
+                            .AssertCollectionMember(
+                                () => classDocumentationElement.Methods.OrderBy(method => method.Name),
+                                method => method.AssertDocumentation(abstractTestMethodMemberDocumentation),
+                                method => method.AssertDocumentation(shadowingMethodMemberDocumentation),
+                                method => method.AssertDocumentation(baseTestMethodMemberDocumentation),
+                                method => method.AssertDocumentation(interfaceShadowedTestMethod),
+                                method => method.AssertDocumentation(testMethodMemberDocumentation),
+                                method => method.AssertDocumentation(virtualTestMethodMemberDocumentation)
+                            )
+                )
+                .AssertDocumentation(classMemberDocumentation);
+        }
+
+        [Fact]
         public void ConstructorWithNullMembersDocumentationCollectionThrowsException()
         {
             var exception = Assert.Throws<ArgumentNullException>(() => new ReflectionDocumentationElementFactory(null));
@@ -261,6 +473,11 @@ namespace CodeMap.Tests
                 Enumerable
                     .Range(1, 6)
                     .Select(genericParameterNumber => $"TParam{genericParameterNumber}")
+                    .Concat(
+                        Enumerable
+                            .Range(1, 1)
+                            .Select(genericParameterNumber => $"TMethodParam{genericParameterNumber}")
+                        )
                     .ToLookup(
                         genericParameter => genericParameter,
                         genericParameter => DocumentationElement.Paragraph() as BlockDocumentationElement

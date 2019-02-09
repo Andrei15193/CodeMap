@@ -12,22 +12,22 @@ namespace CodeMap.Elements
         {
         }
 
-        /// <summary>Indicates whether the property is static.</summary>
+        /// <summary>Indicates whether the method is static.</summary>
         public bool IsStatic { get; internal set; }
 
-        /// <summary>Indicates whether the property has been marked as virtual.</summary>
+        /// <summary>Indicates whether the method has been marked as virtual.</summary>
         public bool IsVirtual { get; internal set; }
 
-        /// <summary>Indicates whether the property has been marked as abstract.</summary>
+        /// <summary>Indicates whether the method has been marked as abstract.</summary>
         public bool IsAbstract { get; internal set; }
 
-        /// <summary>Indicates whether the property is an override.</summary>
+        /// <summary>Indicates whether the method is an override.</summary>
         public bool IsOverride { get; internal set; }
 
-        /// <summary>Indicates whether the property has been marked as sealed.</summary>
+        /// <summary>Indicates whether the method has been marked as sealed.</summary>
         public bool IsSealed { get; internal set; }
 
-        /// <summary>Indicates whether the event hides one from a base interface with the same name.</summary>
+        /// <summary>Indicates whether the method hides a member from a base type.</summary>
         public bool IsShadowing { get; internal set; }
 
         /// <summary>The method generic parameters.</summary>

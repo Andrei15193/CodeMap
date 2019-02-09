@@ -76,9 +76,9 @@ namespace CodeMap
                 RelatedMembers = memberDocumentation.RelatedMembers
             };
             enumDocumentationElement.Members = enumType
-                .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField)
+                .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField | BindingFlags.DeclaredOnly)
                 .Select(
-                    field => _CreateConstant(field, enumDocumentationElement)
+                    field => _GetConstant(field, enumDocumentationElement)
                 )
                 .OrderBy(constant => constant.Value)
                 .AsReadOnlyList();
@@ -116,7 +116,7 @@ namespace CodeMap
 
             delegateDocumentationElement.GenericParameters = delegateType
                 .GetGenericArguments()
-                .Select(typeGenericParameter => _GetTypeGenericParameter(typeGenericParameter, delegateDocumentationElement))
+                .Select(typeGenericParameter => _GetTypeGenericParameter(typeGenericParameter, delegateDocumentationElement, memberDocumentation))
                 .AsReadOnlyList();
 
             return delegateDocumentationElement;
@@ -146,7 +146,7 @@ namespace CodeMap
 
             interfaceDocumentationElement.GenericParameters = interfaceType
                 .GetGenericArguments()
-                .Select(typeGenericParameter => _GetTypeGenericParameter(typeGenericParameter, interfaceDocumentationElement))
+                .Select(typeGenericParameter => _GetTypeGenericParameter(typeGenericParameter, interfaceDocumentationElement, memberDocumentation))
                 .AsReadOnlyList();
             interfaceDocumentationElement.Events = interfaceType
                 .GetEvents(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
@@ -165,9 +165,68 @@ namespace CodeMap
             return interfaceDocumentationElement;
         }
 
-        private TypeDocumentationElement _CreateClass(Type type)
+        private ClassDocumentationElement _CreateClass(Type classType)
         {
-            throw new NotImplementedException();
+            var memberDocumentation = _GetMemberDocumentationFor(classType);
+            var classDocumentationElement = new ClassDocumentationElement
+            {
+                Name = _GetTypeNameFor(classType),
+                AccessModifier = _GetAccessModifierFrom(classType),
+                Attributes = _MapAttributesDataFrom(classType.CustomAttributes),
+                BaseClass = _GetTypeReference(classType.BaseType),
+                ImplementedInterfaces = classType
+                    .GetInterfaces()
+                    .Except(
+                        classType
+                            .BaseType
+                            .GetInterfaces()
+                    )
+                    .Except(
+                        classType
+                            .GetInterfaces()
+                            .SelectMany(baseInterface => baseInterface.GetInterfaces())
+                    )
+                    .Select(_GetTypeReference)
+                    .AsReadOnlyCollection(),
+                Summary = memberDocumentation.Summary,
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
+            };
+
+            classDocumentationElement.GenericParameters = classType
+                .GetGenericArguments()
+                .Select(typeGenericParameter => _GetTypeGenericParameter(typeGenericParameter, classDocumentationElement, memberDocumentation))
+                .AsReadOnlyList();
+            classDocumentationElement.Constants = classType
+                .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetField | BindingFlags.DeclaredOnly)
+                .Where(field => !field.IsSpecialName && field.IsLiteral)
+                .Select(field => _GetConstant(field, classDocumentationElement))
+                .AsReadOnlyList();
+            classDocumentationElement.Fields = classType
+                .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.GetField | BindingFlags.DeclaredOnly)
+                .Where(field => !field.IsLiteral && field.GetCustomAttribute<CompilerGeneratedAttribute>() == null)
+                .Select(field => _GetField(field, classDocumentationElement))
+                .AsReadOnlyList();
+            classDocumentationElement.Constructors = classType
+                .GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Select(constructor => _GetConstructor(constructor, classDocumentationElement))
+                .AsReadOnlyList();
+            classDocumentationElement.Events = classType
+                .GetEvents(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Select(@event => _GetEvent(@event, classDocumentationElement))
+                .AsReadOnlyCollection();
+            classDocumentationElement.Properties = classType
+                .GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Select(property => _GetProperty(property, classDocumentationElement))
+                .AsReadOnlyCollection();
+            classDocumentationElement.Methods = classType
+                .GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Where(method => !method.IsSpecialName)
+                .Select(method => _GetMethod(method, classDocumentationElement))
+                .AsReadOnlyCollection();
+
+            return classDocumentationElement;
         }
 
         private TypeDocumentationElement _CreateStruct(Type type)
@@ -175,7 +234,7 @@ namespace CodeMap
             throw new NotImplementedException();
         }
 
-        private ConstantDocumentationElement _CreateConstant(FieldInfo field, TypeDocumentationElement declaringType)
+        private ConstantDocumentationElement _GetConstant(FieldInfo field, TypeDocumentationElement declaringType)
         {
             var memberDocumentation = _GetMemberDocumentationFor(field);
             return new ConstantDocumentationElement
@@ -195,9 +254,54 @@ namespace CodeMap
             };
         }
 
+        private FieldDocumentationElement _GetField(FieldInfo field, TypeDocumentationElement declaringType)
+        {
+            var memberDocumentation = _GetMemberDocumentationFor(field);
+            return new FieldDocumentationElement
+            {
+                Name = field.Name,
+                AccessModifier = _GetAccessModifierFrom(field),
+                IsReadOnly = field.IsInitOnly,
+                IsStatic = field.IsStatic,
+                IsShadowing = _IsShadowing(field),
+                Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() != null
+                    ? _dynamicTypeReference
+                    : _GetTypeReference(field.FieldType),
+                Attributes = _MapAttributesDataFrom(field.CustomAttributes),
+                DeclaringType = declaringType,
+                Summary = memberDocumentation.Summary,
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
+            };
+        }
+
+        private ConstructorDocumentationElement _GetConstructor(ConstructorInfo constructor, TypeDocumentationElement declaringType)
+        {
+            var memberDocumentation = _GetMemberDocumentationFor(constructor);
+
+            return new ConstructorDocumentationElement
+            {
+                Name = declaringType.Name,
+                AccessModifier = _GetAccessModifierFrom(constructor),
+                Attributes = _MapAttributesDataFrom(constructor.CustomAttributes),
+                DeclaringType = declaringType,
+                Parameters = constructor
+                    .GetParameters()
+                    .Select(parameter => _CreateParameter(parameter, memberDocumentation))
+                    .AsReadOnlyList(),
+                Summary = memberDocumentation.Summary,
+                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
+            };
+        }
+
         private EventDocumentationElement _GetEvent(EventInfo @event, TypeDocumentationElement declaringType)
         {
             var memberDocumentation = _GetMemberDocumentationFor(@event);
+            var methodInfo = (@event.AddMethod ?? @event.RemoveMethod ?? @event.RaiseMethod);
             return new EventDocumentationElement
             {
                 Name = @event.Name,
@@ -205,12 +309,12 @@ namespace CodeMap
                 Type = _GetTypeReference(@event.EventHandlerType),
                 Attributes = _MapAttributesDataFrom(@event.CustomAttributes),
                 DeclaringType = declaringType,
-                IsStatic = false,
-                IsAbstract = false,
-                IsVirtual = false,
-                IsOverride = false,
-                IsSealed = false,
-                IsShadowing = _IsShadowing(@event),
+                IsStatic = methodInfo.IsStatic,
+                IsAbstract = methodInfo.IsAbstract && !@event.DeclaringType.IsInterface,
+                IsVirtual = !methodInfo.IsAbstract && methodInfo.IsVirtual && methodInfo.GetBaseDefinition() == methodInfo,
+                IsOverride = methodInfo.IsVirtual && methodInfo.GetBaseDefinition() != methodInfo,
+                IsSealed = methodInfo.IsFinal,
+                IsShadowing = (!methodInfo.IsVirtual || methodInfo.GetBaseDefinition() == methodInfo) && _IsShadowing(@event),
                 Adder = _GetEventAccessorData(@event.AddMethod),
                 Remover = _GetEventAccessorData(@event.RemoveMethod),
                 Summary = memberDocumentation.Summary,
@@ -236,6 +340,7 @@ namespace CodeMap
 
             var getterInfo = _GetPropertyAccessorData(property.GetMethod);
             var setterInfo = _GetPropertyAccessorData(property.SetMethod);
+            var methodInfo = (property.GetMethod ?? property.SetMethod);
             return new PropertyDocumentationElement
             {
                 Name = property.Name,
@@ -249,12 +354,12 @@ namespace CodeMap
                     .Select(parameter => _CreateParameter(parameter, memberDocumentation))
                     .AsReadOnlyList(),
                 DeclaringType = declaringType,
-                IsStatic = false,
-                IsAbstract = false,
-                IsVirtual = false,
-                IsOverride = false,
-                IsSealed = false,
-                IsShadowing = _IsShadowing(property),
+                IsStatic = methodInfo.IsStatic,
+                IsAbstract = methodInfo.IsAbstract && !property.DeclaringType.IsInterface,
+                IsVirtual = !methodInfo.IsAbstract && methodInfo.IsVirtual && methodInfo.GetBaseDefinition() == methodInfo,
+                IsOverride = methodInfo.IsVirtual && methodInfo.GetBaseDefinition() != methodInfo,
+                IsSealed = methodInfo.IsFinal,
+                IsShadowing = (!methodInfo.IsVirtual || methodInfo.GetBaseDefinition() == methodInfo) && _IsShadowing(property),
                 Getter = getterInfo,
                 Setter = setterInfo,
                 Summary = memberDocumentation.Summary,
@@ -276,12 +381,12 @@ namespace CodeMap
                 AccessModifier = _GetAccessModifierFrom(method),
                 Attributes = _MapAttributesDataFrom(method.CustomAttributes),
                 DeclaringType = declaringType,
-                IsStatic = false,
-                IsAbstract = false,
-                IsVirtual = false,
-                IsOverride = false,
-                IsSealed = false,
-                IsShadowing = _IsShadowing(method),
+                IsStatic = method.IsStatic,
+                IsAbstract = method.IsAbstract && !method.DeclaringType.IsInterface,
+                IsVirtual = !method.IsAbstract && method.IsVirtual && method.GetBaseDefinition() == method,
+                IsOverride = method.IsVirtual && method.GetBaseDefinition() != method,
+                IsSealed = method.IsFinal,
+                IsShadowing = (!method.IsVirtual || method.GetBaseDefinition() == method) && _IsShadowing(method),
                 Parameters = method
                     .GetParameters()
                     .Select(parameter => _CreateParameter(parameter, memberDocumentation))
@@ -303,7 +408,7 @@ namespace CodeMap
 
             methodDocumentationElement.GenericParameters = method
                 .GetGenericArguments()
-                .Select(typeGenericParameter => _GetMethodGenericParameter(typeGenericParameter, methodDocumentationElement))
+                .Select(typeGenericParameter => _GetMethodGenericParameter(typeGenericParameter, methodDocumentationElement, memberDocumentation))
                 .AsReadOnlyList();
 
             return methodDocumentationElement;
@@ -392,6 +497,7 @@ namespace CodeMap
                 .GetInterfaces()
                 .SelectMany(baseInterface => baseInterface.GetMembers(bindingFlags));
 
+
             if (memberInfo.DeclaringType.BaseType != null)
                 inheritedMembers = inheritedMembers.Concat(
                     memberInfo
@@ -424,18 +530,30 @@ namespace CodeMap
         private TypeReferenceDocumentationElement _GetTypeReference(Type type)
             => _referencesCache.GetFor(_UnwrapeByRef(type), _CreateTypeReference, _InitializeTypeReference);
 
-        private TypeGenericParameterDocumentationElement _GetTypeGenericParameter(Type type, TypeDocumentationElement declaringType)
+        private TypeGenericParameterDocumentationElement _GetTypeGenericParameter(Type type, TypeDocumentationElement declaringType, MemberDocumentation memberDocumentation)
         {
             var typeGenericParameter = (TypeGenericParameterDocumentationElement)_GetTypeReference(type);
             typeGenericParameter.DeclaringType = declaringType;
+            typeGenericParameter.Description = (
+                memberDocumentation.GenericParameters.Contains(typeGenericParameter.Name)
+                    ? memberDocumentation.GenericParameters[typeGenericParameter.Name]
+                    : Enumerable.Empty<BlockDocumentationElement>()
+                )
+                .AsReadOnlyList();
             return typeGenericParameter;
         }
 
-        private MethodGenericParameterDocumentationElement _GetMethodGenericParameter(Type type, MethodDocumentationElement declaringMethod)
+        private MethodGenericParameterDocumentationElement _GetMethodGenericParameter(Type type, MethodDocumentationElement declaringMethod, MemberDocumentation memberDocumentation)
         {
-            var typeGenericParameter = (MethodGenericParameterDocumentationElement)_GetTypeReference(type);
-            typeGenericParameter.DeclaringMethod = declaringMethod;
-            return typeGenericParameter;
+            var methodGenericParameter = (MethodGenericParameterDocumentationElement)_GetTypeReference(type);
+            methodGenericParameter.DeclaringMethod = declaringMethod;
+            methodGenericParameter.Description = (
+                memberDocumentation.GenericParameters.Contains(methodGenericParameter.Name)
+                    ? memberDocumentation.GenericParameters[methodGenericParameter.Name]
+                    : Enumerable.Empty<BlockDocumentationElement>()
+                )
+                .AsReadOnlyList();
+            return methodGenericParameter;
         }
 
         private static Type _UnwrapeByRef(Type type)
@@ -559,6 +677,7 @@ namespace CodeMap
         private IReadOnlyCollection<AttributeData> _MapAttributesDataFrom(IEnumerable<CustomAttributeData> customAttributes)
             => (
                 from customAttribute in customAttributes
+                where customAttribute.AttributeType != typeof(CompilerGeneratedAttribute)
                 let constructorParameters = customAttribute.Constructor.GetParameters()
                 select new AttributeData(
                     _GetTypeReference(customAttribute.AttributeType),

@@ -55,9 +55,9 @@ namespace CodeMap.Tests.Data
         }
 
         /// <summary/>
-        [Test("class method test 1", Value2 = "class method test 2", Value3 = "class method test 3")]
+        [Test("class constructor test 1", Value2 = "class constructor test 2", Value3 = "class constructor test 3")]
         public TestClass(
-            [Test("class method parameter test 1", Value2 = "class method parameter test 2", Value3 = "class method parameter test 3")]
+            [Test("class constructor parameter test 1", Value2 = "class constructor parameter test 2", Value3 = "class constructor parameter test 3")]
             int param1,
             byte[] param2,
             char[][] param3,
@@ -79,22 +79,22 @@ namespace CodeMap.Tests.Data
             dynamic param19,
             ref dynamic param20,
             out dynamic param21,
-            int* param22,
-            byte*[] param23,
-            ref char* param24,
-            out double* param25,
-            ref decimal*[] param26,
-            out short*[] param27,
-            void* param28,
-            void** param29,
-            ref void** param30,
-            out void** param31,
-            void**[] param32,
-            ref void**[] param33,
-            out void**[] param34,
-            TParam1 param35,
-            ref TParam1 param36,
-            out TParam1 param37,
+            TParam1 param22,
+            ref TParam1 param23,
+            out TParam1 param24,
+            int* param25,
+            byte*[] param26,
+            ref char* param27,
+            out double* param28,
+            ref decimal*[] param29,
+            out short*[] param30,
+            void* param31,
+            void** param32,
+            ref void** param33,
+            out void** param34,
+            void**[] param35,
+            ref void**[] param36,
+            out void**[] param37,
             string param38 = "test")
         {
             param9 = default(int);
@@ -104,15 +104,26 @@ namespace CodeMap.Tests.Data
             param16 = default(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>);
             param18 = default(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]);
             param21 = default(dynamic);
-            param25 = default(double*);
-            param27 = default(short*[]);
+            param24 = default(TParam1);
+            param25 = default(int*);
+            param28 = default(double*);
+            param30 = default(short*[]);
             param31 = default(void**);
-            param34 = default(void**[]);
-            param37 = default(TParam1);
+            param34 = default(void**);
+            param37 = default(void**[]);
         }
 
         /// <summary/>
         public new event EventHandler ClassShadowedTestEvent;
+
+        /// <summary/>
+        public override event EventHandler AbstractTestEvent;
+
+        /// <summary/>
+        public sealed override event EventHandler VirtualTestEvent;
+
+        /// <summary/>
+        public static event EventHandler StaticTestEvent;
 
         /// <summary/>
         [Test("class event test 1", Value2 = "class event test 2", Value3 = "class event test 3")]
@@ -137,11 +148,15 @@ namespace CodeMap.Tests.Data
         public sealed override string VirtualTestProperty { get; set; }
 
         /// <summary/>
+        new public int ClassShadowedTestProperty { get; set; }
+
+        /// <summary/>
         public int InterfaceShadowedTestProperty { get; set; }
 
         /// <summary/>
         [Test("class indexer test 1", Value2 = "class indexer test 2", Value3 = "class indexer test 3")]
         public int this[
+            [Test("class indexer parameter test 1", Value2 = "class indexer parameter test 2", Value3 = "class indexer parameter test 3")]
             int param1,
             byte[] param2,
             char[][] param3,

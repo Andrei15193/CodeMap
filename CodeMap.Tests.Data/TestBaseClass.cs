@@ -12,16 +12,22 @@ namespace CodeMap.Tests.Data
         public event EventHandler ClassShadowedTestEvent;
 
         /// <summary/>
-        public static int StaticTestProperty { get; set; }
+        public abstract event EventHandler AbstractTestEvent;
 
         /// <summary/>
-        public char ClassShadowedTestProperty { get; set; }
+        public virtual event EventHandler VirtualTestEvent;
 
         /// <summary/>
         public abstract byte AbstractTestProperty { get; set; }
 
         /// <summary/>
         public virtual string VirtualTestProperty { get; set; }
+
+        /// <summary/>
+        public char ClassShadowedTestProperty { get; set; }
+
+        /// <summary/>
+        public static int StaticTestProperty { get; set; }
 
         /// <summary/>
         public static void StaticTestMethod()
