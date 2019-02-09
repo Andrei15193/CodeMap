@@ -173,6 +173,9 @@ namespace CodeMap
                 Name = _GetTypeNameFor(classType),
                 AccessModifier = _GetAccessModifierFrom(classType),
                 Attributes = _MapAttributesDataFrom(classType.CustomAttributes),
+                IsAbstract = classType.IsAbstract && !classType.IsSealed,
+                IsSealed = !classType.IsAbstract && classType.IsSealed,
+                IsStatic = classType.IsAbstract && classType.IsSealed,
                 BaseClass = _GetTypeReference(classType.BaseType),
                 ImplementedInterfaces = classType
                     .GetInterfaces()

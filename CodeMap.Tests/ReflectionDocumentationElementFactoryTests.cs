@@ -286,6 +286,9 @@ namespace CodeMap.Tests
                 )
                 .AssertIs<ClassDocumentationElement>(
                     classDocumentationElement => classDocumentationElement
+                        .AssertFalse(() => classDocumentationElement.IsAbstract)
+                        .AssertFalse(() => classDocumentationElement.IsSealed)
+                        .AssertFalse(() => classDocumentationElement.IsStatic)
                         .AssertTypeGenericParameters(() => classDocumentationElement.GenericParameters)
                         .AssertType(() => classDocumentationElement.BaseClass, typeof(TestBaseClass))
                         .AssertCollectionMember(
@@ -457,6 +460,57 @@ namespace CodeMap.Tests
                             )
                 )
                 .AssertDocumentation(classMemberDocumentation);
+        }
+
+        [Fact]
+        public void CreateClassDocumentationElementForAbstractClass()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(TestAbstractClass));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "TestAbstractClass")
+                .AssertIs<ClassDocumentationElement>(
+                    classDocumentationElement => classDocumentationElement
+                        .AssertTrue(() => classDocumentationElement.IsAbstract)
+                        .AssertFalse(() => classDocumentationElement.IsSealed)
+                        .AssertFalse(() => classDocumentationElement.IsStatic)
+                );
+        }
+
+        [Fact]
+        public void CreateClassDocumentationElementForSealedClass()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(TestSealedClass));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "TestSealedClass")
+                .AssertIs<ClassDocumentationElement>(
+                    classDocumentationElement => classDocumentationElement
+                        .AssertFalse(() => classDocumentationElement.IsAbstract)
+                        .AssertTrue(() => classDocumentationElement.IsSealed)
+                        .AssertFalse(() => classDocumentationElement.IsStatic)
+                );
+        }
+
+        [Fact]
+        public void CreateClassDocumentationElementForStaticClass()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(TestStaticClass));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "TestStaticClass")
+                .AssertIs<ClassDocumentationElement>(
+                    classDocumentationElement => classDocumentationElement
+                        .AssertFalse(() => classDocumentationElement.IsAbstract)
+                        .AssertFalse(() => classDocumentationElement.IsSealed)
+                        .AssertTrue(() => classDocumentationElement.IsStatic)
+                );
         }
 
         [Fact]

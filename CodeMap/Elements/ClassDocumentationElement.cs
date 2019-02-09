@@ -12,6 +12,15 @@ namespace CodeMap.Elements
         {
         }
 
+        /// <summary>Indicates whether the class is abstract.</summary>
+        public bool IsAbstract { get; internal set; }
+
+        /// <summary>Indicates whether the class is sealed.</summary>
+        public bool IsSealed { get; internal set; }
+
+        /// <summary>Indicates whether the class is static.</summary>
+        public bool IsStatic { get; internal set; }
+
         /// <summary>The interface generic parameters.</summary>
         public IReadOnlyList<TypeGenericParameterDocumentationElement> GenericParameters { get; internal set; }
 
