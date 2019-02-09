@@ -57,7 +57,7 @@ namespace CodeMap.Tests.Data
         }
 
         /// <summary/>
-        new void InterfaceShadowedTestMethod();
+        new int InterfaceShadowedTestMethod();
 
         /// <summary/>
         [Test("interface method test 1", Value2 = "interface method test 2", Value3 = "interface method test 3")]

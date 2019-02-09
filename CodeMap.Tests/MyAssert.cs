@@ -110,6 +110,27 @@ namespace CodeMap.Tests
             return classDocumentationElement;
         }
 
+        public static StructDocumentationElement AssertDocumentation(this StructDocumentationElement structDocumentationElement, MemberDocumentation memberDocumentation)
+        {
+            _AssertDocumentation(structDocumentationElement, memberDocumentation);
+
+            foreach (var genericParameterPosition in Enumerable.Range(0, 1))
+            {
+                var genericParameterName = $"TParam{genericParameterPosition + 1}";
+                Assert.Contains(
+                    structDocumentationElement.GenericParameters,
+                    genericParameter => genericParameter.Name == genericParameterName
+                );
+
+                memberDocumentation.AssertSameItems(
+                    () => memberDocumentation.GenericParameters[genericParameterName],
+                    structDocumentationElement.GenericParameters[genericParameterPosition].Description
+                );
+            }
+
+            return structDocumentationElement;
+        }
+
         private static TypeDocumentationElement _AssertDocumentation(TypeDocumentationElement typeDocumentationElement, MemberDocumentation memberDocumentation)
         {
             Assert.Same(memberDocumentation.Summary, typeDocumentationElement.Summary);
@@ -160,6 +181,8 @@ namespace CodeMap.Tests
                 AssertNoDocumentation(constant);
             foreach (var field in classDocumentationElement.Fields)
                 AssertNoDocumentation(field);
+            foreach (var constructor in classDocumentationElement.Constructors)
+                AssertNoDocumentation(constructor);
             foreach (var @event in classDocumentationElement.Events)
                 AssertNoDocumentation(@event);
             foreach (var property in classDocumentationElement.Properties)
@@ -167,6 +190,26 @@ namespace CodeMap.Tests
             foreach (var method in classDocumentationElement.Methods)
                 AssertNoDocumentation(method);
             return classDocumentationElement;
+        }
+
+        public static StructDocumentationElement AssertNoDocumentation(this StructDocumentationElement structDocumentationElement)
+        {
+            _AssertNoDocumentation(structDocumentationElement);
+            foreach (var genericParameter in structDocumentationElement.GenericParameters)
+                Assert.Empty(genericParameter.Description);
+            foreach (var constant in structDocumentationElement.Constants)
+                AssertNoDocumentation(constant);
+            foreach (var field in structDocumentationElement.Fields)
+                AssertNoDocumentation(field);
+            foreach (var constructor in structDocumentationElement.Constructors)
+                AssertNoDocumentation(constructor);
+            foreach (var @event in structDocumentationElement.Events)
+                AssertNoDocumentation(@event);
+            foreach (var property in structDocumentationElement.Properties)
+                AssertNoDocumentation(property);
+            foreach (var method in structDocumentationElement.Methods)
+                AssertNoDocumentation(method);
+            return structDocumentationElement;
         }
 
         private static void _AssertNoDocumentation(EventDocumentationElement @event)
@@ -366,6 +409,15 @@ namespace CodeMap.Tests
             return fieldDocumentationElement;
         }
 
+        public static ConstructorDocumentationElement AssertNoDocumentation(this ConstructorDocumentationElement constructorDocumentationElement)
+        {
+            _AssertNoDocumentation(constructorDocumentationElement);
+            foreach (var parameter in constructorDocumentationElement.Parameters)
+                Assert.Empty(parameter.Description);
+            Assert.Empty(constructorDocumentationElement.Exceptions);
+            return constructorDocumentationElement;
+        }
+
         public static EventDocumentationElement AssertNoDocumentation(this EventDocumentationElement eventDocumentationElement)
         {
             _AssertNoDocumentation((MemberDocumentationElement)eventDocumentationElement);
@@ -452,55 +504,52 @@ namespace CodeMap.Tests
             return typeReference;
         }
 
-        public static TTypeDocumentationElement AssertTestFields<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<FieldDocumentationElement>> selector)
-            where TTypeDocumentationElement : TypeDocumentationElement
-            => typeDocumentationElement
+        public static FieldDocumentationElement AssertTestField(this FieldDocumentationElement fieldDocumentationElement, TypeDocumentationElement declaringType, string attributeValuePrefix)
+            => fieldDocumentationElement
+                .AssertEqual(() => fieldDocumentationElement.Name, "TestField")
                 .AssertCollectionMember(
-                    () => selector().OrderBy(field => field.Name),
-                    field => field
-                        .AssertEqual(() => field.Name, "ReadonlyTestField")
-                        .AssertEmpty(() => field.Attributes)
-                        .AssertEqual(() => field.AccessModifier, AccessModifier.Private)
-                        .AssertSame(() => field.DeclaringType, typeDocumentationElement)
-                        .AssertType(() => field.Type, typeof(char))
-                        .AssertTrue(() => field.IsReadOnly)
-                        .AssertFalse(() => field.IsStatic)
-                        .AssertFalse(() => field.IsShadowing)
-                        .AssertNoDocumentation(),
-                    field => field
-                        .AssertEqual(() => field.Name, "ShadowedTestField")
-                        .AssertEmpty(() => field.Attributes)
-                        .AssertEqual(() => field.AccessModifier, AccessModifier.Family)
-                        .AssertSame(() => field.DeclaringType, typeDocumentationElement)
-                        .AssertType(() => field.Type, typeof(int))
-                        .AssertFalse(() => field.IsReadOnly)
-                        .AssertFalse(() => field.IsStatic)
-                        .AssertTrue(() => field.IsShadowing)
-                        .AssertNoDocumentation(),
-                    field => field
-                        .AssertEqual(() => field.Name, "StaticTestField")
-                        .AssertEmpty(() => field.Attributes)
-                        .AssertEqual(() => field.AccessModifier, AccessModifier.Private)
-                        .AssertSame(() => field.DeclaringType, typeDocumentationElement)
-                        .AssertType(() => field.Type, typeof(string))
-                        .AssertFalse(() => field.IsReadOnly)
-                        .AssertTrue(() => field.IsStatic)
-                        .AssertFalse(() => field.IsShadowing)
-                        .AssertNoDocumentation(),
-                    field => field
-                        .AssertEqual(() => field.Name, "TestField")
-                        .AssertCollectionMember(
-                            () => field.Attributes,
-                            attribute => attribute.AssertTestAttribute("class field")
-                        )
-                        .AssertEqual(() => field.AccessModifier, AccessModifier.Private)
-                        .AssertSame(() => field.DeclaringType, typeDocumentationElement)
-                        .AssertType(() => field.Type, typeof(byte))
-                        .AssertFalse(() => field.IsReadOnly)
-                        .AssertFalse(() => field.IsStatic)
-                        .AssertFalse(() => field.IsShadowing)
-                        .AssertNoDocumentation()
-                );
+                    () => fieldDocumentationElement.Attributes,
+                    attribute => attribute.AssertTestAttribute(attributeValuePrefix)
+                )
+                .AssertEqual(() => fieldDocumentationElement.AccessModifier, AccessModifier.Private)
+                .AssertSame(() => fieldDocumentationElement.DeclaringType, declaringType)
+                .AssertType(() => fieldDocumentationElement.Type, typeof(byte))
+                .AssertFalse(() => fieldDocumentationElement.IsReadOnly)
+                .AssertFalse(() => fieldDocumentationElement.IsStatic)
+                .AssertFalse(() => fieldDocumentationElement.IsShadowing);
+
+        public static FieldDocumentationElement AssertReadOnlyField(this FieldDocumentationElement field, TypeDocumentationElement declaringType)
+            => field
+                .AssertEqual(() => field.Name, "ReadonlyTestField")
+                .AssertEmpty(() => field.Attributes)
+                .AssertEqual(() => field.AccessModifier, AccessModifier.Private)
+                .AssertSame(() => field.DeclaringType, declaringType)
+                .AssertType(() => field.Type, typeof(char))
+                .AssertTrue(() => field.IsReadOnly)
+                .AssertFalse(() => field.IsStatic)
+                .AssertFalse(() => field.IsShadowing);
+
+        public static FieldDocumentationElement AssertShadowingField(this FieldDocumentationElement field, TypeDocumentationElement declaringType)
+            => field
+                .AssertEqual(() => field.Name, "ShadowedTestField")
+                .AssertEmpty(() => field.Attributes)
+                .AssertEqual(() => field.AccessModifier, AccessModifier.Family)
+                .AssertSame(() => field.DeclaringType, declaringType)
+                .AssertType(() => field.Type, typeof(int))
+                .AssertFalse(() => field.IsReadOnly)
+                .AssertFalse(() => field.IsStatic)
+                .AssertTrue(() => field.IsShadowing);
+
+        public static FieldDocumentationElement AssertStaticField(this FieldDocumentationElement field, TypeDocumentationElement declaringType)
+            => field
+                .AssertEqual(() => field.Name, "StaticTestField")
+                .AssertEmpty(() => field.Attributes)
+                .AssertEqual(() => field.AccessModifier, AccessModifier.Private)
+                .AssertSame(() => field.DeclaringType, declaringType)
+                .AssertType(() => field.Type, typeof(string))
+                .AssertFalse(() => field.IsReadOnly)
+                .AssertTrue(() => field.IsStatic)
+                .AssertFalse(() => field.IsShadowing);
 
         public static TTypeDocumentationElement AssertTestEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string eventName, string attributeValuePrefix, bool checkAccessors = false)
             where TTypeDocumentationElement : TypeDocumentationElement
@@ -1516,6 +1565,13 @@ namespace CodeMap.Tests
                         .AssertEqual(() => parameter.DefaultValue, "test")
                 );
 
+        public static ConstructorDocumentationElement AssertDefaultConstructor(this ConstructorDocumentationElement constructorDocumentationElement, TypeDocumentationElement declaringType)
+            => constructorDocumentationElement
+                .AssertEqual(() => constructorDocumentationElement.Name, declaringType.Name)
+                .AssertEmpty(() => constructorDocumentationElement.Attributes)
+                .AssertSame(() => constructorDocumentationElement.DeclaringType, declaringType)
+                .AssertEmpty(() => constructorDocumentationElement.Parameters);
+
         public static ConstructorDocumentationElement AssertTestConstructor(this ConstructorDocumentationElement constructorDocumentationElement, TypeDocumentationElement declaringType, Type typeGenericParameter, string attributeValuePrefix)
             => constructorDocumentationElement
                 .AssertEqual(() => constructorDocumentationElement.Name, declaringType.Name)
@@ -2390,7 +2446,7 @@ namespace CodeMap.Tests
                         method
                             .AssertEmpty(() => method.GenericParameters)
                             .AssertEmpty(() => method.Parameters)
-                            .AssertType(() => method.Return.Type, typeof(void))
+                            .AssertType(() => method.Return.Type, typeof(string))
                             .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => method.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => method.IsStatic)
@@ -2416,7 +2472,7 @@ namespace CodeMap.Tests
                         method
                             .AssertEmpty(() => method.GenericParameters)
                             .AssertEmpty(() => method.Parameters)
-                            .AssertType(() => method.Return.Type, typeof(void))
+                            .AssertType(() => method.Return.Type, typeof(bool))
                             .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => method.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => method.IsStatic)
@@ -2442,7 +2498,7 @@ namespace CodeMap.Tests
                         method
                             .AssertEmpty(() => method.GenericParameters)
                             .AssertEmpty(() => method.Parameters)
-                            .AssertType(() => method.Return.Type, typeof(void))
+                            .AssertType(() => method.Return.Type, typeof(string))
                             .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => method.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => method.IsStatic)
@@ -2468,7 +2524,7 @@ namespace CodeMap.Tests
                         method
                             .AssertEmpty(() => method.GenericParameters)
                             .AssertEmpty(() => method.Parameters)
-                            .AssertType(() => method.Return.Type, typeof(void))
+                            .AssertType(() => method.Return.Type, typeof(bool))
                             .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => method.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => method.IsStatic)
@@ -2494,7 +2550,7 @@ namespace CodeMap.Tests
                         method
                             .AssertEmpty(() => method.GenericParameters)
                             .AssertEmpty(() => method.Parameters)
-                            .AssertType(() => method.Return.Type, typeof(void))
+                            .AssertType(() => method.Return.Type, typeof(int))
                             .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => method.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => method.IsStatic)

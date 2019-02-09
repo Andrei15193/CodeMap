@@ -40,11 +40,10 @@ namespace CodeMap.Tests.Data
         }
 
         /// <summary/>
-        public abstract void AbstractTestMethod();
+        public abstract string AbstractTestMethod();
 
         /// <summary/>
-        public virtual void VirtualTestMethod()
-        {
-        }
+        public virtual bool VirtualTestMethod()
+            => default(bool);
     }
 }

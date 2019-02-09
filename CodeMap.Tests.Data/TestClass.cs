@@ -198,19 +198,16 @@ namespace CodeMap.Tests.Data
         }
 
         /// <summary/>
-        public new void ClassShadowedTestMethod()
-        {
-        }
+        public new int ClassShadowedTestMethod()
+            => default(int);
 
         /// <summary/>
-        public override void AbstractTestMethod()
-        {
-        }
+        public override string AbstractTestMethod()
+            => default(string);
 
         /// <summary/>
-        public sealed override void VirtualTestMethod()
-        {
-        }
+        public sealed override bool VirtualTestMethod()
+            => default(bool);
 
         /// <summary/>
         [Test("class method test 1", Value2 = "class method test 2", Value3 = "class method test 3")]
@@ -278,9 +275,8 @@ namespace CodeMap.Tests.Data
         event EventHandler ITestBaseInterface.InterfaceShadowedTestEvent { add { } remove { } }
 
         /// <summary/>
-        void ITestBaseInterface.InterfaceShadowedTestMethod()
-        {
-        }
+        int ITestBaseInterface.InterfaceShadowedTestMethod()
+            => default(int);
 
         /// <summary/>
         void ITestBaseInterface.BaseTestMethod()

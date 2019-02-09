@@ -309,13 +309,20 @@ namespace CodeMap.Tests
                                 .AssertEqual(() => constant.Value, 1.0)
                                 .AssertNoDocumentation()
                         )
-                        .AssertTestFields(() => classDocumentationElement.Fields)
-                        .AssertTestEvent(() => classDocumentationElement.Events, "TestEvent", "class event")
+                        .AssertCollectionMember(
+                            () => classDocumentationElement.Fields.OrderBy(field => field.Name),
+                            field => field.AssertReadOnlyField(classDocumentationElement),
+                            field => field.AssertShadowingField(classDocumentationElement),
+                            field => field.AssertStaticField(classDocumentationElement),
+                            field => field.AssertTestField(classDocumentationElement, "class field")
+                        )
 
                         .AssertCollectionMember(
                             () => classDocumentationElement.Constructors,
                             constructor => constructor.AssertTestConstructor(classDocumentationElement, typeGenericParameter, "class constructor")
                         )
+
+                        .AssertTestEvent(() => classDocumentationElement.Events, "TestEvent", "class event")
 
                         .AssertOverrideEvent(() => classDocumentationElement.Events, "AbstractTestEvent")
                         .AssertSealedEvent(() => classDocumentationElement.Events, "VirtualTestEvent")
@@ -429,7 +436,7 @@ namespace CodeMap.Tests
                             )
                             .AssertCollectionMember(
                                 () => classDocumentationElement.Constructors,
-                                field => field.AssertDocumentation(constructorMemberDocumentation)
+                                constructor => constructor.AssertDocumentation(constructorMemberDocumentation)
                             )
                             .AssertCollectionMember(
                                 () => classDocumentationElement.Events.OrderBy(@event => @event.Name),
@@ -547,6 +554,228 @@ namespace CodeMap.Tests
                             @class => @class
                                 .AssertEqual(() => @class.Name, "NestedTestClass")
                                 .AssertSame(() => @class.DeclaringType, classDocumentationElement)
+                        )
+                        .AssertCollectionMember(
+                            () => classDocumentationElement.NestedStructs,
+                            @struct => @struct
+                                .AssertEqual(() => @struct.Name, "NestedTestStruct")
+                                .AssertSame(() => @struct.DeclaringType, classDocumentationElement)
+                        )
+                );
+        }
+
+        [Fact]
+        public void CreateStructDocumentationElement()
+        {
+            var structType = typeof(TestStruct<>);
+            var typeGenericParameter = structType.GetGenericArguments().Single();
+            var methodGenericParameter = structType.GetMethod("TestMethod").GetGenericArguments().Single();
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(structType);
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "TestStruct")
+                .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
+                .AssertNull(() => typeDocumentationElement.DeclaringType)
+                .AssertCollectionMember(
+                    () => typeDocumentationElement.Attributes,
+                    attribute => attribute.AssertDefaultMemberAttribute(),
+                    attribute => attribute.AssertTestAttribute("struct")
+                )
+                .AssertIs<StructDocumentationElement>(
+                    structDocumentationElement => structDocumentationElement
+                        .AssertTypeGenericParameters(() => structDocumentationElement.GenericParameters)
+                        .AssertCollectionMember(
+                            () => structDocumentationElement.ImplementedInterfaces,
+                            baseInterface => baseInterface.AssertType(typeof(ITestExtendedBaseInterface))
+                        )
+                        .AssertCollectionMember(
+                            () => structDocumentationElement.Constants,
+                            constant => constant
+                                .AssertEqual(() => constant.Name, "TestConstant")
+                                .AssertCollectionMember(
+                                    () => constant.Attributes,
+                                    attribute => attribute.AssertTestAttribute("struct constant")
+                                )
+                                .AssertEqual(() => constant.AccessModifier, AccessModifier.Private)
+                                .AssertSame(() => constant.DeclaringType, structDocumentationElement)
+                                .AssertType(() => constant.Type, typeof(double))
+                                .AssertEqual(() => constant.Value, 1.0)
+                                .AssertNoDocumentation()
+                        )
+                        .AssertCollectionMember(
+                            () => structDocumentationElement.Fields.OrderBy(field => field.Name),
+                            field => field.AssertReadOnlyField(structDocumentationElement),
+                            field => field.AssertStaticField(structDocumentationElement),
+                            field => field.AssertTestField(structDocumentationElement, "struct field")
+                        )
+
+                        .AssertCollectionMember(
+                            () => structDocumentationElement.Constructors.OrderBy(constructor => constructor.Parameters.Count),
+                            constructor => constructor.AssertDefaultConstructor(structDocumentationElement),
+                            constructor => constructor.AssertTestConstructor(structDocumentationElement, typeGenericParameter, "struct constructor")
+                        )
+
+                        .AssertTestEvent(() => structDocumentationElement.Events, "TestEvent", "struct event")
+
+                        .AssertStaticEvent(() => structDocumentationElement.Events, "StaticTestEvent")
+
+                        .AssertTestProperty(() => structDocumentationElement.Properties, "TestProperty", "struct property")
+                        .AssertIndexProperty(() => structDocumentationElement.Properties, typeGenericParameter, "struct indexer")
+                        
+                        .AssertTestMethod(() => structDocumentationElement.Methods, "TestMethod", typeGenericParameter, methodGenericParameter, "struct method")
+                        .AssertOverrideMethod(() => structDocumentationElement.Methods, "ToString")
+                        .AssertShadowingMethod(() => structDocumentationElement.Methods, "GetHashCode")
+                )
+            .AssertNoDocumentation();
+        }
+
+        [Fact]
+        public void CreateStructDocumentationElementDocumentation()
+        {
+            var structMemberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.TestStruct`1");
+
+            var testConstantMemberDocumentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestStruct`1.TestConstant");
+
+            var readonlyTestFieldMemberDocumentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestStruct`1.ReadonlyTestField");
+            var staticTestFieldMemberDocumentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestStruct`1.StaticTestField");
+            var testFieldMemberDocumentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestStruct`1.TestField");
+
+            var defaultConstructorMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.#ctor");
+            var constructorMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.#ctor(" + CanonicalNameResolverTests.ConstructorParameters + ")");
+
+            var interfaceShadowedTestEventMemberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.Data.TestStruct`1.CodeMap#Tests#Data#ITestBaseInterface#InterfaceShadowedTestEvent");
+            var staticTestEventMemberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.Data.TestStruct`1.StaticTestEvent");
+            var testEventMemberDocumentation = _CreateMemberDocumentationMock("E:CodeMap.Tests.Data.TestStruct`1.TestEvent");
+
+            var interfaceShadowedTestPropertyMemberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.TestStruct`1.CodeMap#Tests#Data#ITestBaseInterface#InterfaceShadowedTestProperty");
+            var indexerPropertyMemberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.TestStruct`1.Item(" + CanonicalNameResolverTests.IndexerParameters + ")");
+            var testPropertyMemberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.TestStruct`1.TestProperty");
+
+            var baseTestMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.CodeMap#Tests#Data#ITestBaseInterface#BaseTestMethod");
+            var interfaceShadowedTestMethod = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.CodeMap#Tests#Data#ITestBaseInterface#InterfaceShadowedTestMethod");
+            var shadowingMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.GetHashCode");
+            var testMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.TestMethod``1(" + CanonicalNameResolverTests.MethodParameters + ")");
+            var virtualTestMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.ToString");
+
+            var factory = new ReflectionDocumentationElementFactory(
+                new MemberDocumentationCollection(
+                    new[]
+                    {
+                        structMemberDocumentation,
+
+                        testConstantMemberDocumentation,
+
+                        readonlyTestFieldMemberDocumentation,
+                        staticTestFieldMemberDocumentation,
+                        testFieldMemberDocumentation,
+
+                        defaultConstructorMemberDocumentation,
+                        constructorMemberDocumentation,
+
+                        interfaceShadowedTestEventMemberDocumentation,
+                        staticTestEventMemberDocumentation,
+                        testEventMemberDocumentation,
+
+                        interfaceShadowedTestPropertyMemberDocumentation,
+                        indexerPropertyMemberDocumentation,
+                        testPropertyMemberDocumentation,
+
+                        baseTestMethodMemberDocumentation,
+                        interfaceShadowedTestMethod,
+                        shadowingMethodMemberDocumentation,
+                        testMethodMemberDocumentation,
+                        virtualTestMethodMemberDocumentation
+                    }
+                )
+            );
+
+            var typeDocumentationElement = factory.Create(typeof(TestStruct<>));
+
+            typeDocumentationElement
+                .AssertIs<StructDocumentationElement>(
+                    structDocumentationElement =>
+                        structDocumentationElement
+                            .AssertCollectionMember(
+                                () => structDocumentationElement.Constants.OrderBy(constant => constant.Name),
+                                constant => constant.AssertDocumentation(testConstantMemberDocumentation)
+                            )
+                            .AssertCollectionMember(
+                                () => structDocumentationElement.Fields.OrderBy(field => field.Name),
+                                field => field.AssertDocumentation(readonlyTestFieldMemberDocumentation),
+                                field => field.AssertDocumentation(staticTestFieldMemberDocumentation),
+                                field => field.AssertDocumentation(testFieldMemberDocumentation)
+                            )
+                            .AssertCollectionMember(
+                                () => structDocumentationElement.Constructors.OrderBy(constructor => constructor.Parameters.Count),
+                                constructor => constructor.AssertDocumentation(defaultConstructorMemberDocumentation),
+                                constructor => constructor.AssertDocumentation(constructorMemberDocumentation)
+                            )
+                            .AssertCollectionMember(
+                                () => structDocumentationElement.Events.OrderBy(@event => @event.Name),
+                                @event => @event.AssertDocumentation(interfaceShadowedTestEventMemberDocumentation),
+                                @event => @event.AssertDocumentation(staticTestEventMemberDocumentation),
+                                @event => @event.AssertDocumentation(testEventMemberDocumentation)
+                            )
+                            .AssertCollectionMember(
+                                () => structDocumentationElement.Properties.OrderBy(property => property.Name),
+                                property => property.AssertDocumentation(interfaceShadowedTestPropertyMemberDocumentation),
+                                property => property.AssertDocumentation(indexerPropertyMemberDocumentation),
+                                property => property.AssertDocumentation(testPropertyMemberDocumentation)
+                            )
+                            .AssertCollectionMember(
+                                () => structDocumentationElement.Methods.OrderBy(method => method.Name),
+                                method => method.AssertDocumentation(baseTestMethodMemberDocumentation),
+                                method => method.AssertDocumentation(interfaceShadowedTestMethod),
+                                method => method.AssertDocumentation(shadowingMethodMemberDocumentation),
+                                method => method.AssertDocumentation(testMethodMemberDocumentation),
+                                method => method.AssertDocumentation(virtualTestMethodMemberDocumentation)
+                            )
+                )
+                .AssertDocumentation(structMemberDocumentation);
+        }
+
+        [Fact]
+        public void CreateStructDocumentationElementNestedTypes()
+        {
+            var factory = new ReflectionDocumentationElementFactory();
+
+            var typeDocumentationElement = factory.Create(typeof(TestStruct<>));
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "TestStruct")
+                .AssertIs<StructDocumentationElement>(
+                    structDocumentationElement => structDocumentationElement
+                        .AssertCollectionMember(
+                            () => structDocumentationElement.NestedEnums,
+                            @enum => @enum
+                                .AssertEqual(() => @enum.Name, "NestedTestEnum")
+                                .AssertSame(() => @enum.DeclaringType, structDocumentationElement)
+                        )
+                        .AssertCollectionMember(
+                            () => structDocumentationElement.NestedDelegates,
+                            @delegate => @delegate
+                                .AssertEqual(() => @delegate.Name, "NestedTestDelegate")
+                                .AssertSame(() => @delegate.DeclaringType, structDocumentationElement)
+                        )
+                        .AssertCollectionMember(
+                            () => structDocumentationElement.NestedInterfaces,
+                            @interface => @interface
+                                .AssertEqual(() => @interface.Name, "INestedTestInterface")
+                                .AssertSame(() => @interface.DeclaringType, structDocumentationElement)
+                        )
+                        .AssertCollectionMember(
+                            () => structDocumentationElement.NestedClasses,
+                            @class => @class
+                                .AssertEqual(() => @class.Name, "NestedTestClass")
+                                .AssertSame(() => @class.DeclaringType, structDocumentationElement)
+                        )
+                        .AssertCollectionMember(
+                            () => structDocumentationElement.NestedStructs,
+                            @struct => @struct
+                                .AssertEqual(() => @struct.Name, "NestedTestStruct")
+                                .AssertSame(() => @struct.DeclaringType, structDocumentationElement)
                         )
                 );
         }

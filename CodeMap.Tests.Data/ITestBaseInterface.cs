@@ -15,6 +15,6 @@ namespace CodeMap.Tests.Data
         void BaseTestMethod();
 
         /// <summary/>
-        void InterfaceShadowedTestMethod();
+        int InterfaceShadowedTestMethod();
     }
 }

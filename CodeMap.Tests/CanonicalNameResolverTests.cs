@@ -223,7 +223,7 @@ namespace CodeMap.Tests
         [InlineData("P:CodeMap.Tests.Data.TestStruct`1.TestProperty", typeof(TestStruct<>), "TestProperty")]
         [InlineData("P:CodeMap.Tests.Data.TestStruct`1.Item(" + IndexerParameters + ")", typeof(TestStruct<>), "Item")]
         [InlineData("M:CodeMap.Tests.Data.TestStruct`1.ToString", typeof(TestStruct<>), "ToString")]
-        [InlineData("M:CodeMap.Tests.Data.TestStruct`1.Equals(System.Object)", typeof(TestStruct<>), "Equals")]
+        [InlineData("M:CodeMap.Tests.Data.TestStruct`1.GetHashCode", typeof(TestStruct<>), "GetHashCode")]
         [InlineData("M:CodeMap.Tests.Data.TestStruct`1.TestMethod``1(" + MethodParameters + ")", typeof(TestStruct<>), "TestMethod")]
 
         [InlineData("E:CodeMap.Tests.Data.TestExplicitClass.CodeMap#Tests#Data#ITestExplicitInterface#TestEvent", typeof(TestExplicitClass), "CodeMap.Tests.Data.ITestExplicitInterface.TestEvent")]

@@ -258,10 +258,86 @@ namespace CodeMap
 
         private TypeDocumentationElement _CreateStruct(Type structType)
         {
-            return new StructDocumentationElement
+            var memberDocumentation = _GetMemberDocumentationFor(structType);
+            var structDocumentationElement = new StructDocumentationElement
             {
-                Name = _GetTypeNameFor(structType)
+                Name = _GetTypeNameFor(structType),
+                AccessModifier = _GetAccessModifierFrom(structType),
+                Attributes = _MapAttributesDataFrom(structType.CustomAttributes),
+                ImplementedInterfaces = structType
+                    .GetInterfaces()
+                    .Except(
+                        structType
+                            .BaseType
+                            .GetInterfaces()
+                    )
+                    .Except(
+                        structType
+                            .GetInterfaces()
+                            .SelectMany(baseInterface => baseInterface.GetInterfaces())
+                    )
+                    .Select(_GetTypeReference)
+                    .AsReadOnlyCollection(),
+                Summary = memberDocumentation.Summary,
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
             };
+
+            structDocumentationElement.GenericParameters = structType
+                .GetGenericArguments()
+                .Select(typeGenericParameter => _GetTypeGenericParameter(typeGenericParameter, structDocumentationElement, memberDocumentation))
+                .AsReadOnlyList();
+            structDocumentationElement.Constants = structType
+                .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetField | BindingFlags.DeclaredOnly)
+                .Where(field => !field.IsSpecialName && field.IsLiteral)
+                .Select(field => _GetConstant(field, structDocumentationElement))
+                .AsReadOnlyList();
+            structDocumentationElement.Fields = structType
+                .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.GetField | BindingFlags.DeclaredOnly)
+                .Where(field => !field.IsLiteral && field.GetCustomAttribute<CompilerGeneratedAttribute>() == null)
+                .Select(field => _GetField(field, structDocumentationElement))
+                .AsReadOnlyList();
+            structDocumentationElement.Constructors =
+                new[] { _GetDefaultConstructor(structType, structDocumentationElement) }
+                .Concat(
+                    structType
+                        .GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                        .Select(constructor => _GetConstructor(constructor, structDocumentationElement))
+                )
+                .AsReadOnlyList();
+            structDocumentationElement.Events = structType
+                .GetEvents(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Select(@event => _GetEvent(@event, structDocumentationElement))
+                .AsReadOnlyCollection();
+            structDocumentationElement.Properties = structType
+                .GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Select(property => _GetProperty(property, structDocumentationElement))
+                .AsReadOnlyCollection();
+            structDocumentationElement.Methods = structType
+                .GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Where(method => !method.IsSpecialName)
+                .Select(method => _GetMethod(method, structDocumentationElement))
+                .AsReadOnlyCollection();
+
+            var nestedTypes = _GetNestedTypes(structDocumentationElement, structType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic));
+            structDocumentationElement.NestedEnums = nestedTypes[typeof(EnumDocumentationElement)]
+                .Cast<EnumDocumentationElement>()
+                .AsReadOnlyCollection();
+            structDocumentationElement.NestedDelegates = nestedTypes[typeof(DelegateDocumentationElement)]
+                .Cast<DelegateDocumentationElement>()
+                .AsReadOnlyCollection();
+            structDocumentationElement.NestedInterfaces = nestedTypes[typeof(InterfaceDocumentationElement)]
+                .Cast<InterfaceDocumentationElement>()
+                .AsReadOnlyCollection();
+            structDocumentationElement.NestedClasses = nestedTypes[typeof(ClassDocumentationElement)]
+                .Cast<ClassDocumentationElement>()
+                .AsReadOnlyCollection();
+            structDocumentationElement.NestedStructs = nestedTypes[typeof(StructDocumentationElement)]
+                .Cast<StructDocumentationElement>()
+                .AsReadOnlyCollection();
+
+            return structDocumentationElement;
         }
 
         private IReadOnlyDictionary<Type, IEnumerable<TypeDocumentationElement>> _GetNestedTypes(TypeDocumentationElement declaringType, IEnumerable<Type> nestedTypes)
@@ -328,6 +404,50 @@ namespace CodeMap
 
         private ConstructorDocumentationElement _GetConstructor(ConstructorInfo constructor, TypeDocumentationElement declaringType)
         {
+            var memberDocumentation = _GetMemberDocumentationFor(constructor);
+
+            return new ConstructorDocumentationElement
+            {
+                Name = declaringType.Name,
+                AccessModifier = _GetAccessModifierFrom(constructor),
+                Attributes = _MapAttributesDataFrom(constructor.CustomAttributes),
+                DeclaringType = declaringType,
+                Parameters = constructor
+                    .GetParameters()
+                    .Select(parameter => _CreateParameter(parameter, memberDocumentation))
+                    .AsReadOnlyList(),
+                Summary = memberDocumentation.Summary,
+                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
+            };
+        }
+
+        private ConstructorDocumentationElement _GetDefaultConstructor(Type type, TypeDocumentationElement declaringType)
+        {
+            var memberDocumentation = _GetDefaultConstructorMemberDocumentationFor(type);
+
+            return new ConstructorDocumentationElement
+            {
+                Name = declaringType.Name,
+                AccessModifier = AccessModifier.Public,
+                Attributes = Enumerable.Empty<AttributeData>().AsReadOnlyCollection(),
+                DeclaringType = declaringType,
+                Parameters = Enumerable
+                    .Empty<ParameterDocumentationElement>()
+                    .AsReadOnlyList(),
+                Summary = memberDocumentation.Summary,
+                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
+            };
+        }
+
+        private ConstructorDocumentationElement _GetDefaultConstructor(ConstructorInfo constructor, TypeDocumentationElement declaringType)
+        {
+
             var memberDocumentation = _GetMemberDocumentationFor(constructor);
 
             return new ConstructorDocumentationElement
@@ -804,5 +924,8 @@ namespace CodeMap
 
         private MemberDocumentation _GetMemberDocumentationFor(MemberInfo memberInfo)
             => _membersDocumentation.TryFind(_canonicalNameResolver.GetCanonicalNameFrom(memberInfo), out var memberDocumentation) ? memberDocumentation : _emptyMemberDocumentation;
+
+        private MemberDocumentation _GetDefaultConstructorMemberDocumentationFor(Type type)
+            => _membersDocumentation.TryFind(_canonicalNameResolver.GetDefaultConstructorCanonicalNameFor(type), out var memberDocumentation) ? memberDocumentation : _emptyMemberDocumentation;
     }
 }

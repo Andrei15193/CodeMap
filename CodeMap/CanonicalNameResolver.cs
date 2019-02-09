@@ -64,6 +64,9 @@ namespace CodeMap
             }
         }
 
+        internal string GetDefaultConstructorCanonicalNameFor(Type type)
+            => _AppendTypeName(new StringBuilder("M:"), type).Append(".#ctor").ToString();
+
         /// <summary>Attempts to find a <see cref="MemberInfo"/> with the provided <paramref name="canonicalName"/>.</summary>
         /// <param name="canonicalName">The canonical name of the member to search for.</param>
         /// <returns>Returns the <see cref="MemberInfo"/> with the provided <paramref name="canonicalName"/> if found; otherwise <c>null</c>.</returns>

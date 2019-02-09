@@ -7,23 +7,28 @@ namespace CodeMap.Tests.Data
 {
     /// <summary/>
     [Test("struct test 1", Value2 = "struct test 2", Value3 = "struct test 3")]
-    public unsafe struct TestStruct<TParam1>
+    public unsafe struct TestStruct<TParam1> : ITestExtendedBaseInterface
     {
         /// <summary/>
-        public enum NestedTestEnum
+        private enum NestedTestEnum
         {
         }
 
         /// <summary/>
-        public delegate void NestedTestDelegate();
+        private delegate void NestedTestDelegate();
 
         /// <summary/>
-        public interface INestedTestInterface
+        private interface INestedTestInterface
         {
         }
 
         /// <summary/>
-        public struct NestedTestStruct
+        private class NestedTestClass
+        {
+        }
+
+        /// <summary/>
+        private struct NestedTestStruct
         {
         }
 
@@ -42,6 +47,69 @@ namespace CodeMap.Tests.Data
         private static string StaticTestField;
 
         /// <summary/>
+        [Test("struct constructor test 1", Value2 = "struct constructor test 2", Value3 = "struct constructor test 3")]
+        public TestStruct(
+            [Test("struct constructor parameter test 1", Value2 = "struct constructor parameter test 2", Value3 = "struct constructor parameter test 3")]
+            int param1,
+            byte[] param2,
+            char[][] param3,
+            double[,] param4,
+            ref int param5,
+            ref byte[] param6,
+            ref char[][] param7,
+            ref double[,] param8,
+            out int param9,
+            out byte[] param10,
+            out char[][] param11,
+            out double[,] param12,
+            TestClass<int>.NestedTestClass<byte[], IEnumerable<string>> param13,
+            TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[] param14,
+            ref TestClass<int>.NestedTestClass<byte[], IEnumerable<string>> param15,
+            out TestClass<int>.NestedTestClass<byte[], IEnumerable<string>> param16,
+            ref TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[] param17,
+            out TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[] param18,
+            dynamic param19,
+            ref dynamic param20,
+            out dynamic param21,
+            TParam1 param22,
+            ref TParam1 param23,
+            out TParam1 param24,
+            int* param25,
+            byte*[] param26,
+            ref char* param27,
+            out double* param28,
+            ref decimal*[] param29,
+            out short*[] param30,
+            void* param31,
+            void** param32,
+            ref void** param33,
+            out void** param34,
+            void**[] param35,
+            ref void**[] param36,
+            out void**[] param37,
+            string param38 = "test")
+        {
+            param9 = default(int);
+            param10 = default(byte[]);
+            param11 = default(char[][]);
+            param12 = default(double[,]);
+            param16 = default(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>);
+            param18 = default(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]);
+            param21 = default(dynamic);
+            param24 = default(TParam1);
+            param25 = default(int*);
+            param28 = default(double*);
+            param30 = default(short*[]);
+            param31 = default(void**);
+            param34 = default(void**);
+            param37 = default(void**[]);
+
+            TestField = default(byte);
+            ReadonlyTestField = default(char);
+            TestProperty = default(byte);
+        }
+
+        /// <summary/>
         [Test("struct event test 1", Value2 = "struct event test 2", Value3 = "struct event test 3")]
         public event EventHandler<EventArgs> TestEvent
         {
@@ -58,6 +126,9 @@ namespace CodeMap.Tests.Data
         }
 
         /// <summary/>
+        public static event EventHandler StaticTestEvent;
+
+        /// <summary/>
         [Test("struct property test 1", Value2 = "struct property test 2", Value3 = "struct property test 3")]
         public byte TestProperty
         {
@@ -72,6 +143,7 @@ namespace CodeMap.Tests.Data
         /// <summary/>
         [Test("struct indexer test 1", Value2 = "struct indexer test 2", Value3 = "struct indexer test 3")]
         public int this[
+            [Test("struct indexer parameter test 1", Value2 = "struct indexer parameter test 2", Value3 = "struct indexer parameter test 3")]
             int param1,
             byte[] param2,
             char[][] param3,
@@ -105,8 +177,8 @@ namespace CodeMap.Tests.Data
             => base.ToString();
 
         /// <summary/>
-        public new bool Equals(object obj)
-            => base.Equals(obj);
+        public new int GetHashCode()
+            => (TestField == default(byte)).GetHashCode() ^ (ReadonlyTestField == default(char)).GetHashCode();
 
         /// <summary/>
         [Test("struct method test 1", Value2 = "struct method test 2", Value3 = "struct method test 3")]
@@ -169,5 +241,20 @@ namespace CodeMap.Tests.Data
             param37 = default(void**[]);
             param40 = default(TMethodParam1);
         }
+
+        event EventHandler ITestBaseInterface.InterfaceShadowedTestEvent { add { } remove { } }
+
+        int ITestBaseInterface.InterfaceShadowedTestProperty
+        {
+            get => default(int);
+            set { }
+        }
+
+        void ITestBaseInterface.BaseTestMethod()
+        {
+        }
+
+        int ITestBaseInterface.InterfaceShadowedTestMethod()
+            => default(int);
     }
 }
