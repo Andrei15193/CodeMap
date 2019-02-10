@@ -108,16 +108,20 @@ namespace CodeMap.Elements
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
-            throw new NotImplementedException();
+            visitor.VisitAssembly(this);
+            foreach (var @namespace in Namespaces)
+                @namespace.Accept(visitor);
         }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public override Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
+        public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await visitor.VisitAssemblyAsync(this, cancellationToken).ConfigureAwait(false);
+            foreach (var @namespace in Namespaces)
+                await @namespace.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Determines whether the current <see cref="AssemblyReference"/> is equal to the provided <paramref name="assembly"/>.</summary>

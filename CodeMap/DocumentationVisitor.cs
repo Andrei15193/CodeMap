@@ -14,6 +14,305 @@ namespace CodeMap
         {
         }
 
+        /// <summary>Visits an <see cref="AssemblyDocumentationElement"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitAssembly(AssemblyDocumentationElement assembly)
+        {
+        }
+
+        /// <summary>Visits an <see cref="AssemblyDocumentationElement"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitAssemblyAsync(AssemblyDocumentationElement assembly, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitAssembly(assembly);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits a <see cref="NamespaceDocumentationElement"/>.</summary>
+        /// <param name="namespace">The <see cref="NamespaceDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitNamespace(NamespaceDocumentationElement @namespace)
+        {
+        }
+
+        /// <summary>Visits a <see cref="NamespaceDocumentationElement"/>.</summary>
+        /// <param name="namespace">The <see cref="NamespaceDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitNamespaceAsync(NamespaceDocumentationElement @namespace, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitNamespace(@namespace);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits an <see cref="EnumDocumentationElement"/>.</summary>
+        /// <param name="enum">The <see cref="EnumDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitEnum(EnumDocumentationElement @enum)
+        {
+        }
+
+        /// <summary>Visits an <see cref="EnumDocumentationElement"/>.</summary>
+        /// <param name="enum">The <see cref="EnumDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitEnumAsync(EnumDocumentationElement @enum, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitEnum(@enum);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits a <see cref="DelegateDocumentationElement"/>.</summary>
+        /// <param name="delegate">The <see cref="DelegateDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitDelegate(DelegateDocumentationElement @delegate)
+        {
+        }
+
+        /// <summary>Visits a <see cref="DelegateDocumentationElement"/>.</summary>
+        /// <param name="delegate">The <see cref="DelegateDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitDelegateAsync(DelegateDocumentationElement @delegate, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitDelegate(@delegate);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits an <see cref="InterfaceDocumentationElement"/>.</summary>
+        /// <param name="interface">The <see cref="InterfaceDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitInterface(InterfaceDocumentationElement @interface)
+        {
+        }
+
+        /// <summary>Visits an <see cref="InterfaceDocumentationElement"/>.</summary>
+        /// <param name="interface">The <see cref="InterfaceDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitInterfaceAsync(InterfaceDocumentationElement @interface, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitInterface(@interface);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits a <see cref="ClassDocumentationElement"/>.</summary>
+        /// <param name="class">The <see cref="ClassDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitClass(ClassDocumentationElement @class)
+        {
+        }
+
+        /// <summary>Visits a <see cref="ClassDocumentationElement"/>.</summary>
+        /// <param name="class">The <see cref="ClassDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitClassAsync(ClassDocumentationElement @class, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitClass(@class);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits a <see cref="StructDocumentationElement"/>.</summary>
+        /// <param name="struct">The <see cref="StructDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitStruct(StructDocumentationElement @struct)
+        {
+        }
+
+        /// <summary>Visits a <see cref="StructDocumentationElement"/>.</summary>
+        /// <param name="struct">The <see cref="StructDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitStructAsync(StructDocumentationElement @struct, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitStruct(@struct);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits a <see cref="ConstantDocumentationElement"/>.</summary>
+        /// <param name="constant">The <see cref="ConstantDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitConstant(ConstantDocumentationElement constant)
+        {
+        }
+
+        /// <summary>Visits a <see cref="ConstantDocumentationElement"/>.</summary>
+        /// <param name="constant">The <see cref="ConstantDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitConstantAsync(ConstantDocumentationElement constant, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitConstant(constant);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits a <see cref="FieldDocumentationElement"/>.</summary>
+        /// <param name="field">The <see cref="FieldDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitField(FieldDocumentationElement field)
+        {
+        }
+
+        /// <summary>Visits a <see cref="FieldDocumentationElement"/>.</summary>
+        /// <param name="field">The <see cref="FieldDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitFieldAsync(FieldDocumentationElement field, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitField(field);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits a <see cref="ConstructorDocumentationElement"/>.</summary>
+        /// <param name="constructor">The <see cref="ConstructorDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitConstructor(ConstructorDocumentationElement constructor)
+        {
+        }
+
+        /// <summary>Visits a <see cref="ConstructorDocumentationElement"/>.</summary>
+        /// <param name="constructor">The <see cref="ConstructorDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitConstructorAsync(ConstructorDocumentationElement constructor, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitConstructor(constructor);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits a <see cref="EventDocumentationElement"/>.</summary>
+        /// <param name="event">The <see cref="EventDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitEvent(EventDocumentationElement @event)
+        {
+        }
+
+        /// <summary>Visits a <see cref="EventDocumentationElement"/>.</summary>
+        /// <param name="event">The <see cref="EventDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitEventAsync(EventDocumentationElement @event, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitEvent(@event);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits a <see cref="PropertyDocumentationElement"/>.</summary>
+        /// <param name="property">The <see cref="PropertyDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitProperty(PropertyDocumentationElement property)
+        {
+        }
+
+        /// <summary>Visits a <see cref="PropertyDocumentationElement"/>.</summary>
+        /// <param name="property">The <see cref="PropertyDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitPropertyAsync(PropertyDocumentationElement property, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitProperty(property);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits a <see cref="MethodDocumentationElement"/>.</summary>
+        /// <param name="method">The <see cref="MethodDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitMethod(MethodDocumentationElement method)
+        {
+        }
+
+        /// <summary>Visits a <see cref="MethodDocumentationElement"/>.</summary>
+        /// <param name="method">The <see cref="MethodDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitMethodAsync(MethodDocumentationElement method, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitMethod(method);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
         /// <summary>Visits the beginning of a summary element.</summary>
         protected internal virtual void VisitSummaryBeginning()
         {

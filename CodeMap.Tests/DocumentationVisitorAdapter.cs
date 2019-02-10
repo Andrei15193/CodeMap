@@ -12,6 +12,71 @@ namespace CodeMap.Tests
             _documentationVisitor = documentationVisitor;
         }
 
+        protected override void VisitAssembly(AssemblyDocumentationElement assembly)
+        {
+            _documentationVisitor.VisitAssembly(assembly);
+        }
+
+        protected override void VisitNamespace(NamespaceDocumentationElement @namespace)
+        {
+            _documentationVisitor.VisitNamespace(@namespace);
+        }
+
+        protected override void VisitEnum(EnumDocumentationElement @enum)
+        {
+            _documentationVisitor.VisitEnum(@enum);
+        }
+
+        protected override void VisitDelegate(DelegateDocumentationElement @delegate)
+        {
+            _documentationVisitor.VisitDelegate(@delegate);
+        }
+
+        protected override void VisitInterface(InterfaceDocumentationElement @interface)
+        {
+            _documentationVisitor.VisitInterface(@interface);
+        }
+
+        protected override void VisitClass(ClassDocumentationElement @class)
+        {
+            _documentationVisitor.VisitClass(@class);
+        }
+
+        protected override void VisitStruct(StructDocumentationElement @struct)
+        {
+            _documentationVisitor.VisitStruct(@struct);
+        }
+
+        protected override void VisitConstant(ConstantDocumentationElement constant)
+        {
+            _documentationVisitor.VisitConstant(constant);
+        }
+
+        protected override void VisitField(FieldDocumentationElement field)
+        {
+            _documentationVisitor.VisitField(field);
+        }
+
+        protected override void VisitConstructor(ConstructorDocumentationElement constructor)
+        {
+            _documentationVisitor.VisitConstructor(constructor);
+        }
+
+        protected override void VisitEvent(EventDocumentationElement @event)
+        {
+            _documentationVisitor.VisitEvent(@event);
+        }
+
+        protected override void VisitProperty(PropertyDocumentationElement property)
+        {
+            _documentationVisitor.VisitProperty(property);
+        }
+
+        protected override void VisitMethod(MethodDocumentationElement method)
+        {
+            _documentationVisitor.VisitMethod(method);
+        }
+
         protected override void VisitSummaryBeginning()
         {
             _documentationVisitor.VisitSummaryBeginning();

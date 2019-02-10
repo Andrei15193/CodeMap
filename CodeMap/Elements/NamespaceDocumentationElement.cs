@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,16 +48,36 @@ namespace CodeMap.Elements
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
-            throw new NotImplementedException();
+            visitor.VisitNamespace(this);
+            foreach (var @enum in Enums)
+                @enum.Accept(visitor);
+            foreach (var @delegate in Delegates)
+                @delegate.Accept(visitor);
+            foreach (var @interface in Interfaces)
+                @interface.Accept(visitor);
+            foreach (var classes in Classes)
+                classes.Accept(visitor);
+            foreach (var structs in Structs)
+                structs.Accept(visitor);
         }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public override Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
+        public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await visitor.VisitNamespaceAsync(this, cancellationToken).ConfigureAwait(false);
+            foreach (var @enum in Enums)
+                await @enum.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+            foreach (var @delegate in Delegates)
+                await @delegate.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+            foreach (var @interface in Interfaces)
+                await @interface.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+            foreach (var classes in Classes)
+                await classes.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+            foreach (var structs in Structs)
+                await structs.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
         }
     }
 }

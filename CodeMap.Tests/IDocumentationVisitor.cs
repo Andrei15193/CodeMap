@@ -5,6 +5,32 @@ namespace CodeMap.Tests
 {
     public interface IDocumentationVisitor
     {
+        void VisitAssembly(AssemblyDocumentationElement assembly);
+
+        void VisitNamespace(NamespaceDocumentationElement @namespace);
+
+        void VisitEnum(EnumDocumentationElement @enum);
+
+        void VisitDelegate(DelegateDocumentationElement @delegate);
+
+        void VisitInterface(InterfaceDocumentationElement @interface);
+
+        void VisitClass(ClassDocumentationElement @class);
+
+        void VisitStruct(StructDocumentationElement @struct);
+
+        void VisitConstant(ConstantDocumentationElement constant);
+
+        void VisitField(FieldDocumentationElement field);
+
+        void VisitConstructor(ConstructorDocumentationElement constructor);
+
+        void VisitEvent(EventDocumentationElement @event);
+
+        void VisitProperty(PropertyDocumentationElement property);
+
+        void VisitMethod(MethodDocumentationElement method);
+
         void VisitSummaryBeginning();
 
         void VisitSummaryEnding();

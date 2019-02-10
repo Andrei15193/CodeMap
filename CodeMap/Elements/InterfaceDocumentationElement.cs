@@ -31,16 +31,28 @@ namespace CodeMap.Elements
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
-            throw new NotImplementedException();
+            visitor.VisitInterface(this);
+            foreach (var @event in Events)
+                @event.Accept(visitor);
+            foreach (var property in Properties)
+                property.Accept(visitor);
+            foreach (var method in Methods)
+                method.Accept(visitor);
         }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public override Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
+        public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await visitor.VisitInterfaceAsync(this, cancellationToken).ConfigureAwait(false);
+            foreach (var @event in Events)
+                await @event.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+            foreach (var property in Properties)
+                await property.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+            foreach (var method in Methods)
+                await method.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Determines whether the current <see cref="InterfaceDocumentationElement"/> is equal to the provided <paramref name="type"/>.</summary>
