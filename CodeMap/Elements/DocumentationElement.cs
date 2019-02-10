@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -301,6 +302,62 @@ namespace CodeMap.Elements
                     membersDocumentation
                 )
                 .Create(assembly);
+        }
+
+        /// <summary>Creates an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDocumentationElement"/>.</param>
+        /// <returns>Returns an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
+        /// <remarks>The associated XML documentation file is searched in the folder from where the assembly was loaded,
+        /// if one is found then it is used, otherwise no written documentation is added to the result.</remarks>
+        public static Task<AssemblyDocumentationElement> CreateAsync(Assembly assembly)
+            => CreateAsync(assembly, CancellationToken.None);
+
+        /// <summary>Creates an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDocumentationElement"/>.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
+        /// <remarks>The associated XML documentation file is searched in the folder from where the assembly was loaded,
+        /// if one is found then it is used, otherwise no written documentation is added to the result.</remarks>
+        public static async Task<AssemblyDocumentationElement> CreateAsync(Assembly assembly, CancellationToken cancellationToken)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly));
+
+            var xmlDocumentationFileInfo = new FileInfo(Path.ChangeExtension(assembly.Location, ".xml"));
+            if (xmlDocumentationFileInfo.Exists)
+                using (var xmlDocumentationReader = xmlDocumentationFileInfo.OpenText())
+                    return await CreateAsync(assembly, xmlDocumentationReader, cancellationToken).ConfigureAwait(false);
+            else
+                return Create(assembly);
+        }
+
+        /// <summary>Creates an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDocumentationElement"/>.</param>
+        /// <param name="xmlDocumentationReader">A <see cref="TextReader"/> for reading the associated XML documentation file.</param>
+        /// <returns>Returns an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> or <paramref name="xmlDocumentationReader"/> are <c>null</c>.</exception>
+        public static Task<AssemblyDocumentationElement> CreateAsync(Assembly assembly, TextReader xmlDocumentationReader)
+            => CreateAsync(assembly, xmlDocumentationReader);
+
+        /// <summary>Creates an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDocumentationElement"/>.</param>
+        /// <param name="xmlDocumentationReader">A <see cref="TextReader"/> for reading the associated XML documentation file.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> or <paramref name="xmlDocumentationReader"/> are <c>null</c>.</exception>
+        public static async Task<AssemblyDocumentationElement> CreateAsync(Assembly assembly, TextReader xmlDocumentationReader, CancellationToken cancellationToken)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly));
+            if (xmlDocumentationReader == null)
+                throw new ArgumentNullException(nameof(xmlDocumentationReader));
+
+            return Create(
+                assembly,
+                await new XmlDocumentationReader().ReadAsync(xmlDocumentationReader, cancellationToken).ConfigureAwait(false)
+            );
         }
 
         /// <summary>Creates a <see cref="TypeDocumentationElement"/> from the provided <paramref name="type"/>.</summary>
