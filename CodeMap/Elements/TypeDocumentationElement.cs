@@ -43,7 +43,14 @@ namespace CodeMap.Elements
         /// <summary>The type name.</summary>
         public string Name { get; internal set; }
 
-        /// <summary>The delcaring type, if any.</summary>
+        /// <summary>The declaring namespace.</summary>
+        public NamespaceDocumentationElement Namespace { get; internal set; }
+
+        /// <summary>The declaring assembly.</summary>
+        public AssemblyDocumentationElement Assembly
+            => Namespace?.Assembly;
+
+        /// <summary>The delcaring type.</summary>
         public TypeDocumentationElement DeclaringType { get; internal set; }
 
         /// <summary>The type access modifier.</summary>
@@ -52,10 +59,10 @@ namespace CodeMap.Elements
         /// <summary>The attributes decorating the type.</summary>
         public IReadOnlyCollection<AttributeData> Attributes { get; internal set; }
 
-        /// <summary>The type summary, if any.</summary>
+        /// <summary>The type summary.</summary>
         new public SummaryDocumentationElement Summary { get; internal set; }
 
-        /// <summary>The type remarks, if any.</summary>
+        /// <summary>The type remarks.</summary>
         new public RemarksDocumentationElement Remarks { get; internal set; }
 
         /// <summary>The type examples.</summary>
@@ -74,7 +81,11 @@ namespace CodeMap.Elements
 
             var backTickIndex = type.Name.LastIndexOf('`');
             return
-                string.Equals(Name, (backTickIndex >= 0 ? type.Name.Substring(0, backTickIndex) : type.Name), StringComparison.OrdinalIgnoreCase);
+                Namespace is GlobalNamespaceDocumentationElement
+                    ? string.IsNullOrWhiteSpace(type.Namespace)
+                    : string.Equals(Namespace.Name, type.Namespace, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(Name, (backTickIndex >= 0 ? type.Name.Substring(0, backTickIndex) : type.Name), StringComparison.OrdinalIgnoreCase)
+                && Assembly == type.Assembly;
         }
 
         /// <summary>Determines whether the current <see cref="TypeDocumentationElement"/> is equal to the provided <paramref name="obj"/>.</summary>

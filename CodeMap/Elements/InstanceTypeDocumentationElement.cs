@@ -22,11 +22,11 @@ namespace CodeMap.Elements
         /// <summary>The type generic arguments.</summary>
         public IReadOnlyList<TypeReferenceDocumentationElement> GenericArguments { get; internal set; }
 
-        /// <summary>The declaring type, if any.</summary>
+        /// <summary>The declaring type.</summary>
         public InstanceTypeDocumentationElement DeclaringType { get; internal set; }
 
         /// <summary>The declaring assembly.</summary>
-        public AssemblyReferenceDocumentationElement Assembly { get; internal set; }
+        public AssemblyReference Assembly { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
@@ -53,16 +53,23 @@ namespace CodeMap.Elements
                 return false;
 
             var backTickIndex = type.Name.LastIndexOf('`');
+            var genericArgumentsOffset = type.DeclaringType?.GetGenericArguments().Length ?? 0;
             return
                 string.Equals(Name, (backTickIndex >= 0 ? type.Name.Substring(0, backTickIndex) : type.Name), StringComparison.OrdinalIgnoreCase)
                 && string.Equals(Namespace, type.Namespace, StringComparison.OrdinalIgnoreCase)
                 && DeclaringType == type.DeclaringType?.MakeGenericType(
                     type
                         .GetGenericArguments()
-                        .Take(type.DeclaringType.GetGenericArguments().Length)
+                        .Take(genericArgumentsOffset)
                         .ToArray()
                 )
-                && GenericArguments.Count == type.GetGenericArguments().Length
+                && GenericArguments.Count == type.GetGenericArguments().Length - genericArgumentsOffset
+                && GenericArguments
+                    .Zip(
+                        type.GetGenericArguments().Skip(genericArgumentsOffset),
+                        (typeReference, genericArgument) => new { TypeReference = typeReference, GenericArgument = genericArgument }
+                    )
+                    .All(pair => pair.TypeReference == pair.GenericArgument)
                 && Assembly == type.Assembly.GetName();
         }
     }

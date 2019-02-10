@@ -45,6 +45,6 @@ namespace CodeMap.Elements
         /// <returns>Returns <c>true</c> if the current <see cref="DelegateDocumentationElement"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(Type type)
             => base.Equals(type)
-            && GenericParameters.Count == type.GetGenericArguments().Length;
+            && GenericParameters.Count == (type.GetGenericArguments().Length - (type.DeclaringType?.GetGenericArguments().Length ?? 0));
     }
 }

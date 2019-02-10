@@ -90,7 +90,7 @@ namespace CodeMap
 
         public static IEnumerable<Type> GetAllDefinedTypes(this Assembly assembly)
         {
-            var toVisit = new Queue<Type>(assembly.DefinedTypes);
+            var toVisit = new Queue<Type>(assembly.DefinedTypes.Where(type => type.DeclaringType == null));
             while (toVisit.Count > 0)
             {
                 var type = toVisit.Dequeue();
@@ -99,9 +99,10 @@ namespace CodeMap
                 yield return type;
             }
         }
+
         public static IEnumerable<Type> GetAllForwardedTypes(this Assembly assembly)
         {
-            var toVisit = new Queue<Type>(assembly.GetForwardedTypes());
+            var toVisit = new Queue<Type>(assembly.GetForwardedTypes().Where(type => type.DeclaringType == null));
             while (toVisit.Count > 0)
             {
                 var type = toVisit.Dequeue();

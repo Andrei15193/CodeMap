@@ -5,8 +5,6 @@ namespace CodeMap.ElementsTests
 {
     public interface IDocumentationVisitor
     {
-        void VisitAssemblyReference(AssemblyReferenceDocumentationElement assemblyReference);
-
         void VisitSummaryBeginning();
 
         void VisitSummaryEnding();

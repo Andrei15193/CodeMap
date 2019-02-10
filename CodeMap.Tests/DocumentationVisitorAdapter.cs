@@ -12,11 +12,6 @@ namespace CodeMap.ElementsTests
             _documentationVisitor = documentationVisitor;
         }
 
-        protected override void VisitAssemblyReference(AssemblyReferenceDocumentationElement assemblyReference)
-        {
-            _documentationVisitor.VisitAssemblyReference(assemblyReference);
-        }
-
         protected override void VisitSummaryBeginning()
         {
             _documentationVisitor.VisitSummaryBeginning();

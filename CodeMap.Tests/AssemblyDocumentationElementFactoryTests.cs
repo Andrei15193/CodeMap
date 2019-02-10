@@ -1,22 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 using CodeMap.Elements;
 using CodeMap.Tests.Data;
 using Xunit;
 
 namespace CodeMap.Tests
 {
-    public class ReflectionDocumentationElementFactoryTests
+    public class AssemblyDocumentationElementFactoryTests
     {
         [Fact]
-        public void EnumDocumentationElement()
+        public void CreateEnumDocumentationElement()
         {
-            var factory = new ReflectionDocumentationElementFactory();
+            var factory = new AssemblyDocumentationElementFactory();
 
             var typeDocumentationElement = factory.Create(typeof(TestEnum));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestEnum")
+                .AssertEqual(() => typeDocumentationElement.Namespace.Name, "CodeMap.Tests.Data")
+                .AssertAssembly(() => typeDocumentationElement.Assembly, typeof(TestEnum).Assembly)
+                .AssertSame(() => typeDocumentationElement.Assembly, typeDocumentationElement.Namespace.Assembly)
                 .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
                 .AssertCollectionMember(
@@ -25,7 +33,7 @@ namespace CodeMap.Tests
                 )
                 .AssertIs<EnumDocumentationElement>(
                     enumDocumentationElement => enumDocumentationElement
-                        .AssertType(() => enumDocumentationElement.UnderlyingType, typeof(byte))
+                        .AssertTypeReference(() => enumDocumentationElement.UnderlyingType, typeof(byte))
                         .AssertCollectionMember(
                             () => enumDocumentationElement.Members,
                             enumMember => enumMember
@@ -36,7 +44,7 @@ namespace CodeMap.Tests
                                 )
                                 .AssertEqual(() => enumMember.AccessModifier, AccessModifier.Public)
                                 .AssertSame(() => enumMember.DeclaringType, enumDocumentationElement)
-                                .AssertType(() => enumMember.Type, typeof(TestEnum))
+                                .AssertTypeReference(() => enumMember.Type, typeof(TestEnum))
                                 .AssertEqual(() => enumMember.Value, TestEnum.TestMember1)
                                 .AssertNoDocumentation(),
                             enumMember => enumMember
@@ -44,7 +52,7 @@ namespace CodeMap.Tests
                                 .AssertEmpty(() => enumMember.Attributes)
                                 .AssertEqual(() => enumMember.AccessModifier, AccessModifier.Public)
                                 .AssertSame(() => enumMember.DeclaringType, enumDocumentationElement)
-                                .AssertType(() => enumMember.Type, typeof(TestEnum))
+                                .AssertTypeReference(() => enumMember.Type, typeof(TestEnum))
                                 .AssertEqual(() => enumMember.Value, TestEnum.TestMember2)
                                 .AssertNoDocumentation(),
                             enumMember => enumMember
@@ -52,7 +60,7 @@ namespace CodeMap.Tests
                                 .AssertEmpty(() => enumMember.Attributes)
                                 .AssertEqual(() => enumMember.AccessModifier, AccessModifier.Public)
                                 .AssertSame(() => enumMember.DeclaringType, enumDocumentationElement)
-                                .AssertType(() => enumMember.Type, typeof(TestEnum))
+                                .AssertTypeReference(() => enumMember.Type, typeof(TestEnum))
                                 .AssertEqual(() => enumMember.Value, TestEnum.TestMember3)
                                 .AssertNoDocumentation()
                         )
@@ -67,7 +75,7 @@ namespace CodeMap.Tests
             var enumMember1Documentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestEnum.TestMember1");
             var enumMember2Documentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestEnum.TestMember2");
             var enumMember3Documentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestEnum.TestMember3");
-            var factory = new ReflectionDocumentationElementFactory(
+            var factory = new AssemblyDocumentationElementFactory(
                 new MemberDocumentationCollection(
                     new[]
                     {
@@ -104,7 +112,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateDelegateDocumentationElement()
         {
-            var _factory = new ReflectionDocumentationElementFactory();
+            var _factory = new AssemblyDocumentationElementFactory();
 
             var delegateType = typeof(TestDelegate<>);
             var genericParameterType = delegateType.GetGenericArguments().Single();
@@ -112,6 +120,9 @@ namespace CodeMap.Tests
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestDelegate")
+                .AssertEqual(() => typeDocumentationElement.Namespace.Name, "CodeMap.Tests.Data")
+                .AssertAssembly(() => typeDocumentationElement.Assembly, typeof(TestDelegate<>).Assembly)
+                .AssertSame(() => typeDocumentationElement.Assembly, typeDocumentationElement.Namespace.Assembly)
                 .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
                 .AssertCollectionMember(
@@ -120,7 +131,7 @@ namespace CodeMap.Tests
                 )
                 .AssertIs<DelegateDocumentationElement>(
                     delegateDocumentationElement => delegateDocumentationElement
-                        .AssertType(() => delegateDocumentationElement.Return.Type, typeof(void))
+                        .AssertTypeReference(() => delegateDocumentationElement.Return.Type, typeof(void))
                         .AssertMember(
                             () => delegateDocumentationElement.Return.Type,
                             returnType => returnType.AssertIs<VoidTypeReferenceDocumentationElement>()
@@ -139,7 +150,7 @@ namespace CodeMap.Tests
         public void CreateDelegateDocumentationElementDocumentation()
         {
             var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.TestDelegate`1");
-            var _factory = new ReflectionDocumentationElementFactory(
+            var _factory = new AssemblyDocumentationElementFactory(
                 new MemberDocumentationCollection(
                     new[]
                     {
@@ -163,12 +174,15 @@ namespace CodeMap.Tests
             var interfaceType = typeof(ITestInterface<>);
             var typeGenericParameter = interfaceType.GetGenericArguments().Single();
             var methodGenericParameter = interfaceType.GetMethod("TestMethod").GetGenericArguments().Single();
-            var factory = new ReflectionDocumentationElementFactory();
+            var factory = new AssemblyDocumentationElementFactory();
 
             var typeDocumentationElement = factory.Create(interfaceType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
+                .AssertEqual(() => typeDocumentationElement.Namespace.Name, "CodeMap.Tests.Data")
+                .AssertAssembly(() => typeDocumentationElement.Assembly, typeof(ITestInterface<>).Assembly)
+                .AssertSame(() => typeDocumentationElement.Assembly, typeDocumentationElement.Namespace.Assembly)
                 .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
                 .AssertCollectionMember(
@@ -181,7 +195,7 @@ namespace CodeMap.Tests
                         .AssertTypeGenericParameters(() => interfaceDocumentationElement.GenericParameters)
                         .AssertCollectionMember(
                             () => interfaceDocumentationElement.BaseInterfaces,
-                            baseInterface => baseInterface.AssertType(typeof(ITestExtendedBaseInterface))
+                            baseInterface => baseInterface.AssertTypeReference(typeof(ITestExtendedBaseInterface))
                         )
                         .AssertTestEvent(() => interfaceDocumentationElement.Events, "TestEvent", "interface event")
                         .AssertShadowingEvent(() => interfaceDocumentationElement.Events, "InterfaceShadowedTestEvent")
@@ -205,7 +219,7 @@ namespace CodeMap.Tests
             var testPropertyMemberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.ITestInterface`1.TestProperty");
             var shadowingMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestMethod");
             var testMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.ITestInterface`1.TestMethod``1(" + CanonicalNameResolverTests.MethodParameters + ")");
-            var factory = new ReflectionDocumentationElementFactory(
+            var factory = new AssemblyDocumentationElementFactory(
                 new MemberDocumentationCollection(
                     new[]
                     {
@@ -253,16 +267,19 @@ namespace CodeMap.Tests
             var classType = typeof(TestClass<>);
             var typeGenericParameter = classType.GetGenericArguments().Single();
             var methodGenericParameter = classType.GetMethod("TestMethod").GetGenericArguments().Single();
-            var factory = new ReflectionDocumentationElementFactory();
+            var factory = new AssemblyDocumentationElementFactory();
 
             var typeDocumentationElement = factory.Create(classType);
             var baseTypeDocumentationElement = factory.Create(typeof(TestBaseClass));
 
             baseTypeDocumentationElement
                 .AssertEqual(() => baseTypeDocumentationElement.Name, "TestBaseClass")
+                .AssertEqual(() => baseTypeDocumentationElement.Namespace.Name, "CodeMap.Tests.Data")
+                .AssertAssembly(() => baseTypeDocumentationElement.Assembly, typeof(TestBaseClass).Assembly)
+                .AssertSame(() => baseTypeDocumentationElement.Assembly, baseTypeDocumentationElement.Namespace.Assembly)
                 .AssertIs<ClassDocumentationElement>(
                     baseClassDocumentationElement => baseClassDocumentationElement
-                        .AssertType(() => baseClassDocumentationElement.BaseClass, typeof(object))
+                        .AssertTypeReference(() => baseClassDocumentationElement.BaseClass, typeof(object))
                         .AssertAbstractEvent(() => baseClassDocumentationElement.Events, "AbstractTestEvent")
                         .AssertVirtualEvent(() => baseClassDocumentationElement.Events, "VirtualTestEvent")
 
@@ -277,6 +294,8 @@ namespace CodeMap.Tests
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestClass")
+                .AssertEqual(() => baseTypeDocumentationElement.Namespace.Name, "CodeMap.Tests.Data")
+                .AssertAssembly(() => baseTypeDocumentationElement.Assembly, typeof(TestClass<>).Assembly)
                 .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
                 .AssertCollectionMember(
@@ -290,10 +309,10 @@ namespace CodeMap.Tests
                         .AssertFalse(() => classDocumentationElement.IsSealed)
                         .AssertFalse(() => classDocumentationElement.IsStatic)
                         .AssertTypeGenericParameters(() => classDocumentationElement.GenericParameters)
-                        .AssertType(() => classDocumentationElement.BaseClass, typeof(TestBaseClass))
+                        .AssertTypeReference(() => classDocumentationElement.BaseClass, typeof(TestBaseClass))
                         .AssertCollectionMember(
                             () => classDocumentationElement.ImplementedInterfaces,
-                            baseInterface => baseInterface.AssertType(typeof(ITestExtendedBaseInterface))
+                            baseInterface => baseInterface.AssertTypeReference(typeof(ITestExtendedBaseInterface))
                         )
                         .AssertCollectionMember(
                             () => classDocumentationElement.Constants,
@@ -305,7 +324,7 @@ namespace CodeMap.Tests
                                 )
                                 .AssertEqual(() => constant.AccessModifier, AccessModifier.Private)
                                 .AssertSame(() => constant.DeclaringType, classDocumentationElement)
-                                .AssertType(() => constant.Type, typeof(double))
+                                .AssertTypeReference(() => constant.Type, typeof(double))
                                 .AssertEqual(() => constant.Value, 1.0)
                                 .AssertNoDocumentation()
                         )
@@ -378,7 +397,7 @@ namespace CodeMap.Tests
             var testMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.TestMethod``1(" + CanonicalNameResolverTests.MethodParameters + ")");
             var virtualTestMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.VirtualTestMethod");
 
-            var factory = new ReflectionDocumentationElementFactory(
+            var factory = new AssemblyDocumentationElementFactory(
                 new MemberDocumentationCollection(
                     new[]
                     {
@@ -472,7 +491,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementForAbstractClass()
         {
-            var factory = new ReflectionDocumentationElementFactory();
+            var factory = new AssemblyDocumentationElementFactory();
 
             var typeDocumentationElement = factory.Create(typeof(TestAbstractClass));
 
@@ -489,7 +508,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementForSealedClass()
         {
-            var factory = new ReflectionDocumentationElementFactory();
+            var factory = new AssemblyDocumentationElementFactory();
 
             var typeDocumentationElement = factory.Create(typeof(TestSealedClass));
 
@@ -506,7 +525,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementForStaticClass()
         {
-            var factory = new ReflectionDocumentationElementFactory();
+            var factory = new AssemblyDocumentationElementFactory();
 
             var typeDocumentationElement = factory.Create(typeof(TestStaticClass));
 
@@ -523,7 +542,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementNestedTypes()
         {
-            var factory = new ReflectionDocumentationElementFactory();
+            var factory = new AssemblyDocumentationElementFactory();
 
             var typeDocumentationElement = factory.Create(typeof(TestClass<>));
 
@@ -570,12 +589,15 @@ namespace CodeMap.Tests
             var structType = typeof(TestStruct<>);
             var typeGenericParameter = structType.GetGenericArguments().Single();
             var methodGenericParameter = structType.GetMethod("TestMethod").GetGenericArguments().Single();
-            var factory = new ReflectionDocumentationElementFactory();
+            var factory = new AssemblyDocumentationElementFactory();
 
             var typeDocumentationElement = factory.Create(structType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestStruct")
+                .AssertEqual(() => typeDocumentationElement.Namespace.Name, "CodeMap.Tests.Data")
+                .AssertAssembly(() => typeDocumentationElement.Assembly, typeof(TestStruct<>).Assembly)
+                .AssertSame(() => typeDocumentationElement.Assembly, typeDocumentationElement.Namespace.Assembly)
                 .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
                 .AssertCollectionMember(
@@ -588,7 +610,7 @@ namespace CodeMap.Tests
                         .AssertTypeGenericParameters(() => structDocumentationElement.GenericParameters)
                         .AssertCollectionMember(
                             () => structDocumentationElement.ImplementedInterfaces,
-                            baseInterface => baseInterface.AssertType(typeof(ITestExtendedBaseInterface))
+                            baseInterface => baseInterface.AssertTypeReference(typeof(ITestExtendedBaseInterface))
                         )
                         .AssertCollectionMember(
                             () => structDocumentationElement.Constants,
@@ -600,7 +622,7 @@ namespace CodeMap.Tests
                                 )
                                 .AssertEqual(() => constant.AccessModifier, AccessModifier.Private)
                                 .AssertSame(() => constant.DeclaringType, structDocumentationElement)
-                                .AssertType(() => constant.Type, typeof(double))
+                                .AssertTypeReference(() => constant.Type, typeof(double))
                                 .AssertEqual(() => constant.Value, 1.0)
                                 .AssertNoDocumentation()
                         )
@@ -623,7 +645,7 @@ namespace CodeMap.Tests
 
                         .AssertTestProperty(() => structDocumentationElement.Properties, "TestProperty", "struct property")
                         .AssertIndexProperty(() => structDocumentationElement.Properties, typeGenericParameter, "struct indexer")
-                        
+
                         .AssertTestMethod(() => structDocumentationElement.Methods, "TestMethod", typeGenericParameter, methodGenericParameter, "struct method")
                         .AssertOverrideMethod(() => structDocumentationElement.Methods, "ToString")
                         .AssertShadowingMethod(() => structDocumentationElement.Methods, "GetHashCode")
@@ -659,7 +681,7 @@ namespace CodeMap.Tests
             var testMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.TestMethod``1(" + CanonicalNameResolverTests.MethodParameters + ")");
             var virtualTestMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.ToString");
 
-            var factory = new ReflectionDocumentationElementFactory(
+            var factory = new AssemblyDocumentationElementFactory(
                 new MemberDocumentationCollection(
                     new[]
                     {
@@ -739,7 +761,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateStructDocumentationElementNestedTypes()
         {
-            var factory = new ReflectionDocumentationElementFactory();
+            var factory = new AssemblyDocumentationElementFactory();
 
             var typeDocumentationElement = factory.Create(typeof(TestStruct<>));
 
@@ -781,10 +803,319 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public void GenericParameterConstraints()
+        {
+            var factory = new AssemblyDocumentationElementFactory();
+            var interfaceType = typeof(ITestGenericParameter<,,,,,>);
+            var typeGenericParameters = interfaceType.GetGenericArguments();
+
+            var typeDocumentationElement = factory.Create(interfaceType);
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "ITestGenericParameter")
+                .AssertIs<InterfaceDocumentationElement>(
+                    interfaceDocumentationElement =>
+                        interfaceDocumentationElement
+                            .AssertCollectionMember(
+                                () => interfaceDocumentationElement.GenericParameters,
+                                genericParameter =>
+                                    genericParameter
+                                        .AssertEqual(() => genericParameter.Name, "TParam1")
+                                        .AssertEqual(() => genericParameter.Position, 0)
+                                        .AssertTypeReference(typeGenericParameters[0])
+                                        .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
+                                        .AssertTrue(() => genericParameter.IsCovariant)
+                                        .AssertFalse(() => genericParameter.IsContravariant)
+                                        .AssertFalse(() => genericParameter.HasReferenceTypeConstraint)
+                                        .AssertFalse(() => genericParameter.HasNonNullableValueTypeConstraint)
+                                        .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
+                                        .AssertEmpty(() => genericParameter.TypeConstraints),
+                                genericParameter =>
+                                    genericParameter
+                                        .AssertEqual(() => genericParameter.Name, "TParam2")
+                                        .AssertEqual(() => genericParameter.Position, 1)
+                                        .AssertTypeReference(typeGenericParameters[1])
+                                        .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
+                                        .AssertFalse(() => genericParameter.IsCovariant)
+                                        .AssertTrue(() => genericParameter.IsContravariant)
+                                        .AssertTrue(() => genericParameter.HasReferenceTypeConstraint)
+                                        .AssertFalse(() => genericParameter.HasNonNullableValueTypeConstraint)
+                                        .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
+                                        .AssertEmpty(() => genericParameter.TypeConstraints),
+                                genericParameter =>
+                                    genericParameter
+                                        .AssertEqual(() => genericParameter.Name, "TParam3")
+                                        .AssertEqual(() => genericParameter.Position, 2)
+                                        .AssertTypeReference(typeGenericParameters[2])
+                                        .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
+                                        .AssertFalse(() => genericParameter.IsCovariant)
+                                        .AssertFalse(() => genericParameter.IsContravariant)
+                                        .AssertFalse(() => genericParameter.HasReferenceTypeConstraint)
+                                        .AssertTrue(() => genericParameter.HasNonNullableValueTypeConstraint)
+                                        .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
+                                        .AssertEmpty(() => genericParameter.TypeConstraints),
+                                genericParameter =>
+                                    genericParameter
+                                        .AssertEqual(() => genericParameter.Name, "TParam4")
+                                        .AssertEqual(() => genericParameter.Position, 3)
+                                        .AssertTypeReference(typeGenericParameters[3])
+                                        .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
+                                        .AssertFalse(() => genericParameter.IsCovariant)
+                                        .AssertFalse(() => genericParameter.IsContravariant)
+                                        .AssertFalse(() => genericParameter.HasReferenceTypeConstraint)
+                                        .AssertFalse(() => genericParameter.HasNonNullableValueTypeConstraint)
+                                        .AssertTrue(() => genericParameter.HasDefaultConstructorConstraint)
+                                        .AssertEmpty(() => genericParameter.TypeConstraints),
+                                genericParameter =>
+                                    genericParameter
+                                        .AssertEqual(() => genericParameter.Name, "TParam5")
+                                        .AssertEqual(() => genericParameter.Position, 4)
+                                        .AssertTypeReference(typeGenericParameters[4])
+                                        .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
+                                        .AssertFalse(() => genericParameter.IsCovariant)
+                                        .AssertFalse(() => genericParameter.IsContravariant)
+                                        .AssertFalse(() => genericParameter.HasReferenceTypeConstraint)
+                                        .AssertFalse(() => genericParameter.HasNonNullableValueTypeConstraint)
+                                        .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
+                                        .AssertCollectionMember(
+                                            () => genericParameter.TypeConstraints,
+                                            type => type.AssertSame(interfaceDocumentationElement.GenericParameters.First())
+                                        ),
+                                genericParameter =>
+                                    genericParameter
+                                        .AssertEqual(() => genericParameter.Name, "TParam6")
+                                        .AssertEqual(() => genericParameter.Position, 5)
+                                        .AssertTypeReference(typeGenericParameters[5])
+                                        .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
+                                        .AssertFalse(() => genericParameter.IsCovariant)
+                                        .AssertFalse(() => genericParameter.IsContravariant)
+                                        .AssertFalse(() => genericParameter.HasReferenceTypeConstraint)
+                                        .AssertFalse(() => genericParameter.HasNonNullableValueTypeConstraint)
+                                        .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
+                                        .AssertCollectionMember(
+                                            () => genericParameter.TypeConstraints,
+                                            type => type.AssertSame(interfaceDocumentationElement.GenericParameters.First()),
+                                            type => type.AssertTypeReference(
+                                                typeof(IComparable<>).MakeGenericType(typeGenericParameters[0])
+                                            )
+                                        )
+                            )
+                );
+        }
+
+        [Fact]
+        public void GenericParametersOfNestedClass()
+        {
+            var factory = new AssemblyDocumentationElementFactory();
+            var classType = typeof(TestClass<>.NestedTestClass<,>);
+            var typeGenericParameters = classType.GetGenericArguments();
+
+            var typeDocumentationElement = factory.Create(classType);
+
+            typeDocumentationElement
+                .AssertEqual(() => typeDocumentationElement.Name, "NestedTestClass")
+                .AssertIs<ClassDocumentationElement>(
+                    classDocumentationElement =>
+                        classDocumentationElement
+                            .AssertCollectionMember(
+                                () => classDocumentationElement.GenericParameters,
+                                genericParameter =>
+                                    genericParameter
+                                        .AssertEqual(() => genericParameter.Name, "TParam2")
+                                        .AssertEqual(() => genericParameter.Position, 0),
+                                genericParameter =>
+                                    genericParameter
+                                        .AssertEqual(() => genericParameter.Name, "TParam3")
+                                        .AssertEqual(() => genericParameter.Position, 1)
+                            )
+                );
+        }
+
+        [Fact]
+        public void CreateAssemblyDocumentationElement()
+        {
+            var factory = new AssemblyDocumentationElementFactory();
+            var testDataAssembly = typeof(AssemblyDocumentationElementFactoryTests)
+                .Assembly
+                .GetReferencedAssemblies()
+                .Where(dependency => dependency.Name == "CodeMap.Tests.Data")
+                .Select(Assembly.Load)
+                .Single();
+
+            var assemblyDocumentationElement = factory.Create(testDataAssembly);
+
+            assemblyDocumentationElement
+                .AssertEqual(() => assemblyDocumentationElement.Name, "CodeMap.Tests.Data")
+                .AssertEqual(() => assemblyDocumentationElement.Version, new Version(1, 2, 3, 4))
+                .AssertEqual(() => assemblyDocumentationElement.Culture, string.Empty)
+                .AssertEqual(
+                    () => assemblyDocumentationElement.PublicKeyToken,
+                    string.Join(string.Empty, testDataAssembly.GetName().GetPublicKeyToken().Select(@byte => @byte.ToString("X2")))
+                )
+                .AssertCollectionMember(
+                    () => assemblyDocumentationElement.Dependencies,
+                    testDataAssembly
+                        .GetReferencedAssemblies()
+                        .Select(referredAssemblyName => new Action<AssemblyReference>(dependency => referredAssemblyName.AssertAssemblyReference(dependency)))
+                        .ToArray()
+                )
+                .AssertCollectionMember(
+                    () => assemblyDocumentationElement.Attributes,
+                    attribute => attribute.AssertTypeReference(() => attribute.Type, typeof(CompilationRelaxationsAttribute)),
+                    attribute => attribute.AssertTypeReference(() => attribute.Type, typeof(RuntimeCompatibilityAttribute)),
+                    attribute => attribute.AssertTypeReference(() => attribute.Type, typeof(DebuggableAttribute)),
+                    attribute => attribute.AssertTypeReference(() => attribute.Type, typeof(TargetFrameworkAttribute))
+                )
+                .AssertCollectionMember(
+                    () => assemblyDocumentationElement.Namespaces.OrderBy(@namespace => @namespace.Name),
+                    @namespace =>
+                        @namespace
+                            .AssertEqual(() => @namespace.Name, string.Empty)
+                            .AssertSame(() => @namespace.Assembly, assemblyDocumentationElement)
+                            .AssertEmpty(() => @namespace.Enums)
+                            .AssertEmpty(() => @namespace.Delegates)
+                            .AssertEmpty(() => @namespace.Interfaces)
+                            .AssertCollectionMember(
+                                () => @namespace.Classes,
+                                @class => @class.AssertType(typeof(GlobalTestClass))
+                            )
+                            .AssertEmpty(() => @namespace.Structs)
+                            .AssertIs<GlobalNamespaceDocumentationElement>()
+                            .AssertNoDocumentation(),
+                    @namespace =>
+                        @namespace
+                            .AssertEqual(() => @namespace.Name, "CodeMap.Tests.Data")
+                            .AssertSame(() => @namespace.Assembly, assemblyDocumentationElement)
+                            .AssertCollectionMember(
+                                () => @namespace.Enums,
+                                @enum => @enum.AssertType(typeof(TestEnum))
+                            )
+                            .AssertCollectionMember(
+                                () => @namespace.Delegates,
+                                @delegate => @delegate.AssertType(typeof(TestDelegate<>))
+                            )
+                            .AssertCollectionMember(
+                                () => @namespace.Interfaces.OrderBy(@interface => @interface.Name),
+                                @interface => @interface.AssertType(typeof(ITestBaseInterface)),
+                                @interface => @interface.AssertType(typeof(ITestExplicitInterface)),
+                                @interface => @interface.AssertType(typeof(ITestExtendedBaseInterface)),
+                                @interface => @interface.AssertType(typeof(ITestGenericParameter<,,,,,>)),
+                                @interface => @interface.AssertType(typeof(ITestInterface<>))
+                            )
+                            .AssertCollectionMember(
+                                () => @namespace.Classes.OrderBy(@class => @class.Name),
+                                @class => @class.AssertType(typeof(TestAbstractClass)),
+                                @class => @class.AssertType(typeof(TestAttribute)),
+                                @class => @class.AssertType(typeof(TestBaseClass)),
+                                @class => @class
+                                    .AssertType(typeof(TestClass<>))
+                                    .AssertCollectionMember(
+                                        () => @class.NestedEnums,
+                                        nestedEnum =>
+                                            nestedEnum
+                                                .AssertType(typeof(TestClass<>.NestedTestEnum))
+                                                .AssertSame(() => nestedEnum.DeclaringType, @class)
+                                    )
+                                    .AssertCollectionMember(
+                                        () => @class.NestedDelegates,
+                                        nestedDelegate =>
+                                            nestedDelegate
+                                                .AssertType(typeof(TestClass<>.NestedTestDelegate))
+                                                .AssertSame(() => nestedDelegate.DeclaringType, @class)
+                                                .AssertEmpty(() => nestedDelegate.GenericParameters)
+                                    )
+                                    .AssertCollectionMember(
+                                        () => @class.NestedInterfaces,
+                                        nestedInterface =>
+                                            nestedInterface
+                                                .AssertType(typeof(TestClass<>.INestedTestInterface))
+                                                .AssertSame(() => nestedInterface.DeclaringType, @class)
+                                                .AssertEmpty(() => nestedInterface.GenericParameters)
+                                    )
+                                    .AssertCollectionMember(
+                                        () => @class.NestedClasses,
+                                        nestedClass =>
+                                            nestedClass
+                                                .AssertType(typeof(TestClass<>.NestedTestClass<,>))
+                                                .AssertSame(() => nestedClass.DeclaringType, @class)
+                                                .AssertEqual(() => nestedClass.GenericParameters.Count, 2)
+                                    )
+                                    .AssertCollectionMember(
+                                        () => @class.NestedStructs,
+                                        nestedStruct =>
+                                            nestedStruct
+                                                .AssertType(typeof(TestClass<>.NestedTestStruct))
+                                                .AssertSame(() => nestedStruct.DeclaringType, @class)
+                                                .AssertEmpty(() => nestedStruct.GenericParameters)
+                                    ),
+                                @class => @class.AssertType(typeof(TestExplicitClass)),
+                                @class => @class.AssertType(typeof(TestSealedClass)),
+                                @class => @class.AssertType(typeof(TestStaticClass))
+                            )
+                            .AssertCollectionMember(
+                                () => @namespace.Structs,
+                                @struct => @struct.AssertType(typeof(TestStruct<>))
+                            )
+                            .AssertNoDocumentation()
+                )
+                .AssertNoDocumentation();
+        }
+
+        [Fact]
+        public void AssertTypeReferenceToNestedGenericType()
+        {
+            var factory = new AssemblyDocumentationElementFactory();
+
+            var classDocumentationElement = (ClassDocumentationElement)factory.Create(typeof(TestClass<>));
+            var typeReference = (InstanceTypeDocumentationElement)classDocumentationElement
+                .Methods
+                .Single(method => method.Name == "TestMethod")
+                .Parameters
+                .Single(parameter => parameter.Name == "param13")
+                .Type;
+
+            typeReference
+                .AssertEqual(() => typeReference.Name, "NestedTestClass")
+                .AssertEqual(() => typeReference.Namespace, "CodeMap.Tests.Data")
+                .AssertCollectionMember(
+                    () => typeReference.GenericArguments,
+                    genericArgument => genericArgument.AssertTypeReference(typeof(byte[])),
+                    genericArgument => genericArgument.AssertTypeReference(typeof(IEnumerable<string>))
+                )
+                .AssertMember(
+                    () => typeReference.DeclaringType,
+                    declaringType =>
+                        declaringType
+                            .AssertEqual(() => declaringType.Name, "TestClass")
+                            .AssertEqual(() => declaringType.Namespace, "CodeMap.Tests.Data")
+                        .AssertCollectionMember(
+                            () => declaringType.GenericArguments,
+                            genericArgument => genericArgument.AssertTypeReference(typeof(int))
+                        )
+                );
+        }
+
+        [Fact]
         public void ConstructorWithNullMembersDocumentationCollectionThrowsException()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => new ReflectionDocumentationElementFactory(null));
+            var exception = Assert.Throws<ArgumentNullException>(() => new AssemblyDocumentationElementFactory(null));
             Assert.Equal(new ArgumentNullException("membersDocumentation").Message, exception.Message);
+        }
+
+        [Fact]
+        public void ConstructorFromNullAssemblyThrowsException()
+        {
+            var factory = new AssemblyDocumentationElementFactory();
+            var exception = Assert.Throws<ArgumentNullException>(() => factory.Create(assembly: null));
+            Assert.Equal(new ArgumentNullException("assembly").Message, exception.Message);
+        }
+
+        [Fact]
+        public void ConstructorFromNullTypeThrowsException()
+        {
+            var factory = new AssemblyDocumentationElementFactory();
+            var exception = Assert.Throws<ArgumentNullException>(() => factory.Create(type: null));
+            Assert.Equal(new ArgumentNullException("type").Message, exception.Message);
         }
 
         private static MemberDocumentation _CreateMemberDocumentationMock(string canonicalName)

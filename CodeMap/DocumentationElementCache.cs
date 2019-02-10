@@ -7,12 +7,12 @@ namespace CodeMap
 {
     internal class DocumentationElementCache
     {
-        private readonly IDictionary<AssemblyName, AssemblyReferenceDocumentationElement> _assemblyReferencesCache =
-            new Dictionary<AssemblyName, AssemblyReferenceDocumentationElement>(new AssemblyNameEqualityComparer());
+        private readonly IDictionary<AssemblyName, AssemblyReference> _assemblyReferencesCache =
+            new Dictionary<AssemblyName, AssemblyReference>(new AssemblyNameEqualityComparer());
         private readonly IDictionary<Type, TypeReferenceDocumentationElement> _typeReferencesCache =
             new Dictionary<Type, TypeReferenceDocumentationElement>();
 
-        public AssemblyReferenceDocumentationElement GetFor(AssemblyName assemblyName, Func<AssemblyName, AssemblyReferenceDocumentationElement> factory)
+        public AssemblyReference GetFor(AssemblyName assemblyName, Func<AssemblyName, AssemblyReference> factory)
         {
             if (!_assemblyReferencesCache.TryGetValue(assemblyName, out var assemblyReference))
             {

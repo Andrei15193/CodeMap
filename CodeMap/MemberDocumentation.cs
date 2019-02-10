@@ -10,6 +10,14 @@ namespace CodeMap
     {
         /// <summary>Initializes a new instance of the <see cref="MemberDocumentation"/> class.</summary>
         /// <param name="canonicalName">The canonical name of the documented member.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="canonicalName"/> is <c>null</c>.</exception>
+        public MemberDocumentation(string canonicalName)
+            : this(canonicalName, null, null, null, null, null, null, null, null, null)
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="MemberDocumentation"/> class.</summary>
+        /// <param name="canonicalName">The canonical name of the documented member.</param>
         /// <param name="summary">The summary section.</param>
         /// <param name="genericParameters">The generic parameters documentation.</param>
         /// <param name="parameters">The parameters documentation.</param>
@@ -19,6 +27,7 @@ namespace CodeMap
         /// <param name="examples">The examples sections.</param>
         /// <param name="value">The value section.</param>
         /// <param name="relatedMembers">The related members.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="canonicalName"/> is <c>null</c>.</exception>
         public MemberDocumentation(
             string canonicalName,
             SummaryDocumentationElement summary,

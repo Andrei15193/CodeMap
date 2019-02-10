@@ -212,6 +212,24 @@ namespace CodeMap.Tests
             return structDocumentationElement;
         }
 
+        public static AssemblyDocumentationElement AssertNoDocumentation(this AssemblyDocumentationElement assemblyDocumentationElement)
+        {
+            Assert.Empty(assemblyDocumentationElement.Summary.Content);
+            Assert.Empty(assemblyDocumentationElement.Remarks.Content);
+            Assert.Empty(assemblyDocumentationElement.Examples);
+            Assert.Empty(assemblyDocumentationElement.RelatedMembers);
+            return assemblyDocumentationElement;
+        }
+
+        public static NamespaceDocumentationElement AssertNoDocumentation(this NamespaceDocumentationElement namespaceDocumentationElement)
+        {
+            Assert.Empty(namespaceDocumentationElement.Summary.Content);
+            Assert.Empty(namespaceDocumentationElement.Remarks.Content);
+            Assert.Empty(namespaceDocumentationElement.Examples);
+            Assert.Empty(namespaceDocumentationElement.RelatedMembers);
+            return namespaceDocumentationElement;
+        }
+
         private static void _AssertNoDocumentation(EventDocumentationElement @event)
         {
             Assert.Empty(@event.Summary.Content);
@@ -458,39 +476,39 @@ namespace CodeMap.Tests
 
         public static AttributeData AssertTestAttribute(this AttributeData attributeData, string attributeValuePrefix)
             => attributeData
-                .AssertType(() => attributeData.Type, typeof(TestAttribute))
+                .AssertTypeReference(() => attributeData.Type, typeof(TestAttribute))
                 .AssertCollectionMember(
                     () => attributeData.PositionalParameters,
                     positionalParameter => positionalParameter
                         .AssertEqual(() => positionalParameter.Name, "value1")
                         .AssertEqual(() => positionalParameter.Value, $"{attributeValuePrefix} test 1")
-                        .AssertType(() => positionalParameter.Type, typeof(object))
+                        .AssertTypeReference(() => positionalParameter.Type, typeof(object))
                 )
                 .AssertCollectionMember(
                     () => attributeData.NamedParameters.OrderBy(namedParameter => namedParameter.Name),
                     namedParameter => namedParameter
                         .AssertEqual(() => namedParameter.Name, "Value2")
                         .AssertEqual(() => namedParameter.Value, $"{attributeValuePrefix} test 2")
-                        .AssertType(() => namedParameter.Type, typeof(object)),
+                        .AssertTypeReference(() => namedParameter.Type, typeof(object)),
                     namedParameter => namedParameter
                         .AssertEqual(() => namedParameter.Name, "Value3")
                         .AssertEqual(() => namedParameter.Value, $"{attributeValuePrefix} test 3")
-                        .AssertType(() => namedParameter.Type, typeof(object))
+                        .AssertTypeReference(() => namedParameter.Type, typeof(object))
                 );
 
         public static AttributeData AssertDefaultMemberAttribute(this AttributeData attributeData)
             => attributeData
-                .AssertType(() => attributeData.Type, typeof(DefaultMemberAttribute))
+                .AssertTypeReference(() => attributeData.Type, typeof(DefaultMemberAttribute))
                 .AssertCollectionMember(
                     () => attributeData.PositionalParameters,
                     positionalParameter => positionalParameter
                         .AssertEqual(() => positionalParameter.Name, "memberName")
                         .AssertEqual(() => positionalParameter.Value, "Item")
-                        .AssertType(() => positionalParameter.Type, typeof(string))
+                        .AssertTypeReference(() => positionalParameter.Type, typeof(string))
                 )
                 .AssertEmpty(() => attributeData.NamedParameters);
 
-        public static TTypeReference AssertType<TTypeReference>(this TTypeReference typeReference, Type type)
+        public static TTypeReference AssertTypeReference<TTypeReference>(this TTypeReference typeReference, Type type)
             where TTypeReference : TypeReferenceDocumentationElement
         {
             Assert.True(typeReference == type);
@@ -504,6 +522,20 @@ namespace CodeMap.Tests
             return typeReference;
         }
 
+        public static TTypeDocumentationElement AssertType<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Type type)
+            where TTypeDocumentationElement : TypeDocumentationElement
+        {
+            Assert.True(typeDocumentationElement == type);
+            Assert.True(type == typeDocumentationElement);
+            Assert.False(typeDocumentationElement != type);
+            Assert.False(type != typeDocumentationElement);
+
+            var otherType = type == typeof(object) ? typeof(string) : typeof(object);
+            Assert.True(typeDocumentationElement != otherType);
+            Assert.True(otherType != typeDocumentationElement);
+            return typeDocumentationElement;
+        }
+
         public static FieldDocumentationElement AssertTestField(this FieldDocumentationElement fieldDocumentationElement, TypeDocumentationElement declaringType, string attributeValuePrefix)
             => fieldDocumentationElement
                 .AssertEqual(() => fieldDocumentationElement.Name, "TestField")
@@ -513,7 +545,7 @@ namespace CodeMap.Tests
                 )
                 .AssertEqual(() => fieldDocumentationElement.AccessModifier, AccessModifier.Private)
                 .AssertSame(() => fieldDocumentationElement.DeclaringType, declaringType)
-                .AssertType(() => fieldDocumentationElement.Type, typeof(byte))
+                .AssertTypeReference(() => fieldDocumentationElement.Type, typeof(byte))
                 .AssertFalse(() => fieldDocumentationElement.IsReadOnly)
                 .AssertFalse(() => fieldDocumentationElement.IsStatic)
                 .AssertFalse(() => fieldDocumentationElement.IsShadowing);
@@ -524,7 +556,7 @@ namespace CodeMap.Tests
                 .AssertEmpty(() => field.Attributes)
                 .AssertEqual(() => field.AccessModifier, AccessModifier.Private)
                 .AssertSame(() => field.DeclaringType, declaringType)
-                .AssertType(() => field.Type, typeof(char))
+                .AssertTypeReference(() => field.Type, typeof(char))
                 .AssertTrue(() => field.IsReadOnly)
                 .AssertFalse(() => field.IsStatic)
                 .AssertFalse(() => field.IsShadowing);
@@ -535,7 +567,7 @@ namespace CodeMap.Tests
                 .AssertEmpty(() => field.Attributes)
                 .AssertEqual(() => field.AccessModifier, AccessModifier.Family)
                 .AssertSame(() => field.DeclaringType, declaringType)
-                .AssertType(() => field.Type, typeof(int))
+                .AssertTypeReference(() => field.Type, typeof(int))
                 .AssertFalse(() => field.IsReadOnly)
                 .AssertFalse(() => field.IsStatic)
                 .AssertTrue(() => field.IsShadowing);
@@ -546,7 +578,7 @@ namespace CodeMap.Tests
                 .AssertEmpty(() => field.Attributes)
                 .AssertEqual(() => field.AccessModifier, AccessModifier.Private)
                 .AssertSame(() => field.DeclaringType, declaringType)
-                .AssertType(() => field.Type, typeof(string))
+                .AssertTypeReference(() => field.Type, typeof(string))
                 .AssertFalse(() => field.IsReadOnly)
                 .AssertTrue(() => field.IsStatic)
                 .AssertFalse(() => field.IsShadowing);
@@ -560,7 +592,7 @@ namespace CodeMap.Tests
                     eventDocumentationElement =>
                     {
                         eventDocumentationElement
-                            .AssertType(() => eventDocumentationElement.Type, typeof(EventHandler<EventArgs>))
+                            .AssertTypeReference(() => eventDocumentationElement.Type, typeof(EventHandler<EventArgs>))
                             .AssertEqual(() => eventDocumentationElement.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => eventDocumentationElement.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => eventDocumentationElement.IsStatic)
@@ -603,7 +635,7 @@ namespace CodeMap.Tests
                     eventDocumentationElement =>
                     {
                         eventDocumentationElement
-                            .AssertType(() => eventDocumentationElement.Type, typeof(EventHandler))
+                            .AssertTypeReference(() => eventDocumentationElement.Type, typeof(EventHandler))
                             .AssertEqual(() => eventDocumentationElement.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => eventDocumentationElement.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => eventDocumentationElement.IsStatic)
@@ -627,7 +659,7 @@ namespace CodeMap.Tests
                     eventDocumentationElement =>
                     {
                         eventDocumentationElement
-                            .AssertType(() => eventDocumentationElement.Type, typeof(EventHandler))
+                            .AssertTypeReference(() => eventDocumentationElement.Type, typeof(EventHandler))
                             .AssertEqual(() => eventDocumentationElement.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => eventDocumentationElement.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => eventDocumentationElement.IsStatic)
@@ -651,7 +683,7 @@ namespace CodeMap.Tests
                     eventDocumentationElement =>
                     {
                         eventDocumentationElement
-                            .AssertType(() => eventDocumentationElement.Type, typeof(EventHandler))
+                            .AssertTypeReference(() => eventDocumentationElement.Type, typeof(EventHandler))
                             .AssertEqual(() => eventDocumentationElement.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => eventDocumentationElement.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => eventDocumentationElement.IsStatic)
@@ -675,7 +707,7 @@ namespace CodeMap.Tests
                     eventDocumentationElement =>
                     {
                         eventDocumentationElement
-                            .AssertType(() => eventDocumentationElement.Type, typeof(EventHandler))
+                            .AssertTypeReference(() => eventDocumentationElement.Type, typeof(EventHandler))
                             .AssertEqual(() => eventDocumentationElement.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => eventDocumentationElement.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => eventDocumentationElement.IsStatic)
@@ -699,7 +731,7 @@ namespace CodeMap.Tests
                     eventDocumentationElement =>
                     {
                         eventDocumentationElement
-                            .AssertType(() => eventDocumentationElement.Type, typeof(EventHandler))
+                            .AssertTypeReference(() => eventDocumentationElement.Type, typeof(EventHandler))
                             .AssertEqual(() => eventDocumentationElement.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => eventDocumentationElement.DeclaringType, typeDocumentationElement)
                             .AssertTrue(() => eventDocumentationElement.IsStatic)
@@ -723,7 +755,7 @@ namespace CodeMap.Tests
                     eventDocumentationElement =>
                     {
                         eventDocumentationElement
-                            .AssertType(() => eventDocumentationElement.Type, typeof(EventHandler))
+                            .AssertTypeReference(() => eventDocumentationElement.Type, typeof(EventHandler))
                             .AssertEqual(() => eventDocumentationElement.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => eventDocumentationElement.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => eventDocumentationElement.IsStatic)
@@ -747,7 +779,7 @@ namespace CodeMap.Tests
                     property =>
                     {
                         property
-                            .AssertType(() => property.Type, typeof(byte))
+                            .AssertTypeReference(() => property.Type, typeof(byte))
                             .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
                             .AssertEqual(() => property.Getter.AccessModifier, AccessModifier.Public)
                             .AssertEqual(() => property.Setter.AccessModifier, AccessModifier.Public)
@@ -788,7 +820,7 @@ namespace CodeMap.Tests
                     () => selector().Where(property => property.Name == "Item"),
                     property =>
                         property
-                            .AssertType(() => property.Type, typeof(int))
+                            .AssertTypeReference(() => property.Type, typeof(int))
                             .AssertCollectionMember(
                                 () => property.Attributes,
                                 attribute => attribute.AssertTestAttribute(attributeValuePrefix)
@@ -823,7 +855,7 @@ namespace CodeMap.Tests
                                 () => property.Parameters,
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param1")
-                                    .AssertType(() => parameter.Type, typeof(int))
+                                    .AssertTypeReference(() => parameter.Type, typeof(int))
                                     .AssertCollectionMember(
                                         () => parameter.Attributes,
                                         attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} parameter")
@@ -835,7 +867,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param2")
-                                    .AssertType(() => parameter.Type, typeof(byte[]))
+                                    .AssertTypeReference(() => parameter.Type, typeof(byte[]))
                                     .AssertEmpty(() => parameter.Attributes)
                                     .AssertFalse(() => parameter.IsInputByReference)
                                     .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -844,7 +876,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param3")
-                                    .AssertType(() => parameter.Type, typeof(char[][]))
+                                    .AssertTypeReference(() => parameter.Type, typeof(char[][]))
                                     .AssertEmpty(() => parameter.Attributes)
                                     .AssertFalse(() => parameter.IsInputByReference)
                                     .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -853,7 +885,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param4")
-                                    .AssertType(() => parameter.Type, typeof(double[,]))
+                                    .AssertTypeReference(() => parameter.Type, typeof(double[,]))
                                     .AssertEmpty(() => parameter.Attributes)
                                     .AssertFalse(() => parameter.IsInputByReference)
                                     .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -862,7 +894,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param5")
-                                    .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
+                                    .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
                                     .AssertEmpty(() => parameter.Attributes)
                                     .AssertFalse(() => parameter.IsInputByReference)
                                     .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -871,7 +903,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param6")
-                                    .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
+                                    .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
                                     .AssertEmpty(() => parameter.Attributes)
                                     .AssertFalse(() => parameter.IsInputByReference)
                                     .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -892,7 +924,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param8")
-                                    .AssertType(() => parameter.Type, typeof(int*))
+                                    .AssertTypeReference(() => parameter.Type, typeof(int*))
                                     .AssertEmpty(() => parameter.Attributes)
                                     .AssertFalse(() => parameter.IsInputByReference)
                                     .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -901,7 +933,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param9")
-                                    .AssertType(() => parameter.Type, typeof(byte*[]))
+                                    .AssertTypeReference(() => parameter.Type, typeof(byte*[]))
                                     .AssertEmpty(() => parameter.Attributes)
                                     .AssertFalse(() => parameter.IsInputByReference)
                                     .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -910,7 +942,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param10")
-                                    .AssertType(() => parameter.Type, typeof(void*))
+                                    .AssertTypeReference(() => parameter.Type, typeof(void*))
                                     .AssertEmpty(() => parameter.Attributes)
                                     .AssertFalse(() => parameter.IsInputByReference)
                                     .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -919,7 +951,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param11")
-                                    .AssertType(() => parameter.Type, typeof(void**))
+                                    .AssertTypeReference(() => parameter.Type, typeof(void**))
                                     .AssertEmpty(() => parameter.Attributes)
                                     .AssertFalse(() => parameter.IsInputByReference)
                                     .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -928,7 +960,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param12")
-                                    .AssertType(() => parameter.Type, typeof(void**[]))
+                                    .AssertTypeReference(() => parameter.Type, typeof(void**[]))
                                     .AssertEmpty(() => parameter.Attributes)
                                     .AssertFalse(() => parameter.IsInputByReference)
                                     .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -937,7 +969,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param13")
-                                    .AssertType(() => parameter.Type, typeGenericParameter)
+                                    .AssertTypeReference(() => parameter.Type, typeGenericParameter)
                                     .AssertEmpty(() => parameter.Attributes)
                                     .AssertFalse(() => parameter.IsInputByReference)
                                     .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -946,7 +978,7 @@ namespace CodeMap.Tests
                                     .AssertNull(() => parameter.DefaultValue),
                                 parameter => parameter
                                     .AssertEqual(() => parameter.Name, "param14")
-                                    .AssertType(() => parameter.Type, typeof(string))
+                                    .AssertTypeReference(() => parameter.Type, typeof(string))
                                     .AssertCollectionMember(
                                         () => parameter.Attributes,
                                         attribute => attribute.AssertOptionalParameterAttribute()
@@ -971,7 +1003,7 @@ namespace CodeMap.Tests
                     property =>
                     {
                         property
-                            .AssertType(() => property.Type, typeof(byte))
+                            .AssertTypeReference(() => property.Type, typeof(byte))
                             .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => property.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => property.IsStatic)
@@ -995,7 +1027,7 @@ namespace CodeMap.Tests
                     property =>
                     {
                         property
-                            .AssertType(() => property.Type, typeof(string))
+                            .AssertTypeReference(() => property.Type, typeof(string))
                             .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => property.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => property.IsStatic)
@@ -1019,7 +1051,7 @@ namespace CodeMap.Tests
                     property =>
                     {
                         property
-                            .AssertType(() => property.Type, typeof(byte))
+                            .AssertTypeReference(() => property.Type, typeof(byte))
                             .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => property.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => property.IsStatic)
@@ -1043,7 +1075,7 @@ namespace CodeMap.Tests
                     property =>
                     {
                         property
-                            .AssertType(() => property.Type, typeof(string))
+                            .AssertTypeReference(() => property.Type, typeof(string))
                             .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => property.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => property.IsStatic)
@@ -1067,7 +1099,7 @@ namespace CodeMap.Tests
                     property =>
                     {
                         property
-                            .AssertType(() => property.Type, typeof(int))
+                            .AssertTypeReference(() => property.Type, typeof(int))
                             .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => property.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => property.IsStatic)
@@ -1091,7 +1123,7 @@ namespace CodeMap.Tests
                     property =>
                     {
                         property
-                            .AssertType(() => property.Type, typeof(int))
+                            .AssertTypeReference(() => property.Type, typeof(int))
                             .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => property.DeclaringType, typeDocumentationElement)
                             .AssertTrue(() => property.IsStatic)
@@ -1106,20 +1138,61 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TInstance AssertType<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector, Type type)
+        public static TInstance AssertTypeReference<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector, Type type)
         {
-            selector().AssertType(type);
+            selector().AssertTypeReference(type);
             return instance;
+        }
+
+        public static TInstance AssertAssembly<TInstance>(this TInstance instance, Func<AssemblyDocumentationElement> selector, Assembly assembly)
+        {
+            var assemblyDocumentationElement = selector();
+            var coreAssembly = typeof(object).Assembly;
+
+            Assert.True(assemblyDocumentationElement == assembly);
+            Assert.True(assembly == assemblyDocumentationElement);
+            Assert.False(assemblyDocumentationElement != assembly);
+            Assert.False(assembly != assemblyDocumentationElement);
+
+            Assert.True(assemblyDocumentationElement != coreAssembly);
+            Assert.True(coreAssembly != assemblyDocumentationElement);
+
+            var assemblyName = assembly.GetName();
+            var coreAssemblyName = coreAssembly.GetName();
+            Assert.True(assemblyDocumentationElement == assemblyName);
+            Assert.True(assemblyName == assemblyDocumentationElement);
+            Assert.False(assemblyDocumentationElement != assemblyName);
+            Assert.False(assemblyName != assemblyDocumentationElement);
+            
+            Assert.True(assemblyDocumentationElement != coreAssemblyName);
+            Assert.True(coreAssemblyName != assemblyDocumentationElement);
+
+            return instance;
+        }
+
+        public static AssemblyName AssertAssemblyReference(this AssemblyName assemblyName, AssemblyReference assemblyReference)
+        {
+            var coreAssemblyName = typeof(object).Assembly.GetName();
+
+            Assert.True(assemblyReference == assemblyName);
+            Assert.True(assemblyReference == assemblyName);
+            Assert.False(assemblyName != assemblyReference);
+            Assert.False(assemblyName != assemblyReference);
+
+            Assert.True(assemblyReference != coreAssemblyName);
+            Assert.True(coreAssemblyName != assemblyReference);
+
+            return assemblyName;
         }
 
         public static TInstance AssertDynamicType<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector)
             => instance
-                .AssertType(selector, typeof(object))
+                .AssertTypeReference(selector, typeof(object))
                 .AssertMember(selector, type => type.AssertIs<DynamicTypeReferenceDocumentationElement>());
 
         public static AttributeData AssertDynamicTypeAttribute(this AttributeData attribute, bool[] transformFlags = null)
             => attribute
-                .AssertType(() => attribute.Type, typeof(DynamicAttribute))
+                .AssertTypeReference(() => attribute.Type, typeof(DynamicAttribute))
                 .AssertMember(
                     () => attribute.PositionalParameters,
                     positionalParameters =>
@@ -1132,7 +1205,7 @@ namespace CodeMap.Tests
                                 positionalParameter =>
                                     positionalParameter
                                         .AssertEqual(() => positionalParameter.Name, "transformFlags")
-                                        .AssertType(() => positionalParameter.Type, typeof(bool[]))
+                                        .AssertTypeReference(() => positionalParameter.Type, typeof(bool[]))
                                         .AssertEqual(() => positionalParameter.Value, transformFlags)
                             );
                     }
@@ -1141,13 +1214,13 @@ namespace CodeMap.Tests
 
         public static AttributeData AssertOutputParameterAttribute(this AttributeData attributeData)
             => attributeData
-                .AssertType(() => attributeData.Type, typeof(OutAttribute))
+                .AssertTypeReference(() => attributeData.Type, typeof(OutAttribute))
                 .AssertEmpty(() => attributeData.PositionalParameters)
                 .AssertEmpty(() => attributeData.NamedParameters);
 
         public static AttributeData AssertOptionalParameterAttribute(this AttributeData attributeData)
             => attributeData
-                .AssertType(() => attributeData.Type, typeof(OptionalAttribute))
+                .AssertTypeReference(() => attributeData.Type, typeof(OptionalAttribute))
                 .AssertEmpty(() => attributeData.PositionalParameters)
                 .AssertEmpty(() => attributeData.NamedParameters);
 
@@ -1178,7 +1251,7 @@ namespace CodeMap.Tests
                             () => delegateDocumentationElement.Attributes,
                             attribute => attribute.AssertTestAttribute($"delegate")
                         )
-                        .AssertType(() => parameter.Type, typeof(int))
+                        .AssertTypeReference(() => parameter.Type, typeof(int))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1187,7 +1260,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param2")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(byte[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(byte[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1196,7 +1269,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param3")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(char[][]))
+                        .AssertTypeReference(() => parameter.Type, typeof(char[][]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1205,7 +1278,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param4")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(double[,]))
+                        .AssertTypeReference(() => parameter.Type, typeof(double[,]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1214,7 +1287,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param5")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(int))
+                        .AssertTypeReference(() => parameter.Type, typeof(int))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1223,7 +1296,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param6")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(byte[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(byte[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1232,7 +1305,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param7")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(char[][]))
+                        .AssertTypeReference(() => parameter.Type, typeof(char[][]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1241,7 +1314,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param8")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(double[,]))
+                        .AssertTypeReference(() => parameter.Type, typeof(double[,]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1253,7 +1326,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(int))
+                        .AssertTypeReference(() => parameter.Type, typeof(int))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1265,7 +1338,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(byte[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(byte[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1277,7 +1350,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(char[][]))
+                        .AssertTypeReference(() => parameter.Type, typeof(char[][]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1289,7 +1362,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(double[,]))
+                        .AssertTypeReference(() => parameter.Type, typeof(double[,]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1298,7 +1371,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param13")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1307,7 +1380,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param14")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1316,7 +1389,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param15")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1328,7 +1401,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1337,7 +1410,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param17")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1349,7 +1422,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1395,7 +1468,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param22")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, genericParameter)
+                        .AssertTypeReference(() => parameter.Type, genericParameter)
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1404,7 +1477,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param23")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, genericParameter)
+                        .AssertTypeReference(() => parameter.Type, genericParameter)
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1416,7 +1489,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, genericParameter)
+                        .AssertTypeReference(() => parameter.Type, genericParameter)
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1425,7 +1498,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param25")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(int*))
+                        .AssertTypeReference(() => parameter.Type, typeof(int*))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1434,7 +1507,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param26")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(byte*[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(byte*[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1443,7 +1516,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param27")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(char*))
+                        .AssertTypeReference(() => parameter.Type, typeof(char*))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1455,7 +1528,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(double*))
+                        .AssertTypeReference(() => parameter.Type, typeof(double*))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1464,7 +1537,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param29")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(decimal*[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(decimal*[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1476,7 +1549,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(short*[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(short*[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1485,7 +1558,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param31")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(void*))
+                        .AssertTypeReference(() => parameter.Type, typeof(void*))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1494,7 +1567,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param32")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(void**))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1503,7 +1576,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param33")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(void**))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1515,7 +1588,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(void**))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1524,7 +1597,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param35")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(void**[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1533,7 +1606,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param36")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(void**[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1545,7 +1618,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(void**[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1557,7 +1630,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOptionalParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(string))
+                        .AssertTypeReference(() => parameter.Type, typeof(string))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1588,7 +1661,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} parameter")
                         )
-                        .AssertType(() => parameter.Type, typeof(int))
+                        .AssertTypeReference(() => parameter.Type, typeof(int))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1597,7 +1670,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param2")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(byte[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(byte[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1606,7 +1679,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param3")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(char[][]))
+                        .AssertTypeReference(() => parameter.Type, typeof(char[][]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1615,7 +1688,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param4")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(double[,]))
+                        .AssertTypeReference(() => parameter.Type, typeof(double[,]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1624,7 +1697,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param5")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(int))
+                        .AssertTypeReference(() => parameter.Type, typeof(int))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1633,7 +1706,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param6")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(byte[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(byte[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1642,7 +1715,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param7")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(char[][]))
+                        .AssertTypeReference(() => parameter.Type, typeof(char[][]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1651,7 +1724,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param8")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(double[,]))
+                        .AssertTypeReference(() => parameter.Type, typeof(double[,]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1663,7 +1736,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(int))
+                        .AssertTypeReference(() => parameter.Type, typeof(int))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1675,7 +1748,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(byte[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(byte[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1687,7 +1760,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(char[][]))
+                        .AssertTypeReference(() => parameter.Type, typeof(char[][]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1699,7 +1772,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(double[,]))
+                        .AssertTypeReference(() => parameter.Type, typeof(double[,]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1708,7 +1781,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param13")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1717,7 +1790,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param14")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1726,7 +1799,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param15")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1738,7 +1811,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1747,7 +1820,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param17")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1759,7 +1832,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1805,7 +1878,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param22")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeGenericParameter)
+                        .AssertTypeReference(() => parameter.Type, typeGenericParameter)
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1814,7 +1887,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param23")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeGenericParameter)
+                        .AssertTypeReference(() => parameter.Type, typeGenericParameter)
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1826,7 +1899,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeGenericParameter)
+                        .AssertTypeReference(() => parameter.Type, typeGenericParameter)
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1835,7 +1908,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param25")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(int*))
+                        .AssertTypeReference(() => parameter.Type, typeof(int*))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1844,7 +1917,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param26")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(byte*[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(byte*[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1853,7 +1926,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param27")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(char*))
+                        .AssertTypeReference(() => parameter.Type, typeof(char*))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1865,7 +1938,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(double*))
+                        .AssertTypeReference(() => parameter.Type, typeof(double*))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1874,7 +1947,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param29")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(decimal*[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(decimal*[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1886,7 +1959,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(short*[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(short*[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1895,7 +1968,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param31")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(void*))
+                        .AssertTypeReference(() => parameter.Type, typeof(void*))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1904,7 +1977,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param32")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(void**))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1913,7 +1986,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param33")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(void**))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1925,7 +1998,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(void**))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1934,7 +2007,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param35")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(void**[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1943,7 +2016,7 @@ namespace CodeMap.Tests
                     parameter => parameter
                         .AssertEqual(() => parameter.Name, "param36")
                         .AssertEmpty(() => parameter.Attributes)
-                        .AssertType(() => parameter.Type, typeof(void**[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertTrue(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1955,7 +2028,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOutputParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(void**[]))
+                        .AssertTypeReference(() => parameter.Type, typeof(void**[]))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertTrue(() => parameter.IsOutputByReference)
@@ -1967,7 +2040,7 @@ namespace CodeMap.Tests
                             () => parameter.Attributes,
                             attribute => attribute.AssertOptionalParameterAttribute()
                         )
-                        .AssertType(() => parameter.Type, typeof(string))
+                        .AssertTypeReference(() => parameter.Type, typeof(string))
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
                         .AssertFalse(() => parameter.IsOutputByReference)
@@ -1992,7 +2065,7 @@ namespace CodeMap.Tests
                         .AssertMember(
                             () => method.Return.Type,
                             returnType => returnType
-                                .AssertType(typeof(void))
+                                .AssertTypeReference(typeof(void))
                                 .AssertIs<VoidTypeReferenceDocumentationElement>()
                         )
                         .AssertCollectionMember(
@@ -2017,7 +2090,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} parameter")
                                 )
-                                .AssertType(() => parameter.Type, typeof(int))
+                                .AssertTypeReference(() => parameter.Type, typeof(int))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2026,7 +2099,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param2")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(byte[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(byte[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2035,7 +2108,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param3")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(char[][]))
+                                .AssertTypeReference(() => parameter.Type, typeof(char[][]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2044,7 +2117,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param4")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(double[,]))
+                                .AssertTypeReference(() => parameter.Type, typeof(double[,]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2053,7 +2126,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param5")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(int))
+                                .AssertTypeReference(() => parameter.Type, typeof(int))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2062,7 +2135,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param6")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(byte[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(byte[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2071,7 +2144,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param7")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(char[][]))
+                                .AssertTypeReference(() => parameter.Type, typeof(char[][]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2080,7 +2153,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param8")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(double[,]))
+                                .AssertTypeReference(() => parameter.Type, typeof(double[,]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2092,7 +2165,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeof(int))
+                                .AssertTypeReference(() => parameter.Type, typeof(int))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2104,7 +2177,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeof(byte[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(byte[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2116,7 +2189,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeof(char[][]))
+                                .AssertTypeReference(() => parameter.Type, typeof(char[][]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2128,7 +2201,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeof(double[,]))
+                                .AssertTypeReference(() => parameter.Type, typeof(double[,]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2137,7 +2210,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param13")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                                .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2146,7 +2219,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param14")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2155,7 +2228,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param15")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                                .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2167,7 +2240,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>))
+                                .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2176,7 +2249,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param17")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2188,7 +2261,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte, IEnumerable<string>>[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(TestClass<int>.NestedTestClass<byte[], IEnumerable<string>>[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2234,7 +2307,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param22")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeGenericParameter)
+                                .AssertTypeReference(() => parameter.Type, typeGenericParameter)
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2243,7 +2316,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param23")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeGenericParameter)
+                                .AssertTypeReference(() => parameter.Type, typeGenericParameter)
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2255,7 +2328,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeGenericParameter)
+                                .AssertTypeReference(() => parameter.Type, typeGenericParameter)
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2264,7 +2337,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param25")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(int*))
+                                .AssertTypeReference(() => parameter.Type, typeof(int*))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2273,7 +2346,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param26")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(byte*[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(byte*[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2282,7 +2355,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param27")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(char*))
+                                .AssertTypeReference(() => parameter.Type, typeof(char*))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2294,7 +2367,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeof(double*))
+                                .AssertTypeReference(() => parameter.Type, typeof(double*))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2303,7 +2376,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param29")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(decimal*[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(decimal*[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2315,7 +2388,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeof(short*[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(short*[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2324,7 +2397,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param31")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(void*))
+                                .AssertTypeReference(() => parameter.Type, typeof(void*))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2333,7 +2406,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param32")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(void**))
+                                .AssertTypeReference(() => parameter.Type, typeof(void**))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2342,7 +2415,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param33")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(void**))
+                                .AssertTypeReference(() => parameter.Type, typeof(void**))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2354,7 +2427,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeof(void**))
+                                .AssertTypeReference(() => parameter.Type, typeof(void**))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2363,7 +2436,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param35")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(void**[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(void**[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2372,7 +2445,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param36")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, typeof(void**[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(void**[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2384,7 +2457,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeof(void**[]))
+                                .AssertTypeReference(() => parameter.Type, typeof(void**[]))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2393,7 +2466,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param38")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, methodGenericParameter)
+                                .AssertTypeReference(() => parameter.Type, methodGenericParameter)
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2402,7 +2475,7 @@ namespace CodeMap.Tests
                             parameter => parameter
                                 .AssertEqual(() => parameter.Name, "param39")
                                 .AssertEmpty(() => parameter.Attributes)
-                                .AssertType(() => parameter.Type, methodGenericParameter)
+                                .AssertTypeReference(() => parameter.Type, methodGenericParameter)
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertTrue(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2414,7 +2487,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOutputParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, methodGenericParameter)
+                                .AssertTypeReference(() => parameter.Type, methodGenericParameter)
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertTrue(() => parameter.IsOutputByReference)
@@ -2426,7 +2499,7 @@ namespace CodeMap.Tests
                                     () => parameter.Attributes,
                                     attribute => attribute.AssertOptionalParameterAttribute()
                                 )
-                                .AssertType(() => parameter.Type, typeof(string))
+                                .AssertTypeReference(() => parameter.Type, typeof(string))
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
                                 .AssertFalse(() => parameter.IsOutputByReference)
@@ -2446,7 +2519,7 @@ namespace CodeMap.Tests
                         method
                             .AssertEmpty(() => method.GenericParameters)
                             .AssertEmpty(() => method.Parameters)
-                            .AssertType(() => method.Return.Type, typeof(string))
+                            .AssertTypeReference(() => method.Return.Type, typeof(string))
                             .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => method.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => method.IsStatic)
@@ -2472,7 +2545,7 @@ namespace CodeMap.Tests
                         method
                             .AssertEmpty(() => method.GenericParameters)
                             .AssertEmpty(() => method.Parameters)
-                            .AssertType(() => method.Return.Type, typeof(bool))
+                            .AssertTypeReference(() => method.Return.Type, typeof(bool))
                             .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => method.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => method.IsStatic)
@@ -2498,7 +2571,7 @@ namespace CodeMap.Tests
                         method
                             .AssertEmpty(() => method.GenericParameters)
                             .AssertEmpty(() => method.Parameters)
-                            .AssertType(() => method.Return.Type, typeof(string))
+                            .AssertTypeReference(() => method.Return.Type, typeof(string))
                             .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => method.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => method.IsStatic)
@@ -2524,7 +2597,7 @@ namespace CodeMap.Tests
                         method
                             .AssertEmpty(() => method.GenericParameters)
                             .AssertEmpty(() => method.Parameters)
-                            .AssertType(() => method.Return.Type, typeof(bool))
+                            .AssertTypeReference(() => method.Return.Type, typeof(bool))
                             .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => method.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => method.IsStatic)
@@ -2550,7 +2623,7 @@ namespace CodeMap.Tests
                         method
                             .AssertEmpty(() => method.GenericParameters)
                             .AssertEmpty(() => method.Parameters)
-                            .AssertType(() => method.Return.Type, typeof(int))
+                            .AssertTypeReference(() => method.Return.Type, typeof(int))
                             .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => method.DeclaringType, typeDocumentationElement)
                             .AssertFalse(() => method.IsStatic)
@@ -2576,7 +2649,7 @@ namespace CodeMap.Tests
                         method
                             .AssertEmpty(() => method.GenericParameters)
                             .AssertEmpty(() => method.Parameters)
-                            .AssertType(() => method.Return.Type, typeof(void))
+                            .AssertTypeReference(() => method.Return.Type, typeof(void))
                             .AssertEqual(() => method.AccessModifier, AccessModifier.Public)
                             .AssertSame(() => method.DeclaringType, typeDocumentationElement)
                             .AssertTrue(() => method.IsStatic)
