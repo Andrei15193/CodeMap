@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using CodeMap.Elements;
 using Moq;
 
-namespace CodeMap.ElementsTests
+namespace CodeMap.Tests
 {
     internal static class Extensions
     {

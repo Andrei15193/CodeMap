@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using CodeMap.Elements;
 
-namespace CodeMap.ElementsTests
+namespace CodeMap.Tests
 {
     public class DocumentationVisitorAdapter : DocumentationVisitor
     {

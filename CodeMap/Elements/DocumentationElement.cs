@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -272,6 +273,102 @@ namespace CodeMap.Elements
         /// <returns>Returns a <see cref="GenericParameterReferenceDocumentationElement"/> with the provided <paramref name="genericParameterName"/>.</returns>
         public static GenericParameterReferenceDocumentationElement GenericParameterReference(string genericParameterName)
             => new GenericParameterReferenceDocumentationElement(genericParameterName);
+
+        /// <summary>Creates an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDocumentationElement"/>.</param>
+        /// <returns>Returns an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
+        public static AssemblyDocumentationElement Create(Assembly assembly)
+            => Create(assembly, new MemberDocumentationCollection(Enumerable.Empty<MemberDocumentation>()));
+
+        /// <summary>Creates an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDocumentationElement"/>.</param>
+        /// <param name="membersDocumentation">
+        /// A <see cref="MemberDocumentationCollection"/> containing written documentation to associated to
+        /// <see cref="DocumentationElement"/>s representing assembly member declarations.
+        /// </param>
+        /// <returns>Returns an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> or <paramref name="membersDocumentation"/> are <c>null</c>.</exception>
+        public static AssemblyDocumentationElement Create(Assembly assembly, MemberDocumentationCollection membersDocumentation)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly));
+            if (membersDocumentation == null)
+                throw new ArgumentNullException(nameof(membersDocumentation));
+
+            return new AssemblyDocumentationElementFactory(
+                    new CanonicalNameResolver(new[] { assembly }.Concat(assembly.GetReferencedAssemblies().Select(Assembly.Load))),
+                    membersDocumentation
+                )
+                .Create(assembly);
+        }
+
+        /// <summary>Creates a <see cref="TypeDocumentationElement"/> from the provided <paramref name="type"/>.</summary>
+        /// <param name="type">The <see cref="Type"/> from which to create a <see cref="TypeDocumentationElement"/>.</param>
+        /// <returns>Returns a <see cref="TypeDocumentationElement"/> from the provided <paramref name="type"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="type"/> is <c>null</c>.</exception>
+        /// <remarks>
+        /// This method creates the entire <see cref="AssemblyDocumentationElement"/> and returns the <see cref="TypeDocumentationElement"/>
+        /// for the provided <paramref name="type"/>.
+        /// </remarks>
+        public static TypeDocumentationElement Create(Type type)
+            => Create(type, new MemberDocumentationCollection(Enumerable.Empty<MemberDocumentation>()));
+
+        /// <summary>Creates a <see cref="TypeDocumentationElement"/> from the provided <paramref name="type"/>.</summary>
+        /// <param name="type">The <see cref="Type"/> from which to create a <see cref="TypeDocumentationElement"/>.</param>
+        /// <param name="membersDocumentation">
+        /// A <see cref="MemberDocumentationCollection"/> containing written documentation to associated to
+        /// <see cref="DocumentationElement"/>s representing assembly member declarations.
+        /// </param>
+        /// <returns>Returns a <see cref="TypeDocumentationElement"/> from the provided <paramref name="type"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="type"/> or <paramref name="membersDocumentation"/> are <c>null</c>.</exception>
+        /// <remarks>
+        /// This method creates the entire <see cref="AssemblyDocumentationElement"/> and returns the <see cref="TypeDocumentationElement"/>
+        /// for the provided <paramref name="type"/>.
+        /// </remarks>
+        public static TypeDocumentationElement Create(Type type, MemberDocumentationCollection membersDocumentation)
+        {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+            if (membersDocumentation == null)
+                throw new ArgumentNullException(nameof(membersDocumentation));
+
+            return Create(type.Assembly, membersDocumentation)
+                .Namespaces
+                .Where(@namespace => string.Equals(@namespace.Name, type.Namespace, StringComparison.OrdinalIgnoreCase))
+                .SelectMany(
+                    @namespace => @namespace
+                        .Enums
+                        .AsEnumerable<TypeDocumentationElement>()
+                        .Concat(@namespace.Delegates)
+                        .Concat(@namespace.Interfaces)
+                        .Concat(@namespace.Classes.SelectMany(_GetWithNested))
+                        .Concat(@namespace.Structs.SelectMany(_GetWithNested))
+                )
+                .FirstOrDefault(typeDocumentationElement => typeDocumentationElement == type);
+        }
+
+        private static IEnumerable<TypeDocumentationElement> _GetWithNested(ClassDocumentationElement classDocumentationElement)
+            => new[] { classDocumentationElement }
+                .Concat(classDocumentationElement
+                    .NestedEnums
+                    .AsEnumerable<TypeDocumentationElement>()
+                    .Concat(classDocumentationElement.NestedDelegates)
+                    .Concat(classDocumentationElement.NestedInterfaces)
+                    .Concat(classDocumentationElement.NestedClasses.SelectMany(_GetWithNested))
+                    .Concat(classDocumentationElement.NestedStructs.SelectMany(_GetWithNested))
+                );
+
+        private static IEnumerable<TypeDocumentationElement> _GetWithNested(StructDocumentationElement structDocumentationElement)
+            => new[] { structDocumentationElement }
+                .Concat(structDocumentationElement
+                    .NestedEnums
+                    .AsEnumerable<TypeDocumentationElement>()
+                    .Concat(structDocumentationElement.NestedDelegates)
+                    .Concat(structDocumentationElement.NestedInterfaces)
+                    .Concat(structDocumentationElement.NestedClasses.SelectMany(_GetWithNested))
+                    .Concat(structDocumentationElement.NestedStructs.SelectMany(_GetWithNested))
+                );
 
         internal DocumentationElement()
         {

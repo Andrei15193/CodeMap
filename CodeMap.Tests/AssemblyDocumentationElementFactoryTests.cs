@@ -16,9 +16,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateEnumDocumentationElement()
         {
-            var factory = new AssemblyDocumentationElementFactory();
-
-            var typeDocumentationElement = factory.Create(typeof(TestEnum));
+            var typeDocumentationElement = DocumentationElement.Create(typeof(TestEnum));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestEnum")
@@ -75,19 +73,17 @@ namespace CodeMap.Tests
             var enumMember1Documentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestEnum.TestMember1");
             var enumMember2Documentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestEnum.TestMember2");
             var enumMember3Documentation = _CreateMemberDocumentationMock("F:CodeMap.Tests.Data.TestEnum.TestMember3");
-            var factory = new AssemblyDocumentationElementFactory(
-                new MemberDocumentationCollection(
-                    new[]
-                    {
-                        enumDocumentation,
-                        enumMember1Documentation,
-                        enumMember2Documentation,
-                        enumMember3Documentation
-                    }
-                )
+            var membersDocumentation = new MemberDocumentationCollection(
+                new[]
+                {
+                    enumDocumentation,
+                    enumMember1Documentation,
+                    enumMember2Documentation,
+                    enumMember3Documentation
+                }
             );
 
-            var typeDocumentationElement = factory.Create(typeof(TestEnum));
+            var typeDocumentationElement = DocumentationElement.Create(typeof(TestEnum), membersDocumentation);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestEnum")
@@ -112,11 +108,9 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateDelegateDocumentationElement()
         {
-            var _factory = new AssemblyDocumentationElementFactory();
-
             var delegateType = typeof(TestDelegate<>);
             var genericParameterType = delegateType.GetGenericArguments().Single();
-            var typeDocumentationElement = _factory.Create(delegateType);
+            var typeDocumentationElement = DocumentationElement.Create(delegateType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestDelegate")
@@ -150,17 +144,15 @@ namespace CodeMap.Tests
         public void CreateDelegateDocumentationElementDocumentation()
         {
             var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.TestDelegate`1");
-            var _factory = new AssemblyDocumentationElementFactory(
-                new MemberDocumentationCollection(
-                    new[]
-                    {
+            var membersDocumentation = new MemberDocumentationCollection(
+                new[]
+                {
                         memberDocumentation
-                    }
-                )
+                }
             );
-
+            
             var delegateType = typeof(TestDelegate<>);
-            var typeDocumentationElement = _factory.Create(delegateType);
+            var typeDocumentationElement = DocumentationElement.Create(delegateType, membersDocumentation);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestDelegate")
@@ -174,9 +166,8 @@ namespace CodeMap.Tests
             var interfaceType = typeof(ITestInterface<>);
             var typeGenericParameter = interfaceType.GetGenericArguments().Single();
             var methodGenericParameter = interfaceType.GetMethod("TestMethod").GetGenericArguments().Single();
-            var factory = new AssemblyDocumentationElementFactory();
 
-            var typeDocumentationElement = factory.Create(interfaceType);
+            var typeDocumentationElement = DocumentationElement.Create(interfaceType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
@@ -219,23 +210,21 @@ namespace CodeMap.Tests
             var testPropertyMemberDocumentation = _CreateMemberDocumentationMock("P:CodeMap.Tests.Data.ITestInterface`1.TestProperty");
             var shadowingMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestMethod");
             var testMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.ITestInterface`1.TestMethod``1(" + CanonicalNameResolverTests.MethodParameters + ")");
-            var factory = new AssemblyDocumentationElementFactory(
-                new MemberDocumentationCollection(
-                    new[]
-                    {
-                        interfaceMemberDocumentation,
-                        shadowingEventMemberDocumentation,
-                        testEventMemberDocumentation,
-                        indexerPropertyMemberDocumentation,
-                        shadowingPropertyMemberDocumentation,
-                        testPropertyMemberDocumentation,
-                        shadowingMethodMemberDocumentation,
-                        testMethodMemberDocumentation
-                    }
-                )
+            var membersDocumentation = new MemberDocumentationCollection(
+                new[]
+                {
+                    interfaceMemberDocumentation,
+                    shadowingEventMemberDocumentation,
+                    testEventMemberDocumentation,
+                    indexerPropertyMemberDocumentation,
+                    shadowingPropertyMemberDocumentation,
+                    testPropertyMemberDocumentation,
+                    shadowingMethodMemberDocumentation,
+                    testMethodMemberDocumentation
+                }
             );
 
-            var typeDocumentationElement = factory.Create(typeof(ITestInterface<>));
+            var typeDocumentationElement = DocumentationElement.Create(typeof(ITestInterface<>), membersDocumentation);
 
             typeDocumentationElement
                 .AssertIs<InterfaceDocumentationElement>(
@@ -267,10 +256,9 @@ namespace CodeMap.Tests
             var classType = typeof(TestClass<>);
             var typeGenericParameter = classType.GetGenericArguments().Single();
             var methodGenericParameter = classType.GetMethod("TestMethod").GetGenericArguments().Single();
-            var factory = new AssemblyDocumentationElementFactory();
 
-            var typeDocumentationElement = factory.Create(classType);
-            var baseTypeDocumentationElement = factory.Create(typeof(TestBaseClass));
+            var typeDocumentationElement = DocumentationElement.Create(classType);
+            var baseTypeDocumentationElement = DocumentationElement.Create(typeof(TestBaseClass));
 
             baseTypeDocumentationElement
                 .AssertEqual(() => baseTypeDocumentationElement.Name, "TestBaseClass")
@@ -396,47 +384,44 @@ namespace CodeMap.Tests
             var interfaceShadowedTestMethod = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.CodeMap#Tests#Data#ITestBaseInterface#InterfaceShadowedTestMethod");
             var testMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.TestMethod``1(" + CanonicalNameResolverTests.MethodParameters + ")");
             var virtualTestMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestClass`1.VirtualTestMethod");
+            var membersDocumentation = new MemberDocumentationCollection(
+                new[]
+                {
+                    classMemberDocumentation,
 
-            var factory = new AssemblyDocumentationElementFactory(
-                new MemberDocumentationCollection(
-                    new[]
-                    {
-                        classMemberDocumentation,
+                    testConstantMemberDocumentation,
 
-                        testConstantMemberDocumentation,
+                    readonlyTestFieldMemberDocumentation,
+                    shadowedTestFieldMemberDocumentation,
+                    staticTestFieldMemberDocumentation,
+                    testFieldMemberDocumentation,
 
-                        readonlyTestFieldMemberDocumentation,
-                        shadowedTestFieldMemberDocumentation,
-                        staticTestFieldMemberDocumentation,
-                        testFieldMemberDocumentation,
+                    constructorMemberDocumentation,
 
-                        constructorMemberDocumentation,
+                    abstractTestEventMemberDocumentation,
+                    shadowingEventMemberDocumentation,
+                    interfaceShadowedTestEventMemberDocumentation,
+                    staticTestEventMemberDocumentation,
+                    testEventMemberDocumentation,
+                    virtualTestEventMemberDocumentation,
 
-                        abstractTestEventMemberDocumentation,
-                        shadowingEventMemberDocumentation,
-                        interfaceShadowedTestEventMemberDocumentation,
-                        staticTestEventMemberDocumentation,
-                        testEventMemberDocumentation,
-                        virtualTestEventMemberDocumentation,
+                    abstractTestPropertyMemberDocumentation,
+                    shadowingPropertyMemberDocumentation,
+                    interfaceShadowedTestPropertyMemberDocumentation,
+                    indexerPropertyMemberDocumentation,
+                    testPropertyMemberDocumentation,
+                    virtualTestPropertyMemberDocumentation,
 
-                        abstractTestPropertyMemberDocumentation,
-                        shadowingPropertyMemberDocumentation,
-                        interfaceShadowedTestPropertyMemberDocumentation,
-                        indexerPropertyMemberDocumentation,
-                        testPropertyMemberDocumentation,
-                        virtualTestPropertyMemberDocumentation,
-
-                        abstractTestMethodMemberDocumentation,
-                        shadowingMethodMemberDocumentation,
-                        baseTestMethodMemberDocumentation,
-                        interfaceShadowedTestMethod,
-                        testMethodMemberDocumentation,
-                        virtualTestMethodMemberDocumentation
-                    }
-                )
+                    abstractTestMethodMemberDocumentation,
+                    shadowingMethodMemberDocumentation,
+                    baseTestMethodMemberDocumentation,
+                    interfaceShadowedTestMethod,
+                    testMethodMemberDocumentation,
+                    virtualTestMethodMemberDocumentation
+                }
             );
 
-            var typeDocumentationElement = factory.Create(typeof(TestClass<>));
+            var typeDocumentationElement = DocumentationElement.Create(typeof(TestClass<>), membersDocumentation);
 
             typeDocumentationElement
                 .AssertIs<ClassDocumentationElement>(
@@ -491,9 +476,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementForAbstractClass()
         {
-            var factory = new AssemblyDocumentationElementFactory();
-
-            var typeDocumentationElement = factory.Create(typeof(TestAbstractClass));
+            var typeDocumentationElement = DocumentationElement.Create(typeof(TestAbstractClass));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestAbstractClass")
@@ -508,9 +491,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementForSealedClass()
         {
-            var factory = new AssemblyDocumentationElementFactory();
-
-            var typeDocumentationElement = factory.Create(typeof(TestSealedClass));
+            var typeDocumentationElement = DocumentationElement.Create(typeof(TestSealedClass));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestSealedClass")
@@ -525,9 +506,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementForStaticClass()
         {
-            var factory = new AssemblyDocumentationElementFactory();
-
-            var typeDocumentationElement = factory.Create(typeof(TestStaticClass));
+            var typeDocumentationElement = DocumentationElement.Create(typeof(TestStaticClass));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestStaticClass")
@@ -542,9 +521,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementNestedTypes()
         {
-            var factory = new AssemblyDocumentationElementFactory();
-
-            var typeDocumentationElement = factory.Create(typeof(TestClass<>));
+            var typeDocumentationElement = DocumentationElement.Create(typeof(TestClass<>));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestClass")
@@ -589,9 +566,8 @@ namespace CodeMap.Tests
             var structType = typeof(TestStruct<>);
             var typeGenericParameter = structType.GetGenericArguments().Single();
             var methodGenericParameter = structType.GetMethod("TestMethod").GetGenericArguments().Single();
-            var factory = new AssemblyDocumentationElementFactory();
 
-            var typeDocumentationElement = factory.Create(structType);
+            var typeDocumentationElement = DocumentationElement.Create(structType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestStruct")
@@ -680,40 +656,37 @@ namespace CodeMap.Tests
             var shadowingMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.GetHashCode");
             var testMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.TestMethod``1(" + CanonicalNameResolverTests.MethodParameters + ")");
             var virtualTestMethodMemberDocumentation = _CreateMemberDocumentationMock("M:CodeMap.Tests.Data.TestStruct`1.ToString");
+            var membersDocumentation = new MemberDocumentationCollection(
+                new[]
+                {
+                    structMemberDocumentation,
 
-            var factory = new AssemblyDocumentationElementFactory(
-                new MemberDocumentationCollection(
-                    new[]
-                    {
-                        structMemberDocumentation,
+                    testConstantMemberDocumentation,
 
-                        testConstantMemberDocumentation,
+                    readonlyTestFieldMemberDocumentation,
+                    staticTestFieldMemberDocumentation,
+                    testFieldMemberDocumentation,
 
-                        readonlyTestFieldMemberDocumentation,
-                        staticTestFieldMemberDocumentation,
-                        testFieldMemberDocumentation,
+                    defaultConstructorMemberDocumentation,
+                    constructorMemberDocumentation,
 
-                        defaultConstructorMemberDocumentation,
-                        constructorMemberDocumentation,
+                    interfaceShadowedTestEventMemberDocumentation,
+                    staticTestEventMemberDocumentation,
+                    testEventMemberDocumentation,
 
-                        interfaceShadowedTestEventMemberDocumentation,
-                        staticTestEventMemberDocumentation,
-                        testEventMemberDocumentation,
+                    interfaceShadowedTestPropertyMemberDocumentation,
+                    indexerPropertyMemberDocumentation,
+                    testPropertyMemberDocumentation,
 
-                        interfaceShadowedTestPropertyMemberDocumentation,
-                        indexerPropertyMemberDocumentation,
-                        testPropertyMemberDocumentation,
-
-                        baseTestMethodMemberDocumentation,
-                        interfaceShadowedTestMethod,
-                        shadowingMethodMemberDocumentation,
-                        testMethodMemberDocumentation,
-                        virtualTestMethodMemberDocumentation
-                    }
-                )
+                    baseTestMethodMemberDocumentation,
+                    interfaceShadowedTestMethod,
+                    shadowingMethodMemberDocumentation,
+                    testMethodMemberDocumentation,
+                    virtualTestMethodMemberDocumentation
+                }
             );
 
-            var typeDocumentationElement = factory.Create(typeof(TestStruct<>));
+            var typeDocumentationElement = DocumentationElement.Create(typeof(TestStruct<>), membersDocumentation);
 
             typeDocumentationElement
                 .AssertIs<StructDocumentationElement>(
@@ -761,9 +734,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateStructDocumentationElementNestedTypes()
         {
-            var factory = new AssemblyDocumentationElementFactory();
-
-            var typeDocumentationElement = factory.Create(typeof(TestStruct<>));
+            var typeDocumentationElement = DocumentationElement.Create(typeof(TestStruct<>));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestStruct")
@@ -805,11 +776,10 @@ namespace CodeMap.Tests
         [Fact]
         public void GenericParameterConstraints()
         {
-            var factory = new AssemblyDocumentationElementFactory();
             var interfaceType = typeof(ITestGenericParameter<,,,,,>);
             var typeGenericParameters = interfaceType.GetGenericArguments();
 
-            var typeDocumentationElement = factory.Create(interfaceType);
+            var typeDocumentationElement = DocumentationElement.Create(interfaceType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "ITestGenericParameter")
@@ -906,11 +876,10 @@ namespace CodeMap.Tests
         [Fact]
         public void GenericParametersOfNestedClass()
         {
-            var factory = new AssemblyDocumentationElementFactory();
             var classType = typeof(TestClass<>.NestedTestClass<,>);
             var typeGenericParameters = classType.GetGenericArguments();
 
-            var typeDocumentationElement = factory.Create(classType);
+            var typeDocumentationElement = DocumentationElement.Create(classType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "NestedTestClass")
@@ -934,7 +903,6 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateAssemblyDocumentationElement()
         {
-            var factory = new AssemblyDocumentationElementFactory();
             var testDataAssembly = typeof(AssemblyDocumentationElementFactoryTests)
                 .Assembly
                 .GetReferencedAssemblies()
@@ -942,7 +910,7 @@ namespace CodeMap.Tests
                 .Select(Assembly.Load)
                 .Single();
 
-            var assemblyDocumentationElement = factory.Create(testDataAssembly);
+            var assemblyDocumentationElement = DocumentationElement.Create(testDataAssembly);
 
             assemblyDocumentationElement
                 .AssertEqual(() => assemblyDocumentationElement.Name, "CodeMap.Tests.Data")
@@ -1064,9 +1032,7 @@ namespace CodeMap.Tests
         [Fact]
         public void AssertTypeReferenceToNestedGenericType()
         {
-            var factory = new AssemblyDocumentationElementFactory();
-
-            var classDocumentationElement = (ClassDocumentationElement)factory.Create(typeof(TestClass<>));
+            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
             var typeReference = (TypeData)classDocumentationElement
                 .Methods
                 .Single(method => method.Name == "TestMethod")
@@ -1096,26 +1062,31 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public void ConstructorWithNullMembersDocumentationCollectionThrowsException()
+        public void CreateFromNullAssemblyThrowsException()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => new AssemblyDocumentationElementFactory(null));
-            Assert.Equal(new ArgumentNullException("membersDocumentation").Message, exception.Message);
-        }
-
-        [Fact]
-        public void ConstructorFromNullAssemblyThrowsException()
-        {
-            var factory = new AssemblyDocumentationElementFactory();
-            var exception = Assert.Throws<ArgumentNullException>(() => factory.Create(assembly: null));
+            var exception = Assert.Throws<ArgumentNullException>(() => DocumentationElement.Create(assembly: null));
             Assert.Equal(new ArgumentNullException("assembly").Message, exception.Message);
         }
 
         [Fact]
-        public void ConstructorFromNullTypeThrowsException()
+        public void CreateFromAssemblyAndNullMembersDocumentationThrowsException()
         {
-            var factory = new AssemblyDocumentationElementFactory();
-            var exception = Assert.Throws<ArgumentNullException>(() => factory.Create(type: null));
+            var exception = Assert.Throws<ArgumentNullException>(() => DocumentationElement.Create(typeof(object).Assembly, null));
+            Assert.Equal(new ArgumentNullException("membersDocumentation").Message, exception.Message);
+        }
+
+        [Fact]
+        public void CreateFromNullTypeThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(() => DocumentationElement.Create(type: null));
             Assert.Equal(new ArgumentNullException("type").Message, exception.Message);
+        }
+
+        [Fact]
+        public void CreateFromTypeAndNullMembersDocumentationThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(() => DocumentationElement.Create(typeof(object), null));
+            Assert.Equal(new ArgumentNullException("membersDocumentation").Message, exception.Message);
         }
 
         private static MemberDocumentation _CreateMemberDocumentationMock(string canonicalName)

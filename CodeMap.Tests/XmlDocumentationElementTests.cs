@@ -8,7 +8,7 @@ using Xunit;
 
 namespace CodeMap.Tests
 {
-    public class DocumentationElementTests
+    public class XmlDocumentationElementTests
     {
         [Fact]
         public void CreatingTextElementWithNullContentThrowsException()

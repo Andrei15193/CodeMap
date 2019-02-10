@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using Moq;
 
-namespace CodeMap.ElementsTests
+namespace CodeMap.Tests
 {
     internal class InvocationCheck
     {
