@@ -509,7 +509,7 @@ namespace CodeMap.Tests
                 .AssertEmpty(() => attributeData.NamedParameters);
 
         public static TTypeReference AssertTypeReference<TTypeReference>(this TTypeReference typeReference, Type type)
-            where TTypeReference : TypeReferenceDocumentationElement
+            where TTypeReference : TypeReferenceData
         {
             Assert.True(typeReference == type);
             Assert.True(type == typeReference);
@@ -1138,7 +1138,7 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TInstance AssertTypeReference<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector, Type type)
+        public static TInstance AssertTypeReference<TInstance>(this TInstance instance, Func<TypeReferenceData> selector, Type type)
         {
             selector().AssertTypeReference(type);
             return instance;
@@ -1185,10 +1185,10 @@ namespace CodeMap.Tests
             return assemblyName;
         }
 
-        public static TInstance AssertDynamicType<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector)
+        public static TInstance AssertDynamicType<TInstance>(this TInstance instance, Func<TypeReferenceData> selector)
             => instance
                 .AssertTypeReference(selector, typeof(object))
-                .AssertMember(selector, type => type.AssertIs<DynamicTypeReferenceDocumentationElement>());
+                .AssertMember(selector, type => type.AssertIs<DynamicTypeData>());
 
         public static AttributeData AssertDynamicTypeAttribute(this AttributeData attribute, bool[] transformFlags = null)
             => attribute
@@ -1224,7 +1224,7 @@ namespace CodeMap.Tests
                 .AssertEmpty(() => attributeData.PositionalParameters)
                 .AssertEmpty(() => attributeData.NamedParameters);
 
-        public static TTypeDocumentationElement AssertTypeGenericParameters<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<TypeGenericParameterDocumentationElement>> selector)
+        public static TTypeDocumentationElement AssertTypeGenericParameters<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<TypeGenericParameterData>> selector)
             where TTypeDocumentationElement : TypeDocumentationElement
             => typeDocumentationElement
                 .AssertCollectionMember(
@@ -2066,7 +2066,7 @@ namespace CodeMap.Tests
                             () => method.Return.Type,
                             returnType => returnType
                                 .AssertTypeReference(typeof(void))
-                                .AssertIs<VoidTypeReferenceDocumentationElement>()
+                                .AssertIs<VoidTypeData>()
                         )
                         .AssertCollectionMember(
                             () => method.GenericParameters,
@@ -2680,10 +2680,10 @@ namespace CodeMap.Tests
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
         public static TInstance AssertTypeReference<TInstance>(this TInstance instance, string @namespace, string name)
-            where TInstance : TypeReferenceDocumentationElement
+            where TInstance : TypeReferenceData
         {
             instance
-                .AssertIs<InstanceTypeDocumentationElement>(
+                .AssertIs<TypeData>(
                     instanceTypeReference =>
                         instanceTypeReference
                             .AssertEqual(() => instanceTypeReference.Name, name)
@@ -2693,22 +2693,22 @@ namespace CodeMap.Tests
         }
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
-        public static TInstance AssertTypeReference<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector, string @namespace, string name)
+        public static TInstance AssertTypeReference<TInstance>(this TInstance instance, Func<TypeReferenceData> selector, string @namespace, string name)
         {
             selector().AssertTypeReference(@namespace, name);
             return instance;
         }
 
-        public static TInstance AssertGenericArguments<TInstance>(this TInstance instance, params Action<TypeReferenceDocumentationElement>[] callbacks)
-            where TInstance : TypeReferenceDocumentationElement
+        public static TInstance AssertGenericArguments<TInstance>(this TInstance instance, params Action<TypeReferenceData>[] callbacks)
+            where TInstance : TypeReferenceData
         {
-            instance.AssertIs<InstanceTypeDocumentationElement>(
+            instance.AssertIs<TypeData>(
                 instanceTypeReference => instanceTypeReference.AssertCollectionMember(() => instanceTypeReference.GenericArguments, callbacks)
             );
             return instance;
         }
 
-        public static TInstance AssertGenericArguments<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector, params Action<TypeReferenceDocumentationElement>[] callbacks)
+        public static TInstance AssertGenericArguments<TInstance>(this TInstance instance, Func<TypeReferenceData> selector, params Action<TypeReferenceData>[] callbacks)
         {
             selector().AssertGenericArguments(callbacks);
             return instance;
@@ -2716,10 +2716,10 @@ namespace CodeMap.Tests
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
         public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, string name, Version version)
-            where TInstance : TypeReferenceDocumentationElement
+            where TInstance : TypeReferenceData
         {
             instance
-                .AssertIs<InstanceTypeDocumentationElement>(
+                .AssertIs<TypeData>(
                     instanceTypeReference =>
                         instanceTypeReference.AssertMember(
                             () => instanceTypeReference.Assembly,
@@ -2733,10 +2733,10 @@ namespace CodeMap.Tests
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
         public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, string name, Version version, string culture, string publicKeyToken)
-            where TInstance : TypeReferenceDocumentationElement
+            where TInstance : TypeReferenceData
         {
             instance
-                .AssertIs<InstanceTypeDocumentationElement>(
+                .AssertIs<TypeData>(
                     instanceTypeReference =>
                         instanceTypeReference.AssertMember(
                             () => instanceTypeReference.Assembly,
@@ -2751,14 +2751,14 @@ namespace CodeMap.Tests
         }
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
-        public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector, string name, Version version)
+        public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, Func<TypeReferenceData> selector, string name, Version version)
         {
             selector().AssertTypeReferenceAssembly(name, version);
             return instance;
         }
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
-        public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, Func<TypeReferenceDocumentationElement> selector, string name, Version version, string culture, string publicKeyToken)
+        public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, Func<TypeReferenceData> selector, string name, Version version, string culture, string publicKeyToken)
         {
             selector().AssertTypeReferenceAssembly(name, version, culture, publicKeyToken);
             return instance;

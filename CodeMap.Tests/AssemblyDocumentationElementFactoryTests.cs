@@ -134,7 +134,7 @@ namespace CodeMap.Tests
                         .AssertTypeReference(() => delegateDocumentationElement.Return.Type, typeof(void))
                         .AssertMember(
                             () => delegateDocumentationElement.Return.Type,
-                            returnType => returnType.AssertIs<VoidTypeReferenceDocumentationElement>()
+                            returnType => returnType.AssertIs<VoidTypeData>()
                         )
                         .AssertCollectionMember(
                             () => delegateDocumentationElement.Return.Attributes,
@@ -1067,7 +1067,7 @@ namespace CodeMap.Tests
             var factory = new AssemblyDocumentationElementFactory();
 
             var classDocumentationElement = (ClassDocumentationElement)factory.Create(typeof(TestClass<>));
-            var typeReference = (InstanceTypeDocumentationElement)classDocumentationElement
+            var typeReference = (TypeData)classDocumentationElement
                 .Methods
                 .Single(method => method.Name == "TestMethod")
                 .Parameters

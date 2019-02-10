@@ -4,18 +4,18 @@ using System.Linq;
 namespace CodeMap.Elements
 {
     /// <summary>Represents a documented method generic parameter.</summary>
-    public sealed class MethodGenericParameterDocumentationElement : GenericParameterDocumentationElement
+    public sealed class MethodGenericParameterTypeData : GenericParameterData
     {
-        internal MethodGenericParameterDocumentationElement()
+        internal MethodGenericParameterTypeData()
         {
         }
 
         /// <summary>The method declaring the generic parameter.</summary>
         public MethodDocumentationElement DeclaringMethod { get; internal set; }
 
-        /// <summary>Determines whether the current <see cref="MethodGenericParameterDocumentationElement"/> is equal to the provided <paramref name="type"/>.</summary>
+        /// <summary>Determines whether the current <see cref="MethodGenericParameterTypeData"/> is equal to the provided <paramref name="type"/>.</summary>
         /// <param name="type">The <see cref="Type"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="MethodGenericParameterDocumentationElement"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
+        /// <returns>Returns <c>true</c> if the current <see cref="MethodGenericParameterTypeData"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(Type type)
         {
             if (type == null || !type.IsGenericMethodParameter)

@@ -13,7 +13,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The type of the exception.</summary>
-        public TypeReferenceDocumentationElement Type { get; internal set; }
+        public TypeReferenceData Type { get; internal set; }
 
         /// <summary>The description of the cases where the exception is thrown.</summary>
         public IReadOnlyList<BlockDocumentationElement> Description { get; internal set; }

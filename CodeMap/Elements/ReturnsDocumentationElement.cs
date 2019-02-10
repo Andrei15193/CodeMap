@@ -14,7 +14,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The return type.</summary>
-        public TypeReferenceDocumentationElement Type { get; internal set; }
+        public TypeReferenceData Type { get; internal set; }
 
         /// <summary>The return attributes.</summary>
         public IReadOnlyCollection<AttributeData> Attributes { get; internal set; }

@@ -9,7 +9,7 @@ namespace CodeMap.ElementsTests
 
         void VisitSummaryEnding();
 
-        void VisitReturnsBeginning(TypeReferenceDocumentationElement returnType);
+        void VisitReturnsBeginning(TypeReferenceData returnType);
 
         void VisitReturnsEnding();
 

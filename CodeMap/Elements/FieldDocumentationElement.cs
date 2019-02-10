@@ -12,7 +12,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The field type.</summary>
-        public TypeReferenceDocumentationElement Type { get; internal set; }
+        public TypeReferenceData Type { get; internal set; }
 
         /// <summary>Indicates whether the field is static.</summary>
         public bool IsStatic { get; internal set; }

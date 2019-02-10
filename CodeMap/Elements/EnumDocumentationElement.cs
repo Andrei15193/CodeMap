@@ -13,7 +13,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The underlying type of the enum members.</summary>
-        public TypeReferenceDocumentationElement UnderlyingType { get; internal set; }
+        public TypeReferenceData UnderlyingType { get; internal set; }
 
         /// <summary>The enum members.</summary>
         public IReadOnlyList<ConstantDocumentationElement> Members { get; internal set; }

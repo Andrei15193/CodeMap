@@ -22,7 +22,7 @@ namespace CodeMap.ElementsTests
             _documentationVisitor.VisitSummaryEnding();
         }
 
-        protected override void VisitReturnsBeginning(TypeReferenceDocumentationElement returnType)
+        protected override void VisitReturnsBeginning(TypeReferenceData returnType)
         {
             _documentationVisitor.VisitReturnsBeginning(returnType);
         }

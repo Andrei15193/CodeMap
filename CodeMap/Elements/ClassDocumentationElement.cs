@@ -22,13 +22,13 @@ namespace CodeMap.Elements
         public bool IsStatic { get; internal set; }
 
         /// <summary>The class generic parameters.</summary>
-        public IReadOnlyList<TypeGenericParameterDocumentationElement> GenericParameters { get; internal set; }
+        public IReadOnlyList<TypeGenericParameterData> GenericParameters { get; internal set; }
 
         /// <summary>The base type.</summary>
-        public TypeReferenceDocumentationElement BaseClass { get; internal set; }
+        public TypeReferenceData BaseClass { get; internal set; }
 
         /// <summary>The implemented interfaces.</summary>
-        public IReadOnlyCollection<TypeReferenceDocumentationElement> ImplementedInterfaces { get; internal set; }
+        public IReadOnlyCollection<TypeReferenceData> ImplementedInterfaces { get; internal set; }
 
         /// <summary>The declared constants.</summary>
         public IReadOnlyCollection<ConstantDocumentationElement> Constants { get; internal set; }

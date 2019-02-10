@@ -10,7 +10,7 @@ namespace CodeMap
         }
 
         /// <summary>The type of the parameter.</summary>
-        public TypeReferenceDocumentationElement Type { get; internal set; }
+        public TypeReferenceData Type { get; internal set; }
 
         /// <summary>The name of the parameter.</summary>
         public string Name { get; internal set; }

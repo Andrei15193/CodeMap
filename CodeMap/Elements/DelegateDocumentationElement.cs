@@ -13,7 +13,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The delegate generic parameters.</summary>
-        public IReadOnlyList<TypeGenericParameterDocumentationElement> GenericParameters { get; internal set; }
+        public IReadOnlyList<TypeGenericParameterData> GenericParameters { get; internal set; }
 
         /// <summary>The delegate parameters.</summary>
         public IReadOnlyList<ParameterDocumentationElement> Parameters { get; internal set; }

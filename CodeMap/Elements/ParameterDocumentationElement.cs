@@ -16,7 +16,7 @@ namespace CodeMap.Elements
         public string Name { get; internal set; }
 
         /// <summary>The parameter type.</summary>
-        public TypeReferenceDocumentationElement Type { get; internal set; }
+        public TypeReferenceData Type { get; internal set; }
 
         /// <summary>The parameter attributes.</summary>
         public IReadOnlyCollection<AttributeData> Attributes { get; internal set; }

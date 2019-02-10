@@ -12,7 +12,7 @@ namespace CodeMap
         /// <param name="type">The type of the attribute.</param>
         /// <param name="positionalParameters">The used positional (constructor) parameters.</param>
         /// <param name="namedParameters">The used named parameters (fields or properties).</param>
-        public AttributeData(TypeReferenceDocumentationElement type, IEnumerable<AttributeParameterData> positionalParameters, IEnumerable<AttributeParameterData> namedParameters)
+        public AttributeData(TypeReferenceData type, IEnumerable<AttributeParameterData> positionalParameters, IEnumerable<AttributeParameterData> namedParameters)
         {
             Type = type;
 
@@ -28,7 +28,7 @@ namespace CodeMap
         }
 
         /// <summary>The type of the attribute.</summary>
-        public TypeReferenceDocumentationElement Type { get; }
+        public TypeReferenceData Type { get; }
 
         /// <summary>The used positional (constructor) parameters.</summary>
         public IReadOnlyList<AttributeParameterData> PositionalParameters { get; }

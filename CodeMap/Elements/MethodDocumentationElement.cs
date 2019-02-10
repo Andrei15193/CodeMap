@@ -31,7 +31,7 @@ namespace CodeMap.Elements
         public bool IsShadowing { get; internal set; }
 
         /// <summary>The method generic parameters.</summary>
-        public IReadOnlyList<MethodGenericParameterDocumentationElement> GenericParameters { get; internal set; }
+        public IReadOnlyList<MethodGenericParameterTypeData> GenericParameters { get; internal set; }
 
         /// <summary>The method parameters.</summary>
         public IReadOnlyList<ParameterDocumentationElement> Parameters { get; internal set; }

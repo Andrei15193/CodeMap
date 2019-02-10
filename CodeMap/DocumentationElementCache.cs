@@ -9,8 +9,8 @@ namespace CodeMap
     {
         private readonly IDictionary<AssemblyName, AssemblyReference> _assemblyReferencesCache =
             new Dictionary<AssemblyName, AssemblyReference>(new AssemblyNameEqualityComparer());
-        private readonly IDictionary<Type, TypeReferenceDocumentationElement> _typeReferencesCache =
-            new Dictionary<Type, TypeReferenceDocumentationElement>();
+        private readonly IDictionary<Type, TypeReferenceData> _typeReferencesCache =
+            new Dictionary<Type, TypeReferenceData>();
 
         public AssemblyReference GetFor(AssemblyName assemblyName, Func<AssemblyName, AssemblyReference> factory)
         {
@@ -22,7 +22,7 @@ namespace CodeMap
             return assemblyReference;
         }
 
-        public TypeReferenceDocumentationElement GetFor(Type type, Func<Type, TypeReferenceDocumentationElement> factory, Action<Type, TypeReferenceDocumentationElement> initializer)
+        public TypeReferenceData GetFor(Type type, Func<Type, TypeReferenceData> factory, Action<Type, TypeReferenceData> initializer)
         {
             if (!_typeReferencesCache.TryGetValue(type, out var typeReference))
             {

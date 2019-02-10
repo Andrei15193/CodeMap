@@ -13,7 +13,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The event type.</summary>
-        public TypeReferenceDocumentationElement Type { get; internal set; }
+        public TypeReferenceData Type { get; internal set; }
 
         /// <summary>Indicates whether the event is static.</summary>
         public bool IsStatic { get; internal set; }
