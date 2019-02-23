@@ -16,13 +16,13 @@ namespace CodeMap.Elements
         public IReadOnlyList<TypeGenericParameterData> GenericParameters { get; internal set; }
 
         /// <summary>The delegate parameters.</summary>
-        public IReadOnlyList<ParameterDocumentationElement> Parameters { get; internal set; }
+        public IReadOnlyList<ParameterData> Parameters { get; internal set; }
 
         /// <summary>The documented delegate return value.</summary>
         public ReturnsDocumentationElement Return { get; internal set; }
 
         /// <summary>The delegate documented exceptions.</summary>
-        public IReadOnlyCollection<ExceptionDocumentationElement> Exceptions { get; internal set; }
+        public IReadOnlyCollection<ExceptionData> Exceptions { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>

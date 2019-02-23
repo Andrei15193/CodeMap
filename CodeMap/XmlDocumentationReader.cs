@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodeMap.Elements;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
-using CodeMap.Elements;
 
 namespace CodeMap
 {
@@ -79,66 +79,75 @@ namespace CodeMap
             return new SummaryDocumentationElement(_ReadBlocks(summaryXmlElement));
         }
 
-        private ILookup<string, BlockDocumentationElement> _ReadTypeParameters(XElement memberDocumentationXmlElement)
+        private IReadOnlyDictionary<string, BlockDocumentationElementCollection> _ReadTypeParameters(XElement memberDocumentationXmlElement)
             => (
                 from typeParamXmlElement in memberDocumentationXmlElement.Elements("typeparam")
                 let typeParamNameAttribute = typeParamXmlElement.Attribute("name")
                 where typeParamNameAttribute != null
-                from descriptionBlockElement in _ReadBlocks(typeParamXmlElement)
+                group typeParamXmlElement by typeParamNameAttribute.Value into typeParamXmlElementsByName
+                let blockDocumentationElements = typeParamXmlElementsByName.SelectMany(_ReadBlocks)
+                let xmlAttributes = _ReadXmlAttributesExcept(typeParamXmlElementsByName, "name")
                 select new
                 {
-                    Name = typeParamNameAttribute.Value,
-                    DescriptionBlockElement = descriptionBlockElement
+                    Name = typeParamXmlElementsByName.Key,
+                    DescriptionBlockElements = new BlockDocumentationElementCollection(blockDocumentationElements, xmlAttributes)
                 }
             )
-            .ToLookup(
+            .ToDictionary(
                 typeParam => typeParam.Name,
-                typeParam => typeParam.DescriptionBlockElement,
+                typeParam => typeParam.DescriptionBlockElements,
                 StringComparer.Ordinal
             );
 
-        private ILookup<string, BlockDocumentationElement> _ReadParameters(XElement memberDocumentationXmlElement)
+        private IReadOnlyDictionary<string, BlockDocumentationElementCollection> _ReadParameters(XElement memberDocumentationXmlElement)
             => (
                 from paramXmlElement in memberDocumentationXmlElement.Elements("param")
                 let paramNameAttribute = paramXmlElement.Attribute("name")
                 where paramNameAttribute != null
-                from descriptionBlockElement in _ReadBlocks(paramXmlElement)
+                group paramXmlElement by paramNameAttribute.Value into paramXmlElementsByName
+                let blockDocumentationElements = paramXmlElementsByName.SelectMany(_ReadBlocks)
+                let xmlAttributes = _ReadXmlAttributesExcept(paramXmlElementsByName, "name")
                 select new
                 {
-                    Name = paramNameAttribute.Value,
-                    DescriptionBlockElement = descriptionBlockElement
+                    Name = paramXmlElementsByName.Key,
+                    DescriptionBlockElements = new BlockDocumentationElementCollection(blockDocumentationElements, xmlAttributes)
                 }
             )
-            .ToLookup(
+            .ToDictionary(
                 param => param.Name,
-                param => param.DescriptionBlockElement,
+                param => param.DescriptionBlockElements,
                 StringComparer.Ordinal
             );
 
-        private IReadOnlyList<BlockDocumentationElement> _ReadReturns(XElement memberDocumentationXmlElement)
+        private BlockDocumentationElementCollection _ReadReturns(XElement memberDocumentationXmlElement)
         {
             var returnsXmlElement = memberDocumentationXmlElement.Element("returns");
             if (returnsXmlElement == null)
                 return null;
 
-            return _ReadBlocks(returnsXmlElement);
+            return new BlockDocumentationElementCollection(
+                _ReadBlocks(returnsXmlElement),
+                _ReadXmlAttributes(returnsXmlElement)
+            );
         }
 
-        private ILookup<string, BlockDocumentationElement> _ReadExceptions(XElement memberDocumentationXmlElement)
+        private IReadOnlyDictionary<string, BlockDocumentationElementCollection> _ReadExceptions(XElement memberDocumentationXmlElement)
             => (
                 from exceptionXmlElement in memberDocumentationXmlElement.Elements("exception")
                 let exceptionCrefAttribute = exceptionXmlElement.Attribute("cref")
                 where exceptionCrefAttribute != null
-                from descriptionBlockElement in _ReadBlocks(exceptionXmlElement)
+                group exceptionXmlElement by exceptionCrefAttribute.Value into exceptionXmlElementsByType
+                let blockDocumentationElements = exceptionXmlElementsByType.SelectMany(_ReadBlocks)
+                let xmlAttributes = _ReadXmlAttributesExcept(exceptionXmlElementsByType, "cref")
                 select new
                 {
-                    CanonicalName = exceptionCrefAttribute.Value,
-                    DescriptionBlockElement = descriptionBlockElement
+                    CanonicalName = exceptionXmlElementsByType.Key,
+                    DescriptionBlockElements = new BlockDocumentationElementCollection(blockDocumentationElements, xmlAttributes)
                 }
             )
-            .ToLookup(
+            .ToDictionary(
                 exception => exception.CanonicalName,
-                exception => exception.DescriptionBlockElement,
+                exception => exception.DescriptionBlockElements,
                 StringComparer.Ordinal
             );
 
@@ -174,6 +183,26 @@ namespace CodeMap
                 select DocumentationElement.MemberReference(relatedMemberCrefAttribute.Value)
             )
             .ToList();
+
+        private IReadOnlyDictionary<string, string> _ReadXmlAttributes(XElement xmlElement)
+            => xmlElement
+                .Attributes()
+                .ToDictionary(
+                    attribute => attribute.Name.LocalName,
+                    attribute => attribute.Value,
+                    StringComparer.Ordinal
+            );
+
+        private IReadOnlyDictionary<string, string> _ReadXmlAttributesExcept(IEnumerable<XElement> xmlElements, string attributeName)
+            => xmlElements
+                .Attributes()
+                .Where(attribute => attribute.Name.LocalName != attributeName)
+                .GroupBy(attribute => attribute.Name.LocalName, StringComparer.Ordinal)
+                .ToDictionary(
+                    attributesByName => attributesByName.Key,
+                    attributesByName => attributesByName.First().Value,
+                    StringComparer.Ordinal
+            );
 
         private IReadOnlyList<BlockDocumentationElement> _ReadBlocks(XElement sectionXmlElement)
         {

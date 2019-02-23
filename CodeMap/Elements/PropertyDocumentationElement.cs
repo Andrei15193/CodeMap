@@ -40,13 +40,13 @@ namespace CodeMap.Elements
         public PropertyAccessorData Setter { get; internal set; }
 
         /// <summary>The method parameters.</summary>
-        public IReadOnlyList<ParameterDocumentationElement> Parameters { get; internal set; }
+        public IReadOnlyList<ParameterData> Parameters { get; internal set; }
 
         /// <summary>Documentation about the how the value of the property is calculated.</summary>
         new public ValueDocumentationElement Value { get; internal set; }
 
         /// <summary>Documented exceptions that might be thrown when using the property.</summary>
-        public IReadOnlyCollection<ExceptionDocumentationElement> Exceptions { get; internal set; }
+        public IReadOnlyCollection<ExceptionData> Exceptions { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>

@@ -40,7 +40,7 @@ namespace CodeMap.Elements
         public EventAccessorData Remover { get; internal set; }
 
         /// <summary>Documented exceptions that might be thrown by subscribers.</summary>
-        public IReadOnlyCollection<ExceptionDocumentationElement> Exceptions { get; internal set; }
+        public IReadOnlyCollection<ExceptionData> Exceptions { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>

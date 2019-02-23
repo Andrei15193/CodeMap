@@ -1,7 +1,7 @@
-﻿using System;
+﻿using CodeMap.Elements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeMap.Elements;
 
 namespace CodeMap
 {
@@ -31,10 +31,10 @@ namespace CodeMap
         public MemberDocumentation(
             string canonicalName,
             SummaryDocumentationElement summary,
-            ILookup<string, BlockDocumentationElement> genericParameters,
-            ILookup<string, BlockDocumentationElement> parameters,
-            IEnumerable<BlockDocumentationElement> returns,
-            ILookup<string, BlockDocumentationElement> exceptions,
+            IReadOnlyDictionary<string, BlockDocumentationElementCollection> genericParameters,
+            IReadOnlyDictionary<string, BlockDocumentationElementCollection> parameters,
+            BlockDocumentationElementCollection returns,
+            IReadOnlyDictionary<string, BlockDocumentationElementCollection> exceptions,
             RemarksDocumentationElement remarks,
             IEnumerable<ExampleDocumentationElement> examples,
             ValueDocumentationElement value,
@@ -59,16 +59,16 @@ namespace CodeMap
         public SummaryDocumentationElement Summary { get; }
 
         /// <summary>The generic parameters documentation.</summary>
-        public ILookup<string, BlockDocumentationElement> GenericParameters { get; }
+        public IReadOnlyDictionary<string, BlockDocumentationElementCollection> GenericParameters { get; }
 
         /// <summary>The parameters documentation.</summary>
-        public ILookup<string, BlockDocumentationElement> Parameters { get; }
+        public IReadOnlyDictionary<string, BlockDocumentationElementCollection> Parameters { get; }
 
         /// <summary>The returns section.</summary>
         public IReadOnlyList<BlockDocumentationElement> Returns { get; }
 
         /// <summary>The exceptions documentation.</summary>
-        public ILookup<string, BlockDocumentationElement> Exceptions { get; }
+        public IReadOnlyDictionary<string, BlockDocumentationElementCollection> Exceptions { get; }
 
         /// <summary>The remarks section.</summary>
         public RemarksDocumentationElement Remarks { get; }

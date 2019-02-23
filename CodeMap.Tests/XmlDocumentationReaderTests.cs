@@ -1,10 +1,9 @@
-﻿using System;
+﻿using CodeMap.Elements;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using CodeMap;
-using CodeMap.Elements;
 using Xunit;
 
 namespace CodeMap.Tests
@@ -66,57 +65,59 @@ namespace CodeMap.Tests
                 DocumentationElement.Text(" "),
                 DocumentationElement.InlineCode("some code"),
         };
-        private static readonly IEnumerable<BlockDocumentationElement> _richBlockElements = new BlockDocumentationElement[]
-        {
-                DocumentationElement.Paragraph(
-                    _richInlineElements
-                ),
-                DocumentationElement.Table(
-                    DocumentationElement.TableRow(
-                        DocumentationElement.TableCell(
-                            _richInlineElements
+        private static readonly BlockDocumentationElementCollection _richBlockElements = new BlockDocumentationElementCollection(
+            new BlockDocumentationElement[]
+            {
+                    DocumentationElement.Paragraph(
+                        _richInlineElements
+                    ),
+                    DocumentationElement.Table(
+                        DocumentationElement.TableRow(
+                            DocumentationElement.TableCell(
+                                _richInlineElements
+                            )
+                        ),
+                        DocumentationElement.TableRow(
+                            DocumentationElement.TableCell()
                         )
                     ),
-                    DocumentationElement.TableRow(
-                        DocumentationElement.TableCell()
-                    )
-                ),
-                DocumentationElement.CodeBlock(
-                    "some code in a block"
-                ),
-                DocumentationElement.UnorderedList(
-                    DocumentationElement.ListItem(
+                    DocumentationElement.CodeBlock(
+                        "some code in a block"
+                    ),
+                    DocumentationElement.UnorderedList(
+                        DocumentationElement.ListItem(
+                            _richInlineElements
+                        ),
+                        DocumentationElement.ListItem(
+                            _richInlineElements
+                        ),
+                        DocumentationElement.ListItem()
+                    ),
+                    DocumentationElement.OrderedList(
+                        DocumentationElement.ListItem(
+                            _richInlineElements
+                        ),
+                        DocumentationElement.ListItem(
+                            _richInlineElements
+                        ),
+                        DocumentationElement.ListItem()
+                    ),
+                    DocumentationElement.Paragraph(
                         _richInlineElements
                     ),
-                    DocumentationElement.ListItem(
-                        _richInlineElements
-                    ),
-                    DocumentationElement.ListItem()
-                ),
-                DocumentationElement.OrderedList(
-                    DocumentationElement.ListItem(
-                        _richInlineElements
-                    ),
-                    DocumentationElement.ListItem(
-                        _richInlineElements
-                    ),
-                    DocumentationElement.ListItem()
-                ),
-                DocumentationElement.Paragraph(
-                    _richInlineElements
-                ),
-                DocumentationElement.DefinitionList(
-                    _richInlineElements,
-                    DocumentationElement.DefinitionListItem(
+                    DocumentationElement.DefinitionList(
                         _richInlineElements,
-                        _richInlineElements
-                    ),
-                    DocumentationElement.DefinitionListItem(
-                        Enumerable.Empty<InlineDocumentationElement>(),
-                        Enumerable.Empty<InlineDocumentationElement>()
+                        DocumentationElement.DefinitionListItem(
+                            _richInlineElements,
+                            _richInlineElements
+                        ),
+                        DocumentationElement.DefinitionListItem(
+                            Enumerable.Empty<InlineDocumentationElement>(),
+                            Enumerable.Empty<InlineDocumentationElement>()
+                        )
                     )
-                )
-        };
+            }
+        );
 
         [Fact]
         public async Task ReadEmptySummary()
@@ -1426,10 +1427,10 @@ fourth line
 
             Assert.Single(result);
             _AssertAreEqual(
-                new Dictionary<string, IEnumerable<BlockDocumentationElement>>(StringComparer.Ordinal)
+                new Dictionary<string, BlockDocumentationElementCollection>(StringComparer.Ordinal)
                 {
                     { "typeParameter1", _richBlockElements },
-                    { "typeParameter2", _richBlockElements.Concat(_richBlockElements) }
+                    { "typeParameter2", new BlockDocumentationElementCollection(_richBlockElements.Concat(_richBlockElements)) }
                 },
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").GenericParameters
             );
@@ -1457,10 +1458,10 @@ fourth line
 
             Assert.Single(result);
             _AssertAreEqual(
-                new Dictionary<string, IEnumerable<BlockDocumentationElement>>(StringComparer.Ordinal)
+                new Dictionary<string, BlockDocumentationElementCollection>(StringComparer.Ordinal)
                 {
                     { "parameter1", _richBlockElements },
-                    { "parameter2", _richBlockElements.Concat(_richBlockElements) }
+                    { "parameter2", new BlockDocumentationElementCollection(_richBlockElements.Concat(_richBlockElements)) }
                 },
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Parameters
             );
@@ -1513,10 +1514,10 @@ fourth line
 
             Assert.Single(result);
             _AssertAreEqual(
-                new Dictionary<string, IEnumerable<BlockDocumentationElement>>(StringComparer.Ordinal)
+                new Dictionary<string, BlockDocumentationElementCollection>(StringComparer.Ordinal)
                 {
                     { "exception1", _richBlockElements },
-                    { "exception2", _richBlockElements.Concat(_richBlockElements) }
+                    { "exception2", new BlockDocumentationElementCollection(_richBlockElements.Concat(_richBlockElements)) }
                 },
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Exceptions
             );
@@ -1682,7 +1683,7 @@ fourth line
         private static void _AssertAreEqual(SummaryDocumentationElement expected, SummaryDocumentationElement actual)
             => _AssertAreEqual(expected.Content, actual.Content);
 
-        private static void _AssertAreEqual(IReadOnlyDictionary<string, IEnumerable<BlockDocumentationElement>> expected, ILookup<string, BlockDocumentationElement> actual)
+        private static void _AssertAreEqual(IReadOnlyDictionary<string, BlockDocumentationElementCollection> expected, IReadOnlyDictionary<string, BlockDocumentationElementCollection> actual)
         {
             Assert.Equal(expected.Count, actual.Count);
 
@@ -1695,7 +1696,7 @@ fourth line
                         ExpectedParameter = expectedParameter.Key,
                         ExpectedContent = expectedParameter.Value.ToList(),
                         ActualParameter = actualParameter.Key,
-                        ActualContent = actualParameter.ToList()
+                        ActualContent = actualParameter.Value
                     }
                 )
             )

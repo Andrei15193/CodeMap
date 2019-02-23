@@ -58,8 +58,8 @@ namespace CodeMap
             => collection.AsReadOnlyList()
             ?? Enumerable.Empty<T>().AsReadOnlyList();
 
-        public static ILookup<TKey, TElement> OrEmpty<TKey, TElement>(this ILookup<TKey, TElement> collection)
-            => collection ?? new EmptyLookup<TKey, TElement>();
+        public static IReadOnlyDictionary<TKey, TElement> OrEmpty<TKey, TElement>(this IReadOnlyDictionary<TKey, TElement> collection)
+            => collection ?? new Dictionary<TKey, TElement>();
 
         public static StringBuilder Join<T>(this StringBuilder stringBuilder, char separator, IEnumerable<T> values, Action<T> callback)
         {
@@ -141,26 +141,6 @@ namespace CodeMap
 
             IEnumerator IEnumerable.GetEnumerator()
                 => ((IEnumerable)_collection).GetEnumerator();
-        }
-
-        private sealed class EmptyLookup<TKey, TElement> : ILookup<TKey, TElement>
-        {
-            public IEnumerable<TElement> this[TKey key]
-                => throw new KeyNotFoundException();
-
-            public int Count
-                => 0;
-
-            public bool Contains(TKey key)
-                => false;
-
-            public IEnumerator<IGrouping<TKey, TElement>> GetEnumerator()
-            {
-                yield break;
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-                => GetEnumerator();
         }
     }
 }

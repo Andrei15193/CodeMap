@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CodeMap.Elements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using CodeMap.Elements;
 
 namespace CodeMap
 {
@@ -12,6 +12,7 @@ namespace CodeMap
         private readonly DynamicTypeData _dynamicTypeData = new DynamicTypeData();
         private readonly DocumentationElementCache _referencesCache = new DocumentationElementCache();
         private readonly MemberDocumentation _emptyMemberDocumentation = new MemberDocumentation(string.Empty);
+        private readonly BlockDocumentationElementCollection _emptyBlockDocumentationElementCollection = new BlockDocumentationElementCollection(Enumerable.Empty<BlockDocumentationElement>());
         private readonly CanonicalNameResolver _canonicalNameResolver;
         private readonly MemberDocumentationCollection _membersDocumentation;
 
@@ -464,7 +465,7 @@ namespace CodeMap
                 Attributes = Enumerable.Empty<AttributeData>().AsReadOnlyCollection(),
                 DeclaringType = declaringType,
                 Parameters = Enumerable
-                    .Empty<ParameterDocumentationElement>()
+                    .Empty<ParameterData>()
                     .AsReadOnlyList(),
                 Summary = memberDocumentation.Summary,
                 Exceptions = _MapExceptions(memberDocumentation.Exceptions),
@@ -745,12 +746,10 @@ namespace CodeMap
         {
             var typeGenericParameter = (TypeGenericParameterData)_GetTypeReference(type);
             typeGenericParameter.DeclaringType = declaringType;
-            typeGenericParameter.Description = (
-                memberDocumentation.GenericParameters.Contains(typeGenericParameter.Name)
-                    ? memberDocumentation.GenericParameters[typeGenericParameter.Name]
-                    : Enumerable.Empty<BlockDocumentationElement>()
-                )
-                .AsReadOnlyList();
+
+            memberDocumentation.GenericParameters.TryGetValue(typeGenericParameter.Name, out var description);
+            typeGenericParameter.Description = description ?? _emptyBlockDocumentationElementCollection;
+
             return typeGenericParameter;
         }
 
@@ -758,12 +757,10 @@ namespace CodeMap
         {
             var methodGenericParameter = (MethodGenericParameterTypeData)_GetTypeReference(type);
             methodGenericParameter.DeclaringMethod = declaringMethod;
-            methodGenericParameter.Description = (
-                memberDocumentation.GenericParameters.Contains(methodGenericParameter.Name)
-                    ? memberDocumentation.GenericParameters[methodGenericParameter.Name]
-                    : Enumerable.Empty<BlockDocumentationElement>()
-                )
-                .AsReadOnlyList();
+
+            memberDocumentation.GenericParameters.TryGetValue(methodGenericParameter.Name, out var description);
+            methodGenericParameter.Description = description ?? _emptyBlockDocumentationElementCollection;
+
             return methodGenericParameter;
         }
 
@@ -822,12 +819,8 @@ namespace CodeMap
                             .ToList();
 
                     var memberDocumentation = _GetMemberDocumentationFor(type.DeclaringType);
-                    genericParameter.Description = (
-                            memberDocumentation.GenericParameters.Contains(genericParameter.Name)
-                            ? memberDocumentation.GenericParameters[genericParameter.Name]
-                            : Enumerable.Empty<BlockDocumentationElement>()
-                        )
-                        .AsReadOnlyList();
+                    memberDocumentation.GenericParameters.TryGetValue(genericParameter.Name, out var description);
+                    genericParameter.Description = description ?? _emptyBlockDocumentationElementCollection;
                     break;
 
                 case PointerTypeData pointerType:
@@ -869,8 +862,9 @@ namespace CodeMap
             }
         }
 
-        private ParameterDocumentationElement _CreateParameter(ParameterInfo parameter, MemberDocumentation memberDocumentation)
-            => new ParameterDocumentationElement
+        private ParameterData _CreateParameter(ParameterInfo parameter, MemberDocumentation memberDocumentation)
+        {
+            var parameterData = new ParameterData
             {
                 Name = parameter.Name,
                 Type = _UnwrapeByRef(parameter.ParameterType) == typeof(object) && parameter.GetCustomAttribute<DynamicAttribute>() != null
@@ -881,14 +875,14 @@ namespace CodeMap
                 IsInputOutputByReference = parameter.ParameterType.IsByRef && !parameter.IsIn && !parameter.IsOut,
                 IsOutputByReference = parameter.ParameterType.IsByRef && parameter.IsOut,
                 HasDefaultValue = parameter.HasDefaultValue,
-                DefaultValue = parameter.HasDefaultValue ? parameter.RawDefaultValue : null,
-                Description = (
-                        memberDocumentation.Parameters.Contains(parameter.Name)
-                        ? memberDocumentation.Parameters[parameter.Name]
-                        : Enumerable.Empty<BlockDocumentationElement>()
-                    )
-                    .AsReadOnlyList()
+                DefaultValue = parameter.HasDefaultValue ? parameter.RawDefaultValue : null
             };
+
+            memberDocumentation.Parameters.TryGetValue(parameter.Name, out var description);
+            parameterData.Description = description ?? _emptyBlockDocumentationElementCollection;
+
+            return parameterData;
+        }
 
         private AssemblyReference _CreateAssemblyReference(AssemblyName assemblyName)
             => new AssemblyReference
@@ -965,15 +959,15 @@ namespace CodeMap
             return result;
         }
 
-        private IReadOnlyCollection<ExceptionDocumentationElement> _MapExceptions(ILookup<string, BlockDocumentationElement> exceptions)
+        private IReadOnlyCollection<ExceptionData> _MapExceptions(IReadOnlyDictionary<string, BlockDocumentationElementCollection> exceptions)
             => (
                 from exception in exceptions
                 let exceptionType = _canonicalNameResolver.TryFindMemberInfoFor(exception.Key) as Type
                 where exceptionType != null && typeof(Exception).IsAssignableFrom(exceptionType)
-                select new ExceptionDocumentationElement
+                select new ExceptionData
                 {
                     Type = _GetTypeReference(exceptionType),
-                    Description = exception.AsReadOnlyList()
+                    Description = exception.Value
                 }
         ).ToList();
 

@@ -30,9 +30,9 @@ namespace CodeMap.Elements
                     .Parameters
                     .Zip(
                         type.DeclaringMethod.GetParameters(),
-                        (parameterDocumentationElement, parameterInfo) => new
+                        (parameterData, parameterInfo) => new
                         {
-                            ParameterDocumentationElement = parameterDocumentationElement,
+                            ParameterData = parameterData,
                             ParameterInfo = parameterInfo
                         }
                     )
@@ -40,7 +40,7 @@ namespace CodeMap.Elements
                         pair =>
                         {
                             var unwrappedType = _UnwrapTypeByRef(pair.ParameterInfo.ParameterType);
-                            return unwrappedType == type || pair.ParameterDocumentationElement.Type == unwrappedType;
+                            return unwrappedType == type || pair.ParameterData.Type == unwrappedType;
                         }
                     );
         }

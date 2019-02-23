@@ -1,4 +1,7 @@
-﻿using System;
+﻿using CodeMap.Elements;
+using CodeMap.Tests.Data;
+using Moq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,9 +9,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
-using CodeMap.Elements;
-using CodeMap.Tests.Data;
-using Moq;
 using Xunit;
 
 namespace CodeMap.Tests
@@ -1212,22 +1212,25 @@ namespace CodeMap.Tests
                             .Range(1, 1)
                             .Select(genericParameterNumber => $"TMethodParam{genericParameterNumber}")
                         )
-                    .ToLookup(
+                    .ToDictionary(
                         genericParameter => genericParameter,
-                        genericParameter => DocumentationElement.Paragraph() as BlockDocumentationElement
+                        genericParameter => new BlockDocumentationElementCollection(new[] { DocumentationElement.Paragraph() }),
+                        StringComparer.Ordinal
                     ),
                 Enumerable
                     .Range(1, 42)
                     .Select(parameterNumber => $"param{parameterNumber}")
-                    .ToLookup(
+                    .ToDictionary(
                         parameter => parameter,
-                        parameter => DocumentationElement.Paragraph() as BlockDocumentationElement
+                        parameter => new BlockDocumentationElementCollection(new[] { DocumentationElement.Paragraph() }),
+                        StringComparer.Ordinal
                     ),
-                new[] { DocumentationElement.Paragraph() },
+                new BlockDocumentationElementCollection(new[] { DocumentationElement.Paragraph() }),
                 new[] { "T:System.ArgumentException", "T:System.ArgumentNullException" }
-                    .ToLookup(
+                    .ToDictionary(
                         exception => exception,
-                        exception => DocumentationElement.Paragraph() as BlockDocumentationElement
+                        exception => new BlockDocumentationElementCollection(new[] { DocumentationElement.Paragraph() }),
+                        StringComparer.Ordinal
                     ),
                 DocumentationElement.Remarks(DocumentationElement.Paragraph()),
                 new[] { DocumentationElement.Example(DocumentationElement.Paragraph()) },

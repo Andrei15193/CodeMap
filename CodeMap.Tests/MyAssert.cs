@@ -290,7 +290,7 @@ namespace CodeMap.Tests
             _AssertDocumentation(constructorDocumentationElement, memberDocumentation);
             foreach (var parameter in constructorDocumentationElement.Parameters)
             {
-                Assert.True(memberDocumentation.Parameters.Contains(parameter.Name));
+                Assert.True(memberDocumentation.Parameters.ContainsKey(parameter.Name));
                 memberDocumentation
                     .AssertSameItems(
                         () => memberDocumentation.Parameters[parameter.Name],
@@ -341,7 +341,7 @@ namespace CodeMap.Tests
             _AssertDocumentation(propertyDocumentationElement, memberDocumentation);
             foreach (var parameter in propertyDocumentationElement.Parameters)
             {
-                Assert.True(memberDocumentation.Parameters.Contains(parameter.Name));
+                Assert.True(memberDocumentation.Parameters.ContainsKey(parameter.Name));
                 memberDocumentation
                     .AssertSameItems(
                         () => memberDocumentation.Parameters[parameter.Name],
@@ -372,7 +372,7 @@ namespace CodeMap.Tests
             _AssertDocumentation(methodDocumentationElement, memberDocumentation);
             foreach (var genericParameter in methodDocumentationElement.GenericParameters)
             {
-                Assert.True(memberDocumentation.GenericParameters.Contains(genericParameter.Name));
+                Assert.True(memberDocumentation.GenericParameters.ContainsKey(genericParameter.Name));
                 memberDocumentation
                     .AssertSameItems(
                         () => memberDocumentation.GenericParameters[genericParameter.Name],
@@ -381,7 +381,7 @@ namespace CodeMap.Tests
             }
             foreach (var parameter in methodDocumentationElement.Parameters)
             {
-                Assert.True(memberDocumentation.Parameters.Contains(parameter.Name));
+                Assert.True(memberDocumentation.Parameters.ContainsKey(parameter.Name));
                 memberDocumentation
                     .AssertSameItems(
                         () => memberDocumentation.Parameters[parameter.Name],

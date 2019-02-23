@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CodeMap.Tests.Data
 {
-    /// <summary/>
+    /// <summary test="attribute"/>
     [Test("class test 1", Value2 = "class test 2", Value3 = "class test 3")]
     public unsafe class TestClass<TParam1> : TestBaseClass, ITestExtendedBaseInterface
     {
