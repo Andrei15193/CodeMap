@@ -7,23 +7,23 @@ using System.Threading.Tasks;
 namespace CodeMap.Elements
 {
     /// <summary>Represents a collection of <see cref="BlockDocumentationElement"/> contained by an XML element.</summary>
-    public sealed class BlockDocumentationElementCollection : DocumentationElement, IReadOnlyList<BlockDocumentationElement>
+    public sealed class DescriptionDocumentationElement : DocumentationElement, IReadOnlyList<BlockDocumentationElement>
     {
         private readonly IReadOnlyList<BlockDocumentationElement> _blockDocumentationElements;
 
-        /// <summary>Initializes a new instance of the <see cref="BlockDocumentationElementCollection"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="DescriptionDocumentationElement"/> class.</summary>
         /// <param name="blockDocumentationElements">A collection of <see cref="BlockDocumentationElement"/>s to wrap.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="blockDocumentationElements"/> is <c>null</c>.</exception>
-        public BlockDocumentationElementCollection(IEnumerable<BlockDocumentationElement> blockDocumentationElements)
+        public DescriptionDocumentationElement(IEnumerable<BlockDocumentationElement> blockDocumentationElements)
             : this(blockDocumentationElements, new Dictionary<string, string>())
         {
         }
 
-        /// <summary>Initializes a new instance of the <see cref="BlockDocumentationElementCollection"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="DescriptionDocumentationElement"/> class.</summary>
         /// <param name="blockDocumentationElements">A collection of <see cref="BlockDocumentationElement"/>s to wrap.</param>
         /// <param name="xmlAttributes">A set of additional XML attributes.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="blockDocumentationElements"/> or <paramref name="xmlAttributes"/> are <c>null</c>.</exception>
-        public BlockDocumentationElementCollection(IEnumerable<BlockDocumentationElement> blockDocumentationElements, IReadOnlyDictionary<string, string> xmlAttributes)
+        public DescriptionDocumentationElement(IEnumerable<BlockDocumentationElement> blockDocumentationElements, IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _blockDocumentationElements = blockDocumentationElements
                 .AsReadOnlyList()

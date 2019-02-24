@@ -12,7 +12,7 @@ namespace CodeMap
         private readonly DynamicTypeData _dynamicTypeData = new DynamicTypeData();
         private readonly DocumentationElementCache _referencesCache = new DocumentationElementCache();
         private readonly MemberDocumentation _emptyMemberDocumentation = new MemberDocumentation(string.Empty);
-        private readonly BlockDocumentationElementCollection _emptyBlockDocumentationElementCollection = new BlockDocumentationElementCollection(Enumerable.Empty<BlockDocumentationElement>());
+        private readonly DescriptionDocumentationElement _emptyBlockDocumentationElementCollection = new DescriptionDocumentationElement(Enumerable.Empty<BlockDocumentationElement>());
         private readonly CanonicalNameResolver _canonicalNameResolver;
         private readonly MemberDocumentationCollection _membersDocumentation;
 
@@ -959,7 +959,7 @@ namespace CodeMap
             return result;
         }
 
-        private IReadOnlyCollection<ExceptionData> _MapExceptions(IReadOnlyDictionary<string, BlockDocumentationElementCollection> exceptions)
+        private IReadOnlyCollection<ExceptionData> _MapExceptions(IReadOnlyDictionary<string, DescriptionDocumentationElement> exceptions)
             => (
                 from exception in exceptions
                 let exceptionType = _canonicalNameResolver.TryFindMemberInfoFor(exception.Key) as Type

@@ -31,10 +31,10 @@ namespace CodeMap
         public MemberDocumentation(
             string canonicalName,
             SummaryDocumentationElement summary,
-            IReadOnlyDictionary<string, BlockDocumentationElementCollection> genericParameters,
-            IReadOnlyDictionary<string, BlockDocumentationElementCollection> parameters,
-            BlockDocumentationElementCollection returns,
-            IReadOnlyDictionary<string, BlockDocumentationElementCollection> exceptions,
+            IReadOnlyDictionary<string, DescriptionDocumentationElement> genericParameters,
+            IReadOnlyDictionary<string, DescriptionDocumentationElement> parameters,
+            DescriptionDocumentationElement returns,
+            IReadOnlyDictionary<string, DescriptionDocumentationElement> exceptions,
             RemarksDocumentationElement remarks,
             IEnumerable<ExampleDocumentationElement> examples,
             ValueDocumentationElement value,
@@ -59,16 +59,16 @@ namespace CodeMap
         public SummaryDocumentationElement Summary { get; }
 
         /// <summary>The generic parameters documentation.</summary>
-        public IReadOnlyDictionary<string, BlockDocumentationElementCollection> GenericParameters { get; }
+        public IReadOnlyDictionary<string, DescriptionDocumentationElement> GenericParameters { get; }
 
         /// <summary>The parameters documentation.</summary>
-        public IReadOnlyDictionary<string, BlockDocumentationElementCollection> Parameters { get; }
+        public IReadOnlyDictionary<string, DescriptionDocumentationElement> Parameters { get; }
 
         /// <summary>The returns section.</summary>
         public IReadOnlyList<BlockDocumentationElement> Returns { get; }
 
         /// <summary>The exceptions documentation.</summary>
-        public IReadOnlyDictionary<string, BlockDocumentationElementCollection> Exceptions { get; }
+        public IReadOnlyDictionary<string, DescriptionDocumentationElement> Exceptions { get; }
 
         /// <summary>The remarks section.</summary>
         public RemarksDocumentationElement Remarks { get; }

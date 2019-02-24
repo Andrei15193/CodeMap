@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests
 {
-    public class BlockDocumentationElementCollectionTests
+    public class DescriptionDocumentationElementTests
     {
         [Fact]
         public void CreateBlockElementCollection()
@@ -21,7 +21,7 @@ namespace CodeMap.Tests
                 DocumentationElement.CodeBlock(string.Empty)
             };
 
-            var blockElementCollection = new BlockDocumentationElementCollection(blockElements);
+            var blockElementCollection = new DescriptionDocumentationElement(blockElements);
 
             Assert.Equal(6, blockElementCollection.Count);
             for (var index = 0; index < blockElementCollection.Count; index++)
@@ -43,7 +43,7 @@ namespace CodeMap.Tests
                 DocumentationElement.CodeBlock(string.Empty)
             };
 
-            var blockElementCollection = new BlockDocumentationElementCollection(blockElements);
+            var blockElementCollection = new DescriptionDocumentationElement(blockElements);
 
             var exception = Assert.Throws<ArgumentOutOfRangeException>("index", () => blockElementCollection[-1]);
             Assert.Equal(new ArgumentOutOfRangeException("index", -1, new ArgumentOutOfRangeException().Message).Message, exception.Message);
@@ -57,7 +57,7 @@ namespace CodeMap.Tests
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 "blockDocumentationElements",
-                () => new BlockDocumentationElementCollection(null, new Dictionary<string, string>())
+                () => new DescriptionDocumentationElement(null, new Dictionary<string, string>())
             );
 
             Assert.Equal(new ArgumentNullException("blockDocumentationElements").Message, exception.Message);
@@ -67,7 +67,7 @@ namespace CodeMap.Tests
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 "xmlAttributes",
-                () => new BlockDocumentationElementCollection(Enumerable.Empty<BlockDocumentationElement>(), null)
+                () => new DescriptionDocumentationElement(Enumerable.Empty<BlockDocumentationElement>(), null)
             );
 
             Assert.Equal(new ArgumentNullException("xmlAttributes").Message, exception.Message);

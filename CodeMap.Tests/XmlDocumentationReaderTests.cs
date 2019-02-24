@@ -65,7 +65,7 @@ namespace CodeMap.Tests
                 DocumentationElement.Text(" "),
                 DocumentationElement.InlineCode("some code"),
         };
-        private static readonly BlockDocumentationElementCollection _richBlockElements = new BlockDocumentationElementCollection(
+        private static readonly DescriptionDocumentationElement _richBlockElements = new DescriptionDocumentationElement(
             new BlockDocumentationElement[]
             {
                     DocumentationElement.Paragraph(
@@ -1427,10 +1427,10 @@ fourth line
 
             Assert.Single(result);
             _AssertAreEqual(
-                new Dictionary<string, BlockDocumentationElementCollection>(StringComparer.Ordinal)
+                new Dictionary<string, DescriptionDocumentationElement>(StringComparer.Ordinal)
                 {
                     { "typeParameter1", _richBlockElements },
-                    { "typeParameter2", new BlockDocumentationElementCollection(_richBlockElements.Concat(_richBlockElements)) }
+                    { "typeParameter2", new DescriptionDocumentationElement(_richBlockElements.Concat(_richBlockElements)) }
                 },
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").GenericParameters
             );
@@ -1458,10 +1458,10 @@ fourth line
 
             Assert.Single(result);
             _AssertAreEqual(
-                new Dictionary<string, BlockDocumentationElementCollection>(StringComparer.Ordinal)
+                new Dictionary<string, DescriptionDocumentationElement>(StringComparer.Ordinal)
                 {
                     { "parameter1", _richBlockElements },
-                    { "parameter2", new BlockDocumentationElementCollection(_richBlockElements.Concat(_richBlockElements)) }
+                    { "parameter2", new DescriptionDocumentationElement(_richBlockElements.Concat(_richBlockElements)) }
                 },
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Parameters
             );
@@ -1514,10 +1514,10 @@ fourth line
 
             Assert.Single(result);
             _AssertAreEqual(
-                new Dictionary<string, BlockDocumentationElementCollection>(StringComparer.Ordinal)
+                new Dictionary<string, DescriptionDocumentationElement>(StringComparer.Ordinal)
                 {
                     { "exception1", _richBlockElements },
-                    { "exception2", new BlockDocumentationElementCollection(_richBlockElements.Concat(_richBlockElements)) }
+                    { "exception2", new DescriptionDocumentationElement(_richBlockElements.Concat(_richBlockElements)) }
                 },
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Exceptions
             );
@@ -1683,7 +1683,7 @@ fourth line
         private static void _AssertAreEqual(SummaryDocumentationElement expected, SummaryDocumentationElement actual)
             => _AssertAreEqual(expected.Content, actual.Content);
 
-        private static void _AssertAreEqual(IReadOnlyDictionary<string, BlockDocumentationElementCollection> expected, IReadOnlyDictionary<string, BlockDocumentationElementCollection> actual)
+        private static void _AssertAreEqual(IReadOnlyDictionary<string, DescriptionDocumentationElement> expected, IReadOnlyDictionary<string, DescriptionDocumentationElement> actual)
         {
             Assert.Equal(expected.Count, actual.Count);
 

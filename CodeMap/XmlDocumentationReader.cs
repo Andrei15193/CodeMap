@@ -79,7 +79,7 @@ namespace CodeMap
             return new SummaryDocumentationElement(_ReadBlocks(summaryXmlElement));
         }
 
-        private IReadOnlyDictionary<string, BlockDocumentationElementCollection> _ReadTypeParameters(XElement memberDocumentationXmlElement)
+        private IReadOnlyDictionary<string, DescriptionDocumentationElement> _ReadTypeParameters(XElement memberDocumentationXmlElement)
             => (
                 from typeParamXmlElement in memberDocumentationXmlElement.Elements("typeparam")
                 let typeParamNameAttribute = typeParamXmlElement.Attribute("name")
@@ -90,7 +90,7 @@ namespace CodeMap
                 select new
                 {
                     Name = typeParamXmlElementsByName.Key,
-                    DescriptionBlockElements = new BlockDocumentationElementCollection(blockDocumentationElements, xmlAttributes)
+                    DescriptionBlockElements = new DescriptionDocumentationElement(blockDocumentationElements, xmlAttributes)
                 }
             )
             .ToDictionary(
@@ -99,7 +99,7 @@ namespace CodeMap
                 StringComparer.Ordinal
             );
 
-        private IReadOnlyDictionary<string, BlockDocumentationElementCollection> _ReadParameters(XElement memberDocumentationXmlElement)
+        private IReadOnlyDictionary<string, DescriptionDocumentationElement> _ReadParameters(XElement memberDocumentationXmlElement)
             => (
                 from paramXmlElement in memberDocumentationXmlElement.Elements("param")
                 let paramNameAttribute = paramXmlElement.Attribute("name")
@@ -110,7 +110,7 @@ namespace CodeMap
                 select new
                 {
                     Name = paramXmlElementsByName.Key,
-                    DescriptionBlockElements = new BlockDocumentationElementCollection(blockDocumentationElements, xmlAttributes)
+                    DescriptionBlockElements = new DescriptionDocumentationElement(blockDocumentationElements, xmlAttributes)
                 }
             )
             .ToDictionary(
@@ -119,19 +119,19 @@ namespace CodeMap
                 StringComparer.Ordinal
             );
 
-        private BlockDocumentationElementCollection _ReadReturns(XElement memberDocumentationXmlElement)
+        private DescriptionDocumentationElement _ReadReturns(XElement memberDocumentationXmlElement)
         {
             var returnsXmlElement = memberDocumentationXmlElement.Element("returns");
             if (returnsXmlElement == null)
                 return null;
 
-            return new BlockDocumentationElementCollection(
+            return new DescriptionDocumentationElement(
                 _ReadBlocks(returnsXmlElement),
                 _ReadXmlAttributes(returnsXmlElement)
             );
         }
 
-        private IReadOnlyDictionary<string, BlockDocumentationElementCollection> _ReadExceptions(XElement memberDocumentationXmlElement)
+        private IReadOnlyDictionary<string, DescriptionDocumentationElement> _ReadExceptions(XElement memberDocumentationXmlElement)
             => (
                 from exceptionXmlElement in memberDocumentationXmlElement.Elements("exception")
                 let exceptionCrefAttribute = exceptionXmlElement.Attribute("cref")
@@ -142,7 +142,7 @@ namespace CodeMap
                 select new
                 {
                     CanonicalName = exceptionXmlElementsByType.Key,
-                    DescriptionBlockElements = new BlockDocumentationElementCollection(blockDocumentationElements, xmlAttributes)
+                    DescriptionBlockElements = new DescriptionDocumentationElement(blockDocumentationElements, xmlAttributes)
                 }
             )
             .ToDictionary(

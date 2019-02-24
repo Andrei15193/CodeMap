@@ -34,6 +34,6 @@ namespace CodeMap.Elements
         public IReadOnlyCollection<TypeReferenceData> TypeConstraints { get; internal set; }
 
         /// <summary>The generic parameter description.</summary>
-        public BlockDocumentationElementCollection Description { get; internal set; }
+        public DescriptionDocumentationElement Description { get; internal set; }
     }
 }

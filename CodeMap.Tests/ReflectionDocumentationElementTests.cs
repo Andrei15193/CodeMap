@@ -1214,7 +1214,7 @@ namespace CodeMap.Tests
                         )
                     .ToDictionary(
                         genericParameter => genericParameter,
-                        genericParameter => new BlockDocumentationElementCollection(new[] { DocumentationElement.Paragraph() }),
+                        genericParameter => new DescriptionDocumentationElement(new[] { DocumentationElement.Paragraph() }),
                         StringComparer.Ordinal
                     ),
                 Enumerable
@@ -1222,14 +1222,14 @@ namespace CodeMap.Tests
                     .Select(parameterNumber => $"param{parameterNumber}")
                     .ToDictionary(
                         parameter => parameter,
-                        parameter => new BlockDocumentationElementCollection(new[] { DocumentationElement.Paragraph() }),
+                        parameter => new DescriptionDocumentationElement(new[] { DocumentationElement.Paragraph() }),
                         StringComparer.Ordinal
                     ),
-                new BlockDocumentationElementCollection(new[] { DocumentationElement.Paragraph() }),
+                new DescriptionDocumentationElement(new[] { DocumentationElement.Paragraph() }),
                 new[] { "T:System.ArgumentException", "T:System.ArgumentNullException" }
                     .ToDictionary(
                         exception => exception,
-                        exception => new BlockDocumentationElementCollection(new[] { DocumentationElement.Paragraph() }),
+                        exception => new DescriptionDocumentationElement(new[] { DocumentationElement.Paragraph() }),
                         StringComparer.Ordinal
                     ),
                 DocumentationElement.Remarks(DocumentationElement.Paragraph()),
