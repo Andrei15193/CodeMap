@@ -13,7 +13,7 @@ namespace CodeMap.Elements
         public TypeReferenceData Type { get; internal set; }
 
         /// <summary>The description of the cases where the exception is thrown.</summary>
-        public DescriptionDocumentationElement Description { get; internal set; }
+        public BlockDescriptionDocumentationElement Description { get; internal set; }
 
         internal IReadOnlyDictionary<string, string> XmlAttributes { get; set; }
     }

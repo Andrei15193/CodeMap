@@ -76,10 +76,13 @@ namespace CodeMap
             if (summaryXmlElement == null)
                 return null;
 
-            return new SummaryDocumentationElement(_ReadBlocks(summaryXmlElement));
+            return DocumentationElement.Summary(
+                _ReadBlocks(summaryXmlElement),
+                _ReadXmlAttributes(summaryXmlElement)
+            );
         }
 
-        private IReadOnlyDictionary<string, DescriptionDocumentationElement> _ReadTypeParameters(XElement memberDocumentationXmlElement)
+        private IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> _ReadTypeParameters(XElement memberDocumentationXmlElement)
             => (
                 from typeParamXmlElement in memberDocumentationXmlElement.Elements("typeparam")
                 let typeParamNameAttribute = typeParamXmlElement.Attribute("name")
@@ -90,7 +93,7 @@ namespace CodeMap
                 select new
                 {
                     Name = typeParamXmlElementsByName.Key,
-                    DescriptionBlockElements = new DescriptionDocumentationElement(blockDocumentationElements, xmlAttributes)
+                    DescriptionBlockElements = DocumentationElement.BlockDescription(blockDocumentationElements, xmlAttributes)
                 }
             )
             .ToDictionary(
@@ -99,7 +102,7 @@ namespace CodeMap
                 StringComparer.Ordinal
             );
 
-        private IReadOnlyDictionary<string, DescriptionDocumentationElement> _ReadParameters(XElement memberDocumentationXmlElement)
+        private IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> _ReadParameters(XElement memberDocumentationXmlElement)
             => (
                 from paramXmlElement in memberDocumentationXmlElement.Elements("param")
                 let paramNameAttribute = paramXmlElement.Attribute("name")
@@ -110,7 +113,7 @@ namespace CodeMap
                 select new
                 {
                     Name = paramXmlElementsByName.Key,
-                    DescriptionBlockElements = new DescriptionDocumentationElement(blockDocumentationElements, xmlAttributes)
+                    DescriptionBlockElements = DocumentationElement.BlockDescription(blockDocumentationElements, xmlAttributes)
                 }
             )
             .ToDictionary(
@@ -119,19 +122,19 @@ namespace CodeMap
                 StringComparer.Ordinal
             );
 
-        private DescriptionDocumentationElement _ReadReturns(XElement memberDocumentationXmlElement)
+        private BlockDescriptionDocumentationElement _ReadReturns(XElement memberDocumentationXmlElement)
         {
             var returnsXmlElement = memberDocumentationXmlElement.Element("returns");
             if (returnsXmlElement == null)
                 return null;
 
-            return new DescriptionDocumentationElement(
+            return DocumentationElement.BlockDescription(
                 _ReadBlocks(returnsXmlElement),
                 _ReadXmlAttributes(returnsXmlElement)
             );
         }
 
-        private IReadOnlyDictionary<string, DescriptionDocumentationElement> _ReadExceptions(XElement memberDocumentationXmlElement)
+        private IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> _ReadExceptions(XElement memberDocumentationXmlElement)
             => (
                 from exceptionXmlElement in memberDocumentationXmlElement.Elements("exception")
                 let exceptionCrefAttribute = exceptionXmlElement.Attribute("cref")
@@ -142,7 +145,7 @@ namespace CodeMap
                 select new
                 {
                     CanonicalName = exceptionXmlElementsByType.Key,
-                    DescriptionBlockElements = new DescriptionDocumentationElement(blockDocumentationElements, xmlAttributes)
+                    DescriptionBlockElements = DocumentationElement.BlockDescription(blockDocumentationElements, xmlAttributes)
                 }
             )
             .ToDictionary(
@@ -157,13 +160,13 @@ namespace CodeMap
             if (remarksXmlElement == null)
                 return null;
 
-            return DocumentationElement.Remarks(_ReadBlocks(remarksXmlElement));
+            return DocumentationElement.Remarks(_ReadBlocks(remarksXmlElement), _ReadXmlAttributes(remarksXmlElement));
         }
 
         private IReadOnlyList<ExampleDocumentationElement> _ReadExamples(XElement memberDocumentationXmlElement)
             => memberDocumentationXmlElement
                 .Elements("example")
-                .Select(exampleXmlElement => DocumentationElement.Example(_ReadBlocks(exampleXmlElement)))
+                .Select(exampleXmlElement => DocumentationElement.Example(_ReadBlocks(exampleXmlElement), _ReadXmlAttributes(exampleXmlElement)))
                 .ToList();
 
         private ValueDocumentationElement _ReadValue(XElement memberDocumentationXmlElement)
@@ -172,7 +175,7 @@ namespace CodeMap
             if (valueXmlElement == null)
                 return null;
 
-            return DocumentationElement.Value(_ReadBlocks(valueXmlElement));
+            return DocumentationElement.Value(_ReadBlocks(valueXmlElement), _ReadXmlAttributes(valueXmlElement));
         }
 
         private IReadOnlyList<MemberReferenceDocumentationElement> _ReadRelatedMembers(XElement memberDocumentationXmlElement)
@@ -180,29 +183,49 @@ namespace CodeMap
                 from relatedMemberXmlElement in memberDocumentationXmlElement.Elements("seealso")
                 let relatedMemberCrefAttribute = relatedMemberXmlElement.Attribute("cref")
                 where relatedMemberCrefAttribute != null
-                select DocumentationElement.MemberReference(relatedMemberCrefAttribute.Value)
+                select DocumentationElement.MemberReference(relatedMemberCrefAttribute.Value, _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
             )
             .ToList();
 
-        private IReadOnlyDictionary<string, string> _ReadXmlAttributes(XElement xmlElement)
+        private static IReadOnlyDictionary<string, string> _ReadXmlAttributes(XElement xmlElement)
             => xmlElement
                 .Attributes()
                 .ToDictionary(
                     attribute => attribute.Name.LocalName,
                     attribute => attribute.Value,
                     StringComparer.Ordinal
-            );
+                );
 
-        private IReadOnlyDictionary<string, string> _ReadXmlAttributesExcept(IEnumerable<XElement> xmlElements, string attributeName)
+        private static IReadOnlyDictionary<string, string> _ReadXmlAttributes(IEnumerable<XElement> xmlElements)
             => xmlElements
                 .Attributes()
-                .Where(attribute => attribute.Name.LocalName != attributeName)
                 .GroupBy(attribute => attribute.Name.LocalName, StringComparer.Ordinal)
                 .ToDictionary(
                     attributesByName => attributesByName.Key,
                     attributesByName => attributesByName.First().Value,
                     StringComparer.Ordinal
-            );
+                );
+
+        private static IReadOnlyDictionary<string, string> _ReadXmlAttributesExcept(XElement xmlElement, string attributeLocalName)
+            => xmlElement
+                .Attributes()
+                .Where(attribute => attribute.Name.LocalName != attributeLocalName)
+                .ToDictionary(
+                    attribute => attribute.Name.LocalName,
+                    attribute => attribute.Value,
+                    StringComparer.Ordinal
+                );
+
+        private static IReadOnlyDictionary<string, string> _ReadXmlAttributesExcept(IEnumerable<XElement> xmlElements, string attributeLocalName)
+            => xmlElements
+                .Attributes()
+                .Where(attribute => attribute.Name.LocalName != attributeLocalName)
+                .GroupBy(attribute => attribute.Name.LocalName, StringComparer.Ordinal)
+                .ToDictionary(
+                    attributesByName => attributesByName.Key,
+                    attributesByName => attributesByName.First().Value,
+                    StringComparer.Ordinal
+                );
 
         private IReadOnlyList<BlockDocumentationElement> _ReadBlocks(XElement sectionXmlElement)
         {
@@ -247,7 +270,10 @@ namespace CodeMap
         }
 
         private static ParagraphDocumentationElement _ReadParagraph(XElement xmlElement)
-            => DocumentationElement.Paragraph(_ReadContent(xmlElement.Nodes()));
+            => DocumentationElement.Paragraph(
+                _ReadContent(xmlElement.Nodes()),
+                _ReadXmlAttributes(xmlElement)
+            );
 
         private static CodeBlockDocumentationElement _ReadCodeBlock(XElement xmlElement)
         {
@@ -280,7 +306,7 @@ namespace CodeMap
                 }
             }
 
-            return new CodeBlockDocumentationElement(codeBlockBuilder.ToString());
+            return DocumentationElement.CodeBlock(codeBlockBuilder.ToString(), _ReadXmlAttributes(xmlElement));
         }
 
         private static BlockDocumentationElement _ReadListOrTable(XElement xmlElement)
@@ -305,27 +331,47 @@ namespace CodeMap
         }
 
         private static UnorderedListDocumentationElement _ReadUnorederedList(XElement xmlElement)
-            => DocumentationElement.UnorderedList(xmlElement.Elements("item").Select(_ReadListItem));
+            => DocumentationElement.UnorderedList(
+                xmlElement.Elements("item").Select(_ReadListItem),
+                _ReadXmlAttributesExcept(xmlElement, "type")
+            );
 
         private static OrderedListDocumentationElement _ReadOrederedList(XElement xmlElement)
-            => DocumentationElement.OrderedList(xmlElement.Elements("item").Select(_ReadListItem));
+            => DocumentationElement.OrderedList(
+                xmlElement.Elements("item").Select(_ReadListItem),
+                _ReadXmlAttributesExcept(xmlElement, "type")
+            );
 
         private static ListItemDocumentationElement _ReadListItem(XElement xmlElement)
-            => DocumentationElement.ListItem(
-                _ReadContent(
-                    (xmlElement.Element("description") ?? xmlElement).Nodes()
-                )
+        {
+            var descriptionElement = xmlElement.Element("description");
+            return DocumentationElement.ListItem(
+                _ReadContent((descriptionElement ?? xmlElement).Nodes()),
+                _ReadXmlAttributes(descriptionElement != null ? new[] { descriptionElement, xmlElement } : new[] { xmlElement })
             );
+        }
 
         private static DefinitionListDocumentationElement _ReadDefinitionList(XElement xmlElement)
         {
             var definitionListItems = xmlElement
                 .Elements("item")
-                .Select(itemXmlElement =>
-                    DocumentationElement.DefinitionListItem(
-                        _ReadContent(itemXmlElement.Element("term")?.Nodes() ?? Enumerable.Empty<XNode>()),
-                        _ReadContent(itemXmlElement.Element("description")?.Nodes() ?? Enumerable.Empty<XNode>())
-                    )
+                .Select(
+                    itemXmlElement =>
+                    {
+                        var termElement = itemXmlElement.Element("term");
+                        var descriptionElement = itemXmlElement.Element("description");
+                        return DocumentationElement.DefinitionListItem(
+                            DocumentationElement.InlineDescription(
+                                _ReadContent(termElement?.Nodes() ?? Enumerable.Empty<XNode>()),
+                                termElement != null ? _ReadXmlAttributes(termElement) : null
+                            ),
+                            DocumentationElement.InlineDescription(
+                                _ReadContent(itemXmlElement.Element("description")?.Nodes() ?? Enumerable.Empty<XNode>()),
+                                descriptionElement != null ? _ReadXmlAttributes(descriptionElement) : null
+                            ),
+                            _ReadXmlAttributes(itemXmlElement)
+                        );
+                    }
                 );
 
             var listTitleXmlElement = xmlElement.Element("listheader");
@@ -333,7 +379,8 @@ namespace CodeMap
             var listTile = listTitleNodes == null ? null : _ReadContent(listTitleNodes);
             return DocumentationElement.DefinitionList(
                 listTile,
-                definitionListItems
+                definitionListItems,
+                _ReadXmlAttributesExcept(xmlElement, "type")
             );
         }
 
@@ -346,23 +393,38 @@ namespace CodeMap
                         rowXmlElement
                             .Elements("description")
                             .Select(
-                                cellXmlElement => DocumentationElement.TableCell(_ReadContent(cellXmlElement.Nodes()))
-                            )
+                                cellXmlElement => DocumentationElement.TableCell(
+                                    _ReadContent(cellXmlElement.Nodes()),
+                                    _ReadXmlAttributes(cellXmlElement)
+                                )
+                            ),
+                        _ReadXmlAttributes(rowXmlElement)
                     )
-                );
+                )
+                .ToList();
 
             var tableHeaderXmlElement = xmlElement.Element("listheader");
             if (tableHeaderXmlElement != null)
             {
-                var columns = tableHeaderXmlElement
-                    .Elements("term")
+                var termElements = tableHeaderXmlElement
+                    .Elements("term");
+                var columns = termElements
                     .Select(
-                        columnXmlElement => DocumentationElement.TableColumn(_ReadContent(columnXmlElement.Nodes()))
+                        columnXmlElement => DocumentationElement.TableColumn(
+                            _ReadContent(columnXmlElement.Nodes()),
+                            _ReadXmlAttributes(new[] { columnXmlElement, tableHeaderXmlElement })
+                        )
+                    )
+                    .Concat(
+                        Enumerable.Repeat(
+                            DocumentationElement.TableColumn(Enumerable.Empty<InlineDocumentationElement>(), _ReadXmlAttributes(tableHeaderXmlElement)),
+                            Math.Max(0, (rows.Max(row => (int?)row.Cells.Count) ?? 0) - termElements.Count())
+                        )
                     );
-                return DocumentationElement.Table(columns, rows);
+                return DocumentationElement.Table(columns, rows, _ReadXmlAttributesExcept(xmlElement, "type"));
             }
             else
-                return DocumentationElement.Table(rows);
+                return DocumentationElement.Table(rows, _ReadXmlAttributesExcept(xmlElement, "type"));
         }
 
         private static IReadOnlyList<InlineDocumentationElement> _ReadContent(IEnumerable<XNode> xmlNodes)
@@ -382,7 +444,7 @@ namespace CodeMap
                         if (memberReferenceCrefAttribute != null)
                         {
                             _AddTextElementIfExists();
-                            inlineElements.Add(DocumentationElement.MemberReference(memberReferenceCrefAttribute.Value));
+                            inlineElements.Add(DocumentationElement.MemberReference(memberReferenceCrefAttribute.Value, _ReadXmlAttributesExcept(xmlElement, "cref")));
                         }
                         break;
 
@@ -391,7 +453,7 @@ namespace CodeMap
                         if (parameterReferenceNameAttribute != null)
                         {
                             _AddTextElementIfExists();
-                            inlineElements.Add(DocumentationElement.ParameterReference(parameterReferenceNameAttribute.Value));
+                            inlineElements.Add(DocumentationElement.ParameterReference(parameterReferenceNameAttribute.Value, _ReadXmlAttributesExcept(xmlElement, "name")));
                         }
                         break;
 
@@ -400,13 +462,13 @@ namespace CodeMap
                         if (typeParameterReferenceNameAttribute != null)
                         {
                             _AddTextElementIfExists();
-                            inlineElements.Add(DocumentationElement.GenericParameterReference(typeParameterReferenceNameAttribute.Value));
+                            inlineElements.Add(DocumentationElement.GenericParameterReference(typeParameterReferenceNameAttribute.Value, _ReadXmlAttributesExcept(xmlElement, "name")));
                         }
                         break;
 
                     case XElement xmlElement when xmlElement.Name.LocalName.Equals("c", StringComparison.Ordinal):
                         _AddTextElementIfExists();
-                        inlineElements.Add(DocumentationElement.InlineCode(xmlElement.Value));
+                        inlineElements.Add(DocumentationElement.InlineCode(xmlElement.Value, _ReadXmlAttributes(xmlElement)));
                         break;
                 }
             }

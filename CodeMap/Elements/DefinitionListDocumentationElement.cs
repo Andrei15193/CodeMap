@@ -9,11 +9,10 @@ namespace CodeMap.Elements
     /// <summary>Represents a definition list element corresponding to the <c>list</c> XML element.</summary>
     public sealed class DefinitionListDocumentationElement : BlockDocumentationElement
     {
-        internal DefinitionListDocumentationElement(IEnumerable<InlineDocumentationElement> listTitle, IEnumerable<DefinitionListItemDocumentationElement> items)
+        internal DefinitionListDocumentationElement(IEnumerable<InlineDocumentationElement> listTitle, IEnumerable<DefinitionListItemDocumentationElement> items, IReadOnlyDictionary<string, string> xmlAttributes)
         {
-            ListTitle = listTitle as IReadOnlyList<InlineDocumentationElement>
-                ?? listTitle?.ToList();
-            if (ListTitle != null && ListTitle.Contains(null))
+            ListTitle = listTitle.AsReadOnlyListOrEmpty();
+            if (ListTitle.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' elements.", nameof(listTitle));
 
             Items = items as IReadOnlyList<DefinitionListItemDocumentationElement>
@@ -21,10 +20,14 @@ namespace CodeMap.Elements
                 ?? throw new ArgumentNullException(nameof(items));
             if (Items.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' items.", nameof(items));
+
+            XmlAttributes = xmlAttributes ?? new Dictionary<string, string>();
+            if (XmlAttributes.Any(pair => pair.Value == null))
+                throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
         }
 
-        internal DefinitionListDocumentationElement(IEnumerable<DefinitionListItemDocumentationElement> items)
-            : this(null, items)
+        internal DefinitionListDocumentationElement(IEnumerable<DefinitionListItemDocumentationElement> items, IReadOnlyDictionary<string, string> xmlAttributes)
+            : this(null, items, xmlAttributes)
         {
         }
 
@@ -34,12 +37,15 @@ namespace CodeMap.Elements
         /// <summary>The items that form the definition list.</summary>
         public IReadOnlyList<DefinitionListItemDocumentationElement> Items { get; }
 
+        /// <summary>The XML attributes specified on the definition list element.</summary>
+        public IReadOnlyDictionary<string, string> XmlAttributes { get; }
+
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
             visitor.VisitDefinitionListBeginning();
-            if (ListTitle != null)
+            if (ListTitle.Count > 0)
             {
                 visitor.VisitDefinitionListTitleBeginning();
                 foreach (var contentElement in ListTitle)
@@ -58,7 +64,7 @@ namespace CodeMap.Elements
         public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
             await visitor.VisitDefinitionListBeginningAsync(cancellationToken).ConfigureAwait(false);
-            if (ListTitle != null)
+            if (ListTitle.Count > 0)
             {
                 await visitor.VisitDefinitionListTitleBeginningAsync(cancellationToken).ConfigureAwait(false);
                 foreach (var contentElement in ListTitle)

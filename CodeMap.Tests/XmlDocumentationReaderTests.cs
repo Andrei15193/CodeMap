@@ -13,44 +13,48 @@ namespace CodeMap.Tests
         private static XmlDocumentationReader _XmlDocumentationReader { get; } = new XmlDocumentationReader();
         private static readonly string _richInlineContent = @"
                 plain text
-                <paramref name=""parameter reference""/>
-                <typeparamref name=""generic parameter reference""/>
-                <see cref=""member reference""/>
-                <c>some code</c>"
+                <paramref name=""parameter reference"" test=""paramref""/>
+                <typeparamref name=""generic parameter reference"" test=""typeparamref""/>
+                <see cref=""member reference"" test=""see""/>
+                <c test=""c"">some code</c>"
             .Trim();
         private static readonly string _richBlockContent = $@"
                 {_richInlineContent}
-                <list type=""table"">
-                    <item>
-                        <description>{_richInlineContent}</description>
+                <list type=""table"" test=""table"">
+                    <listheader test=""listheader"" test2=""old term"">
+                        <term test2=""term"">{_richInlineContent}</term>
+                    </listheader>
+                    <item test=""item"" test2=""old description"">
+                        <description test2=""description"">{_richInlineContent}</description>
+                        <description test2=""description"">{_richInlineContent}</description>
                     </item>
-                    <item />
+                    <item test=""item"" test2=""old description""/>
                 </list>
-                <code>
+                <code test=""code"">
                     some code in a block
                 </code>
-                <list type=""bullet"">
-                    <item>{_richInlineContent}</item>
-                    <item>
-                        <description>{_richInlineContent}</description>
+                <list type=""bullet"" test=""unordered list"">
+                    <item test=""item"" test2=""description"">{_richInlineContent}</item>
+                    <item test=""item"" test2=""old description"">
+                        <description test2=""description"">{_richInlineContent}</description>
                     </item>
-                    <item />
+                    <item test=""item"" test2=""description""/>
                 </list>
-                <list type=""number"">
-                    <item>{_richInlineContent}</item>
-                    <item>
-                        <description>{_richInlineContent}</description>
+                <list type=""number"" test=""ordered list"">
+                    <item test=""item"" test2=""description"">{_richInlineContent}</item>
+                    <item test=""item"" test2=""old description"">
+                        <description test2=""description"">{_richInlineContent}</description>
                     </item>
-                    <item />
+                    <item test=""item"" test2=""description""/>
                 </list>
                 {_richInlineContent}
-                <list>
-                    <listheader>{_richInlineContent}</listheader>
-                    <item>
-                        <term>{_richInlineContent}</term>
-                        <description>{_richInlineContent}</description>
+                <list test=""definition list"">
+                    <listheader test=""listheader"">{_richInlineContent}</listheader>
+                    <item test=""item"" test2=""old description"">
+                        <term test=""term"">{_richInlineContent}</term>
+                        <description test2=""description"">{_richInlineContent}</description>
                     </item>
-                    <item>
+                    <item test=""item"" test2=""old description"">
                     </item>
                 </list>"
             .Trim();
@@ -65,14 +69,23 @@ namespace CodeMap.Tests
                 DocumentationElement.Text(" "),
                 DocumentationElement.InlineCode("some code"),
         };
-        private static readonly DescriptionDocumentationElement _richBlockElements = new DescriptionDocumentationElement(
+        private static readonly BlockDescriptionDocumentationElement _richBlockElements = DocumentationElement.BlockDescription(
             new BlockDocumentationElement[]
             {
                     DocumentationElement.Paragraph(
                         _richInlineElements
                     ),
                     DocumentationElement.Table(
+                        new []
+                        {
+                            DocumentationElement.TableColumn(
+                                _richInlineElements
+                            )
+                        },
                         DocumentationElement.TableRow(
+                            DocumentationElement.TableCell(
+                                _richInlineElements
+                            ),
                             DocumentationElement.TableCell(
                                 _richInlineElements
                             )
@@ -1427,10 +1440,10 @@ fourth line
 
             Assert.Single(result);
             _AssertAreEqual(
-                new Dictionary<string, DescriptionDocumentationElement>(StringComparer.Ordinal)
+                new Dictionary<string, BlockDescriptionDocumentationElement>(StringComparer.Ordinal)
                 {
                     { "typeParameter1", _richBlockElements },
-                    { "typeParameter2", new DescriptionDocumentationElement(_richBlockElements.Concat(_richBlockElements)) }
+                    { "typeParameter2", DocumentationElement.BlockDescription(_richBlockElements.Concat(_richBlockElements)) }
                 },
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").GenericParameters
             );
@@ -1458,10 +1471,10 @@ fourth line
 
             Assert.Single(result);
             _AssertAreEqual(
-                new Dictionary<string, DescriptionDocumentationElement>(StringComparer.Ordinal)
+                new Dictionary<string, BlockDescriptionDocumentationElement>(StringComparer.Ordinal)
                 {
                     { "parameter1", _richBlockElements },
-                    { "parameter2", new DescriptionDocumentationElement(_richBlockElements.Concat(_richBlockElements)) }
+                    { "parameter2", DocumentationElement.BlockDescription(_richBlockElements.Concat(_richBlockElements)) }
                 },
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Parameters
             );
@@ -1514,10 +1527,10 @@ fourth line
 
             Assert.Single(result);
             _AssertAreEqual(
-                new Dictionary<string, DescriptionDocumentationElement>(StringComparer.Ordinal)
+                new Dictionary<string, BlockDescriptionDocumentationElement>(StringComparer.Ordinal)
                 {
                     { "exception1", _richBlockElements },
-                    { "exception2", new DescriptionDocumentationElement(_richBlockElements.Concat(_richBlockElements)) }
+                    { "exception2", DocumentationElement.BlockDescription(_richBlockElements.Concat(_richBlockElements)) }
                 },
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Exceptions
             );
@@ -1674,6 +1687,64 @@ fourth line
         }
 
         [Fact]
+        public async Task ReadMemberDocumentationWithXmlAttributes()
+        {
+            MemberDocumentationCollection result;
+            using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"">
+            <summary test=""summary"">{_richBlockContent}</summary>
+            <typeparam name=""TParam"" test=""typeparam"">{_richBlockContent}</typeparam>
+            <param name=""param"" test=""param"">{_richBlockContent}</param>
+            <returns test=""returns"">{_richBlockContent}</returns>
+            <exception cref=""exception1"" test=""exception"">{_richBlockContent}</exception>
+            <remarks test=""remarks"">{_richBlockContent}</remarks>
+            <example test=""example"">{_richBlockContent}</example>
+            <value test=""value"">{_richBlockContent}</value>
+            <seealso cref=""reference"" test=""seealso""/>
+        </member>
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Single(result);
+            _AssertXmlAttributes(result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name"));
+        }
+
+        [Fact]
+        public async Task ReadMemberDocumentationParagraphWithXmlAttributes()
+        {
+            MemberDocumentationCollection result;
+            using (var stringReader = new StringReader($@"<?xml version=""1.0""?>
+<doc>
+    <assembly>
+        <name>CodeMap.Tests</name>
+    </assembly>
+    <members>
+        <member name=""canonical name"">
+            <summary>
+                <para test=""para"">paragraph</para>
+            </summary>
+        </member>
+    </members>
+</doc>
+"))
+                result = await _XmlDocumentationReader.ReadAsync(stringReader);
+
+            Assert.Single(result);
+            var summary = result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Summary;
+            Assert.Single(summary.Content);
+            var paragraph = summary.Content.Cast<ParagraphDocumentationElement>().Single();
+            Assert.Single(paragraph.XmlAttributes);
+            Assert.Equal("para", paragraph.XmlAttributes["test"]);
+        }
+
+        [Fact]
         public async Task ReadingFromNullThrowsException()
         {
             var exception = await Assert.ThrowsAsync<ArgumentNullException>("textReader", () => _XmlDocumentationReader.ReadAsync(null));
@@ -1683,7 +1754,7 @@ fourth line
         private static void _AssertAreEqual(SummaryDocumentationElement expected, SummaryDocumentationElement actual)
             => _AssertAreEqual(expected.Content, actual.Content);
 
-        private static void _AssertAreEqual(IReadOnlyDictionary<string, DescriptionDocumentationElement> expected, IReadOnlyDictionary<string, DescriptionDocumentationElement> actual)
+        private static void _AssertAreEqual(IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> expected, IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> actual)
         {
             Assert.Equal(expected.Count, actual.Count);
 
@@ -1893,6 +1964,298 @@ fourth line
         private static void _AssertAreEqual(ParameterReferenceDocumentationElement expected, ParameterReferenceDocumentationElement actual)
         {
             Assert.Equal(expected.ParameterName, actual.ParameterName);
+        }
+
+        private static void _AssertXmlAttributes(MemberDocumentation memberDocumentation)
+        {
+            _AssertSummaryXmlAttributes(memberDocumentation.Summary);
+            foreach (var genericParameter in memberDocumentation.GenericParameters.Values)
+                _AssertGenericParameterXmlAttributes(genericParameter);
+            foreach (var parameter in memberDocumentation.Parameters.Values)
+                _AssertParameterXmlAttributes(parameter);
+            _AssertReturnsXmlAttributes(memberDocumentation.Returns);
+            foreach (var exception in memberDocumentation.Exceptions.Values)
+                _AssertExceptionXmlAttributes(exception);
+            _AssertRemarksXmlAttributes(memberDocumentation.Remarks);
+            foreach (var example in memberDocumentation.Examples)
+                _AssertExampleXmlAttributes(example);
+            _AssertValueXmlAttributes(memberDocumentation.Value);
+            foreach (var relatedMember in memberDocumentation.RelatedMembers)
+                _AssertRelatedMemberXmlAttributes(relatedMember);
+        }
+
+        private static void _AssertSummaryXmlAttributes(SummaryDocumentationElement summary)
+        {
+            Assert.Single(summary.XmlAttributes);
+            Assert.Equal("summary", summary.XmlAttributes["test"]);
+            _AssertBlockElementsXmlAttributes(summary.Content);
+        }
+
+        private static void _AssertGenericParameterXmlAttributes(BlockDescriptionDocumentationElement genericParameter)
+        {
+            Assert.Single(genericParameter.XmlAttributes);
+            Assert.Equal("typeparam", genericParameter.XmlAttributes["test"]);
+            _AssertBlockElementsXmlAttributes(genericParameter);
+        }
+
+        private static void _AssertParameterXmlAttributes(BlockDescriptionDocumentationElement parameter)
+        {
+            Assert.Single(parameter.XmlAttributes);
+            Assert.Equal("param", parameter.XmlAttributes["test"]);
+            _AssertBlockElementsXmlAttributes(parameter);
+        }
+
+        private static void _AssertReturnsXmlAttributes(BlockDescriptionDocumentationElement returns)
+        {
+            Assert.Single(returns.XmlAttributes);
+            Assert.Equal("returns", returns.XmlAttributes["test"]);
+            _AssertBlockElementsXmlAttributes(returns);
+        }
+
+        private static void _AssertExceptionXmlAttributes(BlockDescriptionDocumentationElement exception)
+        {
+            Assert.Single(exception.XmlAttributes);
+            Assert.Equal("exception", exception.XmlAttributes["test"]);
+            _AssertBlockElementsXmlAttributes(exception);
+        }
+
+        private static void _AssertRemarksXmlAttributes(RemarksDocumentationElement remarks)
+        {
+            Assert.Single(remarks.XmlAttributes);
+            Assert.Equal("remarks", remarks.XmlAttributes["test"]);
+            _AssertBlockElementsXmlAttributes(remarks.Content);
+        }
+
+        private static void _AssertExampleXmlAttributes(ExampleDocumentationElement example)
+        {
+            Assert.Single(example.XmlAttributes);
+            Assert.Equal("example", example.XmlAttributes["test"]);
+            _AssertBlockElementsXmlAttributes(example.Content);
+        }
+
+        private static void _AssertValueXmlAttributes(ValueDocumentationElement value)
+        {
+            Assert.Single(value.XmlAttributes);
+            Assert.Equal("value", value.XmlAttributes["test"]);
+            _AssertBlockElementsXmlAttributes(value.Content);
+        }
+
+        private static void _AssertRelatedMemberXmlAttributes(MemberReferenceDocumentationElement relatedMember)
+        {
+            switch (relatedMember)
+            {
+                case MemberInfoReferenceDocumentationElement memberInfoReference:
+                    Assert.Single(memberInfoReference.XmlAttributes);
+                    Assert.Equal("seealso", memberInfoReference.XmlAttributes["test"]);
+                    break;
+
+                case MemberNameReferenceDocumentationElement memberNameReference:
+                    Assert.Single(memberNameReference.XmlAttributes);
+                    Assert.Equal("seealso", memberNameReference.XmlAttributes["test"]);
+                    break;
+            }
+        }
+
+        private static void _AssertBlockElementsXmlAttributes(IEnumerable<BlockDocumentationElement> blockElements)
+        {
+            foreach (var blockElement in blockElements)
+                switch (blockElement)
+                {
+                    case ParagraphDocumentationElement paragraph:
+                        _AssertParagraphXmlAttributes(paragraph);
+                        break;
+
+                    case UnorderedListDocumentationElement unorderedListDocumentationElement:
+                        _AssertUnoeredListXmlAttributes(unorderedListDocumentationElement);
+                        break;
+
+                    case OrderedListDocumentationElement orderedListDocumentationElement:
+                        _AssertOrderedListXmlAttributes(orderedListDocumentationElement);
+                        break;
+
+                    case DefinitionListDocumentationElement definitionListDocumentationElement:
+                        _AssertDefinitionListXmlAttributes(definitionListDocumentationElement);
+                        break;
+
+                    case TableDocumentationElement tableDocumentationElement:
+                        _AssertTableXmlAttributes(tableDocumentationElement);
+                        break;
+
+                    case CodeBlockDocumentationElement codeBlockDocumentationElement:
+                        _AssertCodeBlockXmlAttributes(codeBlockDocumentationElement);
+                        break;
+                }
+        }
+
+        private static void _AssertParagraphXmlAttributes(ParagraphDocumentationElement paragraph)
+        {
+            Assert.Empty(paragraph.XmlAttributes);
+            _AssertInlineElementsXmlAttributes(paragraph.Content);
+        }
+
+        private static void _AssertUnoeredListXmlAttributes(UnorderedListDocumentationElement unorderedList)
+        {
+            Assert.Single(unorderedList.XmlAttributes);
+            Assert.Equal("unordered list", unorderedList.XmlAttributes["test"]);
+            _AssertListItemsXmlAttributes(unorderedList.Items);
+        }
+
+        private static void _AssertOrderedListXmlAttributes(OrderedListDocumentationElement orderedList)
+        {
+            Assert.Single(orderedList.XmlAttributes);
+            Assert.Equal("ordered list", orderedList.XmlAttributes["test"]);
+            _AssertListItemsXmlAttributes(orderedList.Items);
+        }
+
+        private static void _AssertListItemsXmlAttributes(IEnumerable<ListItemDocumentationElement> items)
+        {
+            foreach (var item in items)
+            {
+                Assert.Equal(2, item.XmlAttributes.Count);
+                Assert.Equal("item", item.XmlAttributes["test"]);
+                Assert.Equal("description", item.XmlAttributes["test2"]);
+                _AssertInlineElementsXmlAttributes(item.Content);
+            }
+        }
+
+        private static void _AssertDefinitionListXmlAttributes(DefinitionListDocumentationElement definitionList)
+        {
+            Assert.Single(definitionList.XmlAttributes);
+            Assert.Equal("definition list", definitionList.XmlAttributes["test"]);
+            _AssertDefinitionListItemsXmlAttributes(definitionList.Items);
+        }
+
+        private static void _AssertDefinitionListItemsXmlAttributes(IEnumerable<DefinitionListItemDocumentationElement> items)
+        {
+            foreach (var item in items)
+            {
+                Assert.Equal(2, item.XmlAttributes.Count);
+                Assert.Equal("item", item.XmlAttributes["test"]);
+                Assert.Equal("old description", item.XmlAttributes["test2"]);
+
+                if (item.Term.Any())
+                {
+                    Assert.Single(item.Term.XmlAttributes);
+                    Assert.Equal("term", item.Term.XmlAttributes["test"]);
+                    _AssertInlineElementsXmlAttributes(item.Term);
+                }
+
+                if (item.Description.Any())
+                {
+                    Assert.Single(item.Description.XmlAttributes);
+                    Assert.Equal("description", item.Description.XmlAttributes["test2"]);
+                    _AssertInlineElementsXmlAttributes(item.Description);
+                }
+            }
+        }
+
+        private static void _AssertTableXmlAttributes(TableDocumentationElement table)
+        {
+            Assert.Single(table.XmlAttributes);
+            Assert.Equal("table", table.XmlAttributes["test"]);
+            _AssertTableColumnsXmlAttributes(table.Columns);
+            _AssertTableRowsXmlAttributes(table.Rows);
+        }
+
+        private static void _AssertTableColumnsXmlAttributes(IEnumerable<TableColumnDocumentationElement> tableColumns)
+        {
+            foreach (var tableColumn in tableColumns)
+                if (tableColumn.Name.Any())
+                {
+                    Assert.Equal(2, tableColumn.XmlAttributes.Count);
+                    Assert.Equal("listheader", tableColumn.XmlAttributes["test"]);
+                    Assert.Equal("term", tableColumn.XmlAttributes["test2"]);
+                }
+                else
+                {
+                    Assert.Equal(2, tableColumn.XmlAttributes.Count);
+                    Assert.Equal("listheader", tableColumn.XmlAttributes["test"]);
+                    Assert.Equal("old term", tableColumn.XmlAttributes["test2"]);
+                }
+        }
+
+        private static void _AssertTableRowsXmlAttributes(IEnumerable<TableRowDocumentationElement> tableRows)
+        {
+            foreach (var tableRow in tableRows)
+            {
+                Assert.Equal(2, tableRow.XmlAttributes.Count);
+                Assert.Equal("item", tableRow.XmlAttributes["test"]);
+                Assert.Equal("old description", tableRow.XmlAttributes["test2"]);
+                _AssertTableCellsXmlAttributes(tableRow.Cells);
+            }
+        }
+
+        private static void _AssertTableCellsXmlAttributes(IReadOnlyList<TableCellDocumentationElement> tableCells)
+        {
+            foreach (var tableCell in tableCells)
+                if (tableCell.Content.Any())
+                {
+                    Assert.Single(tableCell.XmlAttributes);
+                    Assert.Equal("description", tableCell.XmlAttributes["test2"]);
+                }
+        }
+
+        private static void _AssertCodeBlockXmlAttributes(CodeBlockDocumentationElement codeBlock)
+        {
+            Assert.Single(codeBlock.XmlAttributes);
+            Assert.Equal("code", codeBlock.XmlAttributes["test"]);
+        }
+
+        private static void _AssertInlineElementsXmlAttributes(IEnumerable<InlineDocumentationElement> inlineElements)
+        {
+            foreach (var inlineElement in inlineElements)
+                switch (inlineElement)
+                {
+                    case MemberInfoReferenceDocumentationElement memberInfoReferenceDocumentationElement:
+                        _AssertMemberReferenceXmlAttributes(memberInfoReferenceDocumentationElement);
+                        break;
+
+                    case MemberNameReferenceDocumentationElement memberNameReferenceDocumentationElement:
+                        _AssertMemberReferenceXmlAttributes(memberNameReferenceDocumentationElement);
+                        break;
+
+                    case ParameterReferenceDocumentationElement parameterReferenceDocumentationElement:
+                        _AssertParameterReferenceXmlAttributes(parameterReferenceDocumentationElement);
+                        break;
+
+                    case GenericParameterReferenceDocumentationElement genericParameterReferenceDocumentationElement:
+                        _AssertGenericParameterReferenceXmlAttributes(genericParameterReferenceDocumentationElement);
+                        break;
+
+                    case InlineCodeDocumentationElement inlineCodeDocumentationElement:
+                        _AssertInlineCodeXmlAttributes(inlineCodeDocumentationElement);
+                        break;
+                }
+        }
+
+        private static void _AssertMemberReferenceXmlAttributes(MemberInfoReferenceDocumentationElement memberInfoReference)
+        {
+            Assert.Single(memberInfoReference.XmlAttributes);
+            Assert.Equal("see", memberInfoReference.XmlAttributes["test"]);
+        }
+
+        private static void _AssertMemberReferenceXmlAttributes(MemberNameReferenceDocumentationElement memberNameReference)
+        {
+            Assert.Single(memberNameReference.XmlAttributes);
+            Assert.Equal("see", memberNameReference.XmlAttributes["test"]);
+        }
+
+        private static void _AssertParameterReferenceXmlAttributes(ParameterReferenceDocumentationElement parameterReference)
+        {
+            Assert.Single(parameterReference.XmlAttributes);
+            Assert.Equal("paramref", parameterReference.XmlAttributes["test"]);
+        }
+
+        private static void _AssertGenericParameterReferenceXmlAttributes(GenericParameterReferenceDocumentationElement genericParameterReference)
+        {
+            Assert.Single(genericParameterReference.XmlAttributes);
+            Assert.Equal("typeparamref", genericParameterReference.XmlAttributes["test"]);
+        }
+
+        private static void _AssertInlineCodeXmlAttributes(InlineCodeDocumentationElement inlineCode)
+        {
+            Assert.Single(inlineCode.XmlAttributes);
+            Assert.Equal("c", inlineCode.XmlAttributes["test"]);
         }
     }
 }

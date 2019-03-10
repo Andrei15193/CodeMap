@@ -1,34 +1,28 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeMap.Elements
 {
     /// <summary>Represents a collection of <see cref="BlockDocumentationElement"/> contained by an XML element.</summary>
-    public sealed class DescriptionDocumentationElement : DocumentationElement, IReadOnlyList<BlockDocumentationElement>
+    public sealed class BlockDescriptionDocumentationElement : DocumentationElement, IReadOnlyList<BlockDocumentationElement>
     {
-        private readonly IReadOnlyList<BlockDocumentationElement> _blockDocumentationElements;
+        private readonly IReadOnlyList<BlockDocumentationElement> _blockElements;
 
-        /// <summary>Initializes a new instance of the <see cref="DescriptionDocumentationElement"/> class.</summary>
-        /// <param name="blockDocumentationElements">A collection of <see cref="BlockDocumentationElement"/>s to wrap.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="blockDocumentationElements"/> is <c>null</c>.</exception>
-        public DescriptionDocumentationElement(IEnumerable<BlockDocumentationElement> blockDocumentationElements)
-            : this(blockDocumentationElements, new Dictionary<string, string>())
+        internal BlockDescriptionDocumentationElement(IEnumerable<BlockDocumentationElement> blockElements, IReadOnlyDictionary<string, string> xmlAttributes)
         {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="DescriptionDocumentationElement"/> class.</summary>
-        /// <param name="blockDocumentationElements">A collection of <see cref="BlockDocumentationElement"/>s to wrap.</param>
-        /// <param name="xmlAttributes">A set of additional XML attributes.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="blockDocumentationElements"/> or <paramref name="xmlAttributes"/> are <c>null</c>.</exception>
-        public DescriptionDocumentationElement(IEnumerable<BlockDocumentationElement> blockDocumentationElements, IReadOnlyDictionary<string, string> xmlAttributes)
-        {
-            _blockDocumentationElements = blockDocumentationElements
+            _blockElements = blockElements
                 .AsReadOnlyList()
-                ?? throw new ArgumentNullException(nameof(blockDocumentationElements));
-            XmlAttributes = xmlAttributes ?? throw new ArgumentNullException(nameof(xmlAttributes));
+                ?? throw new ArgumentNullException(nameof(blockElements));
+            if (_blockElements.Contains(null))
+                throw new ArgumentException("Cannot contain 'null' elements.", nameof(blockElements));
+
+            XmlAttributes = xmlAttributes ?? new Dictionary<string, string>();
+            if (XmlAttributes.Any(pair => pair.Value == null))
+                throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
         }
 
         /// <summary>The additional XML attributes on the containing element.</summary>
@@ -44,7 +38,7 @@ namespace CodeMap.Elements
             {
                 try
                 {
-                    return _blockDocumentationElements[index];
+                    return _blockElements[index];
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -55,21 +49,21 @@ namespace CodeMap.Elements
 
         /// <summary>Gets the number of <see cref="BlockDocumentationElement"/>s in the collection.</summary>
         public int Count
-            => _blockDocumentationElements.Count;
+            => _blockElements.Count;
 
-        /// <summary>Gets an <see cref="IEnumerator"/> that iterates through the <see cref="BlockDocumentationElement"/> collection.</summary>
-        /// <returns>Returns an <see cref="IEnumerator"/> that iterates through the <see cref="BlockDocumentationElement"/> collection.</returns>
+        /// <summary>Gets an <see cref="IEnumerator{T}"/> that iterates through the <see cref="BlockDocumentationElement"/> collection.</summary>
+        /// <returns>Returns an <see cref="IEnumerator{T}"/> that iterates through the <see cref="BlockDocumentationElement"/> collection.</returns>
         public IEnumerator<BlockDocumentationElement> GetEnumerator()
-            => _blockDocumentationElements.GetEnumerator();
+            => _blockElements.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
-            => _blockDocumentationElements.GetEnumerator();
+            => _blockElements.GetEnumerator();
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
-            foreach (var blockDocumentationElement in _blockDocumentationElements)
+            foreach (var blockDocumentationElement in _blockElements)
                 blockDocumentationElement.Accept(visitor);
         }
 
@@ -79,7 +73,7 @@ namespace CodeMap.Elements
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
-            foreach (var blockDocumentationElement in _blockDocumentationElements)
+            foreach (var blockDocumentationElement in _blockElements)
                 await blockDocumentationElement.AcceptAsync(visitor, cancellationToken);
         }
     }

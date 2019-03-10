@@ -12,7 +12,7 @@ namespace CodeMap
         private readonly DynamicTypeData _dynamicTypeData = new DynamicTypeData();
         private readonly DocumentationElementCache _referencesCache = new DocumentationElementCache();
         private readonly MemberDocumentation _emptyMemberDocumentation = new MemberDocumentation(string.Empty);
-        private readonly DescriptionDocumentationElement _emptyBlockDocumentationElementCollection = new DescriptionDocumentationElement(Enumerable.Empty<BlockDocumentationElement>());
+        private readonly BlockDescriptionDocumentationElement _emptyBlockDocumentationElementCollection = DocumentationElement.BlockDescription(Enumerable.Empty<BlockDocumentationElement>());
         private readonly CanonicalNameResolver _canonicalNameResolver;
         private readonly MemberDocumentationCollection _membersDocumentation;
 
@@ -148,7 +148,7 @@ namespace CodeMap
                     .GetParameters()
                     .Select(parameter => _CreateParameter(parameter, memberDocumentation))
                     .AsReadOnlyList(),
-                Return = new ReturnsDocumentationElement
+                Return = new ReturnsData
                 {
                     Type = invokeMethodInfo.ReturnType == typeof(object) && invokeMethodInfo.ReturnParameter.GetCustomAttribute<DynamicAttribute>() != null
                         ? _dynamicTypeData
@@ -591,7 +591,7 @@ namespace CodeMap
                     .GetParameters()
                     .Select(parameter => _CreateParameter(parameter, memberDocumentation))
                     .AsReadOnlyList(),
-                Return = new ReturnsDocumentationElement
+                Return = new ReturnsData
                 {
                     Type = method.ReturnType == typeof(object) && method.ReturnParameter.GetCustomAttribute<DynamicAttribute>() != null
                         ? _dynamicTypeData
@@ -959,7 +959,7 @@ namespace CodeMap
             return result;
         }
 
-        private IReadOnlyCollection<ExceptionData> _MapExceptions(IReadOnlyDictionary<string, DescriptionDocumentationElement> exceptions)
+        private IReadOnlyCollection<ExceptionData> _MapExceptions(IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> exceptions)
             => (
                 from exception in exceptions
                 let exceptionType = _canonicalNameResolver.TryFindMemberInfoFor(exception.Key) as Type

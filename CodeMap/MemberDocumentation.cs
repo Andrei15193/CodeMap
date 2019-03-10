@@ -31,10 +31,10 @@ namespace CodeMap
         public MemberDocumentation(
             string canonicalName,
             SummaryDocumentationElement summary,
-            IReadOnlyDictionary<string, DescriptionDocumentationElement> genericParameters,
-            IReadOnlyDictionary<string, DescriptionDocumentationElement> parameters,
-            DescriptionDocumentationElement returns,
-            IReadOnlyDictionary<string, DescriptionDocumentationElement> exceptions,
+            IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> genericParameters,
+            IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> parameters,
+            BlockDescriptionDocumentationElement returns,
+            IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> exceptions,
             RemarksDocumentationElement remarks,
             IEnumerable<ExampleDocumentationElement> examples,
             ValueDocumentationElement value,
@@ -44,7 +44,7 @@ namespace CodeMap
             Summary = summary ?? DocumentationElement.Summary(Enumerable.Empty<BlockDocumentationElement>());
             GenericParameters = genericParameters.OrEmpty();
             Parameters = parameters.OrEmpty();
-            Returns = returns.AsReadOnlyListOrEmpty();
+            Returns = returns ?? DocumentationElement.BlockDescription(Enumerable.Empty<BlockDocumentationElement>());
             Exceptions = exceptions.OrEmpty();
             Remarks = remarks ?? DocumentationElement.Remarks(Enumerable.Empty<BlockDocumentationElement>());
             Examples = examples.AsReadOnlyListOrEmpty();
@@ -59,16 +59,16 @@ namespace CodeMap
         public SummaryDocumentationElement Summary { get; }
 
         /// <summary>The generic parameters documentation.</summary>
-        public IReadOnlyDictionary<string, DescriptionDocumentationElement> GenericParameters { get; }
+        public IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> GenericParameters { get; }
 
         /// <summary>The parameters documentation.</summary>
-        public IReadOnlyDictionary<string, DescriptionDocumentationElement> Parameters { get; }
+        public IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> Parameters { get; }
 
         /// <summary>The returns section.</summary>
-        public IReadOnlyList<BlockDocumentationElement> Returns { get; }
+        public BlockDescriptionDocumentationElement Returns { get; }
 
         /// <summary>The exceptions documentation.</summary>
-        public IReadOnlyDictionary<string, DescriptionDocumentationElement> Exceptions { get; }
+        public IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> Exceptions { get; }
 
         /// <summary>The remarks section.</summary>
         public RemarksDocumentationElement Remarks { get; }

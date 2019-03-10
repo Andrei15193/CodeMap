@@ -37,7 +37,7 @@ namespace CodeMap.Elements
         public IReadOnlyList<ParameterData> Parameters { get; internal set; }
 
         /// <summary>The documented method return value.</summary>
-        public ReturnsDocumentationElement Return { get; internal set; }
+        public ReturnsData Return { get; internal set; }
 
         /// <summary>Documented exceptions that might be thrown when calling the method.</summary>
         public IReadOnlyCollection<ExceptionData> Exceptions { get; internal set; }

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests
 {
-    public class DescriptionDocumentationElementTests
+    public class BlockDescriptionDocumentationElementTests
     {
         [Fact]
         public void CreateBlockElementCollection()
@@ -21,7 +21,7 @@ namespace CodeMap.Tests
                 DocumentationElement.CodeBlock(string.Empty)
             };
 
-            var blockElementCollection = new DescriptionDocumentationElement(blockElements);
+            var blockElementCollection = DocumentationElement.BlockDescription(blockElements);
 
             Assert.Equal(6, blockElementCollection.Count);
             for (var index = 0; index < blockElementCollection.Count; index++)
@@ -43,7 +43,7 @@ namespace CodeMap.Tests
                 DocumentationElement.CodeBlock(string.Empty)
             };
 
-            var blockElementCollection = new DescriptionDocumentationElement(blockElements);
+            var blockElementCollection = DocumentationElement.BlockDescription(blockElements);
 
             var exception = Assert.Throws<ArgumentOutOfRangeException>("index", () => blockElementCollection[-1]);
             Assert.Equal(new ArgumentOutOfRangeException("index", -1, new ArgumentOutOfRangeException().Message).Message, exception.Message);
@@ -56,21 +56,22 @@ namespace CodeMap.Tests
         public void CreateWithNullBlockElementCollectionThrowsException()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                "blockDocumentationElements",
-                () => new DescriptionDocumentationElement(null, new Dictionary<string, string>())
+                "blockElements",
+                () => DocumentationElement.BlockDescription(null, new Dictionary<string, string>())
             );
 
-            Assert.Equal(new ArgumentNullException("blockDocumentationElements").Message, exception.Message);
+            Assert.Equal(new ArgumentNullException("blockElements").Message, exception.Message);
         }
+
         [Fact]
-        public void CreateWithNullXmlAttributesThrowsException()
+        public void CreateWithNullXmlAttributeValueThrowsException()
         {
-            var exception = Assert.Throws<ArgumentNullException>(
+            var exception = Assert.Throws<ArgumentException>(
                 "xmlAttributes",
-                () => new DescriptionDocumentationElement(Enumerable.Empty<BlockDocumentationElement>(), null)
+                () => DocumentationElement.BlockDescription(Enumerable.Empty<BlockDocumentationElement>(), new Dictionary<string, string> { { "key", null } })
             );
 
-            Assert.Equal(new ArgumentNullException("xmlAttributes").Message, exception.Message);
+            Assert.Equal(new ArgumentException("Cannot contain 'null' values.", "xmlAttributes").Message, exception.Message);
         }
     }
 }
