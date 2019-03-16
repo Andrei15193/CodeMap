@@ -1,3 +1,5 @@
+[![Build status](https://andrei15193.visualstudio.com/CodeMap/_apis/build/status/CodeMap.CI)](https://andrei15193.visualstudio.com/CodeMap/_build/latest?definitionId=-1)
+
 Visual Studio enables developers to write comprehensive documentation inside
 their code using XML in three slashed comments,
 see [XML Documentation Comments (C# Programming Guide)](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments) for
