@@ -13,6 +13,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="testData.debug.json" />
+    <None Remove="testData.release.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="testData.debug.json" />
+    <EmbeddedResource Include="testData.release.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="Moq" Version="4.10.1" />
     <PackageReference Include="xunit" Version="2.4.1" />

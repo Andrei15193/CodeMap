@@ -1,5 +1,6 @@
-﻿using System.Reflection;
-using CodeMap.Elements;
+﻿using CodeMap.Elements;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace CodeMap.Tests
 {
@@ -77,7 +78,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitMethod(method);
         }
 
-        protected override void VisitSummaryBeginning()
+        protected override void VisitSummaryBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitSummaryBeginning();
         }
@@ -97,7 +98,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitReturnsEnding();
         }
 
-        protected override void VisitRemarksBeginning()
+        protected override void VisitRemarksBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitRemarksBeginning();
         }

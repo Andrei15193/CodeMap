@@ -1,0 +1,232 @@
+{
+  "name": "CodeMap.Tests.Data",
+  "version": "1.2.3.4",
+  "culture": "",
+  "publicKeyToken": "",
+  "attributes": [
+    {
+      "type": {
+        "kind": "specific",
+        "name": "CompilationRelaxationsAttribute",
+        "namespace": "System.Runtime.CompilerServices",
+        "declaringType": null,
+        "fullName": "System.Runtime.CompilerServices.CompilationRelaxationsAttribute",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "positionalParameters": [
+        {
+          "name": "relaxations",
+          "value": 8,
+          "type": {
+            "kind": "specific",
+            "name": "Int32",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.Int32",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          }
+        }
+      ],
+      "namedParameters": []
+    },
+    {
+      "type": {
+        "kind": "specific",
+        "name": "RuntimeCompatibilityAttribute",
+        "namespace": "System.Runtime.CompilerServices",
+        "declaringType": null,
+        "fullName": "System.Runtime.CompilerServices.RuntimeCompatibilityAttribute",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "positionalParameters": [],
+      "namedParameters": [
+        {
+          "name": "WrapNonExceptionThrows",
+          "value": true,
+          "type": {
+            "kind": "specific",
+            "name": "Boolean",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.Boolean",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "kind": "specific",
+        "name": "DebuggableAttribute",
+        "namespace": "System.Diagnostics",
+        "declaringType": null,
+        "fullName": "System.Diagnostics.DebuggableAttribute",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "positionalParameters": [
+        {
+          "name": "modes",
+          "value": "Default, IgnoreSymbolStoreSequencePoints, EnableEditAndContinue, DisableOptimizations",
+          "type": {
+            "kind": "specific",
+            "name": "DebuggingModes",
+            "namespace": "System.Diagnostics",
+            "declaringType": {
+              "kind": "specific",
+              "name": "DebuggableAttribute",
+              "namespace": "System.Diagnostics",
+              "declaringType": null,
+              "fullName": "System.Diagnostics.DebuggableAttribute",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            },
+            "fullName": "System.Diagnostics.DebuggableAttribute.DebuggingModes",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          }
+        }
+      ],
+      "namedParameters": []
+    },
+    {
+      "type": {
+        "kind": "specific",
+        "name": "TargetFrameworkAttribute",
+        "namespace": "System.Runtime.Versioning",
+        "declaringType": null,
+        "fullName": "System.Runtime.Versioning.TargetFrameworkAttribute",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "positionalParameters": [
+        {
+          "name": "frameworkName",
+          "value": ".NETCoreApp,Version=v2.2",
+          "type": {
+            "kind": "specific",
+            "name": "String",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.String",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          }
+        }
+      ],
+      "namedParameters": [
+        {
+          "name": "FrameworkDisplayName",
+          "value": "",
+          "type": {
+            "kind": "specific",
+            "name": "String",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.String",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          }
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "System.Runtime",
+      "version": "4.2.1.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a"
+    },
+    {
+      "name": "System.Runtime.Extensions",
+      "version": "4.2.1.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a"
+    },
+    {
+      "name": "System.Linq.Expressions",
+      "version": "4.2.1.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a"
+    },
+    {
+      "name": "System.Diagnostics.Debug",
+      "version": "4.1.1.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a"
+    },
+    {
+      "name": "System.Threading",
+      "version": "4.1.1.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a"
+    }
+  ],
+  "summary": {
+    "xmlAttributes": {},
+    "content": []
+  },
+  "remarks": {
+    "xmlAttributes": {},
+    "content": []
+  },
+  "examples": [],
+  "relatedMembers": [],
+  "definitions": {
+  }
+}
