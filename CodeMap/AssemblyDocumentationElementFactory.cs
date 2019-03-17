@@ -641,9 +641,9 @@ namespace CodeMap
                 else if (type.IsNestedFamily)
                     return AccessModifier.Family;
                 else if (type.IsNestedFamORAssem)
-                    return AccessModifier.AssemblyOrFamily;
+                    return AccessModifier.FamilyOrAssembly;
                 else if (type.IsNestedFamANDAssem)
-                    return AccessModifier.AssemblyAndFamily;
+                    return AccessModifier.FamilyAndAssembly;
                 else if (type.IsNestedAssembly)
                     return AccessModifier.Assembly;
                 else if (type.IsNestedPrivate)
@@ -661,9 +661,9 @@ namespace CodeMap
             else if (field.IsFamily)
                 return AccessModifier.Family;
             else if (field.IsFamilyOrAssembly)
-                return AccessModifier.AssemblyOrFamily;
+                return AccessModifier.FamilyOrAssembly;
             else if (field.IsFamilyAndAssembly)
-                return AccessModifier.AssemblyAndFamily;
+                return AccessModifier.FamilyAndAssembly;
             else if (field.IsAssembly)
                 return AccessModifier.Assembly;
             else
@@ -680,9 +680,9 @@ namespace CodeMap
             else if (method.IsFamily)
                 return AccessModifier.Family;
             else if (method.IsFamilyOrAssembly)
-                return AccessModifier.AssemblyOrFamily;
+                return AccessModifier.FamilyOrAssembly;
             else if (method.IsFamilyAndAssembly)
-                return AccessModifier.AssemblyAndFamily;
+                return AccessModifier.FamilyAndAssembly;
             else if (method.IsAssembly)
                 return AccessModifier.Assembly;
             else

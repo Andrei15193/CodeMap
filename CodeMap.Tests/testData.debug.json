@@ -287,6 +287,184 @@
       "structs": [
         "CodeMap.Tests.Data.TestStruct`1"
       ]
+    },
+    "CodeMap.Tests.Data.TestEnum": {
+      "kind": "enum",
+      "name": "TestEnum",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "underlyingType": {
+        "kind": "specific",
+        "name": "Byte",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Byte",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": null,
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "enum test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value3",
+              "value": "enum test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value2",
+              "value": "enum test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "members": [
+        "CodeMap.Tests.Data.TestEnum.TestMember1",
+        "CodeMap.Tests.Data.TestEnum.TestMember2",
+        "CodeMap.Tests.Data.TestEnum.TestMember3"
+      ]
+    },
+    "CodeMap.Tests.Data.TestClass.NestedTestEnum": {
+      "kind": "enum",
+      "name": "NestedTestEnum",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "underlyingType": {
+        "kind": "specific",
+        "name": "Int32",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Int32",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "members": []
+    },
+    "CodeMap.Tests.Data.TestStruct.NestedTestEnum": {
+      "kind": "enum",
+      "name": "NestedTestEnum",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "private",
+      "underlyingType": {
+        "kind": "specific",
+        "name": "Int32",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Int32",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "members": []
     }
   }
 }

@@ -1088,7 +1088,11 @@ namespace CodeMap.Tests
                 {
                     mock.Verify(visitor => visitor.VisitNamespace(@namespace), Times.Once());
                     foreach (var @enum in @namespace.Enums)
+                    {
                         mock.Verify(visitor => visitor.VisitEnum(@enum), Times.Once());
+                        foreach (var member in @enum.Members)
+                            mock.Verify(visitor => visitor.VisitConstant(member), Times.Once());
+                    }
                     foreach (var @delegate in @namespace.Delegates)
                         mock.Verify(visitor => visitor.VisitDelegate(@delegate), Times.Once());
                     foreach (var @interface in @namespace.Interfaces)

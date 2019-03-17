@@ -150,23 +150,78 @@ namespace CodeMap
         /// <param name="enum">The <see cref="EnumDocumentationElement"/> to visit.</param>
         protected internal override void VisitEnum(EnumDocumentationElement @enum)
         {
+            _jsonWriter.WritePropertyName(_GetIdFor(@enum));
+
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("enum");
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteValue(@enum.Name);
+            _jsonWriter.WritePropertyName("namespace");
+            _jsonWriter.WriteValue(@enum.Namespace.Name);
+            _WriteAccessModifier(@enum.AccessModifier);
+            _jsonWriter.WritePropertyName("underlyingType");
+            _WriteTypeReference(@enum.UnderlyingType);
+            _jsonWriter.WritePropertyName("declaringType");
+            if (@enum.DeclaringType != null)
+                _jsonWriter.WriteValue(_GetIdFor(@enum.DeclaringType));
+            else
+                _jsonWriter.WriteNull();
+            _WriteAttributes(@enum.Attributes);
+
+            @enum.Summary.Accept(this);
+            @enum.Remarks.Accept(this);
+            _WriteExamples(@enum.Examples);
+            _WriteRelatedMembers(@enum.RelatedMembers);
+
+            _jsonWriter.WritePropertyName("members");
+            _jsonWriter.WriteStartArray();
+            foreach (var member in @enum.Members)
+                _jsonWriter.WriteValue(_GetIdFor(member));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an <see cref="EnumDocumentationElement"/>.</summary>
         /// <param name="enum">The <see cref="EnumDocumentationElement"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitEnumAsync(EnumDocumentationElement @enum, CancellationToken cancellationToken)
+        protected internal override async Task VisitEnumAsync(EnumDocumentationElement @enum, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitEnum(@enum);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync(_GetIdFor(@enum), cancellationToken);
+
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("enum", cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@enum.Name, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("namespace", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@enum.Namespace.Name, cancellationToken);
+            await _WriteAccessModifierAsync(@enum.AccessModifier, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("underlyingType", cancellationToken);
+            await _WriteTypeReferenceAsync(@enum.UnderlyingType, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
+            if (@enum.DeclaringType != null)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(@enum.DeclaringType), cancellationToken);
+            else
+                await _jsonWriter.WriteNullAsync(cancellationToken);
+            await _WriteAttributesAsync(@enum.Attributes, cancellationToken);
+
+            await @enum.Summary.AcceptAsync(this, cancellationToken);
+            await @enum.Remarks.AcceptAsync(this, cancellationToken);
+            await _WriteExamplesAsync(@enum.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(@enum.RelatedMembers, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("members", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var member in @enum.Members)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(member), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits a <see cref="DelegateDocumentationElement"/>.</summary>
@@ -1651,6 +1706,70 @@ namespace CodeMap
             }
         }
 
+        private void _WriteAccessModifier(AccessModifier accessModifier)
+        {
+            _jsonWriter.WritePropertyName("accessModifier");
+            switch (accessModifier)
+            {
+                case AccessModifier.Public:
+                    _jsonWriter.WriteValue("public");
+                    break;
+
+                case AccessModifier.Assembly:
+                    _jsonWriter.WriteValue("assembly");
+                    break;
+
+                case AccessModifier.Family:
+                    _jsonWriter.WriteValue("family");
+                    break;
+
+                case AccessModifier.FamilyOrAssembly:
+                    _jsonWriter.WriteValue("familyOrAssembly");
+                    break;
+
+                case AccessModifier.FamilyAndAssembly:
+                    _jsonWriter.WriteValue("familyAndAssembly");
+                    break;
+
+                case AccessModifier.Private:
+                default:
+                    _jsonWriter.WriteValue("private");
+                    break;
+            }
+        }
+
+        private async Task _WriteAccessModifierAsync(AccessModifier accessModifier, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("accessModifier", cancellationToken);
+            switch (accessModifier)
+            {
+                case AccessModifier.Public:
+                    await _jsonWriter.WriteValueAsync("public", cancellationToken);
+                    break;
+
+                case AccessModifier.Assembly:
+                    await _jsonWriter.WriteValueAsync("assembly", cancellationToken);
+                    break;
+
+                case AccessModifier.Family:
+                    await _jsonWriter.WriteValueAsync("family", cancellationToken);
+                    break;
+
+                case AccessModifier.FamilyOrAssembly:
+                    await _jsonWriter.WriteValueAsync("familyOrAssembly", cancellationToken);
+                    break;
+
+                case AccessModifier.FamilyAndAssembly:
+                    await _jsonWriter.WriteValueAsync("familyAndAssembly", cancellationToken);
+                    break;
+
+                case AccessModifier.Private:
+                default:
+                    await _jsonWriter.WriteValueAsync("private", cancellationToken);
+                    break;
+            }
+        }
+
         private void _WriteAttributes(IEnumerable<AttributeData> attributes)
         {
             _jsonWriter.WritePropertyName("attributes");
@@ -1953,41 +2072,113 @@ namespace CodeMap
         }
 
         private static string _GetIdFor(EnumDocumentationElement @enum)
-            => _GetId(@enum).ToString();
+            => _GetIdBuilderFor(@enum).ToString();
 
         private static string _GetIdFor(DelegateDocumentationElement @delegate)
-        {
-            var idBuilder = _GetId(@delegate);
-            if (@delegate.GenericParameters.Count > 0)
-                idBuilder.Append('`').Append(@delegate.GenericParameters.Count);
-            return idBuilder.ToString();
-        }
+            => _GetIdBuilderFor(@delegate).ToString();
 
         private static string _GetIdFor(InterfaceDocumentationElement @interface)
-        {
-            var idBuilder = _GetId(@interface);
-            if (@interface.GenericParameters.Count > 0)
-                idBuilder.Append('`').Append(@interface.GenericParameters.Count);
-            return idBuilder.ToString();
-        }
+            => _GetIdBuilderFor(@interface).ToString();
 
         private static string _GetIdFor(ClassDocumentationElement @class)
-        {
-            var idBuilder = _GetId(@class);
-            if (@class.GenericParameters.Count > 0)
-                idBuilder.Append('`').Append(@class.GenericParameters.Count);
-            return idBuilder.ToString();
-        }
+            => _GetIdBuilderFor(@class).ToString();
 
         private static string _GetIdFor(StructDocumentationElement @struct)
+            => _GetIdBuilderFor(@struct).ToString();
+
+        private static string _GetIdFor(ConstantDocumentationElement constant)
+            => _GetIdBuilderFor(constant.DeclaringType).Append('.').Append(constant.Name).ToString();
+
+        private static string _GetIdFor(FieldDocumentationElement field)
+            => _GetIdBuilderFor(field.DeclaringType).Append('.').Append(field.Name).ToString();
+
+        private static string _GetIdFor(EventDocumentationElement @event)
+            => _GetIdBuilderFor(@event.DeclaringType).Append('.').Append(@event.Name).ToString();
+
+        private static string _GetIdFor(TypeDocumentationElement type)
         {
-            var idBuilder = _GetId(@struct);
-            if (@struct.GenericParameters.Count > 0)
-                idBuilder.Append('`').Append(@struct.GenericParameters.Count);
-            return idBuilder.ToString();
+            switch (type)
+            {
+                case EnumDocumentationElement @enum:
+                    return _GetIdFor(@enum);
+
+                case DelegateDocumentationElement @delegate:
+                    return _GetIdFor(@delegate);
+
+                case InterfaceDocumentationElement @interface:
+                    return _GetIdFor(@interface);
+
+                case ClassDocumentationElement @class:
+                    return _GetIdFor(@class);
+
+                case StructDocumentationElement @struct:
+                    return _GetIdFor(@struct);
+
+                default:
+                    return _GetBaseIdBuilder(type).ToString();
+            }
         }
 
-        private static StringBuilder _GetId(TypeDocumentationElement type)
+        private static StringBuilder _GetIdBuilderFor(EnumDocumentationElement @enum)
+            => _GetBaseIdBuilder(@enum);
+
+        private static StringBuilder _GetIdBuilderFor(DelegateDocumentationElement @delegate)
+        {
+            var idBuilder = _GetBaseIdBuilder(@delegate);
+            if (@delegate.GenericParameters.Count > 0)
+                idBuilder.Append('`').Append(@delegate.GenericParameters.Count);
+            return idBuilder;
+        }
+
+        private static StringBuilder _GetIdBuilderFor(InterfaceDocumentationElement @interface)
+        {
+            var idBuilder = _GetBaseIdBuilder(@interface);
+            if (@interface.GenericParameters.Count > 0)
+                idBuilder.Append('`').Append(@interface.GenericParameters.Count);
+            return idBuilder;
+        }
+
+        private static StringBuilder _GetIdBuilderFor(ClassDocumentationElement @class)
+        {
+            var idBuilder = _GetBaseIdBuilder(@class);
+            if (@class.GenericParameters.Count > 0)
+                idBuilder.Append('`').Append(@class.GenericParameters.Count);
+            return idBuilder;
+        }
+
+        private static StringBuilder _GetIdBuilderFor(StructDocumentationElement @struct)
+        {
+            var idBuilder = _GetBaseIdBuilder(@struct);
+            if (@struct.GenericParameters.Count > 0)
+                idBuilder.Append('`').Append(@struct.GenericParameters.Count);
+            return idBuilder;
+        }
+
+        private static StringBuilder _GetIdBuilderFor(TypeDocumentationElement type)
+        {
+            switch (type)
+            {
+                case EnumDocumentationElement @enum:
+                    return _GetIdBuilderFor(@enum);
+
+                case DelegateDocumentationElement @delegate:
+                    return _GetIdBuilderFor(@delegate);
+
+                case InterfaceDocumentationElement @interface:
+                    return _GetIdBuilderFor(@interface);
+
+                case ClassDocumentationElement @class:
+                    return _GetIdBuilderFor(@class);
+
+                case StructDocumentationElement @struct:
+                    return _GetIdBuilderFor(@struct);
+
+                default:
+                    return _GetBaseIdBuilder(type);
+            }
+        }
+
+        private static StringBuilder _GetBaseIdBuilder(TypeDocumentationElement type)
         {
             var idBuilder = new StringBuilder();
 
