@@ -54,18 +54,8 @@ namespace CodeMap
 
             assembly.Summary.Accept(this);
             assembly.Remarks.Accept(this);
-
-            _jsonWriter.WritePropertyName("examples");
-            _jsonWriter.WriteStartArray();
-            foreach (var example in assembly.Examples)
-                example.Accept(this);
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("relatedMembers");
-            _jsonWriter.WriteStartArray();
-            foreach (var relatedMember in assembly.RelatedMembers)
-                relatedMember.Accept(this);
-            _jsonWriter.WriteEndArray();
+            _WriteExamples(assembly.Examples);
+            _WriteRelatedMembers(assembly.RelatedMembers);
 
             _jsonWriter.WritePropertyName("definitions");
             _jsonWriter.WriteStartObject();
@@ -93,18 +83,8 @@ namespace CodeMap
 
             await assembly.Summary.AcceptAsync(this, cancellationToken);
             await assembly.Remarks.AcceptAsync(this, cancellationToken);
-
-            await _jsonWriter.WritePropertyNameAsync("examples", cancellationToken);
-            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
-            foreach (var example in assembly.Examples)
-                await example.AcceptAsync(this, cancellationToken);
-            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
-
-            await _jsonWriter.WritePropertyNameAsync("relatedMembers", cancellationToken);
-            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
-            foreach (var relatedMember in assembly.RelatedMembers)
-                await relatedMember.AcceptAsync(this, cancellationToken);
-            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _WriteExamplesAsync(assembly.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(assembly.RelatedMembers, cancellationToken);
 
             await _jsonWriter.WritePropertyNameAsync("definitions", cancellationToken);
             await _jsonWriter.WriteStartObjectAsync(cancellationToken);
@@ -114,23 +94,56 @@ namespace CodeMap
         /// <param name="namespace">The <see cref="NamespaceDocumentationElement"/> to visit.</param>
         protected internal override void VisitNamespace(NamespaceDocumentationElement @namespace)
         {
+            _jsonWriter.WritePropertyName(@namespace.Name);
+
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("namespace");
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteValue(@namespace.Name);
+
+            @namespace.Summary.Accept(this);
+            @namespace.Remarks.Accept(this);
+            _WriteExamples(@namespace.Examples);
+            _WriteRelatedMembers(@namespace.RelatedMembers);
+
+            _WriteEnumReferences(@namespace.Enums);
+            _WriteDelegateReferences(@namespace.Delegates);
+            _WriteInterfaceReferences(@namespace.Interfaces);
+            _WriteClassReferences(@namespace.Classes);
+            _WriteStructReferences(@namespace.Structs);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a <see cref="NamespaceDocumentationElement"/>.</summary>
         /// <param name="namespace">The <see cref="NamespaceDocumentationElement"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitNamespaceAsync(NamespaceDocumentationElement @namespace, CancellationToken cancellationToken)
+        protected internal override async Task VisitNamespaceAsync(NamespaceDocumentationElement @namespace, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitNamespace(@namespace);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync(@namespace.Name, cancellationToken);
+
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("namespace", cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@namespace.Name, cancellationToken);
+
+            await @namespace.Summary.AcceptAsync(this, cancellationToken);
+            await @namespace.Remarks.AcceptAsync(this, cancellationToken);
+            await _WriteExamplesAsync(@namespace.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(@namespace.RelatedMembers, cancellationToken);
+
+            await _WriteEnumReferencesAsync(@namespace.Enums, cancellationToken);
+            await _WriteDelegateReferencesAsync(@namespace.Delegates, cancellationToken);
+            await _WriteInterfaceReferencesAsync(@namespace.Interfaces, cancellationToken);
+            await _WriteClassReferencesAsync(@namespace.Classes, cancellationToken);
+            await _WriteStructReferencesAsync(@namespace.Structs, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits an <see cref="EnumDocumentationElement"/>.</summary>
@@ -1744,6 +1757,132 @@ namespace CodeMap
             await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
+        private void _WriteEnumReferences(IEnumerable<EnumDocumentationElement> enums)
+        {
+            _jsonWriter.WritePropertyName("enums");
+            _jsonWriter.WriteStartArray();
+            foreach (var @enum in enums)
+                _jsonWriter.WriteValue(_GetIdFor(@enum));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteEnumReferencesAsync(IEnumerable<EnumDocumentationElement> enums, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("enums", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var @struct in enums)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(@struct), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteDelegateReferences(IEnumerable<DelegateDocumentationElement> delegates)
+        {
+            _jsonWriter.WritePropertyName("delegates");
+            _jsonWriter.WriteStartArray();
+            foreach (var @delegate in delegates)
+                _jsonWriter.WriteValue(_GetIdFor(@delegate));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteDelegateReferencesAsync(IEnumerable<DelegateDocumentationElement> delegates, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("delegates", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var @delegate in delegates)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(@delegate), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteInterfaceReferences(IEnumerable<InterfaceDocumentationElement> interfaces)
+        {
+            _jsonWriter.WritePropertyName("interfaces");
+            _jsonWriter.WriteStartArray();
+            foreach (var @interface in interfaces)
+                _jsonWriter.WriteValue(_GetIdFor(@interface));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteInterfaceReferencesAsync(IEnumerable<InterfaceDocumentationElement> interfaces, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("interfaces", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var @interface in interfaces)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(@interface), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteClassReferences(IEnumerable<ClassDocumentationElement> classes)
+        {
+            _jsonWriter.WritePropertyName("classes");
+            _jsonWriter.WriteStartArray();
+            foreach (var @class in classes)
+                _jsonWriter.WriteValue(_GetIdFor(@class));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteClassReferencesAsync(IEnumerable<ClassDocumentationElement> classes, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("classes", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var @class in classes)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(@class), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteStructReferences(IEnumerable<StructDocumentationElement> structs)
+        {
+            _jsonWriter.WritePropertyName("structs");
+            _jsonWriter.WriteStartArray();
+            foreach (var @struct in structs)
+                _jsonWriter.WriteValue(_GetIdFor(@struct));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteStructReferencesAsync(IEnumerable<StructDocumentationElement> structs, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("structs", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var @struct in structs)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(@struct), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteExamples(IEnumerable<ExampleDocumentationElement> examples)
+        {
+            _jsonWriter.WritePropertyName("examples");
+            _jsonWriter.WriteStartArray();
+            foreach (var example in examples)
+                example.Accept(this);
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteExamplesAsync(IEnumerable<ExampleDocumentationElement> examples, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("examples", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var example in examples)
+                await example.AcceptAsync(this, cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteRelatedMembers(IEnumerable<MemberReferenceDocumentationElement> relatedMembers)
+        {
+            _jsonWriter.WritePropertyName("relatedMembers");
+            _jsonWriter.WriteStartArray();
+            foreach (var relatedMember in relatedMembers)
+                relatedMember.Accept(this);
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteRelatedMembersAsync(IEnumerable<MemberReferenceDocumentationElement> relatedMembers, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("relatedMembers", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var relatedMember in relatedMembers)
+                await relatedMember.AcceptAsync(this, cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
         private void _WriteDependencies(IEnumerable<AssemblyReference> dependencies)
         {
             _jsonWriter.WritePropertyName("dependencies");
@@ -1811,6 +1950,64 @@ namespace CodeMap
             } while (nestingChain.Count > 0);
 
             return fullNameBuilder.ToString();
+        }
+
+        private static string _GetIdFor(EnumDocumentationElement @enum)
+            => _GetId(@enum).ToString();
+
+        private static string _GetIdFor(DelegateDocumentationElement @delegate)
+        {
+            var idBuilder = _GetId(@delegate);
+            if (@delegate.GenericParameters.Count > 0)
+                idBuilder.Append('`').Append(@delegate.GenericParameters.Count);
+            return idBuilder.ToString();
+        }
+
+        private static string _GetIdFor(InterfaceDocumentationElement @interface)
+        {
+            var idBuilder = _GetId(@interface);
+            if (@interface.GenericParameters.Count > 0)
+                idBuilder.Append('`').Append(@interface.GenericParameters.Count);
+            return idBuilder.ToString();
+        }
+
+        private static string _GetIdFor(ClassDocumentationElement @class)
+        {
+            var idBuilder = _GetId(@class);
+            if (@class.GenericParameters.Count > 0)
+                idBuilder.Append('`').Append(@class.GenericParameters.Count);
+            return idBuilder.ToString();
+        }
+
+        private static string _GetIdFor(StructDocumentationElement @struct)
+        {
+            var idBuilder = _GetId(@struct);
+            if (@struct.GenericParameters.Count > 0)
+                idBuilder.Append('`').Append(@struct.GenericParameters.Count);
+            return idBuilder.ToString();
+        }
+
+        private static StringBuilder _GetId(TypeDocumentationElement type)
+        {
+            var idBuilder = new StringBuilder();
+
+            if (!(type.Namespace is GlobalNamespaceDocumentationElement))
+                idBuilder.Append(type.Namespace.Name);
+            var nestingChain = new Stack<TypeDocumentationElement>();
+            nestingChain.Push(type);
+            while (type.DeclaringType != null)
+            {
+                nestingChain.Push(type.DeclaringType);
+                type = type.DeclaringType;
+            }
+            do
+            {
+                if (idBuilder.Length > 0)
+                    idBuilder.Append('.');
+                idBuilder.Append(nestingChain.Pop().Name);
+            } while (nestingChain.Count > 0);
+
+            return idBuilder;
         }
     }
 }

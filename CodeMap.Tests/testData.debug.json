@@ -228,5 +228,65 @@
   "examples": [],
   "relatedMembers": [],
   "definitions": {
+    "": {
+      "kind": "namespace",
+      "name": "",
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "enums": [],
+      "delegates": [],
+      "interfaces": [],
+      "classes": [
+        "GlobalTestClass"
+      ],
+      "structs": []
+    },
+    "CodeMap.Tests.Data": {
+      "kind": "namespace",
+      "name": "CodeMap.Tests.Data",
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "enums": [
+        "CodeMap.Tests.Data.TestEnum"
+      ],
+      "delegates": [
+        "CodeMap.Tests.Data.TestDelegate`1"
+      ],
+      "interfaces": [
+        "CodeMap.Tests.Data.ITestBaseInterface",
+        "CodeMap.Tests.Data.ITestExplicitInterface",
+        "CodeMap.Tests.Data.ITestExtendedBaseInterface",
+        "CodeMap.Tests.Data.ITestGenericParameter`6",
+        "CodeMap.Tests.Data.ITestInterface`1"
+      ],
+      "classes": [
+        "CodeMap.Tests.Data.TestAbstractClass",
+        "CodeMap.Tests.Data.TestAttribute",
+        "CodeMap.Tests.Data.TestBaseClass",
+        "CodeMap.Tests.Data.TestClass`1",
+        "CodeMap.Tests.Data.TestExplicitClass",
+        "CodeMap.Tests.Data.TestSealedClass",
+        "CodeMap.Tests.Data.TestStaticClass"
+      ],
+      "structs": [
+        "CodeMap.Tests.Data.TestStruct`1"
+      ]
+    }
   }
 }

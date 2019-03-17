@@ -32,21 +32,21 @@ namespace CodeMap.Tests
         [Fact]
         public async Task TestJsonWriter()
         {
-            var expectedJson = JsonConvert.DeserializeObject(await _ReadTestDataFileAsync(_jsonTestDataFileName));
+            var expectedJson = _NormalizeJson(await _ReadTestDataFileAsync(_jsonTestDataFileName));
 
             object actualJsonSync, actualJsonAsync;
             using (var stringWriter = new StringWriter())
             {
                 using (var jsonWriterVisitor = new JsonWriterDocumentationVisitor(new JsonTextWriter(stringWriter)))
                     _testDataDocumentation.Accept(jsonWriterVisitor);
-                actualJsonSync = JsonConvert.DeserializeObject(stringWriter.ToString());
+                actualJsonSync = _NormalizeJson(stringWriter.ToString());
             }
 
             using (var stringWriter = new StringWriter())
             {
                 using (var jsonWriterVisitor = new JsonWriterDocumentationVisitor(new JsonTextWriter(stringWriter)))
                     await _testDataDocumentation.AcceptAsync(jsonWriterVisitor);
-                actualJsonAsync = JsonConvert.DeserializeObject(stringWriter.ToString());
+                actualJsonAsync = _NormalizeJson(stringWriter.ToString());
             }
 
             Assert.Equal(expectedJson, actualJsonSync);
@@ -59,5 +59,8 @@ namespace CodeMap.Tests
             using (var testDataFileReader = new StreamReader(testDataFile))
                 return await testDataFileReader.ReadToEndAsync();
         }
+
+        private static string _NormalizeJson(string json)
+            => JsonConvert.SerializeObject(JsonConvert.DeserializeObject(json));
     }
 }
