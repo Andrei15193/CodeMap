@@ -400,6 +400,288 @@
         "CodeMap.Tests.Data.TestEnum.TestMember3"
       ]
     },
+    "CodeMap.Tests.Data.TestEnum.TestMember1": {
+      "kind": "constant",
+      "name": "TestMember1",
+      "accessModifier": "public",
+      "value": 0,
+      "type": {
+        "kind": "specific",
+        "name": "TestEnum",
+        "namespace": "CodeMap.Tests.Data",
+        "declaringType": null,
+        "fullName": "CodeMap.Tests.Data.TestEnum",
+        "assembly": {
+          "name": "CodeMap.Tests.Data",
+          "version": "1.2.3.4",
+          "culture": "",
+          "publicKeyToken": ""
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "declaringType": "CodeMap.Tests.Data.TestEnum",
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "enum member test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value3",
+              "value": "enum member test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value2",
+              "value": "enum member test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestEnum.TestMember2": {
+      "kind": "constant",
+      "name": "TestMember2",
+      "accessModifier": "public",
+      "value": 1,
+      "type": {
+        "kind": "specific",
+        "name": "TestEnum",
+        "namespace": "CodeMap.Tests.Data",
+        "declaringType": null,
+        "fullName": "CodeMap.Tests.Data.TestEnum",
+        "assembly": {
+          "name": "CodeMap.Tests.Data",
+          "version": "1.2.3.4",
+          "culture": "",
+          "publicKeyToken": ""
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "declaringType": "CodeMap.Tests.Data.TestEnum",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestEnum.TestMember3": {
+      "kind": "constant",
+      "name": "TestMember3",
+      "accessModifier": "public",
+      "value": 2,
+      "type": {
+        "kind": "specific",
+        "name": "TestEnum",
+        "namespace": "CodeMap.Tests.Data",
+        "declaringType": null,
+        "fullName": "CodeMap.Tests.Data.TestEnum",
+        "assembly": {
+          "name": "CodeMap.Tests.Data",
+          "version": "1.2.3.4",
+          "culture": "",
+          "publicKeyToken": ""
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "declaringType": "CodeMap.Tests.Data.TestEnum",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestClass`1.TestConstant": {
+      "kind": "constant",
+      "name": "TestConstant",
+      "accessModifier": "private",
+      "value": 1.0,
+      "type": {
+        "kind": "specific",
+        "name": "Double",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Double",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "class constant test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value3",
+              "value": "class constant test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value2",
+              "value": "class constant test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
     "CodeMap.Tests.Data.TestClass.NestedTestEnum": {
       "kind": "enum",
       "name": "NestedTestEnum",
@@ -432,6 +714,114 @@
       "examples": [],
       "relatedMembers": [],
       "members": []
+    },
+    "CodeMap.Tests.Data.TestStruct`1.TestConstant": {
+      "kind": "constant",
+      "name": "TestConstant",
+      "accessModifier": "private",
+      "value": 1.0,
+      "type": {
+        "kind": "specific",
+        "name": "Double",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Double",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "struct constant test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value3",
+              "value": "struct constant test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value2",
+              "value": "struct constant test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
     },
     "CodeMap.Tests.Data.TestStruct.NestedTestEnum": {
       "kind": "enum",

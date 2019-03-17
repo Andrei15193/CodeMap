@@ -320,23 +320,64 @@ namespace CodeMap
         /// <param name="constant">The <see cref="ConstantDocumentationElement"/> to visit.</param>
         protected internal override void VisitConstant(ConstantDocumentationElement constant)
         {
+            _jsonWriter.WritePropertyName(_GetIdFor(constant));
+
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("constant");
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteValue(constant.Name);
+            _WriteAccessModifier(constant.AccessModifier);
+            _jsonWriter.WritePropertyName("value");
+            _jsonWriter.WriteValue(constant.Value);
+            _jsonWriter.WritePropertyName("type");
+            _WriteTypeReference(constant.Type);
+            _jsonWriter.WritePropertyName("isShadowing");
+            _jsonWriter.WriteValue(constant.IsShadowing);
+            _jsonWriter.WritePropertyName("declaringType");
+            _jsonWriter.WriteValue(_GetIdFor(constant.DeclaringType));
+            _WriteAttributes(constant.Attributes);
+
+            constant.Summary.Accept(this);
+            constant.Remarks.Accept(this);
+            _WriteExamples(constant.Examples);
+            _WriteRelatedMembers(constant.RelatedMembers);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a <see cref="ConstantDocumentationElement"/>.</summary>
         /// <param name="constant">The <see cref="ConstantDocumentationElement"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitConstantAsync(ConstantDocumentationElement constant, CancellationToken cancellationToken)
+        protected internal override async Task VisitConstantAsync(ConstantDocumentationElement constant, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitConstant(constant);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync(_GetIdFor(constant), cancellationToken);
+
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("constant", cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteValueAsync(constant.Name, cancellationToken);
+            await _WriteAccessModifierAsync(constant.AccessModifier, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("value", cancellationToken);
+            await _jsonWriter.WriteValueAsync(constant.Value, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("type", cancellationToken);
+            await _WriteTypeReferenceAsync(constant.Type, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isShadowing", cancellationToken);
+            await _jsonWriter.WriteValueAsync(constant.IsShadowing, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
+            await _jsonWriter.WriteValueAsync(_GetIdFor(constant.DeclaringType), cancellationToken);
+            await _WriteAttributesAsync(constant.Attributes, cancellationToken);
+
+            await constant.Summary.AcceptAsync(this, cancellationToken);
+            await constant.Remarks.AcceptAsync(this, cancellationToken);
+            await _WriteExamplesAsync(constant.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(constant.RelatedMembers, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits a <see cref="FieldDocumentationElement"/>.</summary>
