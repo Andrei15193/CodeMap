@@ -228,23 +228,72 @@ namespace CodeMap
         /// <param name="delegate">The <see cref="DelegateDocumentationElement"/> to visit.</param>
         protected internal override void VisitDelegate(DelegateDocumentationElement @delegate)
         {
+            _jsonWriter.WritePropertyName(_GetIdFor(@delegate));
+
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("delegate");
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteValue(@delegate.Name);
+            _jsonWriter.WritePropertyName("namespace");
+            _jsonWriter.WriteValue(@delegate.Namespace.Name);
+            _WriteAccessModifier(@delegate.AccessModifier);
+            _jsonWriter.WritePropertyName("declaringType");
+            if (@delegate.DeclaringType != null)
+                _jsonWriter.WriteValue(_GetIdFor(@delegate.DeclaringType));
+            else
+                _jsonWriter.WriteNull();
+            _WriteAttributes(@delegate.Attributes);
+
+            @delegate.Summary.Accept(this);
+            _WriteExceptions(@delegate.Exceptions);
+            @delegate.Remarks.Accept(this);
+            _WriteExamples(@delegate.Examples);
+            _WriteRelatedMembers(@delegate.RelatedMembers);
+
+            _WriteGenericParameters(@delegate.GenericParameters);
+            _WriteParameters(@delegate.Parameters);
+            _WriteReturn(@delegate.Return);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a <see cref="DelegateDocumentationElement"/>.</summary>
         /// <param name="delegate">The <see cref="DelegateDocumentationElement"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitDelegateAsync(DelegateDocumentationElement @delegate, CancellationToken cancellationToken)
+        protected internal override async Task VisitDelegateAsync(DelegateDocumentationElement @delegate, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitDelegate(@delegate);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync(_GetIdFor(@delegate), cancellationToken);
+
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("delegate", cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@delegate.Name, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("namespace", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@delegate.Namespace.Name, cancellationToken);
+            await _WriteAccessModifierAsync(@delegate.AccessModifier, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
+            if (@delegate.DeclaringType != null)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(@delegate.DeclaringType), cancellationToken);
+            else
+                await _jsonWriter.WriteNullAsync(cancellationToken);
+            await _WriteAttributesAsync(@delegate.Attributes, cancellationToken);
+
+            await @delegate.Summary.AcceptAsync(this, cancellationToken);
+            await _WriteExceptionsAsync(@delegate.Exceptions, cancellationToken);
+            await @delegate.Remarks.AcceptAsync(this, cancellationToken);
+            await _WriteExamplesAsync(@delegate.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(@delegate.RelatedMembers, cancellationToken);
+
+            await _WriteGenericParametersAsync(@delegate.GenericParameters, cancellationToken);
+            await _WriteParametersAsync(@delegate.Parameters, cancellationToken);
+            await _WriteReturnAsync(@delegate.Return, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits an <see cref="InterfaceDocumentationElement"/>.</summary>
@@ -1875,21 +1924,35 @@ namespace CodeMap
             _jsonWriter.WriteValue(parameter.Name);
 
             _jsonWriter.WritePropertyName("value");
-            if (parameter.Value == null)
-                _jsonWriter.WriteNull();
-            else
-            {
-                var valueType = parameter.Value.GetType();
-                if (valueType.IsEnum || (Nullable.GetUnderlyingType(valueType)?.IsEnum ?? false))
-                    _jsonWriter.WriteValue(parameter.Value.ToString());
-                else
-                    _jsonWriter.WriteValue(parameter.Value);
-            }
+            WriteValue(parameter.Value);
 
             _jsonWriter.WritePropertyName("type");
             _WriteTypeReference(parameter.Type);
 
             _jsonWriter.WriteEndObject();
+
+            void WriteValue(object value)
+            {
+                if (value == null)
+                    _jsonWriter.WriteNull();
+                else if (value is Array array)
+                {
+                    _jsonWriter.WriteStartArray();
+                    foreach (var item in array)
+                        WriteValue(item);
+                    _jsonWriter.WriteEndArray();
+                }
+                else if (value is TypeReferenceData typeReferenceData)
+                    _WriteTypeReference(typeReferenceData);
+                else
+                {
+                    var valueType = value.GetType();
+                    if (valueType.IsEnum || (Nullable.GetUnderlyingType(valueType)?.IsEnum ?? false))
+                        _jsonWriter.WriteValue(value.ToString());
+                    else
+                        _jsonWriter.WriteValue(value);
+                }
+            }
         }
 
         private async Task _WriteAttributeParameterAsync(AttributeParameterData parameter, CancellationToken cancellationToken)
@@ -1900,19 +1963,191 @@ namespace CodeMap
             await _jsonWriter.WriteValueAsync(parameter.Name, cancellationToken);
 
             await _jsonWriter.WritePropertyNameAsync("value", cancellationToken);
-            if (parameter.Value == null)
-                await _jsonWriter.WriteNullAsync(cancellationToken);
-            else
-            {
-                var valueType = parameter.Value.GetType();
-                if (valueType.IsEnum || (Nullable.GetUnderlyingType(valueType)?.IsEnum ?? false))
-                    await _jsonWriter.WriteValueAsync(parameter.Value.ToString(), cancellationToken);
-                else
-                    await _jsonWriter.WriteValueAsync(parameter.Value, cancellationToken);
-            }
+            await WriteValueAsync(parameter.Value);
 
             await _jsonWriter.WritePropertyNameAsync("type", cancellationToken);
             await _WriteTypeReferenceAsync(parameter.Type, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
+
+            async Task WriteValueAsync(object value)
+            {
+                if (value == null)
+                    await _jsonWriter.WriteNullAsync(cancellationToken);
+                else if (value is Array array)
+                {
+                    await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+                    foreach (var item in array)
+                        await WriteValueAsync(item);
+                    await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+                }
+                else if (value is TypeReferenceData typeReferenceData)
+                    await _WriteTypeReferenceAsync(typeReferenceData, cancellationToken);
+                else
+                {
+                    var valueType = value.GetType();
+                    if (valueType.IsEnum || (Nullable.GetUnderlyingType(valueType)?.IsEnum ?? false))
+                        await _jsonWriter.WriteValueAsync(value.ToString(), cancellationToken);
+                    else
+                        await _jsonWriter.WriteValueAsync(value, cancellationToken);
+                }
+            }
+        }
+
+        private void _WriteGenericParameters(IEnumerable<GenericParameterData> genericParameters)
+        {
+            _jsonWriter.WritePropertyName("genericParameters");
+            _jsonWriter.WriteStartArray();
+            foreach (var genericParameter in genericParameters)
+            {
+                _jsonWriter.WriteStartObject();
+
+                _jsonWriter.WritePropertyName("name");
+                _jsonWriter.WriteValue(genericParameter.Name);
+                _jsonWriter.WritePropertyName("isCovariant");
+                _jsonWriter.WriteValue(genericParameter.IsCovariant);
+                _jsonWriter.WritePropertyName("isContravariant");
+                _jsonWriter.WriteValue(genericParameter.IsContravariant);
+                _jsonWriter.WritePropertyName("hasReferenceTypeConstraint");
+                _jsonWriter.WriteValue(genericParameter.HasReferenceTypeConstraint);
+                _jsonWriter.WritePropertyName("hasNonNullableValueTypeConstraint");
+                _jsonWriter.WriteValue(genericParameter.HasNonNullableValueTypeConstraint);
+                _jsonWriter.WritePropertyName("hasDefaultConstructorConstraint");
+                _jsonWriter.WriteValue(genericParameter.HasDefaultConstructorConstraint);
+                _jsonWriter.WritePropertyName("typeConstraints");
+                _jsonWriter.WriteStartArray();
+                foreach (var typeConstraint in genericParameter.TypeConstraints)
+                    _WriteTypeReference(typeConstraint);
+                _jsonWriter.WriteEndArray();
+                _WriteDescription(genericParameter.Description);
+
+                _jsonWriter.WriteEndObject();
+            }
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteGenericParametersAsync(IEnumerable<GenericParameterData> genericParameters, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("genericParameters", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var genericParameter in genericParameters)
+            {
+                await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+                await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+                await _jsonWriter.WriteValueAsync(genericParameter.Name, cancellationToken);
+                await _jsonWriter.WritePropertyNameAsync("isCovariant", cancellationToken);
+                await _jsonWriter.WriteValueAsync(genericParameter.IsCovariant, cancellationToken);
+                await _jsonWriter.WritePropertyNameAsync("isContravariant", cancellationToken);
+                await _jsonWriter.WriteValueAsync(genericParameter.IsContravariant, cancellationToken);
+
+                await _jsonWriter.WritePropertyNameAsync("hasReferenceTypeConstraint", cancellationToken);
+                await _jsonWriter.WriteValueAsync(genericParameter.HasReferenceTypeConstraint, cancellationToken);
+                await _jsonWriter.WritePropertyNameAsync("hasNonNullableValueTypeConstraint", cancellationToken);
+                await _jsonWriter.WriteValueAsync(genericParameter.HasNonNullableValueTypeConstraint, cancellationToken);
+                await _jsonWriter.WritePropertyNameAsync("hasDefaultConstructorConstraint", cancellationToken);
+                await _jsonWriter.WriteValueAsync(genericParameter.HasDefaultConstructorConstraint, cancellationToken);
+
+                await _jsonWriter.WritePropertyNameAsync("typeConstraints", cancellationToken);
+                await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+                foreach (var typeConstraint in genericParameter.TypeConstraints)
+                    await _WriteTypeReferenceAsync(typeConstraint, cancellationToken);
+                await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+
+                await _WriteDescriptionAsync(genericParameter.Description, cancellationToken);
+                await _jsonWriter.WriteEndObjectAsync(cancellationToken);
+            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteParameters(IEnumerable<ParameterData> parameters)
+        {
+            _jsonWriter.WritePropertyName("parameters");
+            _jsonWriter.WriteStartArray();
+            foreach (var parameter in parameters)
+            {
+                _jsonWriter.WriteStartObject();
+
+                _jsonWriter.WritePropertyName("name");
+                _jsonWriter.WriteValue(parameter.Name);
+                _jsonWriter.WritePropertyName("type");
+                _WriteTypeReference(parameter.Type);
+
+                _jsonWriter.WritePropertyName("isInputByReference");
+                _jsonWriter.WriteValue(parameter.IsInputByReference);
+                _jsonWriter.WritePropertyName("isInputOutputByReference");
+                _jsonWriter.WriteValue(parameter.IsInputOutputByReference);
+                _jsonWriter.WritePropertyName("isOutputByReference");
+                _jsonWriter.WriteValue(parameter.IsOutputByReference);
+
+                if (parameter.HasDefaultValue)
+                {
+                    _jsonWriter.WritePropertyName("defaultValue");
+                    _jsonWriter.WriteValue(parameter.DefaultValue);
+                }
+                _WriteAttributes(parameter.Attributes);
+                _WriteDescription(parameter.Description);
+
+                _jsonWriter.WriteEndObject();
+            }
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteParametersAsync(IEnumerable<ParameterData> parameters, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("parameters", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var parameter in parameters)
+            {
+                await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+                await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+                await _jsonWriter.WriteValueAsync(parameter.Name, cancellationToken);
+                await _jsonWriter.WritePropertyNameAsync("type", cancellationToken);
+                await _WriteTypeReferenceAsync(parameter.Type, cancellationToken);
+
+                await _jsonWriter.WritePropertyNameAsync("isInputByReference", cancellationToken);
+                await _jsonWriter.WriteValueAsync(parameter.IsInputByReference, cancellationToken);
+                await _jsonWriter.WritePropertyNameAsync("isInputOutputByReference", cancellationToken);
+                await _jsonWriter.WriteValueAsync(parameter.IsInputOutputByReference, cancellationToken);
+                await _jsonWriter.WritePropertyNameAsync("isOutputByReference", cancellationToken);
+                await _jsonWriter.WriteValueAsync(parameter.IsOutputByReference, cancellationToken);
+
+                if (parameter.HasDefaultValue)
+                {
+                    await _jsonWriter.WritePropertyNameAsync("defaultValue", cancellationToken);
+                    await _jsonWriter.WriteValueAsync(parameter.DefaultValue, cancellationToken);
+                }
+                await _WriteAttributesAsync(parameter.Attributes, cancellationToken);
+                await _WriteDescriptionAsync(parameter.Description, cancellationToken);
+
+                await _jsonWriter.WriteEndObjectAsync(cancellationToken);
+            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteReturn(ReturnsData @return)
+        {
+            _jsonWriter.WritePropertyName("return");
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("type");
+            _WriteTypeReference(@return.Type);
+            _WriteAttributes(@return.Attributes);
+            _WriteDescription(@return.Description);
+
+            _jsonWriter.WriteEndObject();
+        }
+
+        private async Task _WriteReturnAsync(ReturnsData @return, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("return", cancellationToken);
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("type", cancellationToken);
+            await _WriteTypeReferenceAsync(@return.Type, cancellationToken);
+            await _WriteAttributesAsync(@return.Attributes, cancellationToken);
+            await _WriteDescriptionAsync(@return.Description, cancellationToken);
 
             await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
@@ -2007,12 +2242,68 @@ namespace CodeMap
             await _jsonWriter.WriteEndArrayAsync(cancellationToken);
         }
 
+        private void _WriteExceptions(IEnumerable<ExceptionData> exceptions)
+        {
+            _jsonWriter.WritePropertyName("exceptions");
+            _jsonWriter.WriteStartArray();
+            foreach (var exception in exceptions)
+            {
+                _jsonWriter.WriteStartObject();
+
+                _jsonWriter.WritePropertyName("type");
+                _WriteTypeReference(exception.Type);
+
+                _WriteXmlAttributes(exception.Description.XmlAttributes);
+
+                _jsonWriter.WritePropertyName("content");
+                _jsonWriter.WriteStartArray();
+                exception.Description.Accept(this);
+                _jsonWriter.WriteEndArray();
+
+                _jsonWriter.WriteEndObject();
+            }
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteExceptionsAsync(IEnumerable<ExceptionData> exceptions, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("exceptions", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var exception in exceptions)
+            {
+                await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+                await _jsonWriter.WritePropertyNameAsync("type", cancellationToken);
+                await _WriteTypeReferenceAsync(exception.Type, cancellationToken);
+
+                await _WriteXmlAttributesAsync(exception.Description.XmlAttributes, cancellationToken);
+
+                await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+                await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+                await exception.Description.AcceptAsync(this, cancellationToken);
+                await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+
+                await _jsonWriter.WriteEndObjectAsync(cancellationToken);
+            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
         private void _WriteExamples(IEnumerable<ExampleDocumentationElement> examples)
         {
             _jsonWriter.WritePropertyName("examples");
             _jsonWriter.WriteStartArray();
             foreach (var example in examples)
+            {
+                _jsonWriter.WriteStartObject();
+                _WriteXmlAttributes(example.XmlAttributes);
+
+                _jsonWriter.WritePropertyName("content");
+                _jsonWriter.WriteStartArray();
                 example.Accept(this);
+                _jsonWriter.WriteEndArray();
+
+                _jsonWriter.WriteEndObject();
+            }
             _jsonWriter.WriteEndArray();
         }
 
@@ -2021,7 +2312,17 @@ namespace CodeMap
             await _jsonWriter.WritePropertyNameAsync("examples", cancellationToken);
             await _jsonWriter.WriteStartArrayAsync(cancellationToken);
             foreach (var example in examples)
+            {
+                await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+                await _WriteXmlAttributesAsync(example.XmlAttributes, cancellationToken);
+
+                await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+                await _jsonWriter.WriteStartArrayAsync(cancellationToken);
                 await example.AcceptAsync(this, cancellationToken);
+                await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+
+                await _jsonWriter.WriteEndObjectAsync(cancellationToken);
+            }
             await _jsonWriter.WriteEndArrayAsync(cancellationToken);
         }
 
@@ -2041,6 +2342,36 @@ namespace CodeMap
             foreach (var relatedMember in relatedMembers)
                 await relatedMember.AcceptAsync(this, cancellationToken);
             await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteDescription(BlockDescriptionDocumentationElement blockDescription)
+        {
+            _jsonWriter.WritePropertyName("description");
+            _jsonWriter.WriteStartObject();
+
+            _WriteXmlAttributes(blockDescription.XmlAttributes);
+
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
+            blockDescription.Accept(this);
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WriteEndObject();
+        }
+
+        private async Task _WriteDescriptionAsync(BlockDescriptionDocumentationElement blockDescription, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("description", cancellationToken);
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _WriteXmlAttributesAsync(blockDescription.XmlAttributes, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            await blockDescription.AcceptAsync(this, cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         private void _WriteDependencies(IEnumerable<AssemblyReference> dependencies)

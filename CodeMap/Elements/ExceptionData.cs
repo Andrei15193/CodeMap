@@ -14,7 +14,5 @@ namespace CodeMap.Elements
 
         /// <summary>The description of the cases where the exception is thrown.</summary>
         public BlockDescriptionDocumentationElement Description { get; internal set; }
-
-        internal IReadOnlyDictionary<string, string> XmlAttributes { get; set; }
     }
 }

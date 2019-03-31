@@ -933,7 +933,7 @@ namespace CodeMap
         )
         .ToList();
 
-        private static object _GetAttributeValue(Type type, CustomAttributeTypedArgument argument)
+        private object _GetAttributeValue(Type type, CustomAttributeTypedArgument argument)
         {
             if (argument.Value == null)
                 return null;
@@ -941,11 +941,13 @@ namespace CodeMap
                 return _GetAttributeValues(type, (IEnumerable<CustomAttributeTypedArgument>)argument.Value);
             if (type.IsEnum)
                 return Enum.Parse(type, Convert.ToString(argument.Value));
+            if (argument.Value is Type typeArgument)
+                return _GetTypeReference(typeArgument);
 
             return argument.Value;
         }
 
-        private static object _GetAttributeValues(Type attributeParameterType, IEnumerable<CustomAttributeTypedArgument> values)
+        private object _GetAttributeValues(Type attributeParameterType, IEnumerable<CustomAttributeTypedArgument> values)
         {
             var valuesCollection = values.AsReadOnlyList();
             var result = Array.CreateInstance(

@@ -38,8 +38,6 @@ namespace CodeMap.Elements
         public object DefaultValue { get; internal set; }
 
         /// <summary>The parameter description.</summary>
-        public IReadOnlyList<BlockDocumentationElement> Description { get; internal set; }
-
-        internal IReadOnlyDictionary<string, string> XmlAttributes { get; set; }
+        public BlockDescriptionDocumentationElement Description { get; internal set; }
     }
 }
