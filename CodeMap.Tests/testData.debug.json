@@ -3212,6 +3212,40 @@
       "nestedClasses": [],
       "nestedStructs": []
     },
+    "CodeMap.Tests.Data.TestAttribute.Value3": {
+      "kind": "constant",
+      "name": "Value3",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "Object",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Object",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "isStatic": false,
+      "isReadOnly": false,
+      "declaringType": "CodeMap.Tests.Data.TestAttribute",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
     "CodeMap.Tests.Data.TestBaseClass": {
       "kind": "class",
       "name": "TestBaseClass",
@@ -3277,6 +3311,40 @@
       "nestedInterfaces": [],
       "nestedClasses": [],
       "nestedStructs": []
+    },
+    "CodeMap.Tests.Data.TestBaseClass.ShadowedTestField": {
+      "kind": "constant",
+      "name": "ShadowedTestField",
+      "accessModifier": "family",
+      "type": {
+        "kind": "specific",
+        "name": "Int32",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Int32",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "isStatic": false,
+      "isReadOnly": false,
+      "declaringType": "CodeMap.Tests.Data.TestBaseClass",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
     },
     "CodeMap.Tests.Data.TestClass`1": {
       "kind": "class",
@@ -3586,6 +3654,217 @@
             {
               "name": "Value3",
               "value": "class constant test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestClass`1.ReadonlyTestField": {
+      "kind": "constant",
+      "name": "ReadonlyTestField",
+      "accessModifier": "private",
+      "type": {
+        "kind": "specific",
+        "name": "Char",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Char",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "isStatic": false,
+      "isReadOnly": true,
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestClass`1.ShadowedTestField": {
+      "kind": "constant",
+      "name": "ShadowedTestField",
+      "accessModifier": "family",
+      "type": {
+        "kind": "specific",
+        "name": "Int32",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Int32",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "isShadowing": true,
+      "isStatic": false,
+      "isReadOnly": false,
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestClass`1.StaticTestField": {
+      "kind": "constant",
+      "name": "StaticTestField",
+      "accessModifier": "private",
+      "type": {
+        "kind": "specific",
+        "name": "String",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.String",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "isStatic": true,
+      "isReadOnly": false,
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestClass`1.TestField": {
+      "kind": "constant",
+      "name": "TestField",
+      "accessModifier": "private",
+      "type": {
+        "kind": "specific",
+        "name": "Byte",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Byte",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "isStatic": false,
+      "isReadOnly": false,
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "class field test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value2",
+              "value": "class field test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value3",
+              "value": "class field test 3",
               "type": {
                 "kind": "specific",
                 "name": "Object",
@@ -4263,6 +4542,183 @@
             {
               "name": "Value3",
               "value": "struct constant test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestStruct`1.ReadonlyTestField": {
+      "kind": "constant",
+      "name": "ReadonlyTestField",
+      "accessModifier": "private",
+      "type": {
+        "kind": "specific",
+        "name": "Char",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Char",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "isStatic": false,
+      "isReadOnly": true,
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestStruct`1.StaticTestField": {
+      "kind": "constant",
+      "name": "StaticTestField",
+      "accessModifier": "private",
+      "type": {
+        "kind": "specific",
+        "name": "String",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.String",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "isStatic": true,
+      "isReadOnly": false,
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestStruct`1.TestField": {
+      "kind": "constant",
+      "name": "TestField",
+      "accessModifier": "private",
+      "type": {
+        "kind": "specific",
+        "name": "Byte",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Byte",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "isShadowing": false,
+      "isStatic": false,
+      "isReadOnly": false,
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "struct field test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value2",
+              "value": "struct field test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value3",
+              "value": "struct field test 3",
               "type": {
                 "kind": "specific",
                 "name": "Object",

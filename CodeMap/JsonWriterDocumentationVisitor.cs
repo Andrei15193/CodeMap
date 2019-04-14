@@ -627,23 +627,70 @@ namespace CodeMap
         /// <param name="field">The <see cref="FieldDocumentationElement"/> to visit.</param>
         protected internal override void VisitField(FieldDocumentationElement field)
         {
+            _jsonWriter.WritePropertyName(_GetIdFor(field));
+
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("constant");
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteValue(field.Name);
+            _WriteAccessModifier(field.AccessModifier);
+            _jsonWriter.WritePropertyName("type");
+            _WriteTypeReference(field.Type);
+
+            _jsonWriter.WritePropertyName("isShadowing");
+            _jsonWriter.WriteValue(field.IsShadowing);
+            _jsonWriter.WritePropertyName("isStatic");
+            _jsonWriter.WriteValue(field.IsStatic);
+            _jsonWriter.WritePropertyName("isReadOnly");
+            _jsonWriter.WriteValue(field.IsReadOnly);
+            _jsonWriter.WritePropertyName("declaringType");
+            _jsonWriter.WriteValue(_GetIdFor(field.DeclaringType));
+            _WriteAttributes(field.Attributes);
+
+            field.Summary.Accept(this);
+            field.Remarks.Accept(this);
+            _WriteExamples(field.Examples);
+            _WriteRelatedMembers(field.RelatedMembers);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a <see cref="FieldDocumentationElement"/>.</summary>
         /// <param name="field">The <see cref="FieldDocumentationElement"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitFieldAsync(FieldDocumentationElement field, CancellationToken cancellationToken)
+        protected internal override async Task VisitFieldAsync(FieldDocumentationElement field, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitField(field);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync(_GetIdFor(field), cancellationToken);
+
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("constant", cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteValueAsync(field.Name, cancellationToken);
+            await _WriteAccessModifierAsync(field.AccessModifier, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("type", cancellationToken);
+            await _WriteTypeReferenceAsync(field.Type, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("isShadowing", cancellationToken);
+            await _jsonWriter.WriteValueAsync(field.IsShadowing, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isStatic", cancellationToken);
+            await _jsonWriter.WriteValueAsync(field.IsStatic, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isReadOnly", cancellationToken);
+            await _jsonWriter.WriteValueAsync(field.IsReadOnly, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
+            await _jsonWriter.WriteValueAsync(_GetIdFor(field.DeclaringType), cancellationToken);
+            await _WriteAttributesAsync(field.Attributes, cancellationToken);
+
+            await field.Summary.AcceptAsync(this, cancellationToken);
+            await field.Remarks.AcceptAsync(this, cancellationToken);
+            await _WriteExamplesAsync(field.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(field.RelatedMembers, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits a <see cref="ConstructorDocumentationElement"/>.</summary>
