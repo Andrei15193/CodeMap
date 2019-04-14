@@ -300,23 +300,114 @@ namespace CodeMap
         /// <param name="interface">The <see cref="InterfaceDocumentationElement"/> to visit.</param>
         protected internal override void VisitInterface(InterfaceDocumentationElement @interface)
         {
+            _jsonWriter.WritePropertyName(_GetIdFor(@interface));
+
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("interface");
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteValue(@interface.Name);
+            _jsonWriter.WritePropertyName("namespace");
+            _jsonWriter.WriteValue(@interface.Namespace.Name);
+            _WriteAccessModifier(@interface.AccessModifier);
+            _jsonWriter.WritePropertyName("declaringType");
+            if (@interface.DeclaringType != null)
+                _jsonWriter.WriteValue(_GetIdFor(@interface.DeclaringType));
+            else
+                _jsonWriter.WriteNull();
+            _WriteAttributes(@interface.Attributes);
+
+            @interface.Summary.Accept(this);
+            @interface.Remarks.Accept(this);
+            _WriteExamples(@interface.Examples);
+            _WriteRelatedMembers(@interface.RelatedMembers);
+
+            _WriteGenericParameters(@interface.GenericParameters);
+
+            _jsonWriter.WritePropertyName("baseInterfaces");
+            _jsonWriter.WriteStartArray();
+            foreach (var baseInterface in @interface.BaseInterfaces)
+                _WriteTypeReference(baseInterface);
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("events");
+            _jsonWriter.WriteStartArray();
+            foreach (var @event in @interface.Events)
+                _jsonWriter.WriteValue(_GetIdFor(@event));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("properties");
+            _jsonWriter.WriteStartArray();
+            foreach (var property in @interface.Properties)
+                _jsonWriter.WriteValue(_GetIdFor(property));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("methods");
+            _jsonWriter.WriteStartArray();
+            foreach (var method in @interface.Methods)
+                _jsonWriter.WriteValue(_GetIdFor(method));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an <see cref="InterfaceDocumentationElement"/>.</summary>
         /// <param name="interface">The <see cref="InterfaceDocumentationElement"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitInterfaceAsync(InterfaceDocumentationElement @interface, CancellationToken cancellationToken)
+        protected internal override async Task VisitInterfaceAsync(InterfaceDocumentationElement @interface, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitInterface(@interface);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync(_GetIdFor(@interface), cancellationToken);
+
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("interface", cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@interface.Name, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("namespace", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@interface.Namespace.Name, cancellationToken);
+            await _WriteAccessModifierAsync(@interface.AccessModifier, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
+            if (@interface.DeclaringType != null)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(@interface.DeclaringType), cancellationToken);
+            else
+                await _jsonWriter.WriteNullAsync(cancellationToken);
+            await _WriteAttributesAsync(@interface.Attributes, cancellationToken);
+
+            await @interface.Summary.AcceptAsync(this, cancellationToken);
+            await @interface.Remarks.AcceptAsync(this, cancellationToken);
+            await _WriteExamplesAsync(@interface.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(@interface.RelatedMembers, cancellationToken);
+
+            await _WriteGenericParametersAsync(@interface.GenericParameters, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("baseInterfaces", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var baseInterface in @interface.BaseInterfaces)
+                await _WriteTypeReferenceAsync(baseInterface, cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("events", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var @event in @interface.Events)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(@event), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("properties", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var property in @interface.Properties)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(property), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("methods", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var method in @interface.Methods)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(method), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits a <see cref="ClassDocumentationElement"/>.</summary>
@@ -2467,6 +2558,50 @@ namespace CodeMap
         private static string _GetIdFor(EventDocumentationElement @event)
             => _GetIdBuilderFor(@event.DeclaringType).Append('.').Append(@event.Name).ToString();
 
+        private static string _GetIdFor(PropertyDocumentationElement property)
+        {
+            var builder = _GetIdBuilderFor(property.DeclaringType).Append('.').Append(property.Name);
+            if (property.Parameters.Count > 0)
+            {
+                builder.Append('(');
+                var isFirst = true;
+                foreach (var parameter in property.Parameters)
+                {
+                    if (isFirst)
+                        isFirst = false;
+                    else
+                        builder.Append(',');
+                    builder.Append(_GetTypeReferenceId(parameter.Type));
+                }
+                builder.Append(')');
+            }
+            return builder.ToString();
+        }
+
+        private static string _GetIdFor(MethodDocumentationElement method)
+        {
+            var builder = _GetIdBuilderFor(method.DeclaringType).Append('.').Append(method.Name);
+
+            if (method.GenericParameters.Count > 0)
+                builder.Append("``").Append(method.GenericParameters.Count);
+
+            if (method.Parameters.Count > 0)
+            {
+                builder.Append('(');
+                var isFirst = true;
+                foreach (var parameter in method.Parameters)
+                {
+                    if (isFirst)
+                        isFirst = false;
+                    else
+                        builder.Append(',');
+                    builder.Append(_GetTypeReferenceId(parameter.Type));
+                }
+                builder.Append(')');
+            }
+            return builder.ToString();
+        }
+
         private static string _GetIdFor(TypeDocumentationElement type)
         {
             switch (type)
@@ -2571,6 +2706,86 @@ namespace CodeMap
             } while (nestingChain.Count > 0);
 
             return idBuilder;
+        }
+
+        private static string _GetTypeReferenceId(TypeReferenceData typeReferenceData)
+            => _AppendTypeReferenceId(new StringBuilder(), typeReferenceData).ToString();
+
+        private static StringBuilder _AppendTypeReferenceId(StringBuilder idBuilder, TypeReferenceData typeReferenceData)
+        {
+            switch (typeReferenceData)
+            {
+                case VoidTypeData voidTypeData:
+                    return idBuilder.Append("System.Void");
+
+                case DynamicTypeData dynamicTypeData:
+                    return idBuilder.Append("System.Object");
+
+                case TypeData typeData:
+                    if (typeData.DeclaringType == null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(typeData.Namespace))
+                            idBuilder.Append(typeData.Namespace).Append('.');
+                    }
+                    else
+                        _AppendTypeReferenceId(idBuilder, typeData.DeclaringType).Append('.');
+
+                    idBuilder.Append(typeData.Name);
+                    if (typeData.GenericArguments.Count > 0)
+                    {
+                        idBuilder.Append('<');
+                        var isFirst = true;
+                        foreach (var genericArgument in typeData.GenericArguments)
+                        {
+                            if (isFirst)
+                                isFirst = false;
+                            else
+                                idBuilder.Append(',');
+                            _AppendTypeReferenceId(idBuilder, genericArgument);
+                        }
+                        idBuilder.Append('>');
+                    }
+                    return idBuilder;
+
+                case PointerTypeData pointerTypeData:
+                    return _AppendTypeReferenceId(idBuilder, pointerTypeData.ReferentType).Append('*');
+
+                case TypeGenericParameterData typeGenericParameterData:
+                    return idBuilder.Append('`').Append(_GetGenericParameterAbsolutePosition(typeGenericParameterData));
+
+                case MethodGenericParameterTypeData methodGenericParameterData:
+                    return idBuilder.Append("``").Append(methodGenericParameterData.Position);
+
+                case ArrayTypeData arrayTypeData:
+                    return _AppendTypeReferenceId(idBuilder, arrayTypeData.ItemType)
+                        .Append('[')
+                        .Append(new string(',', arrayTypeData.Rank - 1))
+                        .Append(']');
+
+                default:
+                    return idBuilder;
+            }
+        }
+
+        private static int _GetGenericParameterAbsolutePosition(TypeGenericParameterData typeGenericParameterData)
+        {
+            var genericParameterPosition = typeGenericParameterData.Position;
+            var declaryingType = typeGenericParameterData.DeclaringType.DeclaringType;
+            while (declaryingType != null)
+            {
+                switch (declaryingType)
+                {
+                    case ClassDocumentationElement @class:
+                        genericParameterPosition += @class.GenericParameters.Count;
+                        break;
+
+                    case StructDocumentationElement @struct:
+                        genericParameterPosition += @struct.GenericParameters.Count;
+                        break;
+                }
+                declaryingType = declaryingType.DeclaringType;
+            }
+            return genericParameterPosition;
         }
     }
 }

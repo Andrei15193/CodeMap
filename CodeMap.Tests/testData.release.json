@@ -2574,6 +2574,408 @@
         }
       }
     },
+    "CodeMap.Tests.Data.ITestBaseInterface": {
+      "kind": "interface",
+      "name": "ITestBaseInterface",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseInterfaces": [],
+      "events": [
+        "CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestEvent"
+      ],
+      "properties": [
+        "CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestProperty"
+      ],
+      "methods": [
+        "CodeMap.Tests.Data.ITestBaseInterface.BaseTestMethod",
+        "CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestMethod"
+      ]
+    },
+    "CodeMap.Tests.Data.ITestExplicitInterface": {
+      "kind": "interface",
+      "name": "ITestExplicitInterface",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseInterfaces": [],
+      "events": [
+        "CodeMap.Tests.Data.ITestExplicitInterface.TestEvent"
+      ],
+      "properties": [
+        "CodeMap.Tests.Data.ITestExplicitInterface.TestProperty"
+      ],
+      "methods": [
+        "CodeMap.Tests.Data.ITestExplicitInterface.TestMethod"
+      ]
+    },
+    "CodeMap.Tests.Data.ITestExtendedBaseInterface": {
+      "kind": "interface",
+      "name": "ITestExtendedBaseInterface",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseInterfaces": [
+        {
+          "kind": "specific",
+          "name": "ITestBaseInterface",
+          "namespace": "CodeMap.Tests.Data",
+          "declaringType": null,
+          "fullName": "CodeMap.Tests.Data.ITestBaseInterface",
+          "assembly": {
+            "name": "CodeMap.Tests.Data",
+            "version": "1.2.3.4",
+            "culture": "",
+            "publicKeyToken": ""
+          },
+          "genericArguments": []
+        }
+      ],
+      "events": [],
+      "properties": [],
+      "methods": []
+    },
+    "CodeMap.Tests.Data.ITestGenericParameter`6": {
+      "kind": "interface",
+      "name": "ITestGenericParameter",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [
+        {
+          "name": "TParam1",
+          "isCovariant": true,
+          "isContravariant": false,
+          "hasReferenceTypeConstraint": false,
+          "hasNonNullableValueTypeConstraint": false,
+          "hasDefaultConstructorConstraint": false,
+          "typeConstraints": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "TParam2",
+          "isCovariant": false,
+          "isContravariant": true,
+          "hasReferenceTypeConstraint": true,
+          "hasNonNullableValueTypeConstraint": false,
+          "hasDefaultConstructorConstraint": false,
+          "typeConstraints": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "TParam3",
+          "isCovariant": false,
+          "isContravariant": false,
+          "hasReferenceTypeConstraint": false,
+          "hasNonNullableValueTypeConstraint": true,
+          "hasDefaultConstructorConstraint": false,
+          "typeConstraints": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "TParam4",
+          "isCovariant": false,
+          "isContravariant": false,
+          "hasReferenceTypeConstraint": false,
+          "hasNonNullableValueTypeConstraint": false,
+          "hasDefaultConstructorConstraint": true,
+          "typeConstraints": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "TParam5",
+          "isCovariant": false,
+          "isContravariant": false,
+          "hasReferenceTypeConstraint": false,
+          "hasNonNullableValueTypeConstraint": false,
+          "hasDefaultConstructorConstraint": false,
+          "typeConstraints": [
+            {
+              "kind": "genericParameter",
+              "name": "TParam1"
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "TParam6",
+          "isCovariant": false,
+          "isContravariant": false,
+          "hasReferenceTypeConstraint": false,
+          "hasNonNullableValueTypeConstraint": false,
+          "hasDefaultConstructorConstraint": false,
+          "typeConstraints": [
+            {
+              "kind": "genericParameter",
+              "name": "TParam1"
+            },
+            {
+              "kind": "specific",
+              "name": "IComparable",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.IComparable",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": [
+                {
+                  "kind": "genericParameter",
+                  "name": "TParam1"
+                }
+              ]
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        }
+      ],
+      "baseInterfaces": [],
+      "events": [],
+      "properties": [],
+      "methods": []
+    },
+    "CodeMap.Tests.Data.ITestInterface`1": {
+      "kind": "interface",
+      "name": "ITestInterface",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "DefaultMemberAttribute",
+            "namespace": "System.Reflection",
+            "declaringType": null,
+            "fullName": "System.Reflection.DefaultMemberAttribute",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "memberName",
+              "value": "Item",
+              "type": {
+                "kind": "specific",
+                "name": "String",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.String",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": []
+        },
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "interface test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value3",
+              "value": "interface test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value2",
+              "value": "interface test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [
+        {
+          "name": "TParam1",
+          "isCovariant": false,
+          "isContravariant": false,
+          "hasReferenceTypeConstraint": false,
+          "hasNonNullableValueTypeConstraint": false,
+          "hasDefaultConstructorConstraint": false,
+          "typeConstraints": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        }
+      ],
+      "baseInterfaces": [
+        {
+          "kind": "specific",
+          "name": "ITestExtendedBaseInterface",
+          "namespace": "CodeMap.Tests.Data",
+          "declaringType": null,
+          "fullName": "CodeMap.Tests.Data.ITestExtendedBaseInterface",
+          "assembly": {
+            "name": "CodeMap.Tests.Data",
+            "version": "1.2.3.4",
+            "culture": "",
+            "publicKeyToken": ""
+          },
+          "genericArguments": []
+        }
+      ],
+      "events": [
+        "CodeMap.Tests.Data.ITestInterface`1.TestEvent",
+        "CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestEvent"
+      ],
+      "properties": [
+        "CodeMap.Tests.Data.ITestInterface`1.TestProperty",
+        "CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestProperty",
+        "CodeMap.Tests.Data.ITestInterface`1.Item(System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Int32*,System.Byte*[],System.Void*,System.Void**,System.Void**[],`0,System.String)"
+      ],
+      "methods": [
+        "CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestMethod",
+        "CodeMap.Tests.Data.ITestInterface`1.TestMethod``1(System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Object,System.Object,`0,`0,`0,System.Int32*,System.Byte*[],System.Char*,System.Double*,System.Decimal*[],System.Int16*[],System.Void*,System.Void**,System.Void**,System.Void**,System.Void**[],System.Void**[],System.Void**[],``0,``0,``0,System.String)"
+      ]
+    },
     "CodeMap.Tests.Data.TestClass`1.TestConstant": {
       "kind": "constant",
       "name": "TestConstant",
@@ -2744,6 +3146,29 @@
         }
       }
     },
+    "CodeMap.Tests.Data.TestClass.INestedTestInterface": {
+      "kind": "interface",
+      "name": "INestedTestInterface",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseInterfaces": [],
+      "events": [],
+      "properties": [],
+      "methods": []
+    },
     "CodeMap.Tests.Data.TestStruct`1.TestConstant": {
       "kind": "constant",
       "name": "TestConstant",
@@ -2913,6 +3338,29 @@
           "content": []
         }
       }
+    },
+    "CodeMap.Tests.Data.TestStruct.INestedTestInterface": {
+      "kind": "interface",
+      "name": "INestedTestInterface",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "private",
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseInterfaces": [],
+      "events": [],
+      "properties": [],
+      "methods": []
     }
   }
 }
