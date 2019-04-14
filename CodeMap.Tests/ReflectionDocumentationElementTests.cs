@@ -180,8 +180,8 @@ namespace CodeMap.Tests
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
                 .AssertCollectionMember(
                     () => typeDocumentationElement.Attributes,
-                    attribute => attribute.AssertDefaultMemberAttribute(),
-                    attribute => attribute.AssertTestAttribute("interface")
+                    attribute => attribute.AssertTestAttribute("interface"),
+                    attribute => attribute.AssertDefaultMemberAttribute()
                 )
                 .AssertIs<InterfaceDocumentationElement>(
                     interfaceDocumentationElement => interfaceDocumentationElement
@@ -290,8 +290,8 @@ namespace CodeMap.Tests
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
                 .AssertCollectionMember(
                     () => typeDocumentationElement.Attributes,
-                    attribute => attribute.AssertDefaultMemberAttribute(),
-                    attribute => attribute.AssertTestAttribute("class")
+                    attribute => attribute.AssertTestAttribute("class"),
+                    attribute => attribute.AssertDefaultMemberAttribute()
                 )
                 .AssertIs<ClassDocumentationElement>(
                     classDocumentationElement => classDocumentationElement
@@ -580,8 +580,8 @@ namespace CodeMap.Tests
                 .AssertNull(() => typeDocumentationElement.DeclaringType)
                 .AssertCollectionMember(
                     () => typeDocumentationElement.Attributes,
-                    attribute => attribute.AssertDefaultMemberAttribute(),
-                    attribute => attribute.AssertTestAttribute("struct")
+                    attribute => attribute.AssertTestAttribute("struct"),
+                    attribute => attribute.AssertDefaultMemberAttribute()
                 )
                 .AssertIs<StructDocumentationElement>(
                     structDocumentationElement => structDocumentationElement
@@ -926,14 +926,15 @@ namespace CodeMap.Tests
                     () => assemblyDocumentationElement.Dependencies,
                     testDataAssembly
                         .GetReferencedAssemblies()
+                        .OrderBy(dependency => dependency.Name)
                         .Select(referredAssemblyName => new Action<AssemblyReference>(dependency => referredAssemblyName.AssertAssemblyReference(dependency)))
                         .ToArray()
                 )
                 .AssertCollectionMember(
                     () => assemblyDocumentationElement.Attributes,
+                    attribute => attribute.AssertTypeReference(() => attribute.Type, typeof(DebuggableAttribute)),
                     attribute => attribute.AssertTypeReference(() => attribute.Type, typeof(CompilationRelaxationsAttribute)),
                     attribute => attribute.AssertTypeReference(() => attribute.Type, typeof(RuntimeCompatibilityAttribute)),
-                    attribute => attribute.AssertTypeReference(() => attribute.Type, typeof(DebuggableAttribute)),
                     attribute => attribute.AssertTypeReference(() => attribute.Type, typeof(TargetFrameworkAttribute))
                 )
                 .AssertCollectionMember(

@@ -7,6 +7,56 @@
     {
       "type": {
         "kind": "specific",
+        "name": "DebuggableAttribute",
+        "namespace": "System.Diagnostics",
+        "declaringType": null,
+        "fullName": "System.Diagnostics.DebuggableAttribute",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "positionalParameters": [
+        {
+          "name": "modes",
+          "value": "IgnoreSymbolStoreSequencePoints",
+          "type": {
+            "kind": "specific",
+            "name": "DebuggingModes",
+            "namespace": "System.Diagnostics",
+            "declaringType": {
+              "kind": "specific",
+              "name": "DebuggableAttribute",
+              "namespace": "System.Diagnostics",
+              "declaringType": null,
+              "fullName": "System.Diagnostics.DebuggableAttribute",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            },
+            "fullName": "System.Diagnostics.DebuggableAttribute.DebuggingModes",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          }
+        }
+      ],
+      "namedParameters": []
+    },
+    {
+      "type": {
+        "kind": "specific",
         "name": "CompilationRelaxationsAttribute",
         "namespace": "System.Runtime.CompilerServices",
         "declaringType": null,
@@ -81,56 +131,6 @@
     {
       "type": {
         "kind": "specific",
-        "name": "DebuggableAttribute",
-        "namespace": "System.Diagnostics",
-        "declaringType": null,
-        "fullName": "System.Diagnostics.DebuggableAttribute",
-        "assembly": {
-          "name": "System.Private.CoreLib",
-          "version": "4.0.0.0",
-          "culture": "",
-          "publicKeyToken": "7cec85d7bea7798e"
-        },
-        "genericArguments": []
-      },
-      "positionalParameters": [
-        {
-          "name": "modes",
-          "value": "IgnoreSymbolStoreSequencePoints",
-          "type": {
-            "kind": "specific",
-            "name": "DebuggingModes",
-            "namespace": "System.Diagnostics",
-            "declaringType": {
-              "kind": "specific",
-              "name": "DebuggableAttribute",
-              "namespace": "System.Diagnostics",
-              "declaringType": null,
-              "fullName": "System.Diagnostics.DebuggableAttribute",
-              "assembly": {
-                "name": "System.Private.CoreLib",
-                "version": "4.0.0.0",
-                "culture": "",
-                "publicKeyToken": "7cec85d7bea7798e"
-              },
-              "genericArguments": []
-            },
-            "fullName": "System.Diagnostics.DebuggableAttribute.DebuggingModes",
-            "assembly": {
-              "name": "System.Private.CoreLib",
-              "version": "4.0.0.0",
-              "culture": "",
-              "publicKeyToken": "7cec85d7bea7798e"
-            },
-            "genericArguments": []
-          }
-        }
-      ],
-      "namedParameters": []
-    },
-    {
-      "type": {
-        "kind": "specific",
         "name": "TargetFrameworkAttribute",
         "namespace": "System.Runtime.Versioning",
         "declaringType": null,
@@ -187,6 +187,12 @@
   ],
   "dependencies": [
     {
+      "name": "System.Linq.Expressions",
+      "version": "4.2.1.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a"
+    },
+    {
       "name": "System.Runtime",
       "version": "4.2.1.0",
       "culture": "",
@@ -194,12 +200,6 @@
     },
     {
       "name": "System.Runtime.Extensions",
-      "version": "4.2.1.0",
-      "culture": "",
-      "publicKeyToken": "b03f5f7f11d50a3a"
-    },
-    {
-      "name": "System.Linq.Expressions",
       "version": "4.2.1.0",
       "culture": "",
       "publicKeyToken": "b03f5f7f11d50a3a"
@@ -390,8 +390,8 @@
           ],
           "namedParameters": [
             {
-              "name": "Value3",
-              "value": "enum test 3",
+              "name": "Value2",
+              "value": "enum test 2",
               "type": {
                 "kind": "specific",
                 "name": "Object",
@@ -408,8 +408,8 @@
               }
             },
             {
-              "name": "Value2",
-              "value": "enum test 2",
+              "name": "Value3",
+              "value": "enum test 3",
               "type": {
                 "kind": "specific",
                 "name": "Object",
@@ -503,8 +503,8 @@
           ],
           "namedParameters": [
             {
-              "name": "Value3",
-              "value": "enum member test 3",
+              "name": "Value2",
+              "value": "enum member test 2",
               "type": {
                 "kind": "specific",
                 "name": "Object",
@@ -521,8 +521,8 @@
               }
             },
             {
-              "name": "Value2",
-              "value": "enum member test 2",
+              "name": "Value3",
+              "value": "enum member test 3",
               "type": {
                 "kind": "specific",
                 "name": "Object",
@@ -662,8 +662,8 @@
           ],
           "namedParameters": [
             {
-              "name": "Value3",
-              "value": "delegate test 3",
+              "name": "Value2",
+              "value": "delegate test 2",
               "type": {
                 "kind": "specific",
                 "name": "Object",
@@ -680,8 +680,8 @@
               }
             },
             {
-              "name": "Value2",
-              "value": "delegate test 2",
+              "name": "Value3",
+              "value": "delegate test 3",
               "type": {
                 "kind": "specific",
                 "name": "Object",
@@ -784,8 +784,8 @@
               ],
               "namedParameters": [
                 {
-                  "name": "Value3",
-                  "value": "delegate parameter test 3",
+                  "name": "Value2",
+                  "value": "delegate parameter test 2",
                   "type": {
                     "kind": "specific",
                     "name": "Object",
@@ -802,8 +802,8 @@
                   }
                 },
                 {
-                  "name": "Value2",
-                  "value": "delegate parameter test 2",
+                  "name": "Value3",
+                  "value": "delegate parameter test 3",
                   "type": {
                     "kind": "specific",
                     "name": "Object",
@@ -1977,24 +1977,6 @@
             {
               "type": {
                 "kind": "specific",
-                "name": "OutAttribute",
-                "namespace": "System.Runtime.InteropServices",
-                "declaringType": null,
-                "fullName": "System.Runtime.InteropServices.OutAttribute",
-                "assembly": {
-                  "name": "System.Private.CoreLib",
-                  "version": "4.0.0.0",
-                  "culture": "",
-                  "publicKeyToken": "7cec85d7bea7798e"
-                },
-                "genericArguments": []
-              },
-              "positionalParameters": [],
-              "namedParameters": []
-            },
-            {
-              "type": {
-                "kind": "specific",
                 "name": "DynamicAttribute",
                 "namespace": "System.Runtime.CompilerServices",
                 "declaringType": null,
@@ -2031,6 +2013,24 @@
                   }
                 }
               ],
+              "namedParameters": []
+            },
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
               "namedParameters": []
             }
           ],
@@ -2580,8 +2580,8 @@
             ],
             "namedParameters": [
               {
-                "name": "Value3",
-                "value": "delegate return test 3",
+                "name": "Value2",
+                "value": "delegate return test 2",
                 "type": {
                   "kind": "specific",
                   "name": "Object",
@@ -2598,8 +2598,8 @@
                 }
               },
               {
-                "name": "Value2",
-                "value": "delegate return test 2",
+                "name": "Value3",
+                "value": "delegate return test 3",
                 "type": {
                   "kind": "specific",
                   "name": "Object",
@@ -2862,43 +2862,6 @@
         {
           "type": {
             "kind": "specific",
-            "name": "DefaultMemberAttribute",
-            "namespace": "System.Reflection",
-            "declaringType": null,
-            "fullName": "System.Reflection.DefaultMemberAttribute",
-            "assembly": {
-              "name": "System.Private.CoreLib",
-              "version": "4.0.0.0",
-              "culture": "",
-              "publicKeyToken": "7cec85d7bea7798e"
-            },
-            "genericArguments": []
-          },
-          "positionalParameters": [
-            {
-              "name": "memberName",
-              "value": "Item",
-              "type": {
-                "kind": "specific",
-                "name": "String",
-                "namespace": "System",
-                "declaringType": null,
-                "fullName": "System.String",
-                "assembly": {
-                  "name": "System.Private.CoreLib",
-                  "version": "4.0.0.0",
-                  "culture": "",
-                  "publicKeyToken": "7cec85d7bea7798e"
-                },
-                "genericArguments": []
-              }
-            }
-          ],
-          "namedParameters": []
-        },
-        {
-          "type": {
-            "kind": "specific",
             "name": "TestAttribute",
             "namespace": "CodeMap.Tests.Data",
             "declaringType": null,
@@ -2933,24 +2896,6 @@
           ],
           "namedParameters": [
             {
-              "name": "Value3",
-              "value": "interface test 3",
-              "type": {
-                "kind": "specific",
-                "name": "Object",
-                "namespace": "System",
-                "declaringType": null,
-                "fullName": "System.Object",
-                "assembly": {
-                  "name": "System.Private.CoreLib",
-                  "version": "4.0.0.0",
-                  "culture": "",
-                  "publicKeyToken": "7cec85d7bea7798e"
-                },
-                "genericArguments": []
-              }
-            },
-            {
               "name": "Value2",
               "value": "interface test 2",
               "type": {
@@ -2967,8 +2912,63 @@
                 },
                 "genericArguments": []
               }
+            },
+            {
+              "name": "Value3",
+              "value": "interface test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
             }
           ]
+        },
+        {
+          "type": {
+            "kind": "specific",
+            "name": "DefaultMemberAttribute",
+            "namespace": "System.Reflection",
+            "declaringType": null,
+            "fullName": "System.Reflection.DefaultMemberAttribute",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "memberName",
+              "value": "Item",
+              "type": {
+                "kind": "specific",
+                "name": "String",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.String",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": []
         }
       ],
       "summary": {
@@ -3013,13 +3013,13 @@
         }
       ],
       "events": [
-        "CodeMap.Tests.Data.ITestInterface`1.TestEvent",
-        "CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestEvent"
+        "CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestEvent",
+        "CodeMap.Tests.Data.ITestInterface`1.TestEvent"
       ],
       "properties": [
-        "CodeMap.Tests.Data.ITestInterface`1.TestProperty",
         "CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestProperty",
-        "CodeMap.Tests.Data.ITestInterface`1.Item(System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Int32*,System.Byte*[],System.Void*,System.Void**,System.Void**[],`0,System.String)"
+        "CodeMap.Tests.Data.ITestInterface`1.Item(System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Int32*,System.Byte*[],System.Void*,System.Void**,System.Void**[],`0,System.String)",
+        "CodeMap.Tests.Data.ITestInterface`1.TestProperty"
       ],
       "methods": [
         "CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestMethod",
@@ -3120,7 +3120,7 @@
           ],
           "namedParameters": [
             {
-              "name": "Inherited",
+              "name": "AllowMultiple",
               "value": true,
               "type": {
                 "kind": "specific",
@@ -3138,7 +3138,7 @@
               }
             },
             {
-              "name": "AllowMultiple",
+              "name": "Inherited",
               "value": true,
               "type": {
                 "kind": "specific",
@@ -3250,20 +3250,20 @@
         "CodeMap.Tests.Data.TestBaseClass.TestBaseClass"
       ],
       "events": [
-        "CodeMap.Tests.Data.TestBaseClass.ClassShadowedTestEvent",
         "CodeMap.Tests.Data.TestBaseClass.AbstractTestEvent",
+        "CodeMap.Tests.Data.TestBaseClass.ClassShadowedTestEvent",
         "CodeMap.Tests.Data.TestBaseClass.VirtualTestEvent"
       ],
       "properties": [
         "CodeMap.Tests.Data.TestBaseClass.AbstractTestProperty",
-        "CodeMap.Tests.Data.TestBaseClass.VirtualTestProperty",
         "CodeMap.Tests.Data.TestBaseClass.ClassShadowedTestProperty",
-        "CodeMap.Tests.Data.TestBaseClass.StaticTestProperty"
+        "CodeMap.Tests.Data.TestBaseClass.StaticTestProperty",
+        "CodeMap.Tests.Data.TestBaseClass.VirtualTestProperty"
       ],
       "methods": [
-        "CodeMap.Tests.Data.TestBaseClass.StaticTestMethod",
-        "CodeMap.Tests.Data.TestBaseClass.ClassShadowedTestMethod",
         "CodeMap.Tests.Data.TestBaseClass.AbstractTestMethod",
+        "CodeMap.Tests.Data.TestBaseClass.ClassShadowedTestMethod",
+        "CodeMap.Tests.Data.TestBaseClass.StaticTestMethod",
         "CodeMap.Tests.Data.TestBaseClass.VirtualTestMethod"
       ],
       "nestedEnums": [],
@@ -3279,43 +3279,6 @@
       "accessModifier": "public",
       "declaringType": null,
       "attributes": [
-        {
-          "type": {
-            "kind": "specific",
-            "name": "DefaultMemberAttribute",
-            "namespace": "System.Reflection",
-            "declaringType": null,
-            "fullName": "System.Reflection.DefaultMemberAttribute",
-            "assembly": {
-              "name": "System.Private.CoreLib",
-              "version": "4.0.0.0",
-              "culture": "",
-              "publicKeyToken": "7cec85d7bea7798e"
-            },
-            "genericArguments": []
-          },
-          "positionalParameters": [
-            {
-              "name": "memberName",
-              "value": "Item",
-              "type": {
-                "kind": "specific",
-                "name": "String",
-                "namespace": "System",
-                "declaringType": null,
-                "fullName": "System.String",
-                "assembly": {
-                  "name": "System.Private.CoreLib",
-                  "version": "4.0.0.0",
-                  "culture": "",
-                  "publicKeyToken": "7cec85d7bea7798e"
-                },
-                "genericArguments": []
-              }
-            }
-          ],
-          "namedParameters": []
-        },
         {
           "type": {
             "kind": "specific",
@@ -3353,24 +3316,6 @@
           ],
           "namedParameters": [
             {
-              "name": "Value3",
-              "value": "class test 3",
-              "type": {
-                "kind": "specific",
-                "name": "Object",
-                "namespace": "System",
-                "declaringType": null,
-                "fullName": "System.Object",
-                "assembly": {
-                  "name": "System.Private.CoreLib",
-                  "version": "4.0.0.0",
-                  "culture": "",
-                  "publicKeyToken": "7cec85d7bea7798e"
-                },
-                "genericArguments": []
-              }
-            },
-            {
               "name": "Value2",
               "value": "class test 2",
               "type": {
@@ -3387,8 +3332,63 @@
                 },
                 "genericArguments": []
               }
+            },
+            {
+              "name": "Value3",
+              "value": "class test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
             }
           ]
+        },
+        {
+          "type": {
+            "kind": "specific",
+            "name": "DefaultMemberAttribute",
+            "namespace": "System.Reflection",
+            "declaringType": null,
+            "fullName": "System.Reflection.DefaultMemberAttribute",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "memberName",
+              "value": "Item",
+              "type": {
+                "kind": "specific",
+                "name": "String",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.String",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": []
         }
       ],
       "summary": {
@@ -3453,37 +3453,37 @@
         "CodeMap.Tests.Data.TestClass`1.TestConstant"
       ],
       "fields": [
-        "CodeMap.Tests.Data.TestClass`1.TestField",
         "CodeMap.Tests.Data.TestClass`1.ReadonlyTestField",
         "CodeMap.Tests.Data.TestClass`1.ShadowedTestField",
-        "CodeMap.Tests.Data.TestClass`1.StaticTestField"
+        "CodeMap.Tests.Data.TestClass`1.StaticTestField",
+        "CodeMap.Tests.Data.TestClass`1.TestField"
       ],
       "constructors": [
         "CodeMap.Tests.Data.TestClass`1.TestClass(System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Object,System.Object,`0,`0,`0,System.Int32*,System.Byte*[],System.Char*,System.Double*,System.Decimal*[],System.Int16*[],System.Void*,System.Void**,System.Void**,System.Void**,System.Void**[],System.Void**[],System.Void**[],System.String)"
       ],
       "events": [
-        "CodeMap.Tests.Data.TestClass`1.ClassShadowedTestEvent",
         "CodeMap.Tests.Data.TestClass`1.AbstractTestEvent",
-        "CodeMap.Tests.Data.TestClass`1.VirtualTestEvent",
+        "CodeMap.Tests.Data.TestClass`1.ClassShadowedTestEvent",
+        "CodeMap.Tests.Data.TestClass`1.CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestEvent",
         "CodeMap.Tests.Data.TestClass`1.StaticTestEvent",
         "CodeMap.Tests.Data.TestClass`1.TestEvent",
-        "CodeMap.Tests.Data.TestClass`1.CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestEvent"
+        "CodeMap.Tests.Data.TestClass`1.VirtualTestEvent"
       ],
       "properties": [
         "CodeMap.Tests.Data.TestClass`1.AbstractTestProperty",
-        "CodeMap.Tests.Data.TestClass`1.VirtualTestProperty",
         "CodeMap.Tests.Data.TestClass`1.ClassShadowedTestProperty",
         "CodeMap.Tests.Data.TestClass`1.InterfaceShadowedTestProperty",
         "CodeMap.Tests.Data.TestClass`1.Item(System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Int32*,System.Byte*[],System.Void*,System.Void**,System.Void**[],`0,System.String)",
-        "CodeMap.Tests.Data.TestClass`1.TestProperty"
+        "CodeMap.Tests.Data.TestClass`1.TestProperty",
+        "CodeMap.Tests.Data.TestClass`1.VirtualTestProperty"
       ],
       "methods": [
+        "CodeMap.Tests.Data.TestClass`1.AbstractTestMethod",
+        "CodeMap.Tests.Data.TestClass`1.ClassShadowedTestMethod",
         "CodeMap.Tests.Data.TestClass`1.CodeMap.Tests.Data.ITestBaseInterface.BaseTestMethod",
         "CodeMap.Tests.Data.TestClass`1.CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestMethod",
-        "CodeMap.Tests.Data.TestClass`1.ClassShadowedTestMethod",
-        "CodeMap.Tests.Data.TestClass`1.AbstractTestMethod",
-        "CodeMap.Tests.Data.TestClass`1.VirtualTestMethod",
-        "CodeMap.Tests.Data.TestClass`1.TestMethod``1(System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Object,System.Object,`0,`0,`0,System.Int32*,System.Byte*[],System.Char*,System.Double*,System.Decimal*[],System.Int16*[],System.Void*,System.Void**,System.Void**,System.Void**,System.Void**[],System.Void**[],System.Void**[],``0,``0,``0,System.String)"
+        "CodeMap.Tests.Data.TestClass`1.TestMethod``1(System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Object,System.Object,`0,`0,`0,System.Int32*,System.Byte*[],System.Char*,System.Double*,System.Decimal*[],System.Int16*[],System.Void*,System.Void**,System.Void**,System.Void**,System.Void**[],System.Void**[],System.Void**[],``0,``0,``0,System.String)",
+        "CodeMap.Tests.Data.TestClass`1.VirtualTestMethod"
       ],
       "nestedEnums": [
         "CodeMap.Tests.Data.TestClass.NestedTestEnum"
@@ -3560,8 +3560,8 @@
           ],
           "namedParameters": [
             {
-              "name": "Value3",
-              "value": "class constant test 3",
+              "name": "Value2",
+              "value": "class constant test 2",
               "type": {
                 "kind": "specific",
                 "name": "Object",
@@ -3578,8 +3578,8 @@
               }
             },
             {
-              "name": "Value2",
-              "value": "class constant test 2",
+              "name": "Value3",
+              "value": "class constant test 3",
               "type": {
                 "kind": "specific",
                 "name": "Object",
@@ -3999,8 +3999,8 @@
           ],
           "namedParameters": [
             {
-              "name": "Value3",
-              "value": "struct constant test 3",
+              "name": "Value2",
+              "value": "struct constant test 2",
               "type": {
                 "kind": "specific",
                 "name": "Object",
@@ -4017,8 +4017,8 @@
               }
             },
             {
-              "name": "Value2",
-              "value": "struct constant test 2",
+              "name": "Value3",
+              "value": "struct constant test 3",
               "type": {
                 "kind": "specific",
                 "name": "Object",

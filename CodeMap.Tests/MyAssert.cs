@@ -1457,8 +1457,8 @@ namespace CodeMap.Tests
                         .AssertDynamicType(() => parameter.Type)
                         .AssertCollectionMember(
                             () => parameter.Attributes,
-                            attribute => attribute.AssertOutputParameterAttribute(),
-                            attribute => attribute.AssertDynamicTypeAttribute(new[] { false, true })
+                            attribute => attribute.AssertDynamicTypeAttribute(new[] { false, true }),
+                            attribute => attribute.AssertOutputParameterAttribute()
                         )
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -1867,8 +1867,8 @@ namespace CodeMap.Tests
                         .AssertDynamicType(() => parameter.Type)
                         .AssertCollectionMember(
                             () => parameter.Attributes,
-                            attribute => attribute.AssertOutputParameterAttribute(),
-                            attribute => attribute.AssertDynamicTypeAttribute(new[] { false, true })
+                            attribute => attribute.AssertDynamicTypeAttribute(new[] { false, true }),
+                            attribute => attribute.AssertOutputParameterAttribute()
                         )
                         .AssertFalse(() => parameter.IsInputByReference)
                         .AssertFalse(() => parameter.IsInputOutputByReference)
@@ -2296,8 +2296,8 @@ namespace CodeMap.Tests
                                 .AssertDynamicType(() => parameter.Type)
                                 .AssertCollectionMember(
                                     () => parameter.Attributes,
-                                    attribute => attribute.AssertOutputParameterAttribute(),
-                                    attribute => attribute.AssertDynamicTypeAttribute(new[] { false, true })
+                                    attribute => attribute.AssertDynamicTypeAttribute(new[] { false, true }),
+                                    attribute => attribute.AssertOutputParameterAttribute()
                                 )
                                 .AssertFalse(() => parameter.IsInputByReference)
                                 .AssertFalse(() => parameter.IsInputOutputByReference)
