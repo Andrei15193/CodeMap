@@ -475,23 +475,88 @@ namespace CodeMap
         /// <param name="struct">The <see cref="StructDocumentationElement"/> to visit.</param>
         protected internal override void VisitStruct(StructDocumentationElement @struct)
         {
+            _jsonWriter.WritePropertyName(_GetIdFor(@struct));
+
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("struct");
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteValue(@struct.Name);
+            _jsonWriter.WritePropertyName("namespace");
+            _jsonWriter.WriteValue(@struct.Namespace.Name);
+            _WriteAccessModifier(@struct.AccessModifier);
+            _WriteDeclaringTypeReferences(@struct.DeclaringType);
+            _WriteAttributes(@struct.Attributes);
+
+            @struct.Summary.Accept(this);
+            @struct.Remarks.Accept(this);
+            _WriteExamples(@struct.Examples);
+            _WriteRelatedMembers(@struct.RelatedMembers);
+
+            _WriteGenericParameters(@struct.GenericParameters);
+
+            _WriteImplementedInterfacesReferences(@struct.ImplementedInterfaces);
+
+            _WriteConstantReferences(@struct.Constants);
+            _WriteFieldReferences(@struct.Fields);
+            _WriteConstructorReferences(@struct.Constructors);
+            _WriteEventReferences(@struct.Events);
+            _WritePropertyReferences(@struct.Properties);
+            _WriteMethodReferences(@struct.Methods);
+
+            _WriteNestedEnumReferences(@struct.NestedEnums);
+            _WriteNestedDelegateReferences(@struct.NestedDelegates);
+            _WriteNestedInterfaceReferences(@struct.NestedInterfaces);
+            _WriteNestedClasseReferences(@struct.NestedClasses);
+            _WriteNestedStructReferences(@struct.NestedStructs);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a <see cref="StructDocumentationElement"/>.</summary>
         /// <param name="struct">The <see cref="StructDocumentationElement"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitStructAsync(StructDocumentationElement @struct, CancellationToken cancellationToken)
+        protected internal override async Task VisitStructAsync(StructDocumentationElement @struct, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitStruct(@struct);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync(_GetIdFor(@struct), cancellationToken);
+
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("struct", cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@struct.Name, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("namespace", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@struct.Namespace.Name, cancellationToken);
+            await _WriteAccessModifierAsync(@struct.AccessModifier, cancellationToken);
+            await _WriteDeclaringTypeReferencesAsync(@struct.DeclaringType, cancellationToken);
+            await _WriteAttributesAsync(@struct.Attributes, cancellationToken);
+
+            await @struct.Summary.AcceptAsync(this, cancellationToken);
+            await @struct.Remarks.AcceptAsync(this, cancellationToken);
+            await _WriteExamplesAsync(@struct.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(@struct.RelatedMembers, cancellationToken);
+
+            await _WriteGenericParametersAsync(@struct.GenericParameters, cancellationToken);
+
+            await _WriteImplementedInterfacesReferencesAsync(@struct.ImplementedInterfaces, cancellationToken);
+
+            await _WriteConstantReferencesAsync(@struct.Constants, cancellationToken);
+            await _WriteFieldReferencesAsync(@struct.Fields, cancellationToken);
+            await _WriteConstructorReferencesAsync(@struct.Constructors, cancellationToken);
+            await _WriteEventReferencesAsync(@struct.Events, cancellationToken);
+            await _WritePropertyReferencesAsync(@struct.Properties, cancellationToken);
+            await _WriteMethodReferencesAsync(@struct.Methods, cancellationToken);
+
+            await _WriteNestedEnumReferencesAsync(@struct.NestedEnums, cancellationToken);
+            await _WriteNestedDelegateReferencesAsync(@struct.NestedDelegates, cancellationToken);
+            await _WriteNestedInterfaceReferencesAsync(@struct.NestedInterfaces, cancellationToken);
+            await _WriteNestedClasseReferencesAsync(@struct.NestedClasses, cancellationToken);
+            await _WriteNestedStructReferencesAsync(@struct.NestedStructs, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits a <see cref="ConstantDocumentationElement"/>.</summary>
