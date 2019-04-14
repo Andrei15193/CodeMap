@@ -163,11 +163,8 @@ namespace CodeMap
             _WriteAccessModifier(@enum.AccessModifier);
             _jsonWriter.WritePropertyName("underlyingType");
             _WriteTypeReference(@enum.UnderlyingType);
-            _jsonWriter.WritePropertyName("declaringType");
-            if (@enum.DeclaringType != null)
-                _jsonWriter.WriteValue(_GetIdFor(@enum.DeclaringType));
-            else
-                _jsonWriter.WriteNull();
+
+            _WriteDeclaringTypeReferences(@enum.DeclaringType);
             _WriteAttributes(@enum.Attributes);
 
             @enum.Summary.Accept(this);
@@ -203,11 +200,8 @@ namespace CodeMap
             await _WriteAccessModifierAsync(@enum.AccessModifier, cancellationToken);
             await _jsonWriter.WritePropertyNameAsync("underlyingType", cancellationToken);
             await _WriteTypeReferenceAsync(@enum.UnderlyingType, cancellationToken);
-            await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
-            if (@enum.DeclaringType != null)
-                await _jsonWriter.WriteValueAsync(_GetIdFor(@enum.DeclaringType), cancellationToken);
-            else
-                await _jsonWriter.WriteNullAsync(cancellationToken);
+
+            await _WriteDeclaringTypeReferencesAsync(@enum.DeclaringType, cancellationToken);
             await _WriteAttributesAsync(@enum.Attributes, cancellationToken);
 
             await @enum.Summary.AcceptAsync(this, cancellationToken);
@@ -239,11 +233,8 @@ namespace CodeMap
             _jsonWriter.WritePropertyName("namespace");
             _jsonWriter.WriteValue(@delegate.Namespace.Name);
             _WriteAccessModifier(@delegate.AccessModifier);
-            _jsonWriter.WritePropertyName("declaringType");
-            if (@delegate.DeclaringType != null)
-                _jsonWriter.WriteValue(_GetIdFor(@delegate.DeclaringType));
-            else
-                _jsonWriter.WriteNull();
+
+            _WriteDeclaringTypeReferences(@delegate.DeclaringType);
             _WriteAttributes(@delegate.Attributes);
 
             @delegate.Summary.Accept(this);
@@ -276,11 +267,8 @@ namespace CodeMap
             await _jsonWriter.WritePropertyNameAsync("namespace", cancellationToken);
             await _jsonWriter.WriteValueAsync(@delegate.Namespace.Name, cancellationToken);
             await _WriteAccessModifierAsync(@delegate.AccessModifier, cancellationToken);
-            await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
-            if (@delegate.DeclaringType != null)
-                await _jsonWriter.WriteValueAsync(_GetIdFor(@delegate.DeclaringType), cancellationToken);
-            else
-                await _jsonWriter.WriteNullAsync(cancellationToken);
+
+            await _WriteDeclaringTypeReferencesAsync(@delegate.DeclaringType, cancellationToken);
             await _WriteAttributesAsync(@delegate.Attributes, cancellationToken);
 
             await @delegate.Summary.AcceptAsync(this, cancellationToken);
@@ -311,11 +299,8 @@ namespace CodeMap
             _jsonWriter.WritePropertyName("namespace");
             _jsonWriter.WriteValue(@interface.Namespace.Name);
             _WriteAccessModifier(@interface.AccessModifier);
-            _jsonWriter.WritePropertyName("declaringType");
-            if (@interface.DeclaringType != null)
-                _jsonWriter.WriteValue(_GetIdFor(@interface.DeclaringType));
-            else
-                _jsonWriter.WriteNull();
+
+            _WriteDeclaringTypeReferences(@interface.DeclaringType);
             _WriteAttributes(@interface.Attributes);
 
             @interface.Summary.Accept(this);
@@ -331,23 +316,9 @@ namespace CodeMap
                 _WriteTypeReference(baseInterface);
             _jsonWriter.WriteEndArray();
 
-            _jsonWriter.WritePropertyName("events");
-            _jsonWriter.WriteStartArray();
-            foreach (var @event in @interface.Events)
-                _jsonWriter.WriteValue(_GetIdFor(@event));
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("properties");
-            _jsonWriter.WriteStartArray();
-            foreach (var property in @interface.Properties)
-                _jsonWriter.WriteValue(_GetIdFor(property));
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("methods");
-            _jsonWriter.WriteStartArray();
-            foreach (var method in @interface.Methods)
-                _jsonWriter.WriteValue(_GetIdFor(method));
-            _jsonWriter.WriteEndArray();
+            _WriteEventReferences(@interface.Events);
+            _WritePropertyReferences(@interface.Properties);
+            _WriteMethodReferences(@interface.Methods);
 
             _jsonWriter.WriteEndObject();
         }
@@ -369,11 +340,8 @@ namespace CodeMap
             await _jsonWriter.WritePropertyNameAsync("namespace", cancellationToken);
             await _jsonWriter.WriteValueAsync(@interface.Namespace.Name, cancellationToken);
             await _WriteAccessModifierAsync(@interface.AccessModifier, cancellationToken);
-            await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
-            if (@interface.DeclaringType != null)
-                await _jsonWriter.WriteValueAsync(_GetIdFor(@interface.DeclaringType), cancellationToken);
-            else
-                await _jsonWriter.WriteNullAsync(cancellationToken);
+
+            await _WriteDeclaringTypeReferencesAsync(@interface.DeclaringType, cancellationToken);
             await _WriteAttributesAsync(@interface.Attributes, cancellationToken);
 
             await @interface.Summary.AcceptAsync(this, cancellationToken);
@@ -389,23 +357,9 @@ namespace CodeMap
                 await _WriteTypeReferenceAsync(baseInterface, cancellationToken);
             await _jsonWriter.WriteEndArrayAsync(cancellationToken);
 
-            await _jsonWriter.WritePropertyNameAsync("events", cancellationToken);
-            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
-            foreach (var @event in @interface.Events)
-                await _jsonWriter.WriteValueAsync(_GetIdFor(@event), cancellationToken);
-            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
-
-            await _jsonWriter.WritePropertyNameAsync("properties", cancellationToken);
-            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
-            foreach (var property in @interface.Properties)
-                await _jsonWriter.WriteValueAsync(_GetIdFor(property), cancellationToken);
-            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
-
-            await _jsonWriter.WritePropertyNameAsync("methods", cancellationToken);
-            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
-            foreach (var method in @interface.Methods)
-                await _jsonWriter.WriteValueAsync(_GetIdFor(method), cancellationToken);
-            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _WriteEventReferencesAsync(@interface.Events, cancellationToken);
+            await _WritePropertyReferencesAsync(@interface.Properties, cancellationToken);
+            await _WriteMethodReferencesAsync(@interface.Methods, cancellationToken);
 
             await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
@@ -425,11 +379,7 @@ namespace CodeMap
             _jsonWriter.WritePropertyName("namespace");
             _jsonWriter.WriteValue(@class.Namespace.Name);
             _WriteAccessModifier(@class.AccessModifier);
-            _jsonWriter.WritePropertyName("declaringType");
-            if (@class.DeclaringType != null)
-                _jsonWriter.WriteValue(_GetIdFor(@class.DeclaringType));
-            else
-                _jsonWriter.WriteNull();
+            _WriteDeclaringTypeReferences(@class.DeclaringType);
             _WriteAttributes(@class.Attributes);
 
             @class.Summary.Accept(this);
@@ -441,12 +391,7 @@ namespace CodeMap
 
             _jsonWriter.WritePropertyName("baseClass");
             _WriteTypeReference(@class.BaseClass);
-
-            _jsonWriter.WritePropertyName("implementedInterfaces");
-            _jsonWriter.WriteStartArray();
-            foreach (var implementedInterface in @class.ImplementedInterfaces)
-                _WriteTypeReference(implementedInterface);
-            _jsonWriter.WriteEndArray();
+            _WriteImplementedInterfacesReferences(@class.ImplementedInterfaces);
 
             _jsonWriter.WritePropertyName("isAbstract");
             _jsonWriter.WriteValue(@class.IsAbstract);
@@ -455,71 +400,18 @@ namespace CodeMap
             _jsonWriter.WritePropertyName("isStatic");
             _jsonWriter.WriteValue(@class.IsStatic);
 
-            _jsonWriter.WritePropertyName("constants");
-            _jsonWriter.WriteStartArray();
-            foreach (var constant in @class.Constants)
-                _jsonWriter.WriteValue(_GetIdFor(constant));
-            _jsonWriter.WriteEndArray();
+            _WriteConstantReferences(@class.Constants);
+            _WriteFieldReferences(@class.Fields);
+            _WriteConstructorReferences(@class.Constructors);
+            _WriteEventReferences(@class.Events);
+            _WritePropertyReferences(@class.Properties);
+            _WriteMethodReferences(@class.Methods);
 
-            _jsonWriter.WritePropertyName("fields");
-            _jsonWriter.WriteStartArray();
-            foreach (var field in @class.Fields)
-                _jsonWriter.WriteValue(_GetIdFor(field));
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("constructors");
-            _jsonWriter.WriteStartArray();
-            foreach (var constructor in @class.Constructors)
-                _jsonWriter.WriteValue(_GetIdFor(constructor));
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("events");
-            _jsonWriter.WriteStartArray();
-            foreach (var @event in @class.Events)
-                _jsonWriter.WriteValue(_GetIdFor(@event));
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("properties");
-            _jsonWriter.WriteStartArray();
-            foreach (var property in @class.Properties)
-                _jsonWriter.WriteValue(_GetIdFor(property));
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("methods");
-            _jsonWriter.WriteStartArray();
-            foreach (var method in @class.Methods)
-                _jsonWriter.WriteValue(_GetIdFor(method));
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("nestedEnums");
-            _jsonWriter.WriteStartArray();
-            foreach (var nestedEnum in @class.NestedEnums)
-                _jsonWriter.WriteValue(_GetIdFor(nestedEnum));
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("nestedDelegates");
-            _jsonWriter.WriteStartArray();
-            foreach (var nestedDelegate in @class.NestedDelegates)
-                _jsonWriter.WriteValue(_GetIdFor(nestedDelegate));
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("nestedInterfaces");
-            _jsonWriter.WriteStartArray();
-            foreach (var nestedInterface in @class.NestedInterfaces)
-                _jsonWriter.WriteValue(_GetIdFor(nestedInterface));
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("nestedClasses");
-            _jsonWriter.WriteStartArray();
-            foreach (var nestedClass in @class.NestedClasses)
-                _jsonWriter.WriteValue(_GetIdFor(nestedClass));
-            _jsonWriter.WriteEndArray();
-
-            _jsonWriter.WritePropertyName("nestedStructs");
-            _jsonWriter.WriteStartArray();
-            foreach (var nestedStruct in @class.NestedStructs)
-                _jsonWriter.WriteValue(_GetIdFor(nestedStruct));
-            _jsonWriter.WriteEndArray();
+            _WriteNestedEnumReferences(@class.NestedEnums);
+            _WriteNestedDelegateReferences(@class.NestedDelegates);
+            _WriteNestedInterfaceReferences(@class.NestedInterfaces);
+            _WriteNestedClasseReferences(@class.NestedClasses);
+            _WriteNestedStructReferences(@class.NestedStructs);
 
             _jsonWriter.WriteEndObject();
         }
@@ -528,17 +420,55 @@ namespace CodeMap
         /// <param name="class">The <see cref="ClassDocumentationElement"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitClassAsync(ClassDocumentationElement @class, CancellationToken cancellationToken)
+        protected internal override async Task VisitClassAsync(ClassDocumentationElement @class, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitClass(@class);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync(_GetIdFor(@class), cancellationToken);
+
+            await _jsonWriter.WriteStartObjectAsync( cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("class", cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@class.Name, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("namespace", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@class.Namespace.Name, cancellationToken);
+            await _WriteAccessModifierAsync(@class.AccessModifier, cancellationToken);
+
+            await _WriteDeclaringTypeReferencesAsync(@class.DeclaringType, cancellationToken);
+            await _WriteAttributesAsync(@class.Attributes, cancellationToken);
+
+            await @class.Summary.AcceptAsync(this, cancellationToken);
+            await @class.Remarks.AcceptAsync(this, cancellationToken);
+            await _WriteExamplesAsync(@class.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(@class.RelatedMembers, cancellationToken);
+
+            await _WriteGenericParametersAsync(@class.GenericParameters, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("baseClass", cancellationToken);
+            await _WriteTypeReferenceAsync(@class.BaseClass, cancellationToken);
+            await _WriteImplementedInterfacesReferencesAsync(@class.ImplementedInterfaces, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("isAbstract", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@class.IsAbstract, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isSealed", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@class.IsSealed, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isStatic", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@class.IsStatic, cancellationToken);
+
+            await _WriteConstantReferencesAsync(@class.Constants, cancellationToken);
+            await _WriteFieldReferencesAsync(@class.Fields, cancellationToken);
+            await _WriteConstructorReferencesAsync(@class.Constructors, cancellationToken);
+            await _WriteEventReferencesAsync(@class.Events, cancellationToken);
+            await _WritePropertyReferencesAsync(@class.Properties, cancellationToken);
+            await _WriteMethodReferencesAsync(@class.Methods, cancellationToken);
+
+            await _WriteNestedEnumReferencesAsync(@class.NestedEnums, cancellationToken);
+            await _WriteNestedDelegateReferencesAsync(@class.NestedDelegates, cancellationToken);
+            await _WriteNestedInterfaceReferencesAsync(@class.NestedInterfaces, cancellationToken);
+            await _WriteNestedClasseReferencesAsync(@class.NestedClasses, cancellationToken);
+            await _WriteNestedStructReferencesAsync(@class.NestedStructs, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits a <see cref="StructDocumentationElement"/>.</summary>
@@ -1815,6 +1745,240 @@ namespace CodeMap
             {
                 return Task.FromException(exception);
             }
+        }
+
+        private void _WriteImplementedInterfacesReferences(IEnumerable<TypeReferenceData> implementedInterfaces)
+        {
+            _jsonWriter.WritePropertyName("implementedInterfaces");
+            _jsonWriter.WriteStartArray();
+            foreach (var implementedInterface in implementedInterfaces)
+                _WriteTypeReference(implementedInterface);
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteImplementedInterfacesReferencesAsync(IEnumerable<TypeReferenceData> implementedInterfaces, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("implementedInterfaces", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var implementedInterface in implementedInterfaces)
+                await _WriteTypeReferenceAsync(implementedInterface, cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteDeclaringTypeReferences(TypeDocumentationElement declaringType)
+        {
+            _jsonWriter.WritePropertyName("declaringType");
+            if (declaringType != null)
+                _jsonWriter.WriteValue(_GetIdFor(declaringType));
+            else
+                _jsonWriter.WriteNull();
+        }
+
+        private async Task _WriteDeclaringTypeReferencesAsync(TypeDocumentationElement declaringType, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
+            if (declaringType != null)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(declaringType), cancellationToken);
+            else
+                await _jsonWriter.WriteNullAsync(cancellationToken);
+        }
+
+        private void _WriteConstantReferences(IEnumerable<ConstantDocumentationElement> constants)
+        {
+            _jsonWriter.WritePropertyName("constants");
+            _jsonWriter.WriteStartArray();
+            foreach (var constant in constants)
+                _jsonWriter.WriteValue(_GetIdFor(constant));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteConstantReferencesAsync(IEnumerable<ConstantDocumentationElement> constants, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("constants", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var constant in constants)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(constant), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteFieldReferences(IEnumerable<FieldDocumentationElement> fields)
+        {
+            _jsonWriter.WritePropertyName("fields");
+            _jsonWriter.WriteStartArray();
+            foreach (var field in fields)
+                _jsonWriter.WriteValue(_GetIdFor(field));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteFieldReferencesAsync(IEnumerable<FieldDocumentationElement> fields, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("fields", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var field in fields)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(field), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteConstructorReferences(IEnumerable<ConstructorDocumentationElement> constructors)
+        {
+            _jsonWriter.WritePropertyName("constructors");
+            _jsonWriter.WriteStartArray();
+            foreach (var constructor in constructors)
+                _jsonWriter.WriteValue(_GetIdFor(constructor));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteConstructorReferencesAsync(IEnumerable<ConstructorDocumentationElement> constructors, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("constructors", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var constructor in constructors)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(constructor), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteEventReferences(IEnumerable<EventDocumentationElement> events)
+        {
+            _jsonWriter.WritePropertyName("events");
+            _jsonWriter.WriteStartArray();
+            foreach (var @event in events)
+                _jsonWriter.WriteValue(_GetIdFor(@event));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteEventReferencesAsync(IEnumerable<EventDocumentationElement> events, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("events", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var @event in events)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(@event), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WritePropertyReferences(IEnumerable<PropertyDocumentationElement> properties)
+        {
+            _jsonWriter.WritePropertyName("properties");
+            _jsonWriter.WriteStartArray();
+            foreach (var property in properties)
+                _jsonWriter.WriteValue(_GetIdFor(property));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WritePropertyReferencesAsync(IEnumerable<PropertyDocumentationElement> properties, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("properties", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var property in properties)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(property), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteMethodReferences(IEnumerable<MethodDocumentationElement> methods)
+        {
+            _jsonWriter.WritePropertyName("methods");
+            _jsonWriter.WriteStartArray();
+            foreach (var method in methods)
+                _jsonWriter.WriteValue(_GetIdFor(method));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteMethodReferencesAsync(IEnumerable<MethodDocumentationElement> methods, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("methods", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var method in methods)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(method), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteNestedEnumReferences(IEnumerable<EnumDocumentationElement> nestedEnums)
+        {
+            _jsonWriter.WritePropertyName("nestedEnums");
+            _jsonWriter.WriteStartArray();
+            foreach (var nestedEnum in nestedEnums)
+                _jsonWriter.WriteValue(_GetIdFor(nestedEnum));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteNestedEnumReferencesAsync(IEnumerable<EnumDocumentationElement> nestedEnums, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("nestedEnums", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var nestedEnum in nestedEnums)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(nestedEnum), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteNestedDelegateReferences(IEnumerable<DelegateDocumentationElement> nestedDelegates)
+        {
+            _jsonWriter.WritePropertyName("nestedDelegates");
+            _jsonWriter.WriteStartArray();
+            foreach (var nestedDelegate in nestedDelegates)
+                _jsonWriter.WriteValue(_GetIdFor(nestedDelegate));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteNestedDelegateReferencesAsync(IEnumerable<DelegateDocumentationElement> nestedDelegates, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("nestedDelegates", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var nestedDelegate in nestedDelegates)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(nestedDelegate), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteNestedInterfaceReferences(IEnumerable<InterfaceDocumentationElement> nestedInterfaces)
+        {
+            _jsonWriter.WritePropertyName("nestedInterfaces");
+            _jsonWriter.WriteStartArray();
+            foreach (var nestedInterface in nestedInterfaces)
+                _jsonWriter.WriteValue(_GetIdFor(nestedInterface));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteNestedInterfaceReferencesAsync(IEnumerable<InterfaceDocumentationElement> nestedInterfaces, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("nestedInterfaces", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var nestedInterface in nestedInterfaces)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(nestedInterface), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteNestedClasseReferences(IEnumerable<ClassDocumentationElement> nestedClasses)
+        {
+            _jsonWriter.WritePropertyName("nestedClasses");
+            _jsonWriter.WriteStartArray();
+            foreach (var nestedClass in nestedClasses)
+                _jsonWriter.WriteValue(_GetIdFor(nestedClass));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteNestedClasseReferencesAsync(IEnumerable<ClassDocumentationElement> nestedClasses, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("nestedClasses", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var nestedClass in nestedClasses)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(nestedClass), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+        }
+
+        private void _WriteNestedStructReferences(IEnumerable<StructDocumentationElement> nestedStructs)
+        {
+            _jsonWriter.WritePropertyName("nestedStructs");
+            _jsonWriter.WriteStartArray();
+            foreach (var nestedStruct in nestedStructs)
+                _jsonWriter.WriteValue(_GetIdFor(nestedStruct));
+            _jsonWriter.WriteEndArray();
+        }
+
+        private async Task _WriteNestedStructReferencesAsync(IEnumerable<StructDocumentationElement> nestedStructs, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("nestedStructs", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
+            foreach (var nestedStruct in nestedStructs)
+                await _jsonWriter.WriteValueAsync(_GetIdFor(nestedStruct), cancellationToken);
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
         }
 
         private void _WriteXmlAttributes(IReadOnlyDictionary<string, string> xmlAttributes)
