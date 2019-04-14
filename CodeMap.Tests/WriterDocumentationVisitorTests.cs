@@ -49,8 +49,8 @@ namespace CodeMap.Tests
                 actualJsonAsync = _NormalizeJson(stringWriter.ToString());
             }
 
-            Assert.Equal(expectedJson, actualJsonSync);
-            Assert.Equal(expectedJson, actualJsonAsync);
+            Assert.True(expectedJson.Equals(actualJsonSync), "Actual (sync) JSON is different from expected.");
+            Assert.True(expectedJson.Equals(actualJsonAsync), "Actual (async) JSON is different from expected.");
         }
 
         private static async Task<string> _ReadTestDataFileAsync(string testDataFileName)

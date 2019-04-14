@@ -414,6 +414,114 @@ namespace CodeMap
         /// <param name="class">The <see cref="ClassDocumentationElement"/> to visit.</param>
         protected internal override void VisitClass(ClassDocumentationElement @class)
         {
+            _jsonWriter.WritePropertyName(_GetIdFor(@class));
+
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("class");
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteValue(@class.Name);
+            _jsonWriter.WritePropertyName("namespace");
+            _jsonWriter.WriteValue(@class.Namespace.Name);
+            _WriteAccessModifier(@class.AccessModifier);
+            _jsonWriter.WritePropertyName("declaringType");
+            if (@class.DeclaringType != null)
+                _jsonWriter.WriteValue(_GetIdFor(@class.DeclaringType));
+            else
+                _jsonWriter.WriteNull();
+            _WriteAttributes(@class.Attributes);
+
+            @class.Summary.Accept(this);
+            @class.Remarks.Accept(this);
+            _WriteExamples(@class.Examples);
+            _WriteRelatedMembers(@class.RelatedMembers);
+
+            _WriteGenericParameters(@class.GenericParameters);
+
+            _jsonWriter.WritePropertyName("baseClass");
+            _WriteTypeReference(@class.BaseClass);
+
+            _jsonWriter.WritePropertyName("implementedInterfaces");
+            _jsonWriter.WriteStartArray();
+            foreach (var implementedInterface in @class.ImplementedInterfaces)
+                _WriteTypeReference(implementedInterface);
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("isAbstract");
+            _jsonWriter.WriteValue(@class.IsAbstract);
+            _jsonWriter.WritePropertyName("isSealed");
+            _jsonWriter.WriteValue(@class.IsSealed);
+            _jsonWriter.WritePropertyName("isStatic");
+            _jsonWriter.WriteValue(@class.IsStatic);
+
+            _jsonWriter.WritePropertyName("constants");
+            _jsonWriter.WriteStartArray();
+            foreach (var constant in @class.Constants)
+                _jsonWriter.WriteValue(_GetIdFor(constant));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("fields");
+            _jsonWriter.WriteStartArray();
+            foreach (var field in @class.Fields)
+                _jsonWriter.WriteValue(_GetIdFor(field));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("constructors");
+            _jsonWriter.WriteStartArray();
+            foreach (var constructor in @class.Constructors)
+                _jsonWriter.WriteValue(_GetIdFor(constructor));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("events");
+            _jsonWriter.WriteStartArray();
+            foreach (var @event in @class.Events)
+                _jsonWriter.WriteValue(_GetIdFor(@event));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("properties");
+            _jsonWriter.WriteStartArray();
+            foreach (var property in @class.Properties)
+                _jsonWriter.WriteValue(_GetIdFor(property));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("methods");
+            _jsonWriter.WriteStartArray();
+            foreach (var method in @class.Methods)
+                _jsonWriter.WriteValue(_GetIdFor(method));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("nestedEnums");
+            _jsonWriter.WriteStartArray();
+            foreach (var nestedEnum in @class.NestedEnums)
+                _jsonWriter.WriteValue(_GetIdFor(nestedEnum));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("nestedDelegates");
+            _jsonWriter.WriteStartArray();
+            foreach (var nestedDelegate in @class.NestedDelegates)
+                _jsonWriter.WriteValue(_GetIdFor(nestedDelegate));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("nestedInterfaces");
+            _jsonWriter.WriteStartArray();
+            foreach (var nestedInterface in @class.NestedInterfaces)
+                _jsonWriter.WriteValue(_GetIdFor(nestedInterface));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("nestedClasses");
+            _jsonWriter.WriteStartArray();
+            foreach (var nestedClass in @class.NestedClasses)
+                _jsonWriter.WriteValue(_GetIdFor(nestedClass));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WritePropertyName("nestedStructs");
+            _jsonWriter.WriteStartArray();
+            foreach (var nestedStruct in @class.NestedStructs)
+                _jsonWriter.WriteValue(_GetIdFor(nestedStruct));
+            _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a <see cref="ClassDocumentationElement"/>.</summary>
@@ -2566,6 +2674,27 @@ namespace CodeMap
                 builder.Append('(');
                 var isFirst = true;
                 foreach (var parameter in property.Parameters)
+                {
+                    if (isFirst)
+                        isFirst = false;
+                    else
+                        builder.Append(',');
+                    builder.Append(_GetTypeReferenceId(parameter.Type));
+                }
+                builder.Append(')');
+            }
+            return builder.ToString();
+        }
+
+        private static string _GetIdFor(ConstructorDocumentationElement constructor)
+        {
+            var builder = _GetIdBuilderFor(constructor.DeclaringType).Append('.').Append(constructor.DeclaringType.Name);
+            
+            if (constructor.Parameters.Count > 0)
+            {
+                builder.Append('(');
+                var isFirst = true;
+                foreach (var parameter in constructor.Parameters)
                 {
                     if (isFirst)
                         isFirst = false;

@@ -249,6 +249,56 @@
       ],
       "structs": []
     },
+    "GlobalTestClass": {
+      "kind": "class",
+      "name": "GlobalTestClass",
+      "namespace": "",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseClass": {
+        "kind": "specific",
+        "name": "Object",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Object",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "implementedInterfaces": [],
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "constants": [],
+      "fields": [],
+      "constructors": [
+        "GlobalTestClass.GlobalTestClass"
+      ],
+      "events": [],
+      "properties": [],
+      "methods": [],
+      "nestedEnums": [],
+      "nestedDelegates": [],
+      "nestedInterfaces": [],
+      "nestedClasses": [],
+      "nestedStructs": []
+    },
     "CodeMap.Tests.Data": {
       "kind": "namespace",
       "name": "CodeMap.Tests.Data",
@@ -2982,6 +3032,481 @@
         "CodeMap.Tests.Data.ITestInterface`1.TestMethod``1(System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Object,System.Object,`0,`0,`0,System.Int32*,System.Byte*[],System.Char*,System.Double*,System.Decimal*[],System.Int16*[],System.Void*,System.Void**,System.Void**,System.Void**,System.Void**[],System.Void**[],System.Void**[],``0,``0,``0,System.String)"
       ]
     },
+    "CodeMap.Tests.Data.TestAbstractClass": {
+      "kind": "class",
+      "name": "TestAbstractClass",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseClass": {
+        "kind": "specific",
+        "name": "Object",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Object",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "implementedInterfaces": [],
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "constants": [],
+      "fields": [],
+      "constructors": [
+        "CodeMap.Tests.Data.TestAbstractClass.TestAbstractClass"
+      ],
+      "events": [],
+      "properties": [],
+      "methods": [],
+      "nestedEnums": [],
+      "nestedDelegates": [],
+      "nestedInterfaces": [],
+      "nestedClasses": [],
+      "nestedStructs": []
+    },
+    "CodeMap.Tests.Data.TestAttribute": {
+      "kind": "class",
+      "name": "TestAttribute",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "AttributeUsageAttribute",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.AttributeUsageAttribute",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "validOn",
+              "value": "All",
+              "type": {
+                "kind": "specific",
+                "name": "AttributeTargets",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.AttributeTargets",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Inherited",
+              "value": true,
+              "type": {
+                "kind": "specific",
+                "name": "Boolean",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Boolean",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "AllowMultiple",
+              "value": true,
+              "type": {
+                "kind": "specific",
+                "name": "Boolean",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Boolean",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseClass": {
+        "kind": "specific",
+        "name": "Attribute",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Attribute",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "implementedInterfaces": [],
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "constants": [],
+      "fields": [
+        "CodeMap.Tests.Data.TestAttribute.Value3"
+      ],
+      "constructors": [
+        "CodeMap.Tests.Data.TestAttribute.TestAttribute(System.Object)"
+      ],
+      "events": [],
+      "properties": [
+        "CodeMap.Tests.Data.TestAttribute.Value1",
+        "CodeMap.Tests.Data.TestAttribute.Value2"
+      ],
+      "methods": [],
+      "nestedEnums": [],
+      "nestedDelegates": [],
+      "nestedInterfaces": [],
+      "nestedClasses": [],
+      "nestedStructs": []
+    },
+    "CodeMap.Tests.Data.TestBaseClass": {
+      "kind": "class",
+      "name": "TestBaseClass",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseClass": {
+        "kind": "specific",
+        "name": "Object",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Object",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "implementedInterfaces": [],
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "constants": [],
+      "fields": [
+        "CodeMap.Tests.Data.TestBaseClass.ShadowedTestField"
+      ],
+      "constructors": [
+        "CodeMap.Tests.Data.TestBaseClass.TestBaseClass"
+      ],
+      "events": [
+        "CodeMap.Tests.Data.TestBaseClass.ClassShadowedTestEvent",
+        "CodeMap.Tests.Data.TestBaseClass.AbstractTestEvent",
+        "CodeMap.Tests.Data.TestBaseClass.VirtualTestEvent"
+      ],
+      "properties": [
+        "CodeMap.Tests.Data.TestBaseClass.AbstractTestProperty",
+        "CodeMap.Tests.Data.TestBaseClass.VirtualTestProperty",
+        "CodeMap.Tests.Data.TestBaseClass.ClassShadowedTestProperty",
+        "CodeMap.Tests.Data.TestBaseClass.StaticTestProperty"
+      ],
+      "methods": [
+        "CodeMap.Tests.Data.TestBaseClass.StaticTestMethod",
+        "CodeMap.Tests.Data.TestBaseClass.ClassShadowedTestMethod",
+        "CodeMap.Tests.Data.TestBaseClass.AbstractTestMethod",
+        "CodeMap.Tests.Data.TestBaseClass.VirtualTestMethod"
+      ],
+      "nestedEnums": [],
+      "nestedDelegates": [],
+      "nestedInterfaces": [],
+      "nestedClasses": [],
+      "nestedStructs": []
+    },
+    "CodeMap.Tests.Data.TestClass`1": {
+      "kind": "class",
+      "name": "TestClass",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "DefaultMemberAttribute",
+            "namespace": "System.Reflection",
+            "declaringType": null,
+            "fullName": "System.Reflection.DefaultMemberAttribute",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "memberName",
+              "value": "Item",
+              "type": {
+                "kind": "specific",
+                "name": "String",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.String",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": []
+        },
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "class test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value3",
+              "value": "class test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value2",
+              "value": "class test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [
+        {
+          "name": "TParam1",
+          "isCovariant": false,
+          "isContravariant": false,
+          "hasReferenceTypeConstraint": false,
+          "hasNonNullableValueTypeConstraint": false,
+          "hasDefaultConstructorConstraint": false,
+          "typeConstraints": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        }
+      ],
+      "baseClass": {
+        "kind": "specific",
+        "name": "TestBaseClass",
+        "namespace": "CodeMap.Tests.Data",
+        "declaringType": null,
+        "fullName": "CodeMap.Tests.Data.TestBaseClass",
+        "assembly": {
+          "name": "CodeMap.Tests.Data",
+          "version": "1.2.3.4",
+          "culture": "",
+          "publicKeyToken": ""
+        },
+        "genericArguments": []
+      },
+      "implementedInterfaces": [
+        {
+          "kind": "specific",
+          "name": "ITestExtendedBaseInterface",
+          "namespace": "CodeMap.Tests.Data",
+          "declaringType": null,
+          "fullName": "CodeMap.Tests.Data.ITestExtendedBaseInterface",
+          "assembly": {
+            "name": "CodeMap.Tests.Data",
+            "version": "1.2.3.4",
+            "culture": "",
+            "publicKeyToken": ""
+          },
+          "genericArguments": []
+        }
+      ],
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "constants": [
+        "CodeMap.Tests.Data.TestClass`1.TestConstant"
+      ],
+      "fields": [
+        "CodeMap.Tests.Data.TestClass`1.TestField",
+        "CodeMap.Tests.Data.TestClass`1.ReadonlyTestField",
+        "CodeMap.Tests.Data.TestClass`1.ShadowedTestField",
+        "CodeMap.Tests.Data.TestClass`1.StaticTestField"
+      ],
+      "constructors": [
+        "CodeMap.Tests.Data.TestClass`1.TestClass(System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Object,System.Object,`0,`0,`0,System.Int32*,System.Byte*[],System.Char*,System.Double*,System.Decimal*[],System.Int16*[],System.Void*,System.Void**,System.Void**,System.Void**,System.Void**[],System.Void**[],System.Void**[],System.String)"
+      ],
+      "events": [
+        "CodeMap.Tests.Data.TestClass`1.ClassShadowedTestEvent",
+        "CodeMap.Tests.Data.TestClass`1.AbstractTestEvent",
+        "CodeMap.Tests.Data.TestClass`1.VirtualTestEvent",
+        "CodeMap.Tests.Data.TestClass`1.StaticTestEvent",
+        "CodeMap.Tests.Data.TestClass`1.TestEvent",
+        "CodeMap.Tests.Data.TestClass`1.CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestEvent"
+      ],
+      "properties": [
+        "CodeMap.Tests.Data.TestClass`1.AbstractTestProperty",
+        "CodeMap.Tests.Data.TestClass`1.VirtualTestProperty",
+        "CodeMap.Tests.Data.TestClass`1.ClassShadowedTestProperty",
+        "CodeMap.Tests.Data.TestClass`1.InterfaceShadowedTestProperty",
+        "CodeMap.Tests.Data.TestClass`1.Item(System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Int32*,System.Byte*[],System.Void*,System.Void**,System.Void**[],`0,System.String)",
+        "CodeMap.Tests.Data.TestClass`1.TestProperty"
+      ],
+      "methods": [
+        "CodeMap.Tests.Data.TestClass`1.CodeMap.Tests.Data.ITestBaseInterface.BaseTestMethod",
+        "CodeMap.Tests.Data.TestClass`1.CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestMethod",
+        "CodeMap.Tests.Data.TestClass`1.ClassShadowedTestMethod",
+        "CodeMap.Tests.Data.TestClass`1.AbstractTestMethod",
+        "CodeMap.Tests.Data.TestClass`1.VirtualTestMethod",
+        "CodeMap.Tests.Data.TestClass`1.TestMethod``1(System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Object,System.Object,`0,`0,`0,System.Int32*,System.Byte*[],System.Char*,System.Double*,System.Decimal*[],System.Int16*[],System.Void*,System.Void**,System.Void**,System.Void**,System.Void**[],System.Void**[],System.Void**[],``0,``0,``0,System.String)"
+      ],
+      "nestedEnums": [
+        "CodeMap.Tests.Data.TestClass.NestedTestEnum"
+      ],
+      "nestedDelegates": [
+        "CodeMap.Tests.Data.TestClass.NestedTestDelegate"
+      ],
+      "nestedInterfaces": [
+        "CodeMap.Tests.Data.TestClass.INestedTestInterface"
+      ],
+      "nestedClasses": [
+        "CodeMap.Tests.Data.TestClass.NestedTestClass`2"
+      ],
+      "nestedStructs": [
+        "CodeMap.Tests.Data.TestClass.NestedTestStruct"
+      ]
+    },
     "CodeMap.Tests.Data.TestClass`1.TestConstant": {
       "kind": "constant",
       "name": "TestConstant",
@@ -3175,6 +3700,252 @@
       "properties": [],
       "methods": []
     },
+    "CodeMap.Tests.Data.TestClass.NestedTestClass`2": {
+      "kind": "class",
+      "name": "NestedTestClass",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [
+        {
+          "name": "TParam2",
+          "isCovariant": false,
+          "isContravariant": false,
+          "hasReferenceTypeConstraint": false,
+          "hasNonNullableValueTypeConstraint": false,
+          "hasDefaultConstructorConstraint": false,
+          "typeConstraints": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "TParam3",
+          "isCovariant": false,
+          "isContravariant": false,
+          "hasReferenceTypeConstraint": false,
+          "hasNonNullableValueTypeConstraint": false,
+          "hasDefaultConstructorConstraint": false,
+          "typeConstraints": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        }
+      ],
+      "baseClass": {
+        "kind": "specific",
+        "name": "Object",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Object",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "implementedInterfaces": [],
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "constants": [],
+      "fields": [],
+      "constructors": [
+        "CodeMap.Tests.Data.TestClass.NestedTestClass`2.NestedTestClass"
+      ],
+      "events": [],
+      "properties": [],
+      "methods": [],
+      "nestedEnums": [],
+      "nestedDelegates": [],
+      "nestedInterfaces": [],
+      "nestedClasses": [],
+      "nestedStructs": []
+    },
+    "CodeMap.Tests.Data.TestExplicitClass": {
+      "kind": "class",
+      "name": "TestExplicitClass",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseClass": {
+        "kind": "specific",
+        "name": "Object",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Object",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "implementedInterfaces": [
+        {
+          "kind": "specific",
+          "name": "ITestExplicitInterface",
+          "namespace": "CodeMap.Tests.Data",
+          "declaringType": null,
+          "fullName": "CodeMap.Tests.Data.ITestExplicitInterface",
+          "assembly": {
+            "name": "CodeMap.Tests.Data",
+            "version": "1.2.3.4",
+            "culture": "",
+            "publicKeyToken": ""
+          },
+          "genericArguments": []
+        }
+      ],
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "constants": [],
+      "fields": [],
+      "constructors": [
+        "CodeMap.Tests.Data.TestExplicitClass.TestExplicitClass"
+      ],
+      "events": [
+        "CodeMap.Tests.Data.TestExplicitClass.CodeMap.Tests.Data.ITestExplicitInterface.TestEvent"
+      ],
+      "properties": [
+        "CodeMap.Tests.Data.TestExplicitClass.CodeMap.Tests.Data.ITestExplicitInterface.TestProperty"
+      ],
+      "methods": [
+        "CodeMap.Tests.Data.TestExplicitClass.CodeMap.Tests.Data.ITestExplicitInterface.TestMethod"
+      ],
+      "nestedEnums": [],
+      "nestedDelegates": [],
+      "nestedInterfaces": [],
+      "nestedClasses": [],
+      "nestedStructs": []
+    },
+    "CodeMap.Tests.Data.TestSealedClass": {
+      "kind": "class",
+      "name": "TestSealedClass",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseClass": {
+        "kind": "specific",
+        "name": "Object",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Object",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "implementedInterfaces": [],
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "constants": [],
+      "fields": [],
+      "constructors": [
+        "CodeMap.Tests.Data.TestSealedClass.TestSealedClass"
+      ],
+      "events": [],
+      "properties": [],
+      "methods": [],
+      "nestedEnums": [],
+      "nestedDelegates": [],
+      "nestedInterfaces": [],
+      "nestedClasses": [],
+      "nestedStructs": []
+    },
+    "CodeMap.Tests.Data.TestStaticClass": {
+      "kind": "class",
+      "name": "TestStaticClass",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseClass": {
+        "kind": "specific",
+        "name": "Object",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Object",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "implementedInterfaces": [],
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": true,
+      "constants": [],
+      "fields": [],
+      "constructors": [],
+      "events": [],
+      "properties": [],
+      "methods": [],
+      "nestedEnums": [],
+      "nestedDelegates": [],
+      "nestedInterfaces": [],
+      "nestedClasses": [],
+      "nestedStructs": []
+    },
     "CodeMap.Tests.Data.TestStruct`1.TestConstant": {
       "kind": "constant",
       "name": "TestConstant",
@@ -3367,6 +4138,56 @@
       "events": [],
       "properties": [],
       "methods": []
+    },
+    "CodeMap.Tests.Data.TestStruct.NestedTestClass": {
+      "kind": "class",
+      "name": "NestedTestClass",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "private",
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseClass": {
+        "kind": "specific",
+        "name": "Object",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Object",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "implementedInterfaces": [],
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "constants": [],
+      "fields": [],
+      "constructors": [
+        "CodeMap.Tests.Data.TestStruct.NestedTestClass.NestedTestClass"
+      ],
+      "events": [],
+      "properties": [],
+      "methods": [],
+      "nestedEnums": [],
+      "nestedDelegates": [],
+      "nestedInterfaces": [],
+      "nestedClasses": [],
+      "nestedStructs": []
     }
   }
 }
