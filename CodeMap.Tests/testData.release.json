@@ -187,12 +187,6 @@
   ],
   "dependencies": [
     {
-      "name": "System.Diagnostics.Debug",
-      "version": "4.1.1.0",
-      "culture": "",
-      "publicKeyToken": "b03f5f7f11d50a3a"
-    },
-    {
       "name": "System.Linq.Expressions",
       "version": "4.2.1.0",
       "culture": "",
