@@ -754,23 +754,96 @@ namespace CodeMap
         /// <param name="event">The <see cref="EventDocumentationElement"/> to visit.</param>
         protected internal override void VisitEvent(EventDocumentationElement @event)
         {
+            _jsonWriter.WritePropertyName(_GetIdFor(@event));
+
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("event");
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteValue(@event.Name);
+            _WriteAccessModifier(@event.AccessModifier);
+            _jsonWriter.WritePropertyName("type");
+            _WriteTypeReference(@event.Type);
+
+            _WriteDeclaringTypeReference(@event.DeclaringType);
+            _WriteAttributes(@event.Attributes);
+
+            _jsonWriter.WritePropertyName("isShadowing");
+            _jsonWriter.WriteValue(@event.IsShadowing);
+            _jsonWriter.WritePropertyName("isStatic");
+            _jsonWriter.WriteValue(@event.IsStatic);
+            _jsonWriter.WritePropertyName("isAbstract");
+            _jsonWriter.WriteValue(@event.IsAbstract);
+            _jsonWriter.WritePropertyName("isVirtual");
+            _jsonWriter.WriteValue(@event.IsVirtual);
+            _jsonWriter.WritePropertyName("isOverride");
+            _jsonWriter.WriteValue(@event.IsOverride);
+            _jsonWriter.WritePropertyName("isSealed");
+            _jsonWriter.WriteValue(@event.IsSealed);
+
+            _jsonWriter.WritePropertyName("adder");
+            _WriteEventAccessorData(@event.Adder);
+
+            _jsonWriter.WritePropertyName("remover");
+            _WriteEventAccessorData(@event.Remover);
+
+            @event.Summary.Accept(this);
+            @event.Remarks.Accept(this);
+            _WriteExceptions(@event.Exceptions);
+            _WriteExamples(@event.Examples);
+            _WriteRelatedMembers(@event.RelatedMembers);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a <see cref="EventDocumentationElement"/>.</summary>
         /// <param name="event">The <see cref="EventDocumentationElement"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitEventAsync(EventDocumentationElement @event, CancellationToken cancellationToken)
+        protected internal override async Task VisitEventAsync(EventDocumentationElement @event, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitEvent(@event);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync(_GetIdFor(@event), cancellationToken);
+
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("event", cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@event.Name, cancellationToken);
+            await _WriteAccessModifierAsync(@event.AccessModifier, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("type", cancellationToken);
+            await _WriteTypeReferenceAsync(@event.Type, cancellationToken);
+
+            await _WriteDeclaringTypeReferenceAsync(@event.DeclaringType, cancellationToken);
+            await _WriteAttributesAsync(@event.Attributes, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("isShadowing", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@event.IsShadowing, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isStatic", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@event.IsStatic, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isAbstract", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@event.IsAbstract, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isVirtual", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@event.IsVirtual, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isOverride", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@event.IsOverride, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isSealed", cancellationToken);
+            await _jsonWriter.WriteValueAsync(@event.IsSealed, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("adder", cancellationToken);
+            await _WriteEventAccessorDataAsync(@event.Adder, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("remover", cancellationToken);
+            await _WriteEventAccessorDataAsync(@event.Remover, cancellationToken);
+
+            await @event.Summary.AcceptAsync(this, cancellationToken);
+            await @event.Remarks.AcceptAsync(this, cancellationToken);
+            await _WriteExceptionsAsync(@event.Exceptions, cancellationToken);
+            await _WriteExamplesAsync(@event.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(@event.RelatedMembers, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits a <see cref="PropertyDocumentationElement"/>.</summary>
@@ -1893,6 +1966,22 @@ namespace CodeMap
             }
         }
 
+        private void _WriteEventAccessorData(EventAccessorData accessorData)
+        {
+            _jsonWriter.WriteStartObject();
+            _WriteAttributes(accessorData.Attributes);
+            _WriteReturnAttributes(accessorData.ReturnAttributes);
+            _jsonWriter.WriteEndObject();
+        }
+
+        private async Task _WriteEventAccessorDataAsync(EventAccessorData accessorData, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+            await _WriteAttributesAsync(accessorData.Attributes, cancellationToken);
+            await _WriteReturnAttributesAsync(accessorData.ReturnAttributes, cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
+        }
+
         private void _WriteImplementedInterfacesReferences(IEnumerable<TypeReferenceData> implementedInterfaces)
         {
             _jsonWriter.WritePropertyName("implementedInterfaces");
@@ -2372,6 +2461,17 @@ namespace CodeMap
         private void _WriteAttributes(IEnumerable<AttributeData> attributes)
         {
             _jsonWriter.WritePropertyName("attributes");
+            _WriteAttributesArray(attributes);
+        }
+
+        private void _WriteReturnAttributes(IEnumerable<AttributeData> attributes)
+        {
+            _jsonWriter.WritePropertyName("returnAttributes");
+            _WriteAttributesArray(attributes);
+        }
+
+        private void _WriteAttributesArray(IEnumerable<AttributeData> attributes)
+        {
             _jsonWriter.WriteStartArray();
             foreach (var attribute in attributes)
             {
@@ -2400,6 +2500,17 @@ namespace CodeMap
         private async Task _WriteAttributesAsync(IEnumerable<AttributeData> attributes, CancellationToken cancellationToken)
         {
             await _jsonWriter.WritePropertyNameAsync("attributes", cancellationToken);
+            await _WriteAttributesArrayAsync(attributes, cancellationToken);
+        }
+
+        private async Task _WriteReturnAttributesAsync(IEnumerable<AttributeData> attributes, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("returnAttributes", cancellationToken);
+            await _WriteAttributesArrayAsync(attributes, cancellationToken);
+        }
+
+        private async Task _WriteAttributesArrayAsync(IEnumerable<AttributeData> attributes, CancellationToken cancellationToken)
+        {
             await _jsonWriter.WriteStartArrayAsync(cancellationToken);
             foreach (var attribute in attributes)
             {

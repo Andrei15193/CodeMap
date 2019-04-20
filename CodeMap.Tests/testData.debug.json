@@ -2679,6 +2679,52 @@
         "CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestMethod"
       ]
     },
+    "CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestEvent": {
+      "kind": "event",
+      "name": "InterfaceShadowedTestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.ITestBaseInterface",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
     "CodeMap.Tests.Data.ITestExplicitInterface": {
       "kind": "interface",
       "name": "ITestExplicitInterface",
@@ -2707,6 +2753,52 @@
       "methods": [
         "CodeMap.Tests.Data.ITestExplicitInterface.TestMethod"
       ]
+    },
+    "CodeMap.Tests.Data.ITestExplicitInterface.TestEvent": {
+      "kind": "event",
+      "name": "TestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.ITestExplicitInterface",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
     },
     "CodeMap.Tests.Data.ITestExtendedBaseInterface": {
       "kind": "interface",
@@ -3050,6 +3142,188 @@
         "CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestMethod",
         "CodeMap.Tests.Data.ITestInterface`1.TestMethod``1(System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Object,System.Object,`0,`0,`0,System.Int32*,System.Byte*[],System.Char*,System.Double*,System.Decimal*[],System.Int16*[],System.Void*,System.Void**,System.Void**,System.Void**,System.Void**[],System.Void**[],System.Void**[],``0,``0,``0,System.String)"
       ]
+    },
+    "CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestEvent": {
+      "kind": "event",
+      "name": "InterfaceShadowedTestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.ITestInterface`1",
+      "attributes": [],
+      "isShadowing": true,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.ITestInterface`1.TestEvent": {
+      "kind": "event",
+      "name": "TestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": [
+          {
+            "kind": "specific",
+            "name": "EventArgs",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.EventArgs",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          }
+        ]
+      },
+      "declaringType": "CodeMap.Tests.Data.ITestInterface`1",
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "interface event test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value2",
+              "value": "interface event test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value3",
+              "value": "interface event test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
     },
     "CodeMap.Tests.Data.TestAbstractClass": {
       "kind": "class",
@@ -3436,6 +3710,144 @@
       "declaringType": "CodeMap.Tests.Data.TestBaseClass",
       "attributes": [],
       "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestBaseClass.AbstractTestEvent": {
+      "kind": "event",
+      "name": "AbstractTestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestBaseClass",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": true,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestBaseClass.ClassShadowedTestEvent": {
+      "kind": "event",
+      "name": "ClassShadowedTestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestBaseClass",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestBaseClass.VirtualTestEvent": {
+      "kind": "event",
+      "name": "VirtualTestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestBaseClass",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": true,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
       "summary": {
         "xmlAttributes": {},
         "content": []
@@ -5903,6 +6315,672 @@
       "examples": [],
       "relatedMembers": []
     },
+    "CodeMap.Tests.Data.TestClass`1.AbstractTestEvent": {
+      "kind": "event",
+      "name": "AbstractTestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": true,
+      "isSealed": false,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestClass`1.ClassShadowedTestEvent": {
+      "kind": "event",
+      "name": "ClassShadowedTestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [],
+      "isShadowing": true,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestClass`1.CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestEvent": {
+      "kind": "event",
+      "name": "CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestEvent",
+      "accessModifier": "private",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": true,
+      "isOverride": false,
+      "isSealed": true,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestClass`1.StaticTestEvent": {
+      "kind": "event",
+      "name": "StaticTestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": true,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestClass`1.TestEvent": {
+      "kind": "event",
+      "name": "TestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": [
+          {
+            "kind": "specific",
+            "name": "EventArgs",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.EventArgs",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          }
+        ]
+      },
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "class event test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value2",
+              "value": "class event test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value3",
+              "value": "class event test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [
+          {
+            "type": {
+              "kind": "specific",
+              "name": "TestAttribute",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestAttribute",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": []
+            },
+            "positionalParameters": [
+              {
+                "name": "value1",
+                "value": "class event adder test 1",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ],
+            "namedParameters": [
+              {
+                "name": "Value2",
+                "value": "class event adder test 2",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "name": "Value3",
+                "value": "class event adder test 3",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ]
+          }
+        ],
+        "returnAttributes": [
+          {
+            "type": {
+              "kind": "specific",
+              "name": "TestAttribute",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestAttribute",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": []
+            },
+            "positionalParameters": [
+              {
+                "name": "value1",
+                "value": "class event adder return test 1",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ],
+            "namedParameters": [
+              {
+                "name": "Value2",
+                "value": "class event adder return test 2",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "name": "Value3",
+                "value": "class event adder return test 3",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "remover": {
+        "attributes": [
+          {
+            "type": {
+              "kind": "specific",
+              "name": "TestAttribute",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestAttribute",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": []
+            },
+            "positionalParameters": [
+              {
+                "name": "value1",
+                "value": "class event remover test 1",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ],
+            "namedParameters": [
+              {
+                "name": "Value2",
+                "value": "class event remover test 2",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "name": "Value3",
+                "value": "class event remover test 3",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ]
+          }
+        ],
+        "returnAttributes": [
+          {
+            "type": {
+              "kind": "specific",
+              "name": "TestAttribute",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestAttribute",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": []
+            },
+            "positionalParameters": [
+              {
+                "name": "value1",
+                "value": "class event remover return test 1",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ],
+            "namedParameters": [
+              {
+                "name": "Value2",
+                "value": "class event remover return test 2",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "name": "Value3",
+                "value": "class event remover return test 3",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestClass`1.VirtualTestEvent": {
+      "kind": "event",
+      "name": "VirtualTestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": true,
+      "isSealed": true,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
     "CodeMap.Tests.Data.TestClass.NestedTestEnum": {
       "kind": "enum",
       "name": "NestedTestEnum",
@@ -6214,6 +7292,52 @@
       "declaringType": "CodeMap.Tests.Data.TestExplicitClass",
       "attributes": [],
       "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestExplicitClass.CodeMap.Tests.Data.ITestExplicitInterface.TestEvent": {
+      "kind": "event",
+      "name": "CodeMap.Tests.Data.ITestExplicitInterface.TestEvent",
+      "accessModifier": "private",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestExplicitClass",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": true,
+      "isOverride": false,
+      "isSealed": true,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
       "summary": {
         "xmlAttributes": {},
         "content": []
@@ -8747,6 +9871,534 @@
           }
         }
       ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestStruct`1.CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestEvent": {
+      "kind": "event",
+      "name": "CodeMap.Tests.Data.ITestBaseInterface.InterfaceShadowedTestEvent",
+      "accessModifier": "private",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": true,
+      "isOverride": false,
+      "isSealed": true,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestStruct`1.StaticTestEvent": {
+      "kind": "event",
+      "name": "StaticTestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": true,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "remover": {
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestStruct`1.TestEvent": {
+      "kind": "event",
+      "name": "TestEvent",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "EventHandler",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.EventHandler",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": [
+          {
+            "kind": "specific",
+            "name": "EventArgs",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.EventArgs",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          }
+        ]
+      },
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "struct event test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value2",
+              "value": "struct event test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value3",
+              "value": "struct event test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "adder": {
+        "attributes": [
+          {
+            "type": {
+              "kind": "specific",
+              "name": "TestAttribute",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestAttribute",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": []
+            },
+            "positionalParameters": [
+              {
+                "name": "value1",
+                "value": "struct event adder test 1",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ],
+            "namedParameters": [
+              {
+                "name": "Value2",
+                "value": "struct event adder test 2",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "name": "Value3",
+                "value": "struct event adder test 3",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ]
+          }
+        ],
+        "returnAttributes": [
+          {
+            "type": {
+              "kind": "specific",
+              "name": "TestAttribute",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestAttribute",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": []
+            },
+            "positionalParameters": [
+              {
+                "name": "value1",
+                "value": "struct event adder return test 1",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ],
+            "namedParameters": [
+              {
+                "name": "Value2",
+                "value": "struct event adder return test 2",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "name": "Value3",
+                "value": "struct event adder return test 3",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "remover": {
+        "attributes": [
+          {
+            "type": {
+              "kind": "specific",
+              "name": "TestAttribute",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestAttribute",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": []
+            },
+            "positionalParameters": [
+              {
+                "name": "value1",
+                "value": "struct event remover test 1",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ],
+            "namedParameters": [
+              {
+                "name": "Value2",
+                "value": "struct event remover test 2",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "name": "Value3",
+                "value": "struct event remover test 3",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ]
+          }
+        ],
+        "returnAttributes": [
+          {
+            "type": {
+              "kind": "specific",
+              "name": "TestAttribute",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestAttribute",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": []
+            },
+            "positionalParameters": [
+              {
+                "name": "value1",
+                "value": "struct event remover return test 1",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ],
+            "namedParameters": [
+              {
+                "name": "Value2",
+                "value": "struct event remover return test 2",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "name": "Value3",
+                "value": "struct event remover return test 3",
+                "type": {
+                  "kind": "specific",
+                  "name": "Object",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Object",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              }
+            ]
+          }
+        ]
+      },
       "summary": {
         "xmlAttributes": {},
         "content": []
