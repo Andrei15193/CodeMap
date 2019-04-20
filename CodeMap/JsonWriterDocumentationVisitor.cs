@@ -850,23 +850,114 @@ namespace CodeMap
         /// <param name="property">The <see cref="PropertyDocumentationElement"/> to visit.</param>
         protected internal override void VisitProperty(PropertyDocumentationElement property)
         {
+            _jsonWriter.WritePropertyName(_GetIdFor(property));
+
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("property");
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteValue(property.Name);
+            _WriteAccessModifier(property.AccessModifier);
+            _jsonWriter.WritePropertyName("type");
+            _WriteTypeReference(property.Type);
+
+            _WriteDeclaringTypeReference(property.DeclaringType);
+            _WriteAttributes(property.Attributes);
+
+            _jsonWriter.WritePropertyName("isShadowing");
+            _jsonWriter.WriteValue(property.IsShadowing);
+            _jsonWriter.WritePropertyName("isStatic");
+            _jsonWriter.WriteValue(property.IsStatic);
+            _jsonWriter.WritePropertyName("isAbstract");
+            _jsonWriter.WriteValue(property.IsAbstract);
+            _jsonWriter.WritePropertyName("isVirtual");
+            _jsonWriter.WriteValue(property.IsVirtual);
+            _jsonWriter.WritePropertyName("isOverride");
+            _jsonWriter.WriteValue(property.IsOverride);
+            _jsonWriter.WritePropertyName("isSealed");
+            _jsonWriter.WriteValue(property.IsSealed);
+
+            _WriteParameters(property.Parameters);
+
+            if (property.Getter != null)
+            {
+                _jsonWriter.WritePropertyName("getter");
+                _WritePropertyAccessorData(property.Getter);
+            }
+
+            if (property.Setter != null)
+            {
+                _jsonWriter.WritePropertyName("setter");
+                _WritePropertyAccessorData(property.Setter);
+            }
+
+            property.Summary.Accept(this);
+            property.Remarks.Accept(this);
+            _WriteExceptions(property.Exceptions);
+            _WriteExamples(property.Examples);
+            _WriteRelatedMembers(property.RelatedMembers);
+            property.Value.Accept(this);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a <see cref="PropertyDocumentationElement"/>.</summary>
         /// <param name="property">The <see cref="PropertyDocumentationElement"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitPropertyAsync(PropertyDocumentationElement property, CancellationToken cancellationToken)
+        protected internal override async Task VisitPropertyAsync(PropertyDocumentationElement property, CancellationToken cancellationToken)
         {
-            try
+            await _jsonWriter.WritePropertyNameAsync(_GetIdFor(property), cancellationToken);
+
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("property", cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteValueAsync(property.Name, cancellationToken);
+            await _WriteAccessModifierAsync(property.AccessModifier, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("type", cancellationToken);
+            await _WriteTypeReferenceAsync(property.Type, cancellationToken);
+
+            await _WriteDeclaringTypeReferenceAsync(property.DeclaringType, cancellationToken);
+            await _WriteAttributesAsync(property.Attributes, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("isShadowing", cancellationToken);
+            await _jsonWriter.WriteValueAsync(property.IsShadowing, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isStatic", cancellationToken);
+            await _jsonWriter.WriteValueAsync(property.IsStatic, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isAbstract", cancellationToken);
+            await _jsonWriter.WriteValueAsync(property.IsAbstract, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isVirtual", cancellationToken);
+            await _jsonWriter.WriteValueAsync(property.IsVirtual, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isOverride", cancellationToken);
+            await _jsonWriter.WriteValueAsync(property.IsOverride, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("isSealed", cancellationToken);
+            await _jsonWriter.WriteValueAsync(property.IsSealed, cancellationToken);
+
+            await _WriteParametersAsync(property.Parameters, cancellationToken);
+
+            if (property.Getter != null)
             {
-                VisitProperty(property);
-                return Task.CompletedTask;
+                await _jsonWriter.WritePropertyNameAsync("getter", cancellationToken);
+                await _WritePropertyAccessorDataAsync(property.Getter, cancellationToken);
             }
-            catch (Exception exception)
+
+            if (property.Setter != null)
             {
-                return Task.FromException(exception);
+                await _jsonWriter.WritePropertyNameAsync("setter", cancellationToken);
+                await _WritePropertyAccessorDataAsync(property.Setter, cancellationToken);
             }
+
+            await property.Summary.AcceptAsync(this, cancellationToken);
+            await property.Remarks.AcceptAsync(this, cancellationToken);
+            await _WriteExceptionsAsync(property.Exceptions, cancellationToken);
+            await _WriteExamplesAsync(property.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(property.RelatedMembers, cancellationToken);
+            await property.Value.AcceptAsync(this, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits a <see cref="MethodDocumentationElement"/>.</summary>
@@ -1977,6 +2068,24 @@ namespace CodeMap
         private async Task _WriteEventAccessorDataAsync(EventAccessorData accessorData, CancellationToken cancellationToken)
         {
             await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+            await _WriteAttributesAsync(accessorData.Attributes, cancellationToken);
+            await _WriteReturnAttributesAsync(accessorData.ReturnAttributes, cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
+        }
+
+        private void _WritePropertyAccessorData(PropertyAccessorData accessorData)
+        {
+            _jsonWriter.WriteStartObject();
+            _WriteAccessModifier(accessorData.AccessModifier);
+            _WriteAttributes(accessorData.Attributes);
+            _WriteReturnAttributes(accessorData.ReturnAttributes);
+            _jsonWriter.WriteEndObject();
+        }
+
+        private async Task _WritePropertyAccessorDataAsync(PropertyAccessorData accessorData, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+            await _WriteAccessModifierAsync(accessorData.AccessModifier, cancellationToken);
             await _WriteAttributesAsync(accessorData.Attributes, cancellationToken);
             await _WriteReturnAttributesAsync(accessorData.ReturnAttributes, cancellationToken);
             await _jsonWriter.WriteEndObjectAsync(cancellationToken);
