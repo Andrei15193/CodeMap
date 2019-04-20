@@ -187,6 +187,12 @@
   ],
   "dependencies": [
     {
+      "name": "System.Diagnostics.Debug",
+      "version": "4.1.1.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a"
+    },
+    {
       "name": "System.Linq.Expressions",
       "version": "4.2.1.0",
       "culture": "",
@@ -292,6 +298,25 @@
       "nestedInterfaces": [],
       "nestedClasses": [],
       "nestedStructs": []
+    },
+    "GlobalTestClass.GlobalTestClass": {
+      "kind": "constructor",
+      "name": "GlobalTestClass",
+      "accessModifier": "public",
+      "declaringType": "GlobalTestClass",
+      "attributes": [],
+      "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
     },
     "CodeMap.Tests.Data": {
       "kind": "namespace",
@@ -3076,6 +3101,25 @@
       "nestedClasses": [],
       "nestedStructs": []
     },
+    "CodeMap.Tests.Data.TestAbstractClass.TestAbstractClass": {
+      "kind": "constructor",
+      "name": "TestAbstractClass",
+      "accessModifier": "family",
+      "declaringType": "CodeMap.Tests.Data.TestAbstractClass",
+      "attributes": [],
+      "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
     "CodeMap.Tests.Data.TestAttribute": {
       "kind": "class",
       "name": "TestAttribute",
@@ -3240,6 +3284,51 @@
       "examples": [],
       "relatedMembers": []
     },
+    "CodeMap.Tests.Data.TestAttribute.TestAttribute(System.Object)": {
+      "kind": "constructor",
+      "name": "TestAttribute",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestAttribute",
+      "attributes": [],
+      "parameters": [
+        {
+          "name": "value1",
+          "type": {
+            "kind": "specific",
+            "name": "Object",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.Object",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
     "CodeMap.Tests.Data.TestBaseClass": {
       "kind": "class",
       "name": "TestBaseClass",
@@ -3337,6 +3426,25 @@
         "xmlAttributes": {},
         "content": []
       },
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestBaseClass.TestBaseClass": {
+      "kind": "constructor",
+      "name": "TestBaseClass",
+      "accessModifier": "family",
+      "declaringType": "CodeMap.Tests.Data.TestBaseClass",
+      "attributes": [],
+      "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
       "examples": [],
       "relatedMembers": []
     },
@@ -3888,6 +3996,1913 @@
       "examples": [],
       "relatedMembers": []
     },
+    "CodeMap.Tests.Data.TestClass`1.TestClass(System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Object,System.Object,`0,`0,`0,System.Int32*,System.Byte*[],System.Char*,System.Double*,System.Decimal*[],System.Int16*[],System.Void*,System.Void**,System.Void**,System.Void**,System.Void**[],System.Void**[],System.Void**[],System.String)": {
+      "kind": "constructor",
+      "name": "TestClass",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestClass`1",
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "class constructor test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value2",
+              "value": "class constructor test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value3",
+              "value": "class constructor test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "param1",
+          "type": {
+            "kind": "specific",
+            "name": "Int32",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.Int32",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "TestAttribute",
+                "namespace": "CodeMap.Tests.Data",
+                "declaringType": null,
+                "fullName": "CodeMap.Tests.Data.TestAttribute",
+                "assembly": {
+                  "name": "CodeMap.Tests.Data",
+                  "version": "1.2.3.4",
+                  "culture": "",
+                  "publicKeyToken": ""
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [
+                {
+                  "name": "value1",
+                  "value": "class constructor parameter test 1",
+                  "type": {
+                    "kind": "specific",
+                    "name": "Object",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Object",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                }
+              ],
+              "namedParameters": [
+                {
+                  "name": "Value2",
+                  "value": "class constructor parameter test 2",
+                  "type": {
+                    "kind": "specific",
+                    "name": "Object",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Object",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                },
+                {
+                  "name": "Value3",
+                  "value": "class constructor parameter test 3",
+                  "type": {
+                    "kind": "specific",
+                    "name": "Object",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Object",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                }
+              ]
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param2",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "Byte",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Byte",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param3",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "array",
+              "rank": 1,
+              "item": {
+                "kind": "specific",
+                "name": "Char",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Char",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param4",
+          "type": {
+            "kind": "array",
+            "rank": 2,
+            "item": {
+              "kind": "specific",
+              "name": "Double",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Double",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param5",
+          "type": {
+            "kind": "specific",
+            "name": "Int32",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.Int32",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param6",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "Byte",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Byte",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param7",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "array",
+              "rank": 1,
+              "item": {
+                "kind": "specific",
+                "name": "Char",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Char",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param8",
+          "type": {
+            "kind": "array",
+            "rank": 2,
+            "item": {
+              "kind": "specific",
+              "name": "Double",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Double",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param9",
+          "type": {
+            "kind": "specific",
+            "name": "Int32",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.Int32",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param10",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "Byte",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Byte",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param11",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "array",
+              "rank": 1,
+              "item": {
+                "kind": "specific",
+                "name": "Char",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Char",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param12",
+          "type": {
+            "kind": "array",
+            "rank": 2,
+            "item": {
+              "kind": "specific",
+              "name": "Double",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Double",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param13",
+          "type": {
+            "kind": "specific",
+            "name": "NestedTestClass",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": {
+              "kind": "specific",
+              "name": "TestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "specific",
+                  "name": "Int32",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Int32",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              ]
+            },
+            "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": [
+              {
+                "kind": "array",
+                "rank": 1,
+                "item": {
+                  "kind": "specific",
+                  "name": "Byte",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Byte",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "kind": "specific",
+                "name": "IEnumerable",
+                "namespace": "System.Collections.Generic",
+                "declaringType": null,
+                "fullName": "System.Collections.Generic.IEnumerable",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "String",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.String",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param14",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "NestedTestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": {
+                "kind": "specific",
+                "name": "TestClass",
+                "namespace": "CodeMap.Tests.Data",
+                "declaringType": null,
+                "fullName": "CodeMap.Tests.Data.TestClass",
+                "assembly": {
+                  "name": "CodeMap.Tests.Data",
+                  "version": "1.2.3.4",
+                  "culture": "",
+                  "publicKeyToken": ""
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "Int32",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Int32",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              },
+              "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "array",
+                  "rank": 1,
+                  "item": {
+                    "kind": "specific",
+                    "name": "Byte",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Byte",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                },
+                {
+                  "kind": "specific",
+                  "name": "IEnumerable",
+                  "namespace": "System.Collections.Generic",
+                  "declaringType": null,
+                  "fullName": "System.Collections.Generic.IEnumerable",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": [
+                    {
+                      "kind": "specific",
+                      "name": "String",
+                      "namespace": "System",
+                      "declaringType": null,
+                      "fullName": "System.String",
+                      "assembly": {
+                        "name": "System.Private.CoreLib",
+                        "version": "4.0.0.0",
+                        "culture": "",
+                        "publicKeyToken": "7cec85d7bea7798e"
+                      },
+                      "genericArguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param15",
+          "type": {
+            "kind": "specific",
+            "name": "NestedTestClass",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": {
+              "kind": "specific",
+              "name": "TestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "specific",
+                  "name": "Int32",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Int32",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              ]
+            },
+            "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": [
+              {
+                "kind": "array",
+                "rank": 1,
+                "item": {
+                  "kind": "specific",
+                  "name": "Byte",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Byte",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "kind": "specific",
+                "name": "IEnumerable",
+                "namespace": "System.Collections.Generic",
+                "declaringType": null,
+                "fullName": "System.Collections.Generic.IEnumerable",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "String",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.String",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param16",
+          "type": {
+            "kind": "specific",
+            "name": "NestedTestClass",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": {
+              "kind": "specific",
+              "name": "TestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "specific",
+                  "name": "Int32",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Int32",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              ]
+            },
+            "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": [
+              {
+                "kind": "array",
+                "rank": 1,
+                "item": {
+                  "kind": "specific",
+                  "name": "Byte",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Byte",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "kind": "specific",
+                "name": "IEnumerable",
+                "namespace": "System.Collections.Generic",
+                "declaringType": null,
+                "fullName": "System.Collections.Generic.IEnumerable",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "String",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.String",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param17",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "NestedTestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": {
+                "kind": "specific",
+                "name": "TestClass",
+                "namespace": "CodeMap.Tests.Data",
+                "declaringType": null,
+                "fullName": "CodeMap.Tests.Data.TestClass",
+                "assembly": {
+                  "name": "CodeMap.Tests.Data",
+                  "version": "1.2.3.4",
+                  "culture": "",
+                  "publicKeyToken": ""
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "Int32",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Int32",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              },
+              "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "array",
+                  "rank": 1,
+                  "item": {
+                    "kind": "specific",
+                    "name": "Byte",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Byte",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                },
+                {
+                  "kind": "specific",
+                  "name": "IEnumerable",
+                  "namespace": "System.Collections.Generic",
+                  "declaringType": null,
+                  "fullName": "System.Collections.Generic.IEnumerable",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": [
+                    {
+                      "kind": "specific",
+                      "name": "String",
+                      "namespace": "System",
+                      "declaringType": null,
+                      "fullName": "System.String",
+                      "assembly": {
+                        "name": "System.Private.CoreLib",
+                        "version": "4.0.0.0",
+                        "culture": "",
+                        "publicKeyToken": "7cec85d7bea7798e"
+                      },
+                      "genericArguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param18",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "NestedTestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": {
+                "kind": "specific",
+                "name": "TestClass",
+                "namespace": "CodeMap.Tests.Data",
+                "declaringType": null,
+                "fullName": "CodeMap.Tests.Data.TestClass",
+                "assembly": {
+                  "name": "CodeMap.Tests.Data",
+                  "version": "1.2.3.4",
+                  "culture": "",
+                  "publicKeyToken": ""
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "Int32",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Int32",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              },
+              "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "array",
+                  "rank": 1,
+                  "item": {
+                    "kind": "specific",
+                    "name": "Byte",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Byte",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                },
+                {
+                  "kind": "specific",
+                  "name": "IEnumerable",
+                  "namespace": "System.Collections.Generic",
+                  "declaringType": null,
+                  "fullName": "System.Collections.Generic.IEnumerable",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": [
+                    {
+                      "kind": "specific",
+                      "name": "String",
+                      "namespace": "System",
+                      "declaringType": null,
+                      "fullName": "System.String",
+                      "assembly": {
+                        "name": "System.Private.CoreLib",
+                        "version": "4.0.0.0",
+                        "culture": "",
+                        "publicKeyToken": "7cec85d7bea7798e"
+                      },
+                      "genericArguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param19",
+          "type": { "kind": "dynamic" },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "DynamicAttribute",
+                "namespace": "System.Runtime.CompilerServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.CompilerServices.DynamicAttribute",
+                "assembly": {
+                  "name": "System.Linq.Expressions",
+                  "version": "4.2.1.0",
+                  "culture": "",
+                  "publicKeyToken": "b03f5f7f11d50a3a"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param20",
+          "type": { "kind": "dynamic" },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "DynamicAttribute",
+                "namespace": "System.Runtime.CompilerServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.CompilerServices.DynamicAttribute",
+                "assembly": {
+                  "name": "System.Linq.Expressions",
+                  "version": "4.2.1.0",
+                  "culture": "",
+                  "publicKeyToken": "b03f5f7f11d50a3a"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [
+                {
+                  "name": "transformFlags",
+                  "value": [ false, true ],
+                  "type": {
+                    "kind": "array",
+                    "rank": 1,
+                    "item": {
+                      "kind": "specific",
+                      "name": "Boolean",
+                      "namespace": "System",
+                      "declaringType": null,
+                      "fullName": "System.Boolean",
+                      "assembly": {
+                        "name": "System.Private.CoreLib",
+                        "version": "4.0.0.0",
+                        "culture": "",
+                        "publicKeyToken": "7cec85d7bea7798e"
+                      },
+                      "genericArguments": []
+                    }
+                  }
+                }
+              ],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param21",
+          "type": { "kind": "dynamic" },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "DynamicAttribute",
+                "namespace": "System.Runtime.CompilerServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.CompilerServices.DynamicAttribute",
+                "assembly": {
+                  "name": "System.Linq.Expressions",
+                  "version": "4.2.1.0",
+                  "culture": "",
+                  "publicKeyToken": "b03f5f7f11d50a3a"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [
+                {
+                  "name": "transformFlags",
+                  "value": [ false, true ],
+                  "type": {
+                    "kind": "array",
+                    "rank": 1,
+                    "item": {
+                      "kind": "specific",
+                      "name": "Boolean",
+                      "namespace": "System",
+                      "declaringType": null,
+                      "fullName": "System.Boolean",
+                      "assembly": {
+                        "name": "System.Private.CoreLib",
+                        "version": "4.0.0.0",
+                        "culture": "",
+                        "publicKeyToken": "7cec85d7bea7798e"
+                      },
+                      "genericArguments": []
+                    }
+                  }
+                }
+              ],
+              "namedParameters": []
+            },
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param22",
+          "type": {
+            "kind": "genericParameter",
+            "name": "TParam1"
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param23",
+          "type": {
+            "kind": "genericParameter",
+            "name": "TParam1"
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param24",
+          "type": {
+            "kind": "genericParameter",
+            "name": "TParam1"
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param25",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "specific",
+              "name": "Int32",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Int32",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param26",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "specific",
+                "name": "Byte",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Byte",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param27",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "specific",
+              "name": "Char",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Char",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param28",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "specific",
+              "name": "Double",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Double",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param29",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "specific",
+                "name": "Decimal",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Decimal",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param30",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "specific",
+                "name": "Int16",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Int16",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param31",
+          "type": {
+            "kind": "pointer",
+            "referent": { "kind": "void" }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param32",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "pointer",
+              "referent": { "kind": "void" }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param33",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "pointer",
+              "referent": { "kind": "void" }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param34",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "pointer",
+              "referent": { "kind": "void" }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param35",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "pointer",
+                "referent": { "kind": "void" }
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param36",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "pointer",
+                "referent": { "kind": "void" }
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param37",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "pointer",
+                "referent": { "kind": "void" }
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param38",
+          "type": {
+            "kind": "specific",
+            "name": "String",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.String",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "defaultValue": "test",
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OptionalAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OptionalAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
     "CodeMap.Tests.Data.TestClass.NestedTestEnum": {
       "kind": "enum",
       "name": "NestedTestEnum",
@@ -4050,6 +6065,25 @@
       "nestedClasses": [],
       "nestedStructs": []
     },
+    "CodeMap.Tests.Data.TestClass.NestedTestClass`2.NestedTestClass": {
+      "kind": "constructor",
+      "name": "NestedTestClass",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestClass.NestedTestClass`2",
+      "attributes": [],
+      "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
     "CodeMap.Tests.Data.TestClass.NestedTestStruct": {
       "kind": "struct",
       "name": "NestedTestStruct",
@@ -4082,6 +6116,25 @@
       "nestedInterfaces": [],
       "nestedClasses": [],
       "nestedStructs": []
+    },
+    "CodeMap.Tests.Data.TestClass.NestedTestStruct.NestedTestStruct": {
+      "kind": "constructor",
+      "name": "NestedTestStruct",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestClass.NestedTestStruct",
+      "attributes": [],
+      "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
     },
     "CodeMap.Tests.Data.TestExplicitClass": {
       "kind": "class",
@@ -4154,6 +6207,25 @@
       "nestedClasses": [],
       "nestedStructs": []
     },
+    "CodeMap.Tests.Data.TestExplicitClass.TestExplicitClass": {
+      "kind": "constructor",
+      "name": "TestExplicitClass",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestExplicitClass",
+      "attributes": [],
+      "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
     "CodeMap.Tests.Data.TestSealedClass": {
       "kind": "class",
       "name": "TestSealedClass",
@@ -4203,6 +6275,25 @@
       "nestedInterfaces": [],
       "nestedClasses": [],
       "nestedStructs": []
+    },
+    "CodeMap.Tests.Data.TestSealedClass.TestSealedClass": {
+      "kind": "constructor",
+      "name": "TestSealedClass",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestSealedClass",
+      "attributes": [],
+      "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
     },
     "CodeMap.Tests.Data.TestStaticClass": {
       "kind": "class",
@@ -4742,6 +6833,1932 @@
       "examples": [],
       "relatedMembers": []
     },
+    "CodeMap.Tests.Data.TestStruct`1.TestStruct": {
+      "kind": "constructor",
+      "name": "TestStruct",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [],
+      "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.TestStruct`1.TestStruct(System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Object,System.Object,`0,`0,`0,System.Int32*,System.Byte*[],System.Char*,System.Double*,System.Decimal*[],System.Int16*[],System.Void*,System.Void**,System.Void**,System.Void**,System.Void**[],System.Void**[],System.Void**[],System.String)": {
+      "kind": "constructor",
+      "name": "TestStruct",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestStruct`1",
+      "attributes": [
+        {
+          "type": {
+            "kind": "specific",
+            "name": "TestAttribute",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": null,
+            "fullName": "CodeMap.Tests.Data.TestAttribute",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": []
+          },
+          "positionalParameters": [
+            {
+              "name": "value1",
+              "value": "struct constructor test 1",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ],
+          "namedParameters": [
+            {
+              "name": "Value2",
+              "value": "struct constructor test 2",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            },
+            {
+              "name": "Value3",
+              "value": "struct constructor test 3",
+              "type": {
+                "kind": "specific",
+                "name": "Object",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Object",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "param1",
+          "type": {
+            "kind": "specific",
+            "name": "Int32",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.Int32",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "TestAttribute",
+                "namespace": "CodeMap.Tests.Data",
+                "declaringType": null,
+                "fullName": "CodeMap.Tests.Data.TestAttribute",
+                "assembly": {
+                  "name": "CodeMap.Tests.Data",
+                  "version": "1.2.3.4",
+                  "culture": "",
+                  "publicKeyToken": ""
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [
+                {
+                  "name": "value1",
+                  "value": "struct constructor parameter test 1",
+                  "type": {
+                    "kind": "specific",
+                    "name": "Object",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Object",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                }
+              ],
+              "namedParameters": [
+                {
+                  "name": "Value2",
+                  "value": "struct constructor parameter test 2",
+                  "type": {
+                    "kind": "specific",
+                    "name": "Object",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Object",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                },
+                {
+                  "name": "Value3",
+                  "value": "struct constructor parameter test 3",
+                  "type": {
+                    "kind": "specific",
+                    "name": "Object",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Object",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                }
+              ]
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param2",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "Byte",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Byte",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param3",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "array",
+              "rank": 1,
+              "item": {
+                "kind": "specific",
+                "name": "Char",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Char",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param4",
+          "type": {
+            "kind": "array",
+            "rank": 2,
+            "item": {
+              "kind": "specific",
+              "name": "Double",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Double",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param5",
+          "type": {
+            "kind": "specific",
+            "name": "Int32",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.Int32",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param6",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "Byte",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Byte",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param7",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "array",
+              "rank": 1,
+              "item": {
+                "kind": "specific",
+                "name": "Char",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Char",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param8",
+          "type": {
+            "kind": "array",
+            "rank": 2,
+            "item": {
+              "kind": "specific",
+              "name": "Double",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Double",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param9",
+          "type": {
+            "kind": "specific",
+            "name": "Int32",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.Int32",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param10",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "Byte",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Byte",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param11",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "array",
+              "rank": 1,
+              "item": {
+                "kind": "specific",
+                "name": "Char",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Char",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param12",
+          "type": {
+            "kind": "array",
+            "rank": 2,
+            "item": {
+              "kind": "specific",
+              "name": "Double",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Double",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param13",
+          "type": {
+            "kind": "specific",
+            "name": "NestedTestClass",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": {
+              "kind": "specific",
+              "name": "TestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "specific",
+                  "name": "Int32",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Int32",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              ]
+            },
+            "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": [
+              {
+                "kind": "array",
+                "rank": 1,
+                "item": {
+                  "kind": "specific",
+                  "name": "Byte",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Byte",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "kind": "specific",
+                "name": "IEnumerable",
+                "namespace": "System.Collections.Generic",
+                "declaringType": null,
+                "fullName": "System.Collections.Generic.IEnumerable",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "String",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.String",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param14",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "NestedTestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": {
+                "kind": "specific",
+                "name": "TestClass",
+                "namespace": "CodeMap.Tests.Data",
+                "declaringType": null,
+                "fullName": "CodeMap.Tests.Data.TestClass",
+                "assembly": {
+                  "name": "CodeMap.Tests.Data",
+                  "version": "1.2.3.4",
+                  "culture": "",
+                  "publicKeyToken": ""
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "Int32",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Int32",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              },
+              "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "array",
+                  "rank": 1,
+                  "item": {
+                    "kind": "specific",
+                    "name": "Byte",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Byte",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                },
+                {
+                  "kind": "specific",
+                  "name": "IEnumerable",
+                  "namespace": "System.Collections.Generic",
+                  "declaringType": null,
+                  "fullName": "System.Collections.Generic.IEnumerable",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": [
+                    {
+                      "kind": "specific",
+                      "name": "String",
+                      "namespace": "System",
+                      "declaringType": null,
+                      "fullName": "System.String",
+                      "assembly": {
+                        "name": "System.Private.CoreLib",
+                        "version": "4.0.0.0",
+                        "culture": "",
+                        "publicKeyToken": "7cec85d7bea7798e"
+                      },
+                      "genericArguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param15",
+          "type": {
+            "kind": "specific",
+            "name": "NestedTestClass",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": {
+              "kind": "specific",
+              "name": "TestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "specific",
+                  "name": "Int32",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Int32",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              ]
+            },
+            "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": [
+              {
+                "kind": "array",
+                "rank": 1,
+                "item": {
+                  "kind": "specific",
+                  "name": "Byte",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Byte",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "kind": "specific",
+                "name": "IEnumerable",
+                "namespace": "System.Collections.Generic",
+                "declaringType": null,
+                "fullName": "System.Collections.Generic.IEnumerable",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "String",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.String",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param16",
+          "type": {
+            "kind": "specific",
+            "name": "NestedTestClass",
+            "namespace": "CodeMap.Tests.Data",
+            "declaringType": {
+              "kind": "specific",
+              "name": "TestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": null,
+              "fullName": "CodeMap.Tests.Data.TestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "specific",
+                  "name": "Int32",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Int32",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              ]
+            },
+            "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+            "assembly": {
+              "name": "CodeMap.Tests.Data",
+              "version": "1.2.3.4",
+              "culture": "",
+              "publicKeyToken": ""
+            },
+            "genericArguments": [
+              {
+                "kind": "array",
+                "rank": 1,
+                "item": {
+                  "kind": "specific",
+                  "name": "Byte",
+                  "namespace": "System",
+                  "declaringType": null,
+                  "fullName": "System.Byte",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": []
+                }
+              },
+              {
+                "kind": "specific",
+                "name": "IEnumerable",
+                "namespace": "System.Collections.Generic",
+                "declaringType": null,
+                "fullName": "System.Collections.Generic.IEnumerable",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "String",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.String",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param17",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "NestedTestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": {
+                "kind": "specific",
+                "name": "TestClass",
+                "namespace": "CodeMap.Tests.Data",
+                "declaringType": null,
+                "fullName": "CodeMap.Tests.Data.TestClass",
+                "assembly": {
+                  "name": "CodeMap.Tests.Data",
+                  "version": "1.2.3.4",
+                  "culture": "",
+                  "publicKeyToken": ""
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "Int32",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Int32",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              },
+              "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "array",
+                  "rank": 1,
+                  "item": {
+                    "kind": "specific",
+                    "name": "Byte",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Byte",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                },
+                {
+                  "kind": "specific",
+                  "name": "IEnumerable",
+                  "namespace": "System.Collections.Generic",
+                  "declaringType": null,
+                  "fullName": "System.Collections.Generic.IEnumerable",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": [
+                    {
+                      "kind": "specific",
+                      "name": "String",
+                      "namespace": "System",
+                      "declaringType": null,
+                      "fullName": "System.String",
+                      "assembly": {
+                        "name": "System.Private.CoreLib",
+                        "version": "4.0.0.0",
+                        "culture": "",
+                        "publicKeyToken": "7cec85d7bea7798e"
+                      },
+                      "genericArguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param18",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "specific",
+              "name": "NestedTestClass",
+              "namespace": "CodeMap.Tests.Data",
+              "declaringType": {
+                "kind": "specific",
+                "name": "TestClass",
+                "namespace": "CodeMap.Tests.Data",
+                "declaringType": null,
+                "fullName": "CodeMap.Tests.Data.TestClass",
+                "assembly": {
+                  "name": "CodeMap.Tests.Data",
+                  "version": "1.2.3.4",
+                  "culture": "",
+                  "publicKeyToken": ""
+                },
+                "genericArguments": [
+                  {
+                    "kind": "specific",
+                    "name": "Int32",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Int32",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                ]
+              },
+              "fullName": "CodeMap.Tests.Data.TestClass.NestedTestClass",
+              "assembly": {
+                "name": "CodeMap.Tests.Data",
+                "version": "1.2.3.4",
+                "culture": "",
+                "publicKeyToken": ""
+              },
+              "genericArguments": [
+                {
+                  "kind": "array",
+                  "rank": 1,
+                  "item": {
+                    "kind": "specific",
+                    "name": "Byte",
+                    "namespace": "System",
+                    "declaringType": null,
+                    "fullName": "System.Byte",
+                    "assembly": {
+                      "name": "System.Private.CoreLib",
+                      "version": "4.0.0.0",
+                      "culture": "",
+                      "publicKeyToken": "7cec85d7bea7798e"
+                    },
+                    "genericArguments": []
+                  }
+                },
+                {
+                  "kind": "specific",
+                  "name": "IEnumerable",
+                  "namespace": "System.Collections.Generic",
+                  "declaringType": null,
+                  "fullName": "System.Collections.Generic.IEnumerable",
+                  "assembly": {
+                    "name": "System.Private.CoreLib",
+                    "version": "4.0.0.0",
+                    "culture": "",
+                    "publicKeyToken": "7cec85d7bea7798e"
+                  },
+                  "genericArguments": [
+                    {
+                      "kind": "specific",
+                      "name": "String",
+                      "namespace": "System",
+                      "declaringType": null,
+                      "fullName": "System.String",
+                      "assembly": {
+                        "name": "System.Private.CoreLib",
+                        "version": "4.0.0.0",
+                        "culture": "",
+                        "publicKeyToken": "7cec85d7bea7798e"
+                      },
+                      "genericArguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param19",
+          "type": { "kind": "dynamic" },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "DynamicAttribute",
+                "namespace": "System.Runtime.CompilerServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.CompilerServices.DynamicAttribute",
+                "assembly": {
+                  "name": "System.Linq.Expressions",
+                  "version": "4.2.1.0",
+                  "culture": "",
+                  "publicKeyToken": "b03f5f7f11d50a3a"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param20",
+          "type": { "kind": "dynamic" },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "DynamicAttribute",
+                "namespace": "System.Runtime.CompilerServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.CompilerServices.DynamicAttribute",
+                "assembly": {
+                  "name": "System.Linq.Expressions",
+                  "version": "4.2.1.0",
+                  "culture": "",
+                  "publicKeyToken": "b03f5f7f11d50a3a"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [
+                {
+                  "name": "transformFlags",
+                  "value": [ false, true ],
+                  "type": {
+                    "kind": "array",
+                    "rank": 1,
+                    "item": {
+                      "kind": "specific",
+                      "name": "Boolean",
+                      "namespace": "System",
+                      "declaringType": null,
+                      "fullName": "System.Boolean",
+                      "assembly": {
+                        "name": "System.Private.CoreLib",
+                        "version": "4.0.0.0",
+                        "culture": "",
+                        "publicKeyToken": "7cec85d7bea7798e"
+                      },
+                      "genericArguments": []
+                    }
+                  }
+                }
+              ],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param21",
+          "type": { "kind": "dynamic" },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "DynamicAttribute",
+                "namespace": "System.Runtime.CompilerServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.CompilerServices.DynamicAttribute",
+                "assembly": {
+                  "name": "System.Linq.Expressions",
+                  "version": "4.2.1.0",
+                  "culture": "",
+                  "publicKeyToken": "b03f5f7f11d50a3a"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [
+                {
+                  "name": "transformFlags",
+                  "value": [ false, true ],
+                  "type": {
+                    "kind": "array",
+                    "rank": 1,
+                    "item": {
+                      "kind": "specific",
+                      "name": "Boolean",
+                      "namespace": "System",
+                      "declaringType": null,
+                      "fullName": "System.Boolean",
+                      "assembly": {
+                        "name": "System.Private.CoreLib",
+                        "version": "4.0.0.0",
+                        "culture": "",
+                        "publicKeyToken": "7cec85d7bea7798e"
+                      },
+                      "genericArguments": []
+                    }
+                  }
+                }
+              ],
+              "namedParameters": []
+            },
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param22",
+          "type": {
+            "kind": "genericParameter",
+            "name": "TParam1"
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param23",
+          "type": {
+            "kind": "genericParameter",
+            "name": "TParam1"
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param24",
+          "type": {
+            "kind": "genericParameter",
+            "name": "TParam1"
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param25",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "specific",
+              "name": "Int32",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Int32",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param26",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "specific",
+                "name": "Byte",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Byte",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param27",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "specific",
+              "name": "Char",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Char",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param28",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "specific",
+              "name": "Double",
+              "namespace": "System",
+              "declaringType": null,
+              "fullName": "System.Double",
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              },
+              "genericArguments": []
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param29",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "specific",
+                "name": "Decimal",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Decimal",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param30",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "specific",
+                "name": "Int16",
+                "namespace": "System",
+                "declaringType": null,
+                "fullName": "System.Int16",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param31",
+          "type": {
+            "kind": "pointer",
+            "referent": { "kind": "void" }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param32",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "pointer",
+              "referent": { "kind": "void" }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param33",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "pointer",
+              "referent": { "kind": "void" }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param34",
+          "type": {
+            "kind": "pointer",
+            "referent": {
+              "kind": "pointer",
+              "referent": { "kind": "void" }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param35",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "pointer",
+                "referent": { "kind": "void" }
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param36",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "pointer",
+                "referent": { "kind": "void" }
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": true,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param37",
+          "type": {
+            "kind": "array",
+            "rank": 1,
+            "item": {
+              "kind": "pointer",
+              "referent": {
+                "kind": "pointer",
+                "referent": { "kind": "void" }
+              }
+            }
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": true,
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OutAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OutAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        },
+        {
+          "name": "param38",
+          "type": {
+            "kind": "specific",
+            "name": "String",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.String",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "defaultValue": "test",
+          "attributes": [
+            {
+              "type": {
+                "kind": "specific",
+                "name": "OptionalAttribute",
+                "namespace": "System.Runtime.InteropServices",
+                "declaringType": null,
+                "fullName": "System.Runtime.InteropServices.OptionalAttribute",
+                "assembly": {
+                  "name": "System.Private.CoreLib",
+                  "version": "4.0.0.0",
+                  "culture": "",
+                  "publicKeyToken": "7cec85d7bea7798e"
+                },
+                "genericArguments": []
+              },
+              "positionalParameters": [],
+              "namedParameters": []
+            }
+          ],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        }
+      ],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
     "CodeMap.Tests.Data.TestStruct.NestedTestEnum": {
       "kind": "enum",
       "name": "NestedTestEnum",
@@ -4877,6 +8894,25 @@
       "nestedClasses": [],
       "nestedStructs": []
     },
+    "CodeMap.Tests.Data.TestStruct.NestedTestClass.NestedTestClass": {
+      "kind": "constructor",
+      "name": "NestedTestClass",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestStruct.NestedTestClass",
+      "attributes": [],
+      "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
     "CodeMap.Tests.Data.TestStruct.NestedTestStruct": {
       "kind": "struct",
       "name": "NestedTestStruct",
@@ -4909,6 +8945,25 @@
       "nestedInterfaces": [],
       "nestedClasses": [],
       "nestedStructs": []
+    },
+    "CodeMap.Tests.Data.TestStruct.NestedTestStruct.NestedTestStruct": {
+      "kind": "constructor",
+      "name": "NestedTestStruct",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.TestStruct.NestedTestStruct",
+      "attributes": [],
+      "parameters": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
     }
   }
 }

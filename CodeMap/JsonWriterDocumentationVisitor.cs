@@ -164,7 +164,7 @@ namespace CodeMap
             _jsonWriter.WritePropertyName("underlyingType");
             _WriteTypeReference(@enum.UnderlyingType);
 
-            _WriteDeclaringTypeReferences(@enum.DeclaringType);
+            _WriteDeclaringTypeReference(@enum.DeclaringType);
             _WriteAttributes(@enum.Attributes);
 
             @enum.Summary.Accept(this);
@@ -201,7 +201,7 @@ namespace CodeMap
             await _jsonWriter.WritePropertyNameAsync("underlyingType", cancellationToken);
             await _WriteTypeReferenceAsync(@enum.UnderlyingType, cancellationToken);
 
-            await _WriteDeclaringTypeReferencesAsync(@enum.DeclaringType, cancellationToken);
+            await _WriteDeclaringTypeReferenceAsync(@enum.DeclaringType, cancellationToken);
             await _WriteAttributesAsync(@enum.Attributes, cancellationToken);
 
             await @enum.Summary.AcceptAsync(this, cancellationToken);
@@ -234,7 +234,7 @@ namespace CodeMap
             _jsonWriter.WriteValue(@delegate.Namespace.Name);
             _WriteAccessModifier(@delegate.AccessModifier);
 
-            _WriteDeclaringTypeReferences(@delegate.DeclaringType);
+            _WriteDeclaringTypeReference(@delegate.DeclaringType);
             _WriteAttributes(@delegate.Attributes);
 
             @delegate.Summary.Accept(this);
@@ -268,7 +268,7 @@ namespace CodeMap
             await _jsonWriter.WriteValueAsync(@delegate.Namespace.Name, cancellationToken);
             await _WriteAccessModifierAsync(@delegate.AccessModifier, cancellationToken);
 
-            await _WriteDeclaringTypeReferencesAsync(@delegate.DeclaringType, cancellationToken);
+            await _WriteDeclaringTypeReferenceAsync(@delegate.DeclaringType, cancellationToken);
             await _WriteAttributesAsync(@delegate.Attributes, cancellationToken);
 
             await @delegate.Summary.AcceptAsync(this, cancellationToken);
@@ -300,7 +300,7 @@ namespace CodeMap
             _jsonWriter.WriteValue(@interface.Namespace.Name);
             _WriteAccessModifier(@interface.AccessModifier);
 
-            _WriteDeclaringTypeReferences(@interface.DeclaringType);
+            _WriteDeclaringTypeReference(@interface.DeclaringType);
             _WriteAttributes(@interface.Attributes);
 
             @interface.Summary.Accept(this);
@@ -341,7 +341,7 @@ namespace CodeMap
             await _jsonWriter.WriteValueAsync(@interface.Namespace.Name, cancellationToken);
             await _WriteAccessModifierAsync(@interface.AccessModifier, cancellationToken);
 
-            await _WriteDeclaringTypeReferencesAsync(@interface.DeclaringType, cancellationToken);
+            await _WriteDeclaringTypeReferenceAsync(@interface.DeclaringType, cancellationToken);
             await _WriteAttributesAsync(@interface.Attributes, cancellationToken);
 
             await @interface.Summary.AcceptAsync(this, cancellationToken);
@@ -379,7 +379,7 @@ namespace CodeMap
             _jsonWriter.WritePropertyName("namespace");
             _jsonWriter.WriteValue(@class.Namespace.Name);
             _WriteAccessModifier(@class.AccessModifier);
-            _WriteDeclaringTypeReferences(@class.DeclaringType);
+            _WriteDeclaringTypeReference(@class.DeclaringType);
             _WriteAttributes(@class.Attributes);
 
             @class.Summary.Accept(this);
@@ -434,7 +434,7 @@ namespace CodeMap
             await _jsonWriter.WriteValueAsync(@class.Namespace.Name, cancellationToken);
             await _WriteAccessModifierAsync(@class.AccessModifier, cancellationToken);
 
-            await _WriteDeclaringTypeReferencesAsync(@class.DeclaringType, cancellationToken);
+            await _WriteDeclaringTypeReferenceAsync(@class.DeclaringType, cancellationToken);
             await _WriteAttributesAsync(@class.Attributes, cancellationToken);
 
             await @class.Summary.AcceptAsync(this, cancellationToken);
@@ -486,7 +486,7 @@ namespace CodeMap
             _jsonWriter.WritePropertyName("namespace");
             _jsonWriter.WriteValue(@struct.Namespace.Name);
             _WriteAccessModifier(@struct.AccessModifier);
-            _WriteDeclaringTypeReferences(@struct.DeclaringType);
+            _WriteDeclaringTypeReference(@struct.DeclaringType);
             _WriteAttributes(@struct.Attributes);
 
             @struct.Summary.Accept(this);
@@ -531,7 +531,7 @@ namespace CodeMap
             await _jsonWriter.WritePropertyNameAsync("namespace", cancellationToken);
             await _jsonWriter.WriteValueAsync(@struct.Namespace.Name, cancellationToken);
             await _WriteAccessModifierAsync(@struct.AccessModifier, cancellationToken);
-            await _WriteDeclaringTypeReferencesAsync(@struct.DeclaringType, cancellationToken);
+            await _WriteDeclaringTypeReferenceAsync(@struct.DeclaringType, cancellationToken);
             await _WriteAttributesAsync(@struct.Attributes, cancellationToken);
 
             await @struct.Summary.AcceptAsync(this, cancellationToken);
@@ -578,8 +578,7 @@ namespace CodeMap
             _WriteTypeReference(constant.Type);
             _jsonWriter.WritePropertyName("isShadowing");
             _jsonWriter.WriteValue(constant.IsShadowing);
-            _jsonWriter.WritePropertyName("declaringType");
-            _jsonWriter.WriteValue(_GetIdFor(constant.DeclaringType));
+            _WriteDeclaringTypeReference(constant.DeclaringType);
             _WriteAttributes(constant.Attributes);
 
             constant.Summary.Accept(this);
@@ -611,8 +610,8 @@ namespace CodeMap
             await _WriteTypeReferenceAsync(constant.Type, cancellationToken);
             await _jsonWriter.WritePropertyNameAsync("isShadowing", cancellationToken);
             await _jsonWriter.WriteValueAsync(constant.IsShadowing, cancellationToken);
-            await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
-            await _jsonWriter.WriteValueAsync(_GetIdFor(constant.DeclaringType), cancellationToken);
+
+            await _WriteDeclaringTypeReferenceAsync(constant.DeclaringType, cancellationToken);
             await _WriteAttributesAsync(constant.Attributes, cancellationToken);
 
             await constant.Summary.AcceptAsync(this, cancellationToken);
@@ -645,8 +644,8 @@ namespace CodeMap
             _jsonWriter.WriteValue(field.IsStatic);
             _jsonWriter.WritePropertyName("isReadOnly");
             _jsonWriter.WriteValue(field.IsReadOnly);
-            _jsonWriter.WritePropertyName("declaringType");
-            _jsonWriter.WriteValue(_GetIdFor(field.DeclaringType));
+
+            _WriteDeclaringTypeReference(field.DeclaringType);
             _WriteAttributes(field.Attributes);
 
             field.Summary.Accept(this);
@@ -681,8 +680,8 @@ namespace CodeMap
             await _jsonWriter.WriteValueAsync(field.IsStatic, cancellationToken);
             await _jsonWriter.WritePropertyNameAsync("isReadOnly", cancellationToken);
             await _jsonWriter.WriteValueAsync(field.IsReadOnly, cancellationToken);
-            await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
-            await _jsonWriter.WriteValueAsync(_GetIdFor(field.DeclaringType), cancellationToken);
+
+            await _WriteDeclaringTypeReferenceAsync(field.DeclaringType, cancellationToken);
             await _WriteAttributesAsync(field.Attributes, cancellationToken);
 
             await field.Summary.AcceptAsync(this, cancellationToken);
@@ -697,23 +696,58 @@ namespace CodeMap
         /// <param name="constructor">The <see cref="ConstructorDocumentationElement"/> to visit.</param>
         protected internal override void VisitConstructor(ConstructorDocumentationElement constructor)
         {
+            _jsonWriter.WritePropertyName(_GetIdFor(constructor));
+
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("constructor");
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteValue(constructor.Name);
+            _WriteAccessModifier(constructor.AccessModifier);
+
+            _WriteDeclaringTypeReference(constructor.DeclaringType);
+            _WriteAttributes(constructor.Attributes);
+
+            _WriteParameters(constructor.Parameters);
+
+            constructor.Summary.Accept(this);
+            constructor.Remarks.Accept(this);
+            _WriteExceptions(constructor.Exceptions);
+            _WriteExamples(constructor.Examples);
+            _WriteRelatedMembers(constructor.RelatedMembers);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a <see cref="ConstructorDocumentationElement"/>.</summary>
         /// <param name="constructor">The <see cref="ConstructorDocumentationElement"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitConstructorAsync(ConstructorDocumentationElement constructor, CancellationToken cancellationToken)
+        protected internal override async Task VisitConstructorAsync(ConstructorDocumentationElement constructor, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitConstructor(constructor);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync(_GetIdFor(constructor), cancellationToken);
+
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("constructor", cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteValueAsync(constructor.Name, cancellationToken);
+            await _WriteAccessModifierAsync(constructor.AccessModifier, cancellationToken);
+
+            await _WriteDeclaringTypeReferenceAsync(constructor.DeclaringType, cancellationToken);
+            await _WriteAttributesAsync(constructor.Attributes, cancellationToken);
+
+            await _WriteParametersAsync(constructor.Parameters, cancellationToken);
+
+            await constructor.Summary.AcceptAsync(this, cancellationToken);
+            await constructor.Remarks.AcceptAsync(this, cancellationToken);
+            await _WriteExceptionsAsync(constructor.Exceptions, cancellationToken);
+            await _WriteExamplesAsync(constructor.Examples, cancellationToken);
+            await _WriteRelatedMembersAsync(constructor.RelatedMembers, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits a <see cref="EventDocumentationElement"/>.</summary>
@@ -1877,7 +1911,7 @@ namespace CodeMap
             await _jsonWriter.WriteEndArrayAsync(cancellationToken);
         }
 
-        private void _WriteDeclaringTypeReferences(TypeDocumentationElement declaringType)
+        private void _WriteDeclaringTypeReference(TypeDocumentationElement declaringType)
         {
             _jsonWriter.WritePropertyName("declaringType");
             if (declaringType != null)
@@ -1886,7 +1920,7 @@ namespace CodeMap
                 _jsonWriter.WriteNull();
         }
 
-        private async Task _WriteDeclaringTypeReferencesAsync(TypeDocumentationElement declaringType, CancellationToken cancellationToken)
+        private async Task _WriteDeclaringTypeReferenceAsync(TypeDocumentationElement declaringType, CancellationToken cancellationToken)
         {
             await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
             if (declaringType != null)
