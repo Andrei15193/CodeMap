@@ -128,21 +128,6 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitCodeBlock(code);
         }
 
-        protected override void VisitRelatedMembersListBeginning()
-        {
-            _documentationVisitor.VisitRelatedMembersListBeginning();
-        }
-
-        protected override void VisitRelatedMembersListEnding()
-        {
-            _documentationVisitor.VisitRelatedMembersListEnding();
-        }
-
-        protected override void VisitRelatedMember(MemberReferenceDocumentationElement relatedMember)
-        {
-            _documentationVisitor.VisitRelatedMember(relatedMember);
-        }
-
         protected override void VisitParagraphEnding()
         {
             _documentationVisitor.VisitParagraphEnding();

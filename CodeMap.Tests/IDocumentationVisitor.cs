@@ -35,10 +35,6 @@ namespace CodeMap.Tests
 
         void VisitSummaryEnding();
 
-        void VisitReturnsBeginning(TypeReferenceData returnType);
-
-        void VisitReturnsEnding();
-
         void VisitRemarksBeginning();
 
         void VisitRemarksEnding();
@@ -54,12 +50,6 @@ namespace CodeMap.Tests
         void VisitParagraphBeginning();
 
         void VisitCodeBlock(string code);
-
-        void VisitRelatedMembersListBeginning();
-
-        void VisitRelatedMembersListEnding();
-
-        void VisitRelatedMember(MemberReferenceDocumentationElement referredMember);
 
         void VisitParagraphEnding();
 
