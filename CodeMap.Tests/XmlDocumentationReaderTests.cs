@@ -119,7 +119,9 @@ namespace CodeMap.Tests
                         _richInlineElements
                     ),
                     DocumentationElement.DefinitionList(
-                        _richInlineElements,
+                        DocumentationElement.InlineDescription(
+                            _richInlineElements
+                        ),
                         DocumentationElement.DefinitionListItem(
                             _richInlineElements,
                             _richInlineElements
@@ -1038,7 +1040,9 @@ fourth line
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
-                        new[] { DocumentationElement.Text("this is a title") },
+                        DocumentationElement.InlineDescription(
+                            DocumentationElement.Text("this is a title")
+                        ),
                         DocumentationElement.DefinitionListItem(
                             new[] { DocumentationElement.Text("term 1") },
                             DocumentationElement.Text("The first item")
@@ -1089,7 +1093,9 @@ fourth line
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
-                        new[] { DocumentationElement.Text("this is a title") },
+                        DocumentationElement.InlineDescription(
+                            DocumentationElement.Text("this is a title")
+                        ),
                         DocumentationElement.DefinitionListItem(
                             new[] { DocumentationElement.Text("term 1") },
                             DocumentationElement.Text("The first item")
@@ -1132,7 +1138,9 @@ fourth line
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
-                        new[] { DocumentationElement.Text("this is a title") }
+                        DocumentationElement.InlineDescription(
+                            DocumentationElement.Text("this is a title")
+                        )
                     )
                 ),
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Summary
@@ -1166,7 +1174,7 @@ fourth line
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
-                        Enumerable.Empty<InlineDocumentationElement>()
+                        DocumentationElement.InlineDescription()
                     )
                 ),
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Summary

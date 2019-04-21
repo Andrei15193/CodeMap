@@ -98,7 +98,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitRemarksEnding();
         }
 
-        protected override void VisitExampleBeginning()
+        protected override void VisitExampleBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitExampleBeginning();
         }
@@ -108,7 +108,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitExampleEnding();
         }
 
-        protected override void VisitValueBeginning()
+        protected override void VisitValueBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitValueBeginning();
         }
@@ -118,12 +118,12 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitValueEnding();
         }
 
-        protected override void VisitParagraphBeginning()
+        protected override void VisitParagraphBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitParagraphBeginning();
         }
 
-        protected override void VisitCodeBlock(string code)
+        protected override void VisitCodeBlock(string code, IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitCodeBlock(code);
         }
@@ -148,7 +148,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitParagraphEnding();
         }
 
-        protected override void VisitUnorderedListBeginning()
+        protected override void VisitUnorderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitUnorderedListBeginning();
         }
@@ -158,7 +158,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitUnorderedListEnding();
         }
 
-        protected override void VisitOrderedListBeginning()
+        protected override void VisitOrderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitOrderedListBeginning();
         }
@@ -168,7 +168,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitOrderedListEnding();
         }
 
-        protected override void VisitListItemBeginning()
+        protected override void VisitListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitListItemBeginning();
         }
@@ -178,7 +178,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitListItemEnding();
         }
 
-        protected override void VisitDefinitionListBeginning()
+        protected override void VisitDefinitionListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitDefinitionListBeginning();
         }
@@ -188,7 +188,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitDefinitionListEnding();
         }
 
-        protected override void VisitDefinitionListTitleBeginning()
+        protected override void VisitDefinitionListTitleBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitDefinitionListTitleBeginning();
         }
@@ -198,7 +198,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitDefinitionListTitleEnding();
         }
 
-        protected override void VisitDefinitionListItemBeginning()
+        protected override void VisitDefinitionListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitDefinitionListItemBeginning();
         }
@@ -208,7 +208,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitDefinitionListItemEnding();
         }
 
-        protected override void VisitDefinitionTermBeginning()
+        protected override void VisitDefinitionTermBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitDefinitionTermBeginning();
         }
@@ -218,7 +218,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitDefinitionTermEnding();
         }
 
-        protected override void VisitDefinitionTermDescriptionBeginning()
+        protected override void VisitDefinitionTermDescriptionBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitDefinitionTermDescriptionBeginning();
         }
@@ -228,7 +228,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitDefinitionTermDescriptionEnding();
         }
 
-        protected override void VisitTableBeginning()
+        protected override void VisitTableBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitTableBeginning();
         }
@@ -248,7 +248,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitTableHeadingEnding();
         }
 
-        protected override void VisitTableColumnBeginning()
+        protected override void VisitTableColumnBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitTableColumnBeginning();
         }
@@ -268,7 +268,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitTableBodyEnding();
         }
 
-        protected override void VisitTableRowBeginning()
+        protected override void VisitTableRowBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitTableRowBeginning();
         }
@@ -278,7 +278,7 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitTableRowEnding();
         }
 
-        protected override void VisitTableCellBeginning()
+        protected override void VisitTableCellBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitTableCellBeginning();
         }
@@ -293,22 +293,22 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitText(text);
         }
 
-        protected override void VisitInlineCode(string code)
+        protected override void VisitInlineCode(string code, IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitInlineCode(code);
         }
 
-        protected override void VisitInlineReference(MemberInfo referredMember)
+        protected override void VisitInlineReference(MemberInfo referredMember, IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitInlineReference(referredMember);
         }
 
-        protected override void VisitParameterReference(string parameterName)
+        protected override void VisitParameterReference(string parameterName, IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitParameterReference(parameterName);
         }
 
-        protected override void VisitGenericParameterReference(string genericParameterName)
+        protected override void VisitGenericParameterReference(string genericParameterName, IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitGenericParameterReference(genericParameterName);
         }

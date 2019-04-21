@@ -314,15 +314,14 @@ namespace CodeMap
             }
         }
 
-
         /// <summary>Visits the beginning of a summary element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the summary element.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>summary</c> element.</param>
         protected internal virtual void VisitSummaryBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a summary element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the summary element.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>summary</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         protected internal virtual Task VisitSummaryBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
@@ -360,13 +359,13 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a remarks element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the remarks element.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>remarks</c> element.</param>
         protected internal virtual void VisitRemarksBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a remarks element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the remarks element.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>remarks</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         protected internal virtual Task VisitRemarksBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
@@ -404,19 +403,21 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of an example element.</summary>
-        protected internal virtual void VisitExampleBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>example</c> element.</param>
+        protected internal virtual void VisitExampleBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
 
         /// <summary>Visits the beginning of an example element.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>example</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitExampleBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitExampleBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitExampleBeginning();
+                VisitExampleBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -447,18 +448,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a value element.</summary>
-        protected internal virtual void VisitValueBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>value</c> element.</param>
+        protected internal virtual void VisitValueBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a value element.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>value</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitValueBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitValueBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitValueBeginning();
+                VisitValueBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -489,18 +492,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a paragraph element.</summary>
-        protected internal virtual void VisitParagraphBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>para</c> element.</param>
+        protected internal virtual void VisitParagraphBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a paragraph element.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>para</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitParagraphBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitParagraphBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitParagraphBeginning();
+                VisitParagraphBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -532,19 +537,21 @@ namespace CodeMap
 
         /// <summary>Visits a code block element.</summary>
         /// <param name="code">The text inside the code block.</param>
-        protected internal virtual void VisitCodeBlock(string code)
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>code</c> element.</param>
+        protected internal virtual void VisitCodeBlock(string code, IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits a code block element.</summary>
         /// <param name="code">The text inside the code block.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>code</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitCodeBlockAsync(string code, CancellationToken cancellationToken)
+        protected internal virtual Task VisitCodeBlockAsync(string code, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitCodeBlock(code);
+                VisitCodeBlock(code, xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -620,18 +627,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of an unordered list element.</summary>
-        protected internal virtual void VisitUnorderedListBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
+        protected internal virtual void VisitUnorderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of an unordered list element.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitUnorderedListBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitUnorderedListBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitUnorderedListBeginning();
+                VisitUnorderedListBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -662,18 +671,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of an ordered list element.</summary>
-        protected internal virtual void VisitOrderedListBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
+        protected internal virtual void VisitOrderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of an ordered list element.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitOrderedListBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitOrderedListBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitOrderedListBeginning();
+                VisitOrderedListBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -704,18 +715,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a list item element.</summary>
-        protected internal virtual void VisitListItemBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> or <c>description</c> element.</param>
+        protected internal virtual void VisitListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a list item element.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> or <c>description</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitListItemBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitListItemBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitListItemBeginning();
+                VisitListItemBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -746,18 +759,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a definition list element.</summary>
-        protected internal virtual void VisitDefinitionListBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
+        protected internal virtual void VisitDefinitionListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a definition list element.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitDefinitionListBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitDefinitionListBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitDefinitionListBeginning();
+                VisitDefinitionListBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -788,18 +803,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a definition list title.</summary>
-        protected internal virtual void VisitDefinitionListTitleBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>listheader</c> element.</param>
+        protected internal virtual void VisitDefinitionListTitleBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a definition list title.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>listheader</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitDefinitionListTitleBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitDefinitionListTitleBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitDefinitionListTitleBeginning();
+                VisitDefinitionListTitleBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -830,18 +847,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a definition list item.</summary>
-        protected internal virtual void VisitDefinitionListItemBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
+        protected internal virtual void VisitDefinitionListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a definition list item.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitDefinitionListItemBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitDefinitionListItemBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitDefinitionListItemBeginning();
+                VisitDefinitionListItemBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -872,18 +891,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a definition list term.</summary>
-        protected internal virtual void VisitDefinitionTermBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
+        protected internal virtual void VisitDefinitionTermBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a definition list term.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitDefinitionTermBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitDefinitionTermBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitDefinitionTermBeginning();
+                VisitDefinitionTermBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -914,18 +935,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a definition list term description.</summary>
-        protected internal virtual void VisitDefinitionTermDescriptionBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
+        protected internal virtual void VisitDefinitionTermDescriptionBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a definition list term description.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitDefinitionTermDescriptionBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitDefinitionTermDescriptionBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitDefinitionTermDescriptionBeginning();
+                VisitDefinitionTermDescriptionBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -956,18 +979,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a table.</summary>
-        protected internal virtual void VisitTableBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
+        protected internal virtual void VisitTableBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a table.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitTableBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitTableBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitTableBeginning();
+                VisitTableBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -1082,18 +1107,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a table column.</summary>
-        protected internal virtual void VisitTableColumnBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
+        protected internal virtual void VisitTableColumnBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a table column.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitTableColumnBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitTableColumnBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitTableColumnBeginning();
+                VisitTableColumnBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -1124,18 +1151,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a table row.</summary>
-        protected internal virtual void VisitTableRowBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
+        protected internal virtual void VisitTableRowBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a table row.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitTableRowBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitTableRowBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitTableRowBeginning();
+                VisitTableRowBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -1166,18 +1195,20 @@ namespace CodeMap
         }
 
         /// <summary>Visits the beginning of a table cell.</summary>
-        protected internal virtual void VisitTableCellBeginning()
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
+        protected internal virtual void VisitTableCellBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits the beginning of a table cell.</summary>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitTableCellBeginningAsync(CancellationToken cancellationToken)
+        protected internal virtual Task VisitTableCellBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitTableCellBeginning();
+                VisitTableCellBeginning(xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -1232,20 +1263,22 @@ namespace CodeMap
 
         /// <summary>Visits an inline member reference.</summary>
         /// <param name="canonicalName">The canonical name of the referred member.</param>
-        protected internal virtual void VisitInlineReference(string canonicalName)
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
+        protected internal virtual void VisitInlineReference(string canonicalName, IReadOnlyDictionary<string, string> xmlAttributes)
         {
             throw new InvalidOperationException($"Could not find member from '{canonicalName}' canonical name. Override VisitInlineReference(string) or VisitInlineReferenceAsync(string, CancellationToken) to ignore this error.");
         }
 
         /// <summary>Visits an inline member reference.</summary>
         /// <param name="canonicalName">The canonical name of the referred member.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitInlineReferenceAsync(string canonicalName, CancellationToken cancellationToken)
+        protected internal virtual Task VisitInlineReferenceAsync(string canonicalName, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitInlineReference(canonicalName);
+                VisitInlineReference(canonicalName, xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -1256,19 +1289,21 @@ namespace CodeMap
 
         /// <summary>Visits an inline member reference.</summary>
         /// <param name="referredMember">The referred member.</param>
-        protected internal virtual void VisitInlineReference(MemberInfo referredMember)
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
+        protected internal virtual void VisitInlineReference(MemberInfo referredMember, IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits an inline member reference.</summary>
         /// <param name="referredMember">The referred member.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitInlineReferenceAsync(MemberInfo referredMember, CancellationToken cancellationToken)
+        protected internal virtual Task VisitInlineReferenceAsync(MemberInfo referredMember, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitInlineReference(referredMember);
+                VisitInlineReference(referredMember, xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -1279,19 +1314,21 @@ namespace CodeMap
 
         /// <summary>Visits an inline code snippet.</summary>
         /// <param name="code">The text inside the inline code.</param>
-        protected internal virtual void VisitInlineCode(string code)
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>c</c> element.</param>
+        protected internal virtual void VisitInlineCode(string code, IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits an inline code snippet.</summary>
         /// <param name="code">The text inside the inline code.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>c</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitInlineCodeAsync(string code, CancellationToken cancellationToken)
+        protected internal virtual Task VisitInlineCodeAsync(string code, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitInlineCode(code);
+                VisitInlineCode(code, xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -1302,19 +1339,21 @@ namespace CodeMap
 
         /// <summary>Visits an inline parameter reference.</summary>
         /// <param name="parameterName">The name of the referred parameter.</param>
-        protected internal virtual void VisitParameterReference(string parameterName)
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>paramref</c> element.</param>
+        protected internal virtual void VisitParameterReference(string parameterName, IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits an inline parameter reference.</summary>
         /// <param name="parameterName">The name of the referred parameter.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>paramref</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitParameterReferenceAsync(string parameterName, CancellationToken cancellationToken)
+        protected internal virtual Task VisitParameterReferenceAsync(string parameterName, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitParameterReference(parameterName);
+                VisitParameterReference(parameterName, xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -1325,19 +1364,21 @@ namespace CodeMap
 
         /// <summary>Visits an inline generic parameter reference.</summary>
         /// <param name="genericParameterName">The name of the referred generic parameter.</param>
-        protected internal virtual void VisitGenericParameterReference(string genericParameterName)
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>typeparamref</c> element.</param>
+        protected internal virtual void VisitGenericParameterReference(string genericParameterName, IReadOnlyDictionary<string, string> xmlAttributes)
         {
         }
 
         /// <summary>Visits an inline generic parameter reference.</summary>
         /// <param name="genericParameterName">The name of the referred generic parameter.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the <c>typeparamref</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitGenericParameterReferenceAsync(string genericParameterName, CancellationToken cancellationToken)
+        protected internal virtual Task VisitGenericParameterReferenceAsync(string genericParameterName, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
             try
             {
-                VisitGenericParameterReference(genericParameterName);
+                VisitGenericParameterReference(genericParameterName, xmlAttributes);
                 return Task.CompletedTask;
             }
             catch (Exception exception)

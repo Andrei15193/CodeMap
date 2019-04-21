@@ -9,9 +9,9 @@ namespace CodeMap.Elements
     /// <summary>Represents a definition list element corresponding to the <c>list</c> XML element.</summary>
     public sealed class DefinitionListDocumentationElement : BlockDocumentationElement
     {
-        internal DefinitionListDocumentationElement(IEnumerable<InlineDocumentationElement> listTitle, IEnumerable<DefinitionListItemDocumentationElement> items, IReadOnlyDictionary<string, string> xmlAttributes)
+        internal DefinitionListDocumentationElement(InlineDescriptionDocumentationElement listTitle, IEnumerable<DefinitionListItemDocumentationElement> items, IReadOnlyDictionary<string, string> xmlAttributes)
         {
-            ListTitle = listTitle.AsReadOnlyListOrEmpty();
+            ListTitle = listTitle ?? InlineDescription();
             if (ListTitle.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' elements.", nameof(listTitle));
 
@@ -32,7 +32,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The list title of the definition list.</summary>
-        public IReadOnlyList<InlineDocumentationElement> ListTitle { get; }
+        public InlineDescriptionDocumentationElement ListTitle { get; }
 
         /// <summary>The items that form the definition list.</summary>
         public IReadOnlyList<DefinitionListItemDocumentationElement> Items { get; }
@@ -44,12 +44,11 @@ namespace CodeMap.Elements
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
-            visitor.VisitDefinitionListBeginning();
+            visitor.VisitDefinitionListBeginning(XmlAttributes);
             if (ListTitle.Count > 0)
             {
-                visitor.VisitDefinitionListTitleBeginning();
-                foreach (var contentElement in ListTitle)
-                    contentElement.Accept(visitor);
+                visitor.VisitDefinitionListTitleBeginning(ListTitle.XmlAttributes);
+                ListTitle.Accept(visitor);
                 visitor.VisitDefinitionListTitleEnding();
             }
             foreach (var item in Items)
@@ -63,12 +62,11 @@ namespace CodeMap.Elements
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
-            await visitor.VisitDefinitionListBeginningAsync(cancellationToken).ConfigureAwait(false);
+            await visitor.VisitDefinitionListBeginningAsync(XmlAttributes, cancellationToken).ConfigureAwait(false);
             if (ListTitle.Count > 0)
             {
-                await visitor.VisitDefinitionListTitleBeginningAsync(cancellationToken).ConfigureAwait(false);
-                foreach (var contentElement in ListTitle)
-                    await contentElement.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+                await visitor.VisitDefinitionListTitleBeginningAsync(ListTitle.XmlAttributes, cancellationToken).ConfigureAwait(false);
+                await ListTitle.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
                 await visitor.VisitDefinitionListTitleEndingAsync(cancellationToken).ConfigureAwait(false);
             }
             foreach (var item in Items)

@@ -30,7 +30,7 @@ namespace CodeMap.Elements
         {
             if (visitor == null)
                 throw new ArgumentNullException(nameof(visitor));
-            visitor.VisitGenericParameterReference(GenericParameterName);
+            visitor.VisitGenericParameterReference(GenericParameterName, XmlAttributes);
         }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
@@ -38,6 +38,6 @@ namespace CodeMap.Elements
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         public override Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
-            => visitor.VisitGenericParameterReferenceAsync(GenericParameterName, cancellationToken);
+            => visitor.VisitGenericParameterReferenceAsync(GenericParameterName, XmlAttributes, cancellationToken);
     }
 }

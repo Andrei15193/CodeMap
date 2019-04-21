@@ -376,7 +376,7 @@ namespace CodeMap
 
             var listTitleXmlElement = xmlElement.Element("listheader");
             var listTitleNodes = (listTitleXmlElement?.Element("term") ?? listTitleXmlElement)?.Nodes();
-            var listTile = listTitleNodes == null ? null : _ReadContent(listTitleNodes);
+            var listTile = listTitleNodes == null ? null : DocumentationElement.InlineDescription(_ReadContent(listTitleNodes), _ReadXmlAttributes(listTitleXmlElement));
             return DocumentationElement.DefinitionList(
                 listTile,
                 definitionListItems,

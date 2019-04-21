@@ -32,16 +32,14 @@ namespace CodeMap.Elements
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
-            visitor.VisitDefinitionListItemBeginning();
+            visitor.VisitDefinitionListItemBeginning(XmlAttributes);
 
-            visitor.VisitDefinitionTermBeginning();
-            foreach (var contentElement in Term)
-                contentElement.Accept(visitor);
+            visitor.VisitDefinitionTermBeginning(Term.XmlAttributes);
+            Term.Accept(visitor);
             visitor.VisitDefinitionTermEnding();
 
-            visitor.VisitDefinitionTermDescriptionBeginning();
-            foreach (var contentElement in Description)
-                contentElement.Accept(visitor);
+            visitor.VisitDefinitionTermDescriptionBeginning(Description.XmlAttributes);
+            Description.Accept(visitor);
             visitor.VisitDefinitionTermDescriptionEnding();
 
             visitor.VisitDefinitionListItemEnding();
@@ -53,16 +51,14 @@ namespace CodeMap.Elements
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
-            await visitor.VisitDefinitionListItemBeginningAsync(cancellationToken).ConfigureAwait(false);
+            await visitor.VisitDefinitionListItemBeginningAsync(XmlAttributes, cancellationToken).ConfigureAwait(false);
 
-            await visitor.VisitDefinitionTermBeginningAsync(cancellationToken).ConfigureAwait(false);
-            foreach (var contentElement in Term)
-                await contentElement.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+            await visitor.VisitDefinitionTermBeginningAsync(Term.XmlAttributes, cancellationToken).ConfigureAwait(false);
+            await Term.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
             await visitor.VisitDefinitionTermEndingAsync(cancellationToken).ConfigureAwait(false);
 
-            await visitor.VisitDefinitionTermDescriptionBeginningAsync(cancellationToken).ConfigureAwait(false);
-            foreach (var contentElement in Description)
-                await contentElement.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+            await visitor.VisitDefinitionTermDescriptionBeginningAsync(Description.XmlAttributes, cancellationToken).ConfigureAwait(false);
+            await Description.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
             await visitor.VisitDefinitionTermDescriptionEndingAsync(cancellationToken).ConfigureAwait(false);
 
             await visitor.VisitDefinitionListItemEndingAsync(cancellationToken).ConfigureAwait(false);

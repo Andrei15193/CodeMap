@@ -283,7 +283,7 @@ namespace CodeMap.Elements
         /// <returns>Returns a <see cref="DefinitionListDocumentationElement"/> with the provided <paramref name="items"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="items"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="listTitle"/> or <paramref name="items"/> contain <c>null</c> elements.</exception>
-        public static DefinitionListDocumentationElement DefinitionList(IEnumerable<InlineDocumentationElement> listTitle, IEnumerable<DefinitionListItemDocumentationElement> items)
+        public static DefinitionListDocumentationElement DefinitionList(InlineDescriptionDocumentationElement listTitle, IEnumerable<DefinitionListItemDocumentationElement> items)
             => new DefinitionListDocumentationElement(listTitle, items, null);
 
         /// <summary>Creates a <see cref="DefinitionListDocumentationElement"/> with the provided <paramref name="items"/>.</summary>
@@ -292,7 +292,7 @@ namespace CodeMap.Elements
         /// <returns>Returns a <see cref="DefinitionListDocumentationElement"/> with the provided <paramref name="items"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="items"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="listTitle"/> or <paramref name="items"/> contain <c>null</c> elements.</exception>
-        public static DefinitionListDocumentationElement DefinitionList(IEnumerable<InlineDocumentationElement> listTitle, params DefinitionListItemDocumentationElement[] items)
+        public static DefinitionListDocumentationElement DefinitionList(InlineDescriptionDocumentationElement listTitle, params DefinitionListItemDocumentationElement[] items)
             => new DefinitionListDocumentationElement(listTitle, items, null);
 
         /// <summary>Creates a <see cref="DefinitionListDocumentationElement"/> with the provided <paramref name="items"/>.</summary>
@@ -302,7 +302,7 @@ namespace CodeMap.Elements
         /// <returns>Returns a <see cref="DefinitionListDocumentationElement"/> with the provided <paramref name="items"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="items"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="listTitle"/>, <paramref name="items"/> or <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
-        public static DefinitionListDocumentationElement DefinitionList(IEnumerable<InlineDocumentationElement> listTitle, IEnumerable<DefinitionListItemDocumentationElement> items, IReadOnlyDictionary<string, string> xmlAttributes)
+        public static DefinitionListDocumentationElement DefinitionList(InlineDescriptionDocumentationElement listTitle, IEnumerable<DefinitionListItemDocumentationElement> items, IReadOnlyDictionary<string, string> xmlAttributes)
             => new DefinitionListDocumentationElement(listTitle, items, xmlAttributes);
 
         /// <summary>Creates a <see cref="DefinitionListItemDocumentationElement"/> with the provided <paramref name="term"/> and <paramref name="description"/>.</summary>

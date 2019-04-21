@@ -94,7 +94,7 @@ namespace CodeMap.Elements
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
-            visitor.VisitTableBeginning();
+            visitor.VisitTableBeginning(XmlAttributes);
 
             if (Columns.Count > 0)
             {
@@ -120,7 +120,7 @@ namespace CodeMap.Elements
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
-            await visitor.VisitTableBeginningAsync(cancellationToken).ConfigureAwait(false);
+            await visitor.VisitTableBeginningAsync(XmlAttributes, cancellationToken).ConfigureAwait(false);
 
             if (Columns.Count > 0)
             {

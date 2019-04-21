@@ -32,7 +32,7 @@ namespace CodeMap.Elements
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
         {
-            visitor.VisitTableRowBeginning();
+            visitor.VisitTableRowBeginning(XmlAttributes);
             foreach (var contentElement in Cells)
                 contentElement.Accept(visitor);
             visitor.VisitTableRowEnding();
@@ -44,7 +44,7 @@ namespace CodeMap.Elements
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
-            await visitor.VisitTableRowBeginningAsync(cancellationToken).ConfigureAwait(false);
+            await visitor.VisitTableRowBeginningAsync(XmlAttributes, cancellationToken).ConfigureAwait(false);
             foreach (var cell in Cells)
                 await cell.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
             await visitor.VisitTableRowEndingAsync(cancellationToken).ConfigureAwait(false);

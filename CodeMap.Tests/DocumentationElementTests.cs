@@ -530,14 +530,14 @@ namespace CodeMap.Tests
         public void CreatingDefinitionListElementWithTitleContainingNullValuesThrowsException()
         {
             var exception = Assert.Throws<ArgumentException>(
-                "listTitle",
+                "inlineElements",
                 () => DocumentationElement.DefinitionList(
-                    new InlineDocumentationElement[] { null },
+                    DocumentationElement.InlineDescription(new InlineDocumentationElement[] { null }),
                     Enumerable.Empty<DefinitionListItemDocumentationElement>()
                 )
             );
 
-            Assert.Equal(new ArgumentException("Cannot contain 'null' elements.", "listTitle").Message, exception.Message);
+            Assert.Equal(new ArgumentException("Cannot contain 'null' elements.", "inlineElements").Message, exception.Message);
         }
 
         [Fact]
@@ -564,14 +564,16 @@ namespace CodeMap.Tests
 
             var visitorMock = new Mock<IDocumentationVisitor>();
             var definitionList = DocumentationElement.DefinitionList(
-                new InlineDocumentationElement[]
-                {
-                    DocumentationElement.Text(text),
-                    DocumentationElement.InlineCode(code),
-                    DocumentationElement.MemberReference(referredMember),
-                    DocumentationElement.ParameterReference(parameter),
-                    DocumentationElement.GenericParameterReference(genericParameter)
-                },
+                DocumentationElement.InlineDescription(
+                    new InlineDocumentationElement[]
+                    {
+                        DocumentationElement.Text(text),
+                        DocumentationElement.InlineCode(code),
+                        DocumentationElement.MemberReference(referredMember),
+                        DocumentationElement.ParameterReference(parameter),
+                        DocumentationElement.GenericParameterReference(genericParameter)
+                    }
+                ),
                 new[]
                 {
                     DocumentationElement.DefinitionListItem(
