@@ -968,6 +968,7 @@ namespace CodeMap.Tests
                             .AssertCollectionMember(
                                 () => @namespace.Interfaces.OrderBy(@interface => @interface.Name),
                                 @interface => @interface.AssertType(typeof(ITestBaseInterface)),
+                                @interface => @interface.AssertType(typeof(ITestDocumentation)),
                                 @interface => @interface.AssertType(typeof(ITestExplicitInterface)),
                                 @interface => @interface.AssertType(typeof(ITestExtendedBaseInterface)),
                                 @interface => @interface.AssertType(typeof(ITestGenericParameter<,,,,,>)),

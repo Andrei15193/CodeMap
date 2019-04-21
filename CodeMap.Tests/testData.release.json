@@ -333,6 +333,7 @@
       ],
       "interfaces": [
         "CodeMap.Tests.Data.ITestBaseInterface",
+        "CodeMap.Tests.Data.ITestDocumentation",
         "CodeMap.Tests.Data.ITestExplicitInterface",
         "CodeMap.Tests.Data.ITestExtendedBaseInterface",
         "CodeMap.Tests.Data.ITestGenericParameter`6",
@@ -1957,7 +1958,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,
@@ -2011,7 +2015,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,
@@ -2766,7 +2773,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.ITestBaseInterface.BaseTestMethod": {
       "kind": "method",
@@ -2840,6 +2851,767 @@
       "summary": {
         "xmlAttributes": {},
         "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": []
+    },
+    "CodeMap.Tests.Data.ITestDocumentation": {
+      "kind": "interface",
+      "name": "ITestDocumentation",
+      "namespace": "CodeMap.Tests.Data",
+      "accessModifier": "public",
+      "declaringType": null,
+      "attributes": [],
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "examples": [],
+      "relatedMembers": [],
+      "genericParameters": [],
+      "baseInterfaces": [],
+      "events": [],
+      "properties": [
+        "CodeMap.Tests.Data.ITestDocumentation.Member"
+      ],
+      "methods": [
+        "CodeMap.Tests.Data.ITestDocumentation.TestMethod``1(System.Int32)"
+      ]
+    },
+    "CodeMap.Tests.Data.ITestDocumentation.Member": {
+      "kind": "property",
+      "name": "Member",
+      "accessModifier": "public",
+      "type": {
+        "kind": "specific",
+        "name": "Int32",
+        "namespace": "System",
+        "declaringType": null,
+        "fullName": "System.Int32",
+        "assembly": {
+          "name": "System.Private.CoreLib",
+          "version": "4.0.0.0",
+          "culture": "",
+          "publicKeyToken": "7cec85d7bea7798e"
+        },
+        "genericArguments": []
+      },
+      "declaringType": "CodeMap.Tests.Data.ITestDocumentation",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "parameters": [],
+      "getter": {
+        "accessModifier": "public",
+        "attributes": [],
+        "returnAttributes": []
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "remarks": {
+        "xmlAttributes": {},
+        "content": []
+      },
+      "exceptions": [],
+      "examples": [],
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
+    },
+    "CodeMap.Tests.Data.ITestDocumentation.TestMethod``1(System.Int32)": {
+      "kind": "method",
+      "name": "TestMethod",
+      "accessModifier": "public",
+      "declaringType": "CodeMap.Tests.Data.ITestDocumentation",
+      "attributes": [],
+      "isShadowing": false,
+      "isStatic": false,
+      "isAbstract": false,
+      "isVirtual": false,
+      "isOverride": false,
+      "isSealed": false,
+      "genericParameters": [
+        {
+          "name": "GenericParameter",
+          "isCovariant": false,
+          "isContravariant": false,
+          "hasReferenceTypeConstraint": false,
+          "hasNonNullableValueTypeConstraint": false,
+          "hasDefaultConstructorConstraint": false,
+          "typeConstraints": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        }
+      ],
+      "parameters": [
+        {
+          "name": "parameter",
+          "type": {
+            "kind": "specific",
+            "name": "Int32",
+            "namespace": "System",
+            "declaringType": null,
+            "fullName": "System.Int32",
+            "assembly": {
+              "name": "System.Private.CoreLib",
+              "version": "4.0.0.0",
+              "culture": "",
+              "publicKeyToken": "7cec85d7bea7798e"
+            },
+            "genericArguments": []
+          },
+          "isInputByReference": false,
+          "isInputOutputByReference": false,
+          "isOutputByReference": false,
+          "attributes": [],
+          "description": {
+            "xmlAttributes": {},
+            "content": []
+          }
+        }
+      ],
+      "return": {
+        "type": { "kind": "void" },
+        "attributes": [],
+        "description": {
+          "xmlAttributes": {},
+          "content": []
+        }
+      },
+      "summary": {
+        "xmlAttributes": {},
+        "content": [
+          {
+            "kind": "paragraph",
+            "xmlAttributes": {},
+            "content": [
+              {
+                "kind": "text",
+                "content": "plain text "
+              },
+              {
+                "kind": "parameterReference",
+                "xmlAttributes": { "test": "paramref" },
+                "parameterName": "parameter"
+              },
+              {
+                "kind": "text",
+                "content": " "
+              },
+              {
+                "kind": "genericParameterReference",
+                "xmlAttributes": { "test": "typeparamref" },
+                "parameterName": "GenericParameter"
+              },
+              {
+                "kind": "text",
+                "content": " "
+              },
+              {
+                "kind": "unresolvedReference",
+                "xmlAttributes": { "test": "see" },
+                "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+              },
+              {
+                "kind": "text",
+                "content": " "
+              },
+              {
+                "kind": "code",
+                "xmlAttributes": { "test": "c" },
+                "content": "some code"
+              }
+            ]
+          },
+          {
+            "kind": "table",
+            "xmlAttributes": { "test": "table" },
+            "columns": [
+              {
+                "xmlAttributes": {
+                  "test2": "term",
+                  "test": "listheader"
+                },
+                "name": [
+                  {
+                    "kind": "text",
+                    "content": "plain text "
+                  },
+                  {
+                    "kind": "parameterReference",
+                    "xmlAttributes": { "test": "paramref" },
+                    "parameterName": "parameter"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "genericParameterReference",
+                    "xmlAttributes": { "test": "typeparamref" },
+                    "parameterName": "GenericParameter"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "unresolvedReference",
+                    "xmlAttributes": { "test": "see" },
+                    "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "code",
+                    "xmlAttributes": { "test": "c" },
+                    "content": "some code"
+                  }
+                ]
+              },
+              {
+                "xmlAttributes": {
+                  "test": "listheader",
+                  "test2": "old term"
+                },
+                "name": []
+              }
+            ],
+            "rows": [
+              {
+                "xmlAttributes": {
+                  "test": "item",
+                  "test2": "old description"
+                },
+                "cells": [
+                  {
+                    "xmlAttributes": { "test2": "description" },
+                    "content": [
+                      {
+                        "kind": "text",
+                        "content": "plain text "
+                      },
+                      {
+                        "kind": "parameterReference",
+                        "xmlAttributes": { "test": "paramref" },
+                        "parameterName": "parameter"
+                      },
+                      {
+                        "kind": "text",
+                        "content": " "
+                      },
+                      {
+                        "kind": "genericParameterReference",
+                        "xmlAttributes": { "test": "typeparamref" },
+                        "parameterName": "GenericParameter"
+                      },
+                      {
+                        "kind": "text",
+                        "content": " "
+                      },
+                      {
+                        "kind": "unresolvedReference",
+                        "xmlAttributes": { "test": "see" },
+                        "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                      },
+                      {
+                        "kind": "text",
+                        "content": " "
+                      },
+                      {
+                        "kind": "code",
+                        "xmlAttributes": { "test": "c" },
+                        "content": "some code"
+                      }
+                    ]
+                  },
+                  {
+                    "xmlAttributes": { "test2": "description" },
+                    "content": [
+                      {
+                        "kind": "text",
+                        "content": "plain text "
+                      },
+                      {
+                        "kind": "parameterReference",
+                        "xmlAttributes": { "test": "paramref" },
+                        "parameterName": "parameter"
+                      },
+                      {
+                        "kind": "text",
+                        "content": " "
+                      },
+                      {
+                        "kind": "genericParameterReference",
+                        "xmlAttributes": { "test": "typeparamref" },
+                        "parameterName": "GenericParameter"
+                      },
+                      {
+                        "kind": "text",
+                        "content": " "
+                      },
+                      {
+                        "kind": "unresolvedReference",
+                        "xmlAttributes": { "test": "see" },
+                        "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                      },
+                      {
+                        "kind": "text",
+                        "content": " "
+                      },
+                      {
+                        "kind": "code",
+                        "xmlAttributes": { "test": "c" },
+                        "content": "some code"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "xmlAttributes": {
+                  "test": "item",
+                  "test2": "old description"
+                },
+                "cells": [
+                  {
+                    "xmlAttributes": {},
+                    "content": []
+                  },
+                  {
+                    "xmlAttributes": {},
+                    "content": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "codeBlock",
+            "xmlAttributes": { "test": "code" },
+            "content": "some code in a block"
+          },
+          {
+            "kind": "unorderedList",
+            "xmlAttributes": { "test": "unordered list" },
+            "items": [
+              {
+                "kind": "listItem",
+                "xmlAttributes": {
+                  "test": "item",
+                  "test2": "description"
+                },
+                "content": [
+                  {
+                    "kind": "text",
+                    "content": "plain text "
+                  },
+                  {
+                    "kind": "parameterReference",
+                    "xmlAttributes": { "test": "paramref" },
+                    "parameterName": "parameter"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "genericParameterReference",
+                    "xmlAttributes": { "test": "typeparamref" },
+                    "parameterName": "GenericParameter"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "unresolvedReference",
+                    "xmlAttributes": { "test": "see" },
+                    "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "code",
+                    "xmlAttributes": { "test": "c" },
+                    "content": "some code"
+                  }
+                ]
+              },
+              {
+                "kind": "listItem",
+                "xmlAttributes": {
+                  "test2": "description",
+                  "test": "item"
+                },
+                "content": [
+                  {
+                    "kind": "text",
+                    "content": "plain text "
+                  },
+                  {
+                    "kind": "parameterReference",
+                    "xmlAttributes": { "test": "paramref" },
+                    "parameterName": "parameter"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "genericParameterReference",
+                    "xmlAttributes": { "test": "typeparamref" },
+                    "parameterName": "GenericParameter"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "unresolvedReference",
+                    "xmlAttributes": { "test": "see" },
+                    "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "code",
+                    "xmlAttributes": { "test": "c" },
+                    "content": "some code"
+                  }
+                ]
+              },
+              {
+                "kind": "listItem",
+                "xmlAttributes": {
+                  "test": "item",
+                  "test2": "description"
+                },
+                "content": []
+              }
+            ]
+          },
+          {
+            "kind": "orderedList",
+            "xmlAttributes": { "test": "ordered list" },
+            "items": [
+              {
+                "kind": "listItem",
+                "xmlAttributes": {
+                  "test": "item",
+                  "test2": "description"
+                },
+                "content": [
+                  {
+                    "kind": "text",
+                    "content": "plain text "
+                  },
+                  {
+                    "kind": "parameterReference",
+                    "xmlAttributes": { "test": "paramref" },
+                    "parameterName": "parameter"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "genericParameterReference",
+                    "xmlAttributes": { "test": "typeparamref" },
+                    "parameterName": "GenericParameter"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "unresolvedReference",
+                    "xmlAttributes": { "test": "see" },
+                    "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "code",
+                    "xmlAttributes": { "test": "c" },
+                    "content": "some code"
+                  }
+                ]
+              },
+              {
+                "kind": "listItem",
+                "xmlAttributes": {
+                  "test2": "description",
+                  "test": "item"
+                },
+                "content": [
+                  {
+                    "kind": "text",
+                    "content": "plain text "
+                  },
+                  {
+                    "kind": "parameterReference",
+                    "xmlAttributes": { "test": "paramref" },
+                    "parameterName": "parameter"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "genericParameterReference",
+                    "xmlAttributes": { "test": "typeparamref" },
+                    "parameterName": "GenericParameter"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "unresolvedReference",
+                    "xmlAttributes": { "test": "see" },
+                    "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                  },
+                  {
+                    "kind": "text",
+                    "content": " "
+                  },
+                  {
+                    "kind": "code",
+                    "xmlAttributes": { "test": "c" },
+                    "content": "some code"
+                  }
+                ]
+              },
+              {
+                "kind": "listItem",
+                "xmlAttributes": {
+                  "test": "item",
+                  "test2": "description"
+                },
+                "content": []
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "xmlAttributes": {},
+            "content": [
+              {
+                "kind": "text",
+                "content": "plain text "
+              },
+              {
+                "kind": "parameterReference",
+                "xmlAttributes": { "test": "paramref" },
+                "parameterName": "parameter"
+              },
+              {
+                "kind": "text",
+                "content": " "
+              },
+              {
+                "kind": "genericParameterReference",
+                "xmlAttributes": { "test": "typeparamref" },
+                "parameterName": "GenericParameter"
+              },
+              {
+                "kind": "text",
+                "content": " "
+              },
+              {
+                "kind": "unresolvedReference",
+                "xmlAttributes": { "test": "see" },
+                "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+              },
+              {
+                "kind": "text",
+                "content": " "
+              },
+              {
+                "kind": "code",
+                "xmlAttributes": { "test": "c" },
+                "content": "some code"
+              }
+            ]
+          },
+          {
+            "kind": "definitionList",
+            "xmlAttributes": { "test": "definition list" },
+            "title": {
+              "xmlAttributes": { "test": "listheader" },
+              "content": [
+                {
+                  "kind": "text",
+                  "content": "plain text "
+                },
+                {
+                  "kind": "parameterReference",
+                  "xmlAttributes": { "test": "paramref" },
+                  "parameterName": "parameter"
+                },
+                {
+                  "kind": "text",
+                  "content": " "
+                },
+                {
+                  "kind": "genericParameterReference",
+                  "xmlAttributes": { "test": "typeparamref" },
+                  "parameterName": "GenericParameter"
+                },
+                {
+                  "kind": "text",
+                  "content": " "
+                },
+                {
+                  "kind": "unresolvedReference",
+                  "xmlAttributes": { "test": "see" },
+                  "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                },
+                {
+                  "kind": "text",
+                  "content": " "
+                },
+                {
+                  "kind": "code",
+                  "xmlAttributes": { "test": "c" },
+                  "content": "some code"
+                }
+              ]
+            },
+            "items": [
+              {
+                "xmlAttributes": {
+                  "test": "item",
+                  "test2": "old description"
+                },
+                "term": {
+                  "xmlAttributes": { "test": "term" },
+                  "content": [
+                    {
+                      "kind": "text",
+                      "content": "plain text "
+                    },
+                    {
+                      "kind": "parameterReference",
+                      "xmlAttributes": { "test": "paramref" },
+                      "parameterName": "parameter"
+                    },
+                    {
+                      "kind": "text",
+                      "content": " "
+                    },
+                    {
+                      "kind": "genericParameterReference",
+                      "xmlAttributes": { "test": "typeparamref" },
+                      "parameterName": "GenericParameter"
+                    },
+                    {
+                      "kind": "text",
+                      "content": " "
+                    },
+                    {
+                      "kind": "unresolvedReference",
+                      "xmlAttributes": { "test": "see" },
+                      "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                    },
+                    {
+                      "kind": "text",
+                      "content": " "
+                    },
+                    {
+                      "kind": "code",
+                      "xmlAttributes": { "test": "c" },
+                      "content": "some code"
+                    }
+                  ]
+                },
+                "description": {
+                  "xmlAttributes": { "test2": "description" },
+                  "content": [
+                    {
+                      "kind": "text",
+                      "content": "plain text "
+                    },
+                    {
+                      "kind": "parameterReference",
+                      "xmlAttributes": { "test": "paramref" },
+                      "parameterName": "parameter"
+                    },
+                    {
+                      "kind": "text",
+                      "content": " "
+                    },
+                    {
+                      "kind": "genericParameterReference",
+                      "xmlAttributes": { "test": "typeparamref" },
+                      "parameterName": "GenericParameter"
+                    },
+                    {
+                      "kind": "text",
+                      "content": " "
+                    },
+                    {
+                      "kind": "unresolvedReference",
+                      "xmlAttributes": { "test": "see" },
+                      "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                    },
+                    {
+                      "kind": "text",
+                      "content": " "
+                    },
+                    {
+                      "kind": "code",
+                      "xmlAttributes": { "test": "c" },
+                      "content": "some code"
+                    }
+                  ]
+                }
+              },
+              {
+                "xmlAttributes": {
+                  "test": "item",
+                  "test2": "old description"
+                },
+                "term": {
+                  "xmlAttributes": {},
+                  "content": []
+                },
+                "description": {
+                  "xmlAttributes": {},
+                  "content": []
+                }
+              }
+            ]
+          }
+        ]
       },
       "remarks": {
         "xmlAttributes": {},
@@ -2971,7 +3743,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.ITestExplicitInterface.TestMethod": {
       "kind": "method",
@@ -3579,7 +4355,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.ITestInterface`1.Item(System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Int32*,System.Byte*[],System.Void*,System.Void**,System.Void**[],`0,System.String)": {
       "kind": "property",
@@ -4607,7 +5387,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.ITestInterface`1.TestProperty": {
       "kind": "property",
@@ -5031,7 +5815,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.ITestInterface`1.InterfaceShadowedTestMethod": {
       "kind": "method",
@@ -6394,7 +7182,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,
@@ -6448,7 +7239,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,
@@ -7475,7 +8269,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestAttribute.Value2": {
       "kind": "property",
@@ -7524,7 +8322,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestBaseClass": {
       "kind": "class",
@@ -7830,7 +8632,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestBaseClass.ClassShadowedTestProperty": {
       "kind": "property",
@@ -7879,7 +8685,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestBaseClass.StaticTestProperty": {
       "kind": "property",
@@ -7928,7 +8738,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestBaseClass.VirtualTestProperty": {
       "kind": "property",
@@ -7977,7 +8791,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestBaseClass.AbstractTestMethod": {
       "kind": "method",
@@ -8261,7 +9079,7 @@
         }
       ],
       "summary": {
-        "xmlAttributes": {},
+        "xmlAttributes": { "test": "attribute" },
         "content": []
       },
       "remarks": {
@@ -9982,7 +10800,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,
@@ -10036,7 +10857,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,
@@ -11309,7 +12133,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestClass`1.ClassShadowedTestProperty": {
       "kind": "property",
@@ -11358,7 +12186,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestClass`1.InterfaceShadowedTestProperty": {
       "kind": "property",
@@ -11407,7 +12239,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestClass`1.Item(System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Int32*,System.Byte*[],System.Void*,System.Void**,System.Void**[],`0,System.String)": {
       "kind": "property",
@@ -12435,7 +13271,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestClass`1.TestProperty": {
       "kind": "property",
@@ -12859,7 +13699,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestClass`1.VirtualTestProperty": {
       "kind": "property",
@@ -12908,7 +13752,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestClass`1.AbstractTestMethod": {
       "kind": "method",
@@ -14399,7 +15247,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,
@@ -14453,7 +15304,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,
@@ -15623,7 +16477,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestExplicitClass.CodeMap.Tests.Data.ITestExplicitInterface.TestMethod": {
       "kind": "method",
@@ -17578,7 +18436,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,
@@ -17632,7 +18493,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,
@@ -18767,7 +19631,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestStruct`1.Item(System.Int32,System.Byte[],System.Char[][],System.Double[,],CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>,CodeMap.Tests.Data.TestClass<System.Int32>.NestedTestClass<System.Byte[],System.Collections.Generic.IEnumerable<System.String>>[],System.Object,System.Int32*,System.Byte*[],System.Void*,System.Void**,System.Void**[],`0,System.String)": {
       "kind": "property",
@@ -19795,7 +20663,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestStruct`1.TestProperty": {
       "kind": "property",
@@ -20219,7 +21091,11 @@
       },
       "exceptions": [],
       "examples": [],
-      "relatedMembers": []
+      "relatedMembers": [],
+      "value": {
+        "xmlAttributes": {},
+        "content": []
+      }
     },
     "CodeMap.Tests.Data.TestStruct`1.CodeMap.Tests.Data.ITestBaseInterface.BaseTestMethod": {
       "kind": "method",
@@ -21663,7 +22539,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,
@@ -21717,7 +22596,10 @@
               "positionalParameters": [
                 {
                   "name": "transformFlags",
-                  "value": [ false, true ],
+                  "value": [
+                    false,
+                    true
+                  ],
                   "type": {
                     "kind": "array",
                     "rank": 1,

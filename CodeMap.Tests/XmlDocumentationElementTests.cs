@@ -549,6 +549,8 @@ namespace CodeMap.Tests
             await visitorMock.VerifyAcceptMethods(
                 definitionList,
                 visitor => visitor.VisitDefinitionListBeginning(),
+                visitor => visitor.VisitDefinitionListTitleBeginning(),
+                visitor => visitor.VisitDefinitionListTitleEnding(),
                 visitor => visitor.VisitDefinitionListEnding()
             );
         }
@@ -1153,6 +1155,8 @@ namespace CodeMap.Tests
                 visitor => visitor.VisitOrderedListEnding(),
 
                 visitor => visitor.VisitDefinitionListBeginning(),
+                visitor => visitor.VisitDefinitionListTitleBeginning(),
+                visitor => visitor.VisitDefinitionListTitleEnding(),
                 visitor => visitor.VisitDefinitionListEnding(),
 
                 visitor => visitor.VisitTableBeginning(),
@@ -1224,6 +1228,8 @@ namespace CodeMap.Tests
                 visitor => visitor.VisitOrderedListEnding(),
 
                 visitor => visitor.VisitDefinitionListBeginning(),
+                visitor => visitor.VisitDefinitionListTitleBeginning(),
+                visitor => visitor.VisitDefinitionListTitleEnding(),
                 visitor => visitor.VisitDefinitionListEnding(),
 
                 visitor => visitor.VisitTableBeginning(),
@@ -1295,6 +1301,8 @@ namespace CodeMap.Tests
                 visitor => visitor.VisitOrderedListEnding(),
 
                 visitor => visitor.VisitDefinitionListBeginning(),
+                visitor => visitor.VisitDefinitionListTitleBeginning(),
+                visitor => visitor.VisitDefinitionListTitleEnding(),
                 visitor => visitor.VisitDefinitionListEnding(),
 
                 visitor => visitor.VisitTableBeginning(),
@@ -1366,6 +1374,8 @@ namespace CodeMap.Tests
                 visitor => visitor.VisitOrderedListEnding(),
 
                 visitor => visitor.VisitDefinitionListBeginning(),
+                visitor => visitor.VisitDefinitionListTitleBeginning(),
+                visitor => visitor.VisitDefinitionListTitleEnding(),
                 visitor => visitor.VisitDefinitionListEnding(),
 
                 visitor => visitor.VisitTableBeginning(),

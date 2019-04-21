@@ -635,7 +635,22 @@ namespace CodeMap.Elements
         /// <returns>Returns an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
         public static AssemblyDocumentationElement Create(Assembly assembly)
-            => Create(assembly, new MemberDocumentationCollection(Enumerable.Empty<MemberDocumentation>()));
+        {
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly));
+
+            var xmlDocumentationFileInfo = new FileInfo(Path.ChangeExtension(assembly.Location, ".xml"));
+            if (xmlDocumentationFileInfo.Exists)
+            {
+                MemberDocumentationCollection membersDocumentation;
+                using (var xmlDocumentationReader = xmlDocumentationFileInfo.OpenText())
+                    membersDocumentation = Task.Run(() => new XmlDocumentationReader().ReadAsync(xmlDocumentationReader)).Result;
+
+                return Create(assembly, membersDocumentation);
+            }
+            else
+                return Create(assembly, new MemberDocumentationCollection(Enumerable.Empty<MemberDocumentation>()));
+        }
 
         /// <summary>Creates an <see cref="AssemblyDocumentationElement"/> from the provided <paramref name="assembly"/>.</summary>
         /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDocumentationElement"/>.</param>

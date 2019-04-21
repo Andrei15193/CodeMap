@@ -45,12 +45,11 @@ namespace CodeMap.Elements
         public override void Accept(DocumentationVisitor visitor)
         {
             visitor.VisitDefinitionListBeginning(XmlAttributes);
-            if (ListTitle.Count > 0)
-            {
-                visitor.VisitDefinitionListTitleBeginning(ListTitle.XmlAttributes);
-                ListTitle.Accept(visitor);
-                visitor.VisitDefinitionListTitleEnding();
-            }
+
+            visitor.VisitDefinitionListTitleBeginning(ListTitle.XmlAttributes);
+            ListTitle.Accept(visitor);
+            visitor.VisitDefinitionListTitleEnding();
+
             foreach (var item in Items)
                 item.Accept(visitor);
             visitor.VisitDefinitionListEnding();
@@ -63,12 +62,11 @@ namespace CodeMap.Elements
         public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
         {
             await visitor.VisitDefinitionListBeginningAsync(XmlAttributes, cancellationToken).ConfigureAwait(false);
-            if (ListTitle.Count > 0)
-            {
-                await visitor.VisitDefinitionListTitleBeginningAsync(ListTitle.XmlAttributes, cancellationToken).ConfigureAwait(false);
-                await ListTitle.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
-                await visitor.VisitDefinitionListTitleEndingAsync(cancellationToken).ConfigureAwait(false);
-            }
+
+            await visitor.VisitDefinitionListTitleBeginningAsync(ListTitle.XmlAttributes, cancellationToken).ConfigureAwait(false);
+            await ListTitle.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+            await visitor.VisitDefinitionListTitleEndingAsync(cancellationToken).ConfigureAwait(false);
+
             foreach (var item in Items)
                 await item.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
             await visitor.VisitDefinitionListEndingAsync(cancellationToken).ConfigureAwait(false);

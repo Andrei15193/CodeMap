@@ -1140,133 +1140,130 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>example</c> element.</param>
         protected internal override void VisitExampleBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
-        }
+            _jsonWriter.WriteStartObject();
+            _WriteXmlAttributes(xmlAttributes);
 
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
+        }
 
         /// <summary>Visits the beginning of an example element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>example</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitExampleBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitExampleBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitExampleBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of an example element.</summary>
         protected internal override void VisitExampleEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of an example element.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitExampleEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitExampleEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitExampleEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a value element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>value</c> element.</param>
         protected internal override void VisitValueBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WritePropertyName("value");
+            _jsonWriter.WriteStartObject();
+
+            _WriteXmlAttributes(xmlAttributes);
+
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of a value element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>value</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitValueBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitValueBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitValueBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync("value", cancellationToken);
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of a value element.</summary>
         protected internal override void VisitValueEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of a value element.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitValueEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitValueEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitValueEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a paragraph element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>para</c> element.</param>
         protected internal override void VisitParagraphBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("paragraph");
+
+            _WriteXmlAttributes(xmlAttributes);
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of a paragraph element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>para</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitParagraphBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitParagraphBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitParagraphBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("paragraph", cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of a paragraph element.</summary>
         protected internal override void VisitParagraphEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of a paragraph element.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitParagraphEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitParagraphEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitParagraphEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits a code block element.</summary>
@@ -1274,6 +1271,16 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>code</c> element.</param>
         protected internal override void VisitCodeBlock(string code, IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("codeBlock");
+
+            _WriteXmlAttributes(xmlAttributes);
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteValue(code);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a code block element.</summary>
@@ -1281,652 +1288,608 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>code</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitCodeBlockAsync(string code, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitCodeBlockAsync(string code, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitCodeBlock(code, xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("codeBlock", cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteValueAsync(code, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of an unordered list element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         protected internal override void VisitUnorderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("unorderedList");
+
+            _WriteXmlAttributes(xmlAttributes);
+            _jsonWriter.WritePropertyName("items");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of an unordered list element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitUnorderedListBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitUnorderedListBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitUnorderedListBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("unorderedList", cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("items", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of an unordered list element.</summary>
         protected internal override void VisitUnorderedListEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of an unordered list element.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitUnorderedListEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitUnorderedListEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitUnorderedListEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of an ordered list element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         protected internal override void VisitOrderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("orderedList");
+
+            _WriteXmlAttributes(xmlAttributes);
+            _jsonWriter.WritePropertyName("items");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of an ordered list element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitOrderedListBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitOrderedListBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitOrderedListBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("orderedList", cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("items", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of an ordered list element.</summary>
         protected internal override void VisitOrderedListEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of an ordered list element.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitOrderedListEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitOrderedListEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitOrderedListEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a list item element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> or <c>description</c> element.</param>
         protected internal override void VisitListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("listItem");
+
+            _WriteXmlAttributes(xmlAttributes);
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of a list item element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> or <c>description</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitListItemBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitListItemBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitListItemBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("listItem", cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of a list item element.</summary>
         protected internal override void VisitListItemEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of a list item element.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitListItemEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitListItemEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitListItemEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a definition list element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         protected internal override void VisitDefinitionListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("definitionList");
+
+            _WriteXmlAttributes(xmlAttributes);
         }
 
         /// <summary>Visits the beginning of a definition list element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitDefinitionListBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitDefinitionListBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitDefinitionListBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("definitionList", cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
         }
 
         /// <summary>Visits the ending of a definition list element.</summary>
         protected internal override void VisitDefinitionListEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of a definition list element.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitDefinitionListEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitDefinitionListEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitDefinitionListEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a definition list title.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>listheader</c> element.</param>
         protected internal override void VisitDefinitionListTitleBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WritePropertyName("title");
+            _jsonWriter.WriteStartObject();
+
+            _WriteXmlAttributes(xmlAttributes);
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of a definition list title.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>listheader</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitDefinitionListTitleBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitDefinitionListTitleBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitDefinitionListTitleBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync("title", cancellationToken);
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of a definition list title.</summary>
         protected internal override void VisitDefinitionListTitleEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
+
+            _jsonWriter.WritePropertyName("items");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the ending of a definition list title.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitDefinitionListTitleEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitDefinitionListTitleEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitDefinitionListTitleEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("items", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a definition list item.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
         protected internal override void VisitDefinitionListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+            _WriteXmlAttributes(xmlAttributes);
         }
 
         /// <summary>Visits the beginning of a definition list item.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitDefinitionListItemBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitDefinitionListItemBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitDefinitionListItemBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
         }
 
         /// <summary>Visits the ending of a definition list item.</summary>
         protected internal override void VisitDefinitionListItemEnding()
         {
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of a definition list item.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitDefinitionListItemEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitDefinitionListItemEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitDefinitionListItemEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a definition list term.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
         protected internal override void VisitDefinitionTermBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WritePropertyName("term");
+            _jsonWriter.WriteStartObject();
+
+            _WriteXmlAttributes(xmlAttributes);
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of a definition list term.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitDefinitionTermBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitDefinitionTermBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitDefinitionTermBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync("term", cancellationToken);
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of a definition list term.</summary>
         protected internal override void VisitDefinitionTermEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of a definition list term.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitDefinitionTermEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitDefinitionTermEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitDefinitionTermEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a definition list term description.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
         protected internal override void VisitDefinitionTermDescriptionBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WritePropertyName("description");
+            _jsonWriter.WriteStartObject();
+
+            _WriteXmlAttributes(xmlAttributes);
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of a definition list term description.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitDefinitionTermDescriptionBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitDefinitionTermDescriptionBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitDefinitionTermDescriptionBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync("description", cancellationToken);
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of a definition list term description.</summary>
         protected internal override void VisitDefinitionTermDescriptionEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of a definition list term description.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitDefinitionTermDescriptionEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitDefinitionTermDescriptionEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitDefinitionTermDescriptionEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a table.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         protected internal override void VisitTableBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("table");
+
+            _WriteXmlAttributes(xmlAttributes);
         }
 
         /// <summary>Visits the beginning of a table.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitTableBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("table", cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
         }
 
         /// <summary>Visits the ending of a table.</summary>
         protected internal override void VisitTableEnding()
         {
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of a table.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitTableEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndObjectAsync();
         }
 
         /// <summary>Visits the beginning of a table heading.</summary>
         protected internal override void VisitTableHeadingBeginning()
         {
+            _jsonWriter.WritePropertyName("columns");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of a table heading.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableHeadingBeginningAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitTableHeadingBeginningAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableHeadingBeginning();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync("columns", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of a table heading.</summary>
         protected internal override void VisitTableHeadingEnding()
         {
+            _jsonWriter.WriteEndArray();
         }
 
         /// <summary>Visits the ending of a table heading.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableHeadingEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitTableHeadingEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableHeadingEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a table body.</summary>
         protected internal override void VisitTableBodyBeginning()
         {
+            _jsonWriter.WritePropertyName("rows");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of a table body.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableBodyBeginningAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitTableBodyBeginningAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableBodyBeginning();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WritePropertyNameAsync("rows", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of a table body.</summary>
         protected internal override void VisitTableBodyEnding()
         {
+            _jsonWriter.WriteEndArray();
         }
 
         /// <summary>Visits the ending of a table body.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableBodyEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitTableBodyEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableBodyEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a table column.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
         protected internal override void VisitTableColumnBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+            _WriteXmlAttributes(xmlAttributes);
+            _jsonWriter.WritePropertyName("name");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of a table column.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableColumnBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitTableColumnBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableColumnBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of a table column.</summary>
         protected internal override void VisitTableColumnEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of a table column.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableColumnEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitTableColumnEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableColumnEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a table row.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
         protected internal override void VisitTableRowBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+            _WriteXmlAttributes(xmlAttributes);
+            _jsonWriter.WritePropertyName("cells");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of a table row.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableRowBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitTableRowBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableRowBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("cells", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of a table row.</summary>
         protected internal override void VisitTableRowEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of a table row.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableRowEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitTableRowEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableRowEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits the beginning of a table cell.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
         protected internal override void VisitTableCellBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+            _WriteXmlAttributes(xmlAttributes);
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
         }
 
         /// <summary>Visits the beginning of a table cell.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableCellBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitTableCellBeginningAsync(IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableCellBeginning(xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteStartArrayAsync(cancellationToken);
         }
 
         /// <summary>Visits the ending of a table cell.</summary>
         protected internal override void VisitTableCellEnding()
         {
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits the ending of a table cell.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTableCellEndingAsync(CancellationToken cancellationToken)
+        protected internal override async Task VisitTableCellEndingAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitTableCellEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteEndArrayAsync(cancellationToken);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits plain text.</summary>
         /// <param name="text">The plain text inside a block element.</param>
         protected internal override void VisitText(string text)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("text");
+
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteValue(text);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits plain text.</summary>
         /// <param name="text">The plain text inside a block element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTextAsync(string text, CancellationToken cancellationToken)
+        protected internal override async Task VisitTextAsync(string text, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitText(text);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("text", cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteValueAsync(text, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits an inline member reference.</summary>
@@ -1934,7 +1897,17 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
         protected internal override void VisitInlineReference(string canonicalName, IReadOnlyDictionary<string, string> xmlAttributes)
         {
-            throw new InvalidOperationException($"Could not find member from '{canonicalName}' canonical name. Override VisitInlineReference(string) or VisitInlineReferenceAsync(string, CancellationToken) to ignore this error.");
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("unresolvedReference");
+
+            _WriteXmlAttributes(xmlAttributes);
+
+            _jsonWriter.WritePropertyName("canonicalName");
+            _jsonWriter.WriteValue(canonicalName);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an inline member reference.</summary>
@@ -1942,17 +1915,19 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitInlineReferenceAsync(string canonicalName, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitInlineReferenceAsync(string canonicalName, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitInlineReference(canonicalName, xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("unresolvedReference", cancellationToken);
+
+            _WriteXmlAttributes(xmlAttributes);
+
+            await _jsonWriter.WritePropertyNameAsync("canonicalName", cancellationToken);
+            await _jsonWriter.WriteValueAsync(canonicalName, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits an inline member reference.</summary>
@@ -1960,6 +1935,17 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
         protected internal override void VisitInlineReference(MemberInfo referredMember, IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("reference");
+
+            _WriteXmlAttributes(xmlAttributes);
+
+            _jsonWriter.WritePropertyName("id");
+            _jsonWriter.WriteValue(_GetMemberInfoIdFor(referredMember));
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an inline member reference.</summary>
@@ -1967,17 +1953,19 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitInlineReferenceAsync(MemberInfo referredMember, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitInlineReferenceAsync(MemberInfo referredMember, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitInlineReference(referredMember, xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("reference", cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("id", cancellationToken);
+            await _jsonWriter.WriteValueAsync(_GetMemberInfoIdFor(referredMember), cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits an inline code snippet.</summary>
@@ -1985,6 +1973,17 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>c</c> element.</param>
         protected internal override void VisitInlineCode(string code, IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("code");
+
+            _WriteXmlAttributes(xmlAttributes);
+
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteValue(code);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an inline code snippet.</summary>
@@ -1992,17 +1991,19 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>c</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitInlineCodeAsync(string code, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitInlineCodeAsync(string code, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitInlineCode(code, xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("code", cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
+            await _jsonWriter.WriteValueAsync(code, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits an inline parameter reference.</summary>
@@ -2010,6 +2011,17 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>paramref</c> element.</param>
         protected internal override void VisitParameterReference(string parameterName, IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("parameterReference");
+
+            _WriteXmlAttributes(xmlAttributes);
+
+            _jsonWriter.WritePropertyName("parameterName");
+            _jsonWriter.WriteValue(parameterName);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an inline parameter reference.</summary>
@@ -2017,17 +2029,19 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>paramref</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitParameterReferenceAsync(string parameterName, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitParameterReferenceAsync(string parameterName, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitParameterReference(parameterName, xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("parameterReference", cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("parameterName", cancellationToken);
+            await _jsonWriter.WriteValueAsync(parameterName, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits an inline generic parameter reference.</summary>
@@ -2035,6 +2049,17 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>typeparamref</c> element.</param>
         protected internal override void VisitGenericParameterReference(string genericParameterName, IReadOnlyDictionary<string, string> xmlAttributes)
         {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("genericParameterReference");
+
+            _WriteXmlAttributes(xmlAttributes);
+
+            _jsonWriter.WritePropertyName("parameterName");
+            _jsonWriter.WriteValue(genericParameterName);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an inline generic parameter reference.</summary>
@@ -2042,17 +2067,19 @@ namespace CodeMap
         /// <param name="xmlAttributes">The XML attributes specified on the <c>typeparamref</c> element.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitGenericParameterReferenceAsync(string genericParameterName, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
+        protected internal override async Task VisitGenericParameterReferenceAsync(string genericParameterName, IReadOnlyDictionary<string, string> xmlAttributes, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitGenericParameterReference(genericParameterName, xmlAttributes);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
+            await _jsonWriter.WriteValueAsync("genericParameterReference", cancellationToken);
+
+            await _WriteXmlAttributesAsync(xmlAttributes, cancellationToken);
+
+            await _jsonWriter.WritePropertyNameAsync("parameterName", cancellationToken);
+            await _jsonWriter.WriteValueAsync(genericParameterName, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         private void _WriteEventAccessorData(EventAccessorData accessorData)
@@ -3020,17 +3047,7 @@ namespace CodeMap
             _jsonWriter.WritePropertyName("examples");
             _jsonWriter.WriteStartArray();
             foreach (var example in examples)
-            {
-                _jsonWriter.WriteStartObject();
-                _WriteXmlAttributes(example.XmlAttributes);
-
-                _jsonWriter.WritePropertyName("content");
-                _jsonWriter.WriteStartArray();
                 example.Accept(this);
-                _jsonWriter.WriteEndArray();
-
-                _jsonWriter.WriteEndObject();
-            }
             _jsonWriter.WriteEndArray();
         }
 
@@ -3039,17 +3056,7 @@ namespace CodeMap
             await _jsonWriter.WritePropertyNameAsync("examples", cancellationToken);
             await _jsonWriter.WriteStartArrayAsync(cancellationToken);
             foreach (var example in examples)
-            {
-                await _jsonWriter.WriteStartObjectAsync(cancellationToken);
-                await _WriteXmlAttributesAsync(example.XmlAttributes, cancellationToken);
-
-                await _jsonWriter.WritePropertyNameAsync("content", cancellationToken);
-                await _jsonWriter.WriteStartArrayAsync(cancellationToken);
                 await example.AcceptAsync(this, cancellationToken);
-                await _jsonWriter.WriteEndArrayAsync(cancellationToken);
-
-                await _jsonWriter.WriteEndObjectAsync(cancellationToken);
-            }
             await _jsonWriter.WriteEndArrayAsync(cancellationToken);
         }
 
@@ -3168,6 +3175,65 @@ namespace CodeMap
             } while (nestingChain.Count > 0);
 
             return fullNameBuilder.ToString();
+        }
+
+        private static string _GetMemberInfoIdFor(MemberInfo memberInfo)
+            => _AppendMemberInfoId(new StringBuilder(), memberInfo).ToString();
+
+        private static StringBuilder _AppendMemberInfoId(StringBuilder idBuilder, MemberInfo memberInfo)
+        {
+            switch (memberInfo)
+            {
+                case Type type when (type.IsGenericTypeParameter):
+                    return idBuilder.Append('`').Append(type.GenericParameterPosition);
+
+                case Type type when (type.IsGenericMethodParameter):
+                    return idBuilder.Append("``").Append(type.GenericParameterPosition);
+
+                case Type type when (type.DeclaringType != null):
+                    return _AppendMemberInfoId(idBuilder, type.DeclaringType).Append('.').Append(type.Name);
+
+                case Type type:
+                    if (string.IsNullOrWhiteSpace(type.Namespace))
+                        return idBuilder.Append(type.Name);
+                    else
+                        return idBuilder.Append(type.Namespace).Append('.').Append(type.Name);
+
+                case ConstructorInfo constructor:
+                    _AppendMemberInfoId(idBuilder, constructor.DeclaringType).Append('.').Append(constructor.Name);
+                    return AppendParameters(constructor.GetParameters());
+
+                case PropertyInfo property:
+                    _AppendMemberInfoId(idBuilder, property.DeclaringType).Append('.').Append(property.Name);
+                    return AppendParameters(property.GetIndexParameters());
+
+                case MethodInfo method:
+                    _AppendMemberInfoId(idBuilder, method.DeclaringType).Append('.').Append(method.Name);
+                    return AppendParameters(method.GetParameters());
+
+                default:
+                    if (memberInfo.DeclaringType != null)
+                        return _AppendMemberInfoId(idBuilder, memberInfo.DeclaringType).Append('.').Append(memberInfo.Name);
+                    else
+                        return new StringBuilder(memberInfo.Name);
+            }
+
+            StringBuilder AppendParameters(IEnumerable<ParameterInfo> parameters)
+            {
+                using (var parameter = parameters.GetEnumerator())
+                    if (parameter.MoveNext())
+                    {
+                        idBuilder.Append('(');
+                        _AppendMemberInfoId(idBuilder, parameter.Current.ParameterType);
+                        while (parameter.MoveNext())
+                        {
+                            idBuilder.Append(',');
+                            _AppendMemberInfoId(idBuilder, parameter.Current.ParameterType);
+                        }
+                        idBuilder.Append(')');
+                    }
+                return idBuilder;
+            }
         }
 
         private static string _GetIdFor(EnumDocumentationElement @enum)
