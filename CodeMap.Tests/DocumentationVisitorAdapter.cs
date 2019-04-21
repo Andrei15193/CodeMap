@@ -88,16 +88,6 @@ namespace CodeMap.Tests
             _documentationVisitor.VisitSummaryEnding();
         }
 
-        protected override void VisitReturnsBeginning(TypeReferenceData returnType)
-        {
-            _documentationVisitor.VisitReturnsBeginning(returnType);
-        }
-
-        protected override void VisitReturnsEnding()
-        {
-            _documentationVisitor.VisitReturnsEnding();
-        }
-
         protected override void VisitRemarksBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
         {
             _documentationVisitor.VisitRemarksBeginning();

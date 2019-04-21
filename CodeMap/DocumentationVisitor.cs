@@ -359,50 +359,6 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits the beginning of a returns element.</summary>
-        /// <param name="returnType">The return type of the method.</param>
-        protected internal virtual void VisitReturnsBeginning(TypeReferenceData returnType)
-        {
-        }
-
-        /// <summary>Visits the beginning of a returns element.</summary>
-        /// <param name="returnType">The return type of the method.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitReturnsBeginningAsync(TypeReferenceData returnType, CancellationToken cancellationToken)
-        {
-            try
-            {
-                VisitReturnsBeginning(returnType);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
-        }
-
-        /// <summary>Visits the ending of a returns element.</summary>
-        protected internal virtual void VisitReturnsEnding()
-        {
-        }
-
-        /// <summary>Visits the ending of a returns element.</summary>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitReturnsEndingAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                VisitReturnsEnding();
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
-        }
-
         /// <summary>Visits the beginning of a remarks element.</summary>
         /// <param name="xmlAttributes">The XML attributes specified on the remarks element.</param>
         protected internal virtual void VisitRemarksBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
