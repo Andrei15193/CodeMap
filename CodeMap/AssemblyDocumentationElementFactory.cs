@@ -75,6 +75,7 @@ namespace CodeMap
                         @namespace.Delegates = types[typeof(DelegateDocumentationElement)]
                             .Cast<DelegateDocumentationElement>()
                             .OrderBy(@delegate => @delegate.Name)
+                            .ThenBy(@delegate => @delegate.GenericParameters.Count)
                             .AsReadOnlyCollection();
                         @namespace.Interfaces = types[typeof(InterfaceDocumentationElement)]
                             .Cast<InterfaceDocumentationElement>()
@@ -90,6 +91,14 @@ namespace CodeMap
                             .Cast<StructDocumentationElement>()
                             .OrderBy(@struct => @struct.Name)
                             .ThenBy(@struct => @struct.GenericParameters.Count)
+                            .AsReadOnlyCollection();
+                        @namespace.DeclaredTypes = @namespace
+                            .Enums
+                            .AsEnumerable<TypeDocumentationElement>()
+                            .Concat(@namespace.Delegates)
+                            .Concat(@namespace.Interfaces)
+                            .Concat(@namespace.Classes)
+                            .Concat(@namespace.Structs)
                             .AsReadOnlyCollection();
 
                         return @namespace;
@@ -224,6 +233,12 @@ namespace CodeMap
                 .Where(method => !method.IsSpecialName)
                 .Select(method => _GetMethod(method, interfaceDocumentationElement))
                 .AsReadOnlyCollection();
+            interfaceDocumentationElement.Members = interfaceDocumentationElement
+                .Events
+                .AsEnumerable<MemberDocumentationElement>()
+                .Concat(interfaceDocumentationElement.Properties)
+                .Concat(interfaceDocumentationElement.Methods)
+                .AsReadOnlyCollection();
 
             return interfaceDocumentationElement;
         }
@@ -300,6 +315,15 @@ namespace CodeMap
                 .Where(method => !method.IsSpecialName)
                 .Select(method => _GetMethod(method, classDocumentationElement))
                 .AsReadOnlyCollection();
+            classDocumentationElement.Members = classDocumentationElement
+                .Constants
+                .AsEnumerable<MemberDocumentationElement>()
+                .Concat(classDocumentationElement.Fields)
+                .Concat(classDocumentationElement.Constructors)
+                .Concat(classDocumentationElement.Events)
+                .Concat(classDocumentationElement.Properties)
+                .Concat(classDocumentationElement.Methods)
+                .AsReadOnlyCollection();
 
             var nestedTypes = _Create(classType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic), @namespace, classDocumentationElement);
             classDocumentationElement.NestedEnums = nestedTypes[typeof(EnumDocumentationElement)]
@@ -324,6 +348,14 @@ namespace CodeMap
                 .Cast<StructDocumentationElement>()
                 .OrderBy(@struct => @struct.Name)
                 .ThenBy(@struct => @struct.GenericParameters.Count)
+                .AsReadOnlyCollection();
+            classDocumentationElement.NestedTypes = classDocumentationElement
+                .NestedEnums
+                .AsEnumerable<TypeDocumentationElement>()
+                .Concat(classDocumentationElement.NestedDelegates)
+                .Concat(classDocumentationElement.NestedInterfaces)
+                .Concat(classDocumentationElement.NestedClasses)
+                .Concat(classDocumentationElement.NestedStructs)
                 .AsReadOnlyCollection();
 
             return classDocumentationElement;
@@ -401,6 +433,15 @@ namespace CodeMap
                 .Where(method => !method.IsSpecialName)
                 .Select(method => _GetMethod(method, structDocumentationElement))
                 .AsReadOnlyCollection();
+            structDocumentationElement.Members = structDocumentationElement
+                .Constants
+                .AsEnumerable<MemberDocumentationElement>()
+                .Concat(structDocumentationElement.Fields)
+                .Concat(structDocumentationElement.Constructors)
+                .Concat(structDocumentationElement.Events)
+                .Concat(structDocumentationElement.Properties)
+                .Concat(structDocumentationElement.Methods)
+                .AsReadOnlyCollection();
 
             var nestedTypes = _Create(structType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic), @namespace, structDocumentationElement);
             structDocumentationElement.NestedEnums = nestedTypes[typeof(EnumDocumentationElement)]
@@ -425,6 +466,14 @@ namespace CodeMap
                 .Cast<StructDocumentationElement>()
                 .OrderBy(@struct => @struct.Name)
                 .ThenBy(@struct => @struct.GenericParameters.Count)
+                .AsReadOnlyCollection();
+            structDocumentationElement.NestedTypes = structDocumentationElement
+                .NestedEnums
+                .AsEnumerable<TypeDocumentationElement>()
+                .Concat(structDocumentationElement.NestedDelegates)
+                .Concat(structDocumentationElement.NestedInterfaces)
+                .Concat(structDocumentationElement.NestedClasses)
+                .Concat(structDocumentationElement.NestedStructs)
                 .AsReadOnlyCollection();
 
             return structDocumentationElement;

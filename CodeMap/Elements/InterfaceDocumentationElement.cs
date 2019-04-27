@@ -12,6 +12,9 @@ namespace CodeMap.Elements
         {
         }
 
+        /// <summary>The declared members.</summary>
+        public IReadOnlyCollection<MemberDocumentationElement> Members { get; internal set; }
+
         /// <summary>The interface generic parameters.</summary>
         public IReadOnlyList<TypeGenericParameterData> GenericParameters { get; internal set; }
 
@@ -30,30 +33,14 @@ namespace CodeMap.Elements
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
-        {
-            visitor.VisitInterface(this);
-            foreach (var @event in Events)
-                @event.Accept(visitor);
-            foreach (var property in Properties)
-                property.Accept(visitor);
-            foreach (var method in Methods)
-                method.Accept(visitor);
-        }
+            => visitor.VisitInterface(this);
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
-        {
-            await visitor.VisitInterfaceAsync(this, cancellationToken).ConfigureAwait(false);
-            foreach (var @event in Events)
-                await @event.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
-            foreach (var property in Properties)
-                await property.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
-            foreach (var method in Methods)
-                await method.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
-        }
+        public override Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
+            => visitor.VisitInterfaceAsync(this, cancellationToken);
 
         /// <summary>Determines whether the current <see cref="InterfaceDocumentationElement"/> is equal to the provided <paramref name="type"/>.</summary>
         /// <param name="type">The <see cref="Type"/> to compare to.</param>

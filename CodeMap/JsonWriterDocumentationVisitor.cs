@@ -59,6 +59,11 @@ namespace CodeMap
 
             _jsonWriter.WritePropertyName("definitions");
             _jsonWriter.WriteStartObject();
+
+            foreach (var @namespace in assembly.Namespaces)
+                @namespace.Accept(this);
+
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an <see cref="AssemblyDocumentationElement"/>.</summary>
@@ -88,11 +93,35 @@ namespace CodeMap
 
             await _jsonWriter.WritePropertyNameAsync("definitions", cancellationToken);
             await _jsonWriter.WriteStartObjectAsync(cancellationToken);
+
+            foreach (var @namespace in assembly.Namespaces)
+                await @namespace.AcceptAsync(this, cancellationToken);
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
         /// <summary>Visits a <see cref="NamespaceDocumentationElement"/>.</summary>
         /// <param name="namespace">The <see cref="NamespaceDocumentationElement"/> to visit.</param>
         protected internal override void VisitNamespace(NamespaceDocumentationElement @namespace)
+        {
+            _WriteNamespaceDefinition(@namespace);
+            foreach (var type in @namespace.DeclaredTypes)
+                type.Accept(this);
+        }
+
+        /// <summary>Visits a <see cref="NamespaceDocumentationElement"/>.</summary>
+        /// <param name="namespace">The <see cref="NamespaceDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal override async Task VisitNamespaceAsync(NamespaceDocumentationElement @namespace, CancellationToken cancellationToken)
+        {
+            await _WriteNamespaceDefinitionAsync(@namespace, cancellationToken);
+
+            foreach (var type in @namespace.DeclaredTypes)
+                await type.AcceptAsync(this, cancellationToken);
+        }
+
+        private void _WriteNamespaceDefinition(NamespaceDocumentationElement @namespace)
         {
             _jsonWriter.WritePropertyName(@namespace.Name);
 
@@ -117,11 +146,7 @@ namespace CodeMap
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits a <see cref="NamespaceDocumentationElement"/>.</summary>
-        /// <param name="namespace">The <see cref="NamespaceDocumentationElement"/> to visit.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override async Task VisitNamespaceAsync(NamespaceDocumentationElement @namespace, CancellationToken cancellationToken)
+        private async Task _WriteNamespaceDefinitionAsync(NamespaceDocumentationElement @namespace, CancellationToken cancellationToken)
         {
             await _jsonWriter.WritePropertyNameAsync(@namespace.Name, cancellationToken);
 
@@ -149,6 +174,24 @@ namespace CodeMap
         /// <summary>Visits an <see cref="EnumDocumentationElement"/>.</summary>
         /// <param name="enum">The <see cref="EnumDocumentationElement"/> to visit.</param>
         protected internal override void VisitEnum(EnumDocumentationElement @enum)
+        {
+            _WriteEnumDefinition(@enum);
+            foreach (var member in @enum.Members)
+                member.Accept(this);
+        }
+
+        /// <summary>Visits an <see cref="EnumDocumentationElement"/>.</summary>
+        /// <param name="enum">The <see cref="EnumDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal override async Task VisitEnumAsync(EnumDocumentationElement @enum, CancellationToken cancellationToken)
+        {
+            await _WriteEnumDefinitionAsync(@enum, cancellationToken);
+            foreach (var member in @enum.Members)
+                await member.AcceptAsync(this, cancellationToken);
+        }
+
+        private void _WriteEnumDefinition(EnumDocumentationElement @enum)
         {
             _jsonWriter.WritePropertyName(_GetIdFor(@enum));
 
@@ -181,11 +224,7 @@ namespace CodeMap
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits an <see cref="EnumDocumentationElement"/>.</summary>
-        /// <param name="enum">The <see cref="EnumDocumentationElement"/> to visit.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override async Task VisitEnumAsync(EnumDocumentationElement @enum, CancellationToken cancellationToken)
+        private async Task _WriteEnumDefinitionAsync(EnumDocumentationElement @enum, CancellationToken cancellationToken)
         {
             await _jsonWriter.WritePropertyNameAsync(_GetIdFor(@enum), cancellationToken);
 
@@ -221,6 +260,16 @@ namespace CodeMap
         /// <summary>Visits a <see cref="DelegateDocumentationElement"/>.</summary>
         /// <param name="delegate">The <see cref="DelegateDocumentationElement"/> to visit.</param>
         protected internal override void VisitDelegate(DelegateDocumentationElement @delegate)
+            => _WriteDelegateDefinition(@delegate);
+
+        /// <summary>Visits a <see cref="DelegateDocumentationElement"/>.</summary>
+        /// <param name="delegate">The <see cref="DelegateDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal override Task VisitDelegateAsync(DelegateDocumentationElement @delegate, CancellationToken cancellationToken)
+            => _WriteDelegateDefinitionAsync(@delegate, cancellationToken);
+
+        private void _WriteDelegateDefinition(DelegateDocumentationElement @delegate)
         {
             _jsonWriter.WritePropertyName(_GetIdFor(@delegate));
 
@@ -250,11 +299,7 @@ namespace CodeMap
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits a <see cref="DelegateDocumentationElement"/>.</summary>
-        /// <param name="delegate">The <see cref="DelegateDocumentationElement"/> to visit.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override async Task VisitDelegateAsync(DelegateDocumentationElement @delegate, CancellationToken cancellationToken)
+        private async Task _WriteDelegateDefinitionAsync(DelegateDocumentationElement @delegate, CancellationToken cancellationToken)
         {
             await _jsonWriter.WritePropertyNameAsync(_GetIdFor(@delegate), cancellationToken);
 
@@ -287,6 +332,24 @@ namespace CodeMap
         /// <summary>Visits an <see cref="InterfaceDocumentationElement"/>.</summary>
         /// <param name="interface">The <see cref="InterfaceDocumentationElement"/> to visit.</param>
         protected internal override void VisitInterface(InterfaceDocumentationElement @interface)
+        {
+            _WriteInterfaceDefinition(@interface);
+            foreach (var member in @interface.Members)
+                member.Accept(this);
+        }
+
+        /// <summary>Visits an <see cref="InterfaceDocumentationElement"/>.</summary>
+        /// <param name="interface">The <see cref="InterfaceDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal override async Task VisitInterfaceAsync(InterfaceDocumentationElement @interface, CancellationToken cancellationToken)
+        {
+            await _WriteInterfaceDefinitionAsync(@interface, cancellationToken);
+            foreach (var member in @interface.Members)
+                await member.AcceptAsync(this, cancellationToken);
+        }
+
+        private void _WriteInterfaceDefinition(InterfaceDocumentationElement @interface)
         {
             _jsonWriter.WritePropertyName(_GetIdFor(@interface));
 
@@ -323,11 +386,7 @@ namespace CodeMap
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits an <see cref="InterfaceDocumentationElement"/>.</summary>
-        /// <param name="interface">The <see cref="InterfaceDocumentationElement"/> to visit.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override async Task VisitInterfaceAsync(InterfaceDocumentationElement @interface, CancellationToken cancellationToken)
+        private async Task _WriteInterfaceDefinitionAsync(InterfaceDocumentationElement @interface, CancellationToken cancellationToken)
         {
             await _jsonWriter.WritePropertyNameAsync(_GetIdFor(@interface), cancellationToken);
 
@@ -367,6 +426,28 @@ namespace CodeMap
         /// <summary>Visits a <see cref="ClassDocumentationElement"/>.</summary>
         /// <param name="class">The <see cref="ClassDocumentationElement"/> to visit.</param>
         protected internal override void VisitClass(ClassDocumentationElement @class)
+        {
+            _WriteClassDefinition(@class);
+            foreach (var member in @class.Members)
+                member.Accept(this);
+            foreach (var nestedType in @class.NestedTypes)
+                nestedType.Accept(this);
+        }
+
+        /// <summary>Visits a <see cref="ClassDocumentationElement"/>.</summary>
+        /// <param name="class">The <see cref="ClassDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal override async Task VisitClassAsync(ClassDocumentationElement @class, CancellationToken cancellationToken)
+        {
+            await _WriteClassDefinition(@class, cancellationToken);
+            foreach (var member in @class.Members)
+                await member.AcceptAsync(this, cancellationToken);
+            foreach (var nestedType in @class.NestedTypes)
+                await nestedType.AcceptAsync(this, cancellationToken);
+        }
+
+        private void _WriteClassDefinition(ClassDocumentationElement @class)
         {
             _jsonWriter.WritePropertyName(_GetIdFor(@class));
 
@@ -416,11 +497,7 @@ namespace CodeMap
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits a <see cref="ClassDocumentationElement"/>.</summary>
-        /// <param name="class">The <see cref="ClassDocumentationElement"/> to visit.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override async Task VisitClassAsync(ClassDocumentationElement @class, CancellationToken cancellationToken)
+        private async Task _WriteClassDefinition(ClassDocumentationElement @class, CancellationToken cancellationToken)
         {
             await _jsonWriter.WritePropertyNameAsync(_GetIdFor(@class), cancellationToken);
 
@@ -475,6 +552,28 @@ namespace CodeMap
         /// <param name="struct">The <see cref="StructDocumentationElement"/> to visit.</param>
         protected internal override void VisitStruct(StructDocumentationElement @struct)
         {
+            _WriteStructDefinition(@struct);
+            foreach (var member in @struct.Members)
+                member.Accept(this);
+            foreach (var nestedType in @struct.NestedTypes)
+                nestedType.Accept(this);
+        }
+
+        /// <summary>Visits a <see cref="StructDocumentationElement"/>.</summary>
+        /// <param name="struct">The <see cref="StructDocumentationElement"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal override async Task VisitStructAsync(StructDocumentationElement @struct, CancellationToken cancellationToken)
+        {
+            await _WriteStructDefinitionAsync(@struct, cancellationToken);
+            foreach (var member in @struct.Members)
+                await member.AcceptAsync(this, cancellationToken);
+            foreach (var nestedType in @struct.NestedTypes)
+                await nestedType.AcceptAsync(this, cancellationToken);
+        }
+
+        private void _WriteStructDefinition(StructDocumentationElement @struct)
+        {
             _jsonWriter.WritePropertyName(_GetIdFor(@struct));
 
             _jsonWriter.WriteStartObject();
@@ -514,11 +613,7 @@ namespace CodeMap
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits a <see cref="StructDocumentationElement"/>.</summary>
-        /// <param name="struct">The <see cref="StructDocumentationElement"/> to visit.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override async Task VisitStructAsync(StructDocumentationElement @struct, CancellationToken cancellationToken)
+        private async Task _WriteStructDefinitionAsync(StructDocumentationElement @struct, CancellationToken cancellationToken)
         {
             await _jsonWriter.WritePropertyNameAsync(_GetIdFor(@struct), cancellationToken);
 

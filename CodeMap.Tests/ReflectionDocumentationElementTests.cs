@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
@@ -15,6 +16,14 @@ namespace CodeMap.Tests
 {
     public class ReflectionDocumentationElementTests
     {
+        private static Assembly _TestDataAssembly
+            => typeof(ReflectionDocumentationElementTests)
+                .Assembly
+                .GetReferencedAssemblies()
+                .Where(dependency => dependency.Name == "CodeMap.Tests.Data")
+                .Select(Assembly.Load)
+                .Single();
+
         [Fact]
         public void CreateEnumDocumentationElement()
         {
@@ -905,14 +914,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateAssemblyDocumentationElement()
         {
-            var testDataAssembly = typeof(ReflectionDocumentationElementTests)
-                .Assembly
-                .GetReferencedAssemblies()
-                .Where(dependency => dependency.Name == "CodeMap.Tests.Data")
-                .Select(Assembly.Load)
-                .Single();
-
-            var assemblyDocumentationElement = DocumentationElement.Create(testDataAssembly);
+            var assemblyDocumentationElement = DocumentationElement.Create(_TestDataAssembly);
 
             assemblyDocumentationElement
                 .AssertEqual(() => assemblyDocumentationElement.Name, "CodeMap.Tests.Data")
@@ -920,11 +922,11 @@ namespace CodeMap.Tests
                 .AssertEqual(() => assemblyDocumentationElement.Culture, string.Empty)
                 .AssertEqual(
                     () => assemblyDocumentationElement.PublicKeyToken,
-                    string.Join(string.Empty, testDataAssembly.GetName().GetPublicKeyToken().Select(@byte => @byte.ToString("X2")))
+                    string.Join(string.Empty, _TestDataAssembly.GetName().GetPublicKeyToken().Select(@byte => @byte.ToString("X2")))
                 )
                 .AssertCollectionMember(
                     () => assemblyDocumentationElement.Dependencies,
-                    testDataAssembly
+                    _TestDataAssembly
                         .GetReferencedAssemblies()
                         .OrderBy(dependency => dependency.Name)
                         .Select(referredAssemblyName => new Action<AssemblyReference>(dependency => referredAssemblyName.AssertAssemblyReference(dependency)))
@@ -1066,116 +1068,139 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task DocumentationElementsCallVisitorMethods()
+        public async Task AssemblyDocumentationElementCallVisitorMethods()
         {
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var visitorAdapter = new DocumentationVisitorAdapter(visitorMock.Object);
-            var asyncVisitorMock = new Mock<IDocumentationVisitor>();
-            var asyncVisitorAdapter = new DocumentationVisitorAdapter(asyncVisitorMock.Object);
-            var testDataAssembly = typeof(ReflectionDocumentationElementTests)
-                .Assembly
-                .GetReferencedAssemblies()
-                .Where(dependency => dependency.Name == "CodeMap.Tests.Data")
-                .Select(Assembly.Load)
-                .Single();
-            var assemblyDocumentationElement = DocumentationElement.Create(testDataAssembly);
+            var assemblyDocumentationElement = DocumentationElement.Create(_TestDataAssembly);
+            await _VerifyVisitorAsync(
+                assemblyDocumentationElement,
+                visitor => visitor.VisitAssembly(assemblyDocumentationElement)
+            );
+        }
 
-            assemblyDocumentationElement.Accept(visitorAdapter);
-            await assemblyDocumentationElement.AcceptAsync(asyncVisitorAdapter);
+        [Fact]
+        public async Task NamespaceDocumentationElementCallVisitorMethods()
+        {
+            var namespaceDocumentationElement = DocumentationElement.Create(_TestDataAssembly).Namespaces.Single(@namespace => @namespace.Name == "CodeMap.Tests.Data");
+            await _VerifyVisitorAsync(
+                namespaceDocumentationElement,
+                visitor => visitor.VisitNamespace(namespaceDocumentationElement)
+            );
+        }
 
-            foreach (var mock in new[] { visitorMock, asyncVisitorMock })
-            {
-                mock.Verify(visitor => visitor.VisitAssembly(assemblyDocumentationElement), Times.Once());
-                foreach (var @namespace in assemblyDocumentationElement.Namespaces)
-                {
-                    mock.Verify(visitor => visitor.VisitNamespace(@namespace), Times.Once());
-                    foreach (var @enum in @namespace.Enums)
-                    {
-                        mock.Verify(visitor => visitor.VisitEnum(@enum), Times.Once());
-                        foreach (var member in @enum.Members)
-                            mock.Verify(visitor => visitor.VisitConstant(member), Times.Once());
-                    }
-                    foreach (var @delegate in @namespace.Delegates)
-                        mock.Verify(visitor => visitor.VisitDelegate(@delegate), Times.Once());
-                    foreach (var @interface in @namespace.Interfaces)
-                    {
-                        mock.Verify(visitor => visitor.VisitInterface(@interface), Times.Once());
-                        foreach (var @event in @interface.Events)
-                            mock.Verify(visitor => visitor.VisitEvent(@event), Times.Once());
-                        foreach (var property in @interface.Properties)
-                            mock.Verify(visitor => visitor.VisitProperty(property), Times.Once());
-                        foreach (var method in @interface.Methods)
-                            mock.Verify(visitor => visitor.VisitMethod(method), Times.Once());
-                    }
-                    foreach (var @class in @namespace.Classes)
-                    {
-                        mock.Verify(visitor => visitor.VisitClass(@class), Times.Once());
-                        foreach (var constant in @class.Constants)
-                            mock.Verify(visitor => visitor.VisitConstant(constant), Times.Once());
-                        foreach (var field in @class.Fields)
-                            mock.Verify(visitor => visitor.VisitField(field), Times.Once());
-                        foreach (var constructor in @class.Constructors)
-                            mock.Verify(visitor => visitor.VisitConstructor(constructor), Times.Once());
-                        foreach (var @event in @class.Events)
-                            mock.Verify(visitor => visitor.VisitEvent(@event), Times.Once());
-                        foreach (var property in @class.Properties)
-                            mock.Verify(visitor => visitor.VisitProperty(property), Times.Once());
-                        foreach (var method in @class.Methods)
-                            mock.Verify(visitor => visitor.VisitMethod(method), Times.Once());
+        [Fact]
+        public async Task EnumDocumentationElementCallVisitorMethods()
+        {
+            var enumDocumentationElement = (EnumDocumentationElement)DocumentationElement.Create(typeof(TestEnum)); 
+            await _VerifyVisitorAsync(
+                enumDocumentationElement,
+                visitor => visitor.VisitEnum(enumDocumentationElement)
+            );
+        }
 
-                        foreach (var nestedEnum in @class.NestedEnums)
-                            mock.Verify(visitor => visitor.VisitEnum(nestedEnum), Times.Once());
-                        foreach (var nestedDelegate in @class.NestedDelegates)
-                            mock.Verify(visitor => visitor.VisitDelegate(nestedDelegate), Times.Once());
-                        foreach (var nestedInterface in @class.NestedInterfaces)
-                            mock.Verify(visitor => visitor.VisitInterface(nestedInterface), Times.Once());
-                        foreach (var nestedClass in @class.NestedClasses)
-                        {
-                            mock.Verify(visitor => visitor.VisitClass(nestedClass), Times.Once());
-                            mock.Verify(visitor => visitor.VisitConstructor(nestedClass.Constructors.Single()), Times.Once());
-                        }
-                        foreach (var nestedStruct in @class.NestedStructs)
-                        {
-                            mock.Verify(visitor => visitor.VisitStruct(nestedStruct), Times.Once());
-                            mock.Verify(visitor => visitor.VisitConstructor(nestedStruct.Constructors.Single()), Times.Once());
-                        }
-                    }
-                    foreach (var @struct in @namespace.Structs)
-                    {
-                        mock.Verify(visitor => visitor.VisitStruct(@struct), Times.Once());
-                        foreach (var constant in @struct.Constants)
-                            mock.Verify(visitor => visitor.VisitConstant(constant), Times.Once());
-                        foreach (var field in @struct.Fields)
-                            mock.Verify(visitor => visitor.VisitField(field), Times.Once());
-                        foreach (var constructor in @struct.Constructors)
-                            mock.Verify(visitor => visitor.VisitConstructor(constructor), Times.Once());
-                        foreach (var @event in @struct.Events)
-                            mock.Verify(visitor => visitor.VisitEvent(@event), Times.Once());
-                        foreach (var property in @struct.Properties)
-                            mock.Verify(visitor => visitor.VisitProperty(property), Times.Once());
-                        foreach (var method in @struct.Methods)
-                            mock.Verify(visitor => visitor.VisitMethod(method), Times.Once());
+        [Fact]
+        public async Task DelegateDocumentationElementCallVisitorMethods()
+        {
+            var delegateDocumentationElement = (DelegateDocumentationElement)DocumentationElement.Create(typeof(TestDelegate<>));
+            await _VerifyVisitorAsync(
+                delegateDocumentationElement,
+                visitor => visitor.VisitDelegate(delegateDocumentationElement)
+            );
+        }
 
-                        foreach (var nestedEnum in @struct.NestedEnums)
-                            mock.Verify(visitor => visitor.VisitEnum(nestedEnum), Times.Once());
-                        foreach (var nestedDelegate in @struct.NestedDelegates)
-                            mock.Verify(visitor => visitor.VisitDelegate(nestedDelegate), Times.Once());
-                        foreach (var nestedInterface in @struct.NestedInterfaces)
-                            mock.Verify(visitor => visitor.VisitInterface(nestedInterface), Times.Once());
-                        foreach (var nestedClass in @struct.NestedClasses)
-                        {
-                            mock.Verify(visitor => visitor.VisitClass(nestedClass), Times.Once());
-                            mock.Verify(visitor => visitor.VisitConstructor(nestedClass.Constructors.Single()), Times.Once());
-                        }
-                        foreach (var nestedStruct in @struct.NestedStructs)
-                        {
-                            mock.Verify(visitor => visitor.VisitStruct(nestedStruct), Times.Once());
-                            mock.Verify(visitor => visitor.VisitConstructor(nestedStruct.Constructors.Single()), Times.Once());
-                        }
-                    }
-                }
-                mock.VerifyNoOtherCalls();
-            }
+        [Fact]
+        public async Task InterfaceDocumentationElementCallVisitorMethods()
+        {
+            var interfaceDocumentationElement = (InterfaceDocumentationElement)DocumentationElement.Create(typeof(ITestInterface<>));
+            await _VerifyVisitorAsync(
+                interfaceDocumentationElement,
+                visitor => visitor.VisitInterface(interfaceDocumentationElement)
+            );
+        }
+
+        [Fact]
+        public async Task ClassDocumentationElementCallVisitorMethods()
+        {
+            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            await _VerifyVisitorAsync(
+                classDocumentationElement,
+                visitor => visitor.VisitClass(classDocumentationElement)
+            );
+        }
+
+        [Fact]
+        public async Task StructDocumentationElementCallVisitorMethods()
+        {
+            var structDocumentationElement = (StructDocumentationElement)DocumentationElement.Create(typeof(TestStruct<>));
+            await _VerifyVisitorAsync(
+                structDocumentationElement,
+                visitor => visitor.VisitStruct(structDocumentationElement)
+            );
+        }
+
+        [Fact]
+        public async Task ConstantDocumentationElementCallVisitorMethods()
+        {
+            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var constantDocumentationElement = classDocumentationElement.Constants.Single(constant => constant.Name == "TestConstant");
+            await _VerifyVisitorAsync(
+                constantDocumentationElement,
+                visitor => visitor.VisitConstant(constantDocumentationElement)
+            );
+        }
+
+        [Fact]
+        public async Task FieldDocumentationElementCallVisitorMethods()
+        {
+            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var fieldDocumentationElement = classDocumentationElement.Fields.Single(field => field.Name == "TestField");
+            await _VerifyVisitorAsync(
+                fieldDocumentationElement,
+                visitor => visitor.VisitField(fieldDocumentationElement)
+            );
+        }
+
+        [Fact]
+        public async Task ConstructorDocumentationElementCallVisitorMethods()
+        {
+            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var constructorDocumentationElement = classDocumentationElement.Constructors.Single(constructor => constructor.Name == "TestClass");
+            await _VerifyVisitorAsync(
+                constructorDocumentationElement,
+                visitor => visitor.VisitConstructor(constructorDocumentationElement)
+            );
+        }
+
+        [Fact]
+        public async Task EventDocumentationElementCallVisitorMethods()
+        {
+            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var eventDocumentationElement = classDocumentationElement.Events.Single(@event => @event.Name == "TestEvent");
+            await _VerifyVisitorAsync(
+                eventDocumentationElement,
+                visitor => visitor.VisitEvent(eventDocumentationElement)
+            );
+        }
+
+        [Fact]
+        public async Task PropertyDocumentationElementCallVisitorMethods()
+        {
+            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var propertyDocumentationElement = classDocumentationElement.Properties.Single(property => property.Name == "TestProperty");
+            await _VerifyVisitorAsync(
+                propertyDocumentationElement,
+                visitor => visitor.VisitProperty(propertyDocumentationElement)
+            );
+        }
+
+        [Fact]
+        public async Task MethodDocumentationElementCallVisitorMethods()
+        {
+            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var methodDocumentationElement = classDocumentationElement.Methods.Single(method => method.Name == "TestMethod");
+            await _VerifyVisitorAsync(
+                methodDocumentationElement,
+                visitor => visitor.VisitMethod(methodDocumentationElement)
+            );
         }
 
         [Fact]
@@ -1204,6 +1229,20 @@ namespace CodeMap.Tests
         {
             var exception = Assert.Throws<ArgumentNullException>(() => DocumentationElement.Create(typeof(object), null));
             Assert.Equal(new ArgumentNullException("membersDocumentation").Message, exception.Message);
+        }
+
+        private static async Task _VerifyVisitorAsync<TDocumentationElement>(TDocumentationElement documentationElement, Expression<Action<IDocumentationVisitor>> verifyExpression)
+            where TDocumentationElement : DocumentationElement
+        {
+            var visitorMock = new Mock<IDocumentationVisitor>();
+            documentationElement.Accept(new DocumentationVisitorAdapter(visitorMock.Object));
+            visitorMock.Verify(verifyExpression, Times.Once());
+            visitorMock.VerifyNoOtherCalls();
+
+            var asyncVisitorMock = new Mock<IDocumentationVisitor>();
+            await documentationElement.AcceptAsync(new DocumentationVisitorAdapter(asyncVisitorMock.Object));
+            asyncVisitorMock.Verify(verifyExpression, Times.Once());
+            asyncVisitorMock.VerifyNoOtherCalls();
         }
 
         private static MemberDocumentation _CreateMemberDocumentationMock(string canonicalName)
