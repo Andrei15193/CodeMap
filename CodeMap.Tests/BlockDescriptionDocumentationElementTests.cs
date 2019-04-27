@@ -26,8 +26,8 @@ namespace CodeMap.Tests
             Assert.Equal(6, blockElementCollection.Count);
             for (var index = 0; index < blockElementCollection.Count; index++)
                 Assert.Same(blockElements[index], blockElementCollection[index]);
-            foreach (var pair in blockElements.Zip(blockElementCollection, (expected, actual) => new { Expected = expected, Actual = actual }))
-                Assert.Same(pair.Expected, pair.Actual);
+            foreach (var (expected, actual) in blockElements.Zip(blockElementCollection, (expected, actual) => (expected, actual)))
+                Assert.Same(expected, actual);
         }
 
         [Fact]

@@ -1766,22 +1766,21 @@ fourth line
         {
             Assert.Equal(expected.Count, actual.Count);
 
-            foreach (var pair in expected
+            foreach (var (expectedParameter, expectedContent, actualParameter, actualContent) in expected
                 .OrderBy(expectedParameter => expectedParameter.Key, StringComparer.Ordinal)
                 .Zip(
                     actual.OrderBy(actualParameter => actualParameter.Key, StringComparer.Ordinal),
-                    (expectedParameter, actualParameter) => new
-                    {
-                        ExpectedParameter = expectedParameter.Key,
-                        ExpectedContent = expectedParameter.Value.ToList(),
-                        ActualParameter = actualParameter.Key,
-                        ActualContent = actualParameter.Value
-                    }
+                    (expectedParameter, actualParameter) => (
+                        expectedParameter: expectedParameter.Key,
+                        expectedContent: expectedParameter.Value,
+                        actualParameter: actualParameter.Key,
+                        actualContent: actualParameter.Value
+                    )
                 )
             )
             {
-                Assert.Equal(pair.ExpectedParameter, pair.ActualParameter);
-                _AssertAreEqual(pair.ExpectedContent, pair.ActualContent);
+                Assert.Equal(expectedParameter, actualParameter);
+                _AssertAreEqual(expectedContent, actualContent);
             }
         }
 
@@ -1794,8 +1793,8 @@ fourth line
         private static void _AssertAreEqual(IEnumerable<ExampleDocumentationElement> expected, IEnumerable<ExampleDocumentationElement> actual)
         {
             Assert.Equal(expected.Count(), actual.Count());
-            foreach (var pair in expected.Zip(actual, (expectedElement, actualElement) => new { ExpectedElement = expectedElement, ActualElement = actualElement }))
-                _AssertAreEqual(pair.ExpectedElement, pair.ActualElement);
+            foreach (var (expectedElement, actualElement) in expected.Zip(actual, (expectedElement, actualElement) => (expectedElement, actualElement)))
+                _AssertAreEqual(expectedElement, actualElement);
         }
 
         private static void _AssertAreEqual(ValueDocumentationElement expected, ValueDocumentationElement actual)
@@ -1835,8 +1834,8 @@ fourth line
         private static void _AssertAreEqual(IEnumerable<BlockDocumentationElement> expected, IEnumerable<BlockDocumentationElement> actual)
         {
             Assert.Equal(expected.Count(), actual.Count());
-            foreach (var pair in expected.Zip(actual, (expectedElement, actualElement) => new { ExpectedElement = expectedElement, ActualElement = actualElement }))
-                _AssertAreEqual(pair.ExpectedElement, pair.ActualElement);
+            foreach (var (expectedElement, actualElement) in expected.Zip(actual, (expectedElement, actualElement) => (expectedElement, actualElement)))
+                _AssertAreEqual(expectedElement, actualElement);
         }
 
         private static void _AssertAreEqual(ParagraphDocumentationElement expected, ParagraphDocumentationElement actual)
@@ -1850,15 +1849,15 @@ fourth line
         private static void _AssertAreEqual(UnorderedListDocumentationElement expected, UnorderedListDocumentationElement actual)
         {
             Assert.Equal(expected.Items.Count, actual.Items.Count);
-            foreach (var pair in expected.Items.Zip(actual.Items, (expectedListItem, actualListItem) => new { ExpectedListItem = expectedListItem, ActualListItem = actualListItem }))
-                _AssertAreEqual(pair.ExpectedListItem, pair.ActualListItem);
+            foreach (var (expectedListItem, actualListItem) in expected.Items.Zip(actual.Items, (expectedListItem, actualListItem) => (expectedListItem, actualListItem)))
+                _AssertAreEqual(expectedListItem, actualListItem);
         }
 
         private static void _AssertAreEqual(OrderedListDocumentationElement expected, OrderedListDocumentationElement actual)
         {
             Assert.Equal(expected.Items.Count, actual.Items.Count);
-            foreach (var pair in expected.Items.Zip(actual.Items, (expectedListItem, actualListItem) => new { ExpectedListItem = expectedListItem, ActualListItem = actualListItem }))
-                _AssertAreEqual(pair.ExpectedListItem, pair.ActualListItem);
+            foreach (var (expectedListItem, actualListItem) in expected.Items.Zip(actual.Items, (expectedListItem, actualListItem) => (expectedListItem, actualListItem)))
+                _AssertAreEqual(expectedListItem, actualListItem);
         }
 
         private static void _AssertAreEqual(ListItemDocumentationElement expected, ListItemDocumentationElement actual)
@@ -1872,8 +1871,8 @@ fourth line
                 _AssertAreEqual(expected.ListTitle, actual.ListTitle);
 
             Assert.Equal(expected.Items.Count, actual.Items.Count);
-            foreach (var pair in expected.Items.Zip(actual.Items, (expectedListItem, actualListItem) => new { ExpectedListItem = expectedListItem, ActualListItem = actualListItem }))
-                _AssertAreEqual(pair.ExpectedListItem, pair.ActualListItem);
+            foreach (var (expectedListItem, actualListItem) in expected.Items.Zip(actual.Items, (expectedListItem, actualListItem) => (expectedListItem, actualListItem)))
+                _AssertAreEqual(expectedListItem, actualListItem);
         }
 
         private static void _AssertAreEqual(DefinitionListItemDocumentationElement expected, DefinitionListItemDocumentationElement actual)
@@ -1885,12 +1884,12 @@ fourth line
         private static void _AssertAreEqual(TableDocumentationElement expected, TableDocumentationElement actual)
         {
             Assert.Equal(expected.Columns.Count, actual.Columns.Count);
-            foreach (var pair in expected.Columns.Zip(actual.Columns, (expectedColumn, actualColumn) => new { ExpectedColumn = expectedColumn, ActualColumn = actualColumn }))
-                _AssertAreEqual(pair.ExpectedColumn, pair.ActualColumn);
+            foreach (var (expectedColumn, actualColumn) in expected.Columns.Zip(actual.Columns, (expectedColumn, actualColumn) => (expectedColumn, actualColumn)))
+                _AssertAreEqual(expectedColumn, actualColumn);
 
             Assert.Equal(expected.Rows.Count, actual.Rows.Count);
-            foreach (var pair in expected.Rows.Zip(actual.Rows, (expectedRow, actualRow) => new { ExpectedRow = expectedRow, ActualRow = actualRow }))
-                _AssertAreEqual(pair.ExpectedRow, pair.ActualRow);
+            foreach (var (expectedRow, actualRow) in expected.Rows.Zip(actual.Rows, (expectedRow, actualRow) => (expectedRow, actualRow)))
+                _AssertAreEqual(expectedRow, actualRow);
         }
 
         private static void _AssertAreEqual(TableColumnDocumentationElement expected, TableColumnDocumentationElement actual)
@@ -1899,8 +1898,8 @@ fourth line
         private static void _AssertAreEqual(TableRowDocumentationElement expected, TableRowDocumentationElement actual)
         {
             Assert.Equal(expected.Cells.Count, actual.Cells.Count);
-            foreach (var pair in expected.Cells.Zip(actual.Cells, (expectedCell, actualCell) => new { ExpectedCell = expectedCell, ActualCell = actualCell }))
-                _AssertAreEqual(pair.ExpectedCell, pair.ActualCell);
+            foreach (var (expectedCell, actualCell) in expected.Cells.Zip(actual.Cells, (expectedCell, actualCell) => (expectedCell, actualCell)))
+                _AssertAreEqual(expectedCell, actualCell);
         }
 
         private static void _AssertAreEqual(TableCellDocumentationElement expected, TableCellDocumentationElement actual)
@@ -1940,8 +1939,8 @@ fourth line
         private static void _AssertAreEqual(IEnumerable<InlineDocumentationElement> expected, IEnumerable<InlineDocumentationElement> actual)
         {
             Assert.Equal(expected.Count(), actual.Count());
-            foreach (var pair in expected.Zip(actual, (expectedElement, actualElement) => new { ExpectedElement = expectedElement, ActualElement = actualElement }))
-                _AssertAreEqual(pair.ExpectedElement, pair.ActualElement);
+            foreach (var (expectedElement, actualElement) in expected.Zip(actual, (expectedElement, actualElement) => (expectedElement, actualElement)))
+                _AssertAreEqual(expectedElement, actualElement);
         }
 
         private static void _AssertAreEqual(TextDocumentationElement expected, TextDocumentationElement actual)

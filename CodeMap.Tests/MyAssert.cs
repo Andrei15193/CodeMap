@@ -2775,8 +2775,8 @@ namespace CodeMap.Tests
             var items = selector();
             var itemsList = items as IReadOnlyCollection<TItem> ?? items.ToList();
             Assert.Equal(callbacks.Length, itemsList.Count);
-            foreach (var pair in callbacks.Zip(itemsList, (callback, item) => new { Callback = callback, Item = item }))
-                pair.Callback(pair.Item);
+            foreach (var (callback, item) in callbacks.Zip(itemsList, (callback, item) => (callback, item)))
+                callback(item);
             return instance;
         }
 
@@ -2851,8 +2851,8 @@ namespace CodeMap.Tests
             var expectedItems = expected as IReadOnlyCollection<TItem> ?? expected.ToList();
             var actualItems = actual as IReadOnlyCollection<TItem> ?? actual.ToList();
             Assert.Equal(expectedItems.Count, actualItems.Count);
-            foreach (var pair in expectedItems.Zip(actualItems, (expectedItem, actualItem) => new { ExpectedItem = expectedItem, ActualItem = actualItem }))
-                Assert.Same(pair.ExpectedItem, pair.ActualItem);
+            foreach (var (expectedItem, actualItem) in expectedItems.Zip(actualItems, (expectedItem, actualItem) => (expectedItem, actualItem)))
+                Assert.Same(expectedItem, actualItem);
 
             return instance;
         }

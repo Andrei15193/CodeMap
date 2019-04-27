@@ -489,13 +489,13 @@ namespace CodeMap
                         typeof(ClassDocumentationElement),
                         typeof(StructDocumentationElement)
                     }
-                join type in types.Select(type => _Create(type, @namespace, declaringType))
-                    on elementType equals type.GetType() into documentationElementsByType
-                select new
-                {
-                    ElementType = elementType,
-                    TypeDocumentationElements = documentationElementsByType
-                }
+                join typeDocumentationElement in from type in types
+                                                 select _Create(type, @namespace, declaringType)
+                    on elementType equals typeDocumentationElement.GetType() into documentationElementsByType
+                select (
+                    ElementType: elementType,
+                    TypeDocumentationElements: documentationElementsByType
+                )
             )
             .ToDictionary(pair => pair.ElementType, pair => pair.TypeDocumentationElements);
 
