@@ -80,6 +80,32 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public void AssemblyReference_IsEqualToInitialAssembly()
+        {
+            var assembly = typeof(GlobalTestClass).Assembly;
+            var otherAssembly = typeof(MemberReferenceFactoryTests).Assembly;
+            var assemblyReference = _Factory.Create(assembly);
+
+            Assert.True(assemblyReference == assembly);
+            Assert.True(assembly == assemblyReference);
+            Assert.True(assemblyReference != otherAssembly);
+            Assert.True(otherAssembly != assemblyReference);
+        }
+
+        [Fact]
+        public void AssemblyReference_IsEqualToInitialAssemblyName()
+        {
+            var assemblyName = typeof(GlobalTestClass).Assembly.GetName();
+            var otherAssemblyName = typeof(MemberReferenceFactoryTests).Assembly.GetName();
+            var assemblyReference = _Factory.Create(assemblyName);
+
+            Assert.True(assemblyReference == assemblyName);
+            Assert.True(assemblyName == assemblyReference);
+            Assert.True(assemblyReference != otherAssemblyName);
+            Assert.True(otherAssemblyName != assemblyReference);
+        }
+
+        [Fact]
         public void CreateFromNullMemberInfo_ThrowsExceptions()
         {
             var exception = Assert.Throws<ArgumentNullException>("memberInfo", () => _Factory.Create(memberInfo: null));
