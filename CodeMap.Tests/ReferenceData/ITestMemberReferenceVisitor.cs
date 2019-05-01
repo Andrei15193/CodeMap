@@ -19,5 +19,7 @@ namespace CodeMap.Tests.ReferenceData
         void VisitField(FieldReference field);
 
         void VisitConstructor(ConstructorReference constructor);
+
+        void VisitEvent(EventReference @event);
     }
 }

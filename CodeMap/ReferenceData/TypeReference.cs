@@ -22,7 +22,7 @@ namespace CodeMap.ReferenceData
         /// <summary>The type namespace.</summary>
         public string Namespace { get; internal set; }
 
-        /// <summary>The type generic arguments.</summary>
+        /// <summary>The type generic arguments. These can be generic parameter declarations or actual types in case of a constructed generic type.</summary>
         public IReadOnlyList<BaseTypeReference> GenericArguments { get; internal set; }
 
         /// <summary>The declaring type.</summary>

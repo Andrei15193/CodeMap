@@ -5,24 +5,24 @@ using System.Threading.Tasks;
 
 namespace CodeMap.ReferenceData
 {
-    /// <summary>Represents a reference to a field.</summary>
-    public class FieldReference : MemberReference, IEquatable<FieldInfo>
+    /// <summary>Represents an event reference.</summary>
+    public sealed class EventReference : MemberReference, IEquatable<EventInfo>
     {
-        internal FieldReference()
+        internal EventReference()
         {
         }
 
-        /// <summary>The field name.</summary>
+        /// <summary>The event name.</summary>
         public string Name { get; internal set; }
 
-        /// <summary>The field declaring type.</summary>
+        /// <summary>The event declaring type.</summary>
         public TypeReference DeclaringType { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override void Accept(MemberReferenceVisitor visitor)
-            => visitor.VisitField(this);
+            => visitor.VisitEvent(this);
 
         /// <summary>Asynchronously accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
@@ -30,20 +30,20 @@ namespace CodeMap.ReferenceData
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override Task AcceptAsync(MemberReferenceVisitor visitor, CancellationToken cancellationToken)
-            => visitor.VisitFieldAsync(this, cancellationToken);
+            => visitor.VisitEventAsync(this, cancellationToken);
 
-        /// <summary>Determines whether the current <see cref="FieldReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
+        /// <summary>Determines whether the current <see cref="EventReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="FieldReference"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
+        /// <returns>Returns <c>true</c> if the current <see cref="EventReference"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(MemberInfo memberInfo)
-            => memberInfo is FieldInfo fieldInfo && Equals(fieldInfo);
+            => memberInfo is EventInfo eventInfo && Equals(eventInfo);
 
-        /// <summary>Determines whether the current <see cref="FieldReference"/> is equal to the provided <paramref name="fieldInfo"/>.</summary>
-        /// <param name="fieldInfo">The <see cref="FieldInfo"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="FieldReference"/> references the provided <paramref name="fieldInfo"/>; <c>false</c> otherwise.</returns>
-        public virtual bool Equals(FieldInfo fieldInfo)
-            => fieldInfo != null
-            && string.Equals(fieldInfo.Name, Name, StringComparison.OrdinalIgnoreCase)
-            && DeclaringType == fieldInfo.DeclaringType;
+        /// <summary>Determines whether the current <see cref="EventReference"/> is equal to the provided <paramref name="eventInfo"/>.</summary>
+        /// <param name="eventInfo">The <see cref="MemberInfo"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="EventReference"/> references the provided <paramref name="eventInfo"/>; <c>false</c> otherwise.</returns>
+        public bool Equals(EventInfo eventInfo)
+            => eventInfo != null
+            && string.Equals(Name, eventInfo.Name, StringComparison.OrdinalIgnoreCase)
+            && DeclaringType == eventInfo.DeclaringType;
     }
 }

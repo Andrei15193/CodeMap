@@ -11,7 +11,7 @@ namespace CodeMap.ReferenceData
         {
         }
 
-        /// <summary>The type declaring the generic parameter.</summary>
+        /// <summary>The generic parameter declaring type.</summary>
         public TypeReference DeclaringType { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>

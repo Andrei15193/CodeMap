@@ -34,5 +34,8 @@ namespace CodeMap.Tests.ReferenceData
 
         protected override void VisitConstructor(ConstructorReference constructor)
             => _memberReferenceVisitor.VisitConstructor(constructor);
+
+        protected override void VisitEvent(EventReference @event)
+            => _memberReferenceVisitor.VisitEvent(@event);
     }
 }

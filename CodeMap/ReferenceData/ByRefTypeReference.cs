@@ -11,7 +11,7 @@ namespace CodeMap.ReferenceData
         {
         }
 
-        /// <summary>The type of the value passed by ref.</summary>
+        /// <summary>The value type passed by ref.</summary>
         public BaseTypeReference ReferentType { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>

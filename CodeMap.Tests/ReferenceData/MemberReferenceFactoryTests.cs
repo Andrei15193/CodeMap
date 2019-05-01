@@ -3,6 +3,7 @@ using CodeMap.Tests.Data;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -232,6 +233,20 @@ namespace CodeMap.Tests.ReferenceData
                 )
                 .All(pair => pair.TypeReference == pair.Type)
             );
+        }
+
+        [Fact]
+        public async Task CreateFromEvent_ReturnsEventReference()
+        {
+            EventReference eventReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitEvent(It.IsNotNull<EventReference>()))
+                .Callback((EventReference actualEventReference) => eventReference = actualEventReference);
+
+            await _Factory.Create(typeof(INotifyPropertyChanged).GetEvent(nameof(INotifyPropertyChanged.PropertyChanged))).AcceptAsync(_Visitor);
+
+            Assert.Equal("PropertyChanged", eventReference.Name);
+            Assert.True(eventReference.DeclaringType == typeof(INotifyPropertyChanged));
         }
 
         [Fact]

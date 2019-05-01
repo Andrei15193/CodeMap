@@ -12,7 +12,7 @@ namespace CodeMap.ReferenceData
         {
         }
 
-        /// <summary>The value of the constant.</summary>
+        /// <summary>The constant value.</summary>
         public object Value { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>

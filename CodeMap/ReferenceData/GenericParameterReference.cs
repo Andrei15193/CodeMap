@@ -9,7 +9,7 @@ namespace CodeMap.ReferenceData
         {
         }
 
-        /// <summary>The name of the generic parameter.</summary>
+        /// <summary>The generic parameter name.</summary>
         public string Name { get; internal set; }
 
         /// <summary>Determines whether the current <see cref="GenericParameterReference"/> is equal to the provided <paramref name="type"/>.</summary>

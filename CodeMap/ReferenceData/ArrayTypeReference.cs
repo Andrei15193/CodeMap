@@ -11,10 +11,10 @@ namespace CodeMap.ReferenceData
         {
         }
 
-        /// <summary>The rank of the array.</summary>
+        /// <summary>The array rank.</summary>
         public int Rank { get; internal set; }
 
-        /// <summary>The item type of the array.</summary>
+        /// <summary>The array item type.</summary>
         public BaseTypeReference ItemType { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>

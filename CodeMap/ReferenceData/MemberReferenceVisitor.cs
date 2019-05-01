@@ -174,5 +174,26 @@ namespace CodeMap.ReferenceData
                 return Task.FromException(exception);
             }
         }
+
+        /// <summary>Visits the given <paramref name="event"/>.</summary>
+        /// <param name="event">The <see cref="EventReference"/> to visit.</param>
+        protected internal abstract void VisitEvent(EventReference @event);
+
+        /// <summary>Asynchronously visits the given <paramref name="event"/>.</summary>
+        /// <param name="event">The <see cref="EventReference"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitEventAsync(EventReference @event, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitEvent(@event);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
     }
 }

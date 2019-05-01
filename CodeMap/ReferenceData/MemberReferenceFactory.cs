@@ -102,6 +102,9 @@ namespace CodeMap.ReferenceData
                 case ConstructorInfo constructorInfo:
                     return _GetConstructorReference(constructorInfo);
 
+                case EventInfo eventInfo:
+                    return _GetEventReference(eventInfo);
+
                 default:
                     throw new ArgumentException("Unknown member type.", nameof(memberInfo));
             }
@@ -215,6 +218,18 @@ namespace CodeMap.ReferenceData
                         .Cast<BaseTypeReference>()
                         .AsReadOnlyList();
                 }
+            );
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetEventReference(EventInfo eventInfo)
+        {
+            var eventReference = new EventReference
+            {
+                Name = eventInfo.Name
+            };
+            return (
+                eventReference,
+                () => eventReference.DeclaringType = (TypeReference)Create(eventInfo.DeclaringType)
             );
         }
 
