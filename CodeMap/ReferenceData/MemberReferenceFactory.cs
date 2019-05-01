@@ -95,15 +95,14 @@ namespace CodeMap.ReferenceData
         private (MemberReference MemberReference, Action CircularReferenceSetter) _GetTypeReference(Type type)
         {
             var declaringType = type.GetDeclaringType();
-            var typeReference = new TypeReference
-            {
-                Name = type.GetTypeName().ToString(),
-                Namespace = type.Namespace,
-                DeclaringType = declaringType != null
-                    ? (TypeReference)Create(declaringType)
-                    : null,
-                Assembly = Create(type.Assembly),
-            };
+            var typeReference = type == typeof(void) ? new VoidTypeReference() : new TypeReference();
+            typeReference.Name = type.GetTypeName().ToString();
+            typeReference.Namespace = type.Namespace;
+            typeReference.DeclaringType = declaringType != null
+                ? (TypeReference)Create(declaringType)
+                : null;
+            typeReference.Assembly = Create(type.Assembly);
+
             return (
                 typeReference,
                 () => typeReference.GenericArguments = type

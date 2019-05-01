@@ -87,6 +87,21 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
+        public async Task CreateFromVoidType_ReturnsVoidTypeReference()
+        {
+            TypeReference typeReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitType(It.IsNotNull<TypeReference>()))
+                .Callback((TypeReference actualTypeReference) => typeReference = actualTypeReference);
+
+            await _Factory.Create(typeof(void)).AcceptAsync(_Visitor);
+
+            Assert.IsType<VoidTypeReference>(typeReference);
+            Assert.True(typeReference == typeof(void));
+            Assert.True(typeReference != typeof(int));
+        }
+
+        [Fact]
         public async Task CreateFromGenericTypeParameter_ReturnsGenericTypeParameterReference()
         {
             GenericTypeParameterReference genericParameterReference = null;
