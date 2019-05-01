@@ -130,11 +130,29 @@ namespace CodeMap.Tests.ReferenceData
             await _Factory.Create(typeof(decimal[][,])).AcceptAsync(_Visitor);
 
             Assert.Equal(1, arrayTypeReference.Rank);
-            var nestedArray = Assert.IsType<ArrayTypeReference>(arrayTypeReference.ItemType);
-            Assert.Equal(2, nestedArray.Rank);
-            Assert.True(nestedArray.ItemType == typeof(decimal));
+            var itemArrayTypeReference = Assert.IsType<ArrayTypeReference>(arrayTypeReference.ItemType);
+            Assert.Equal(2, itemArrayTypeReference.Rank);
+            Assert.True(itemArrayTypeReference.ItemType == typeof(decimal));
             Assert.True(arrayTypeReference == typeof(decimal[][,]));
             Assert.True(arrayTypeReference != typeof(decimal[,][]));
+        }
+
+        [Fact]
+        public async Task CreateFromPointerType_ReturnsPointerTypeReference()
+        {
+            PointerTypeReference pointerTypeReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitPointer(It.IsNotNull<PointerTypeReference>()))
+                .Callback((PointerTypeReference actualPointerTypeReference) => pointerTypeReference = actualPointerTypeReference);
+
+            await _Factory.Create(typeof(int**)).AcceptAsync(_Visitor);
+
+            var referentPointerTypeReference = Assert.IsType<PointerTypeReference>(pointerTypeReference.ReferentType);
+            Assert.True(referentPointerTypeReference.ReferentType == typeof(int));
+            Assert.True(referentPointerTypeReference == typeof(int*));
+            Assert.True(referentPointerTypeReference != typeof(int));
+            Assert.True(pointerTypeReference == typeof(int**));
+            Assert.True(pointerTypeReference != typeof(int*));
         }
 
         [Fact]

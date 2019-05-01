@@ -49,6 +49,27 @@ namespace CodeMap.ReferenceData
             }
         }
 
+        /// <summary>Visits the given <paramref name="pointerType"/>.</summary>
+        /// <param name="pointerType">The <see cref="PointerTypeReference"/> to visit.</param>
+        protected internal abstract void VisitPointerType(PointerTypeReference pointerType);
+
+        /// <summary>Asynchronously visits the given <paramref name="pointerType"/>.</summary>
+        /// <param name="pointerType">The <see cref="PointerTypeReference"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitPointerTypeAsync(PointerTypeReference pointerType, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitPointerType(pointerType);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
         /// <summary>Visits the given <paramref name="genericTypeParameter"/>.</summary>
         /// <param name="genericTypeParameter">The <see cref="GenericTypeParameterReference"/> to visit.</param>
         protected internal abstract void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter);

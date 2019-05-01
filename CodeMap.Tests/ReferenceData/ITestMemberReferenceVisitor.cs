@@ -8,6 +8,8 @@ namespace CodeMap.Tests.ReferenceData
 
         void VisitArray(ArrayTypeReference arrayType);
 
+        void VisitPointer(PointerTypeReference pointerType);
+
         void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter);
     }
 }

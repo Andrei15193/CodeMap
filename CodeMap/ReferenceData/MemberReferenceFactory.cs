@@ -81,6 +81,9 @@ namespace CodeMap.ReferenceData
                 case Type type when type.IsArray:
                     return _GetArrayTypeReference(type);
 
+                case Type type when type.IsPointer:
+                    return _GetPointerTypeReference(type);
+
                 case Type type when type.IsGenericTypeParameter:
                     return _GetGenericTypeParameterReference(type);
 
@@ -101,6 +104,15 @@ namespace CodeMap.ReferenceData
             return (
                 arrayType,
                 () => arrayType.ItemType = (BaseTypeReference)Create(type.GetElementType())
+            );
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetPointerTypeReference(Type type)
+        {
+            var pointerType = new PointerTypeReference();
+            return (
+                pointerType,
+                () => pointerType.ReferentType = (BaseTypeReference)Create(type.GetElementType())
             );
         }
 
