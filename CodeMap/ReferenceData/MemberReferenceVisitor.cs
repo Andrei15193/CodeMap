@@ -28,19 +28,19 @@ namespace CodeMap.ReferenceData
             }
         }
 
-        /// <summary>Visits the given <paramref name="arrayType"/>.</summary>
-        /// <param name="arrayType">The <see cref="ArrayTypeReference"/> to visit.</param>
-        protected internal abstract void VisitArrayType(ArrayTypeReference arrayType);
+        /// <summary>Visits the given <paramref name="array"/>.</summary>
+        /// <param name="array">The <see cref="ArrayTypeReference"/> to visit.</param>
+        protected internal abstract void VisitArray(ArrayTypeReference array);
 
-        /// <summary>Asynchronously visits the given <paramref name="arrayType"/>.</summary>
-        /// <param name="arrayType">The <see cref="ArrayTypeReference"/> to visit.</param>
+        /// <summary>Asynchronously visits the given <paramref name="array"/>.</summary>
+        /// <param name="array">The <see cref="ArrayTypeReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitArrayTypeAsync(ArrayTypeReference arrayType, CancellationToken cancellationToken)
+        protected internal virtual Task VisitArrayAsync(ArrayTypeReference array, CancellationToken cancellationToken)
         {
             try
             {
-                VisitArrayType(arrayType);
+                VisitArray(array);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -49,19 +49,40 @@ namespace CodeMap.ReferenceData
             }
         }
 
-        /// <summary>Visits the given <paramref name="pointerType"/>.</summary>
-        /// <param name="pointerType">The <see cref="PointerTypeReference"/> to visit.</param>
-        protected internal abstract void VisitPointerType(PointerTypeReference pointerType);
+        /// <summary>Visits the given <paramref name="pointer"/>.</summary>
+        /// <param name="pointer">The <see cref="PointerTypeReference"/> to visit.</param>
+        protected internal abstract void VisitPointer(PointerTypeReference pointer);
 
-        /// <summary>Asynchronously visits the given <paramref name="pointerType"/>.</summary>
-        /// <param name="pointerType">The <see cref="PointerTypeReference"/> to visit.</param>
+        /// <summary>Asynchronously visits the given <paramref name="pointer"/>.</summary>
+        /// <param name="pointer">The <see cref="PointerTypeReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitPointerTypeAsync(PointerTypeReference pointerType, CancellationToken cancellationToken)
+        protected internal virtual Task VisitPointerAsync(PointerTypeReference pointer, CancellationToken cancellationToken)
         {
             try
             {
-                VisitPointerType(pointerType);
+                VisitPointer(pointer);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits the given <paramref name="byRef"/>.</summary>
+        /// <param name="byRef">The <see cref="ByRefTypeReference"/> to visit.</param>
+        protected internal abstract void VisitByRef(ByRefTypeReference byRef);
+
+        /// <summary>Asynchronously visits the given <paramref name="byRef"/>.</summary>
+        /// <param name="byRef">The <see cref="ByRefTypeReference"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitByRefAsync(ByRefTypeReference byRef, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitByRef(byRef);
                 return Task.CompletedTask;
             }
             catch (Exception exception)

@@ -10,6 +10,8 @@ namespace CodeMap.Tests.ReferenceData
 
         void VisitPointer(PointerTypeReference pointerType);
 
+        void VisitByRef(ByRefTypeReference byRefType);
+
         void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter);
 
         void VisitConstant(ConstantReference constant);

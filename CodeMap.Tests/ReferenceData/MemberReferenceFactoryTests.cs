@@ -156,6 +156,21 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
+        public async Task CreateFromByRefType_ReturnsByRefTypeReference()
+        {
+            ByRefTypeReference byRefTypeReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitByRef(It.IsNotNull<ByRefTypeReference>()))
+                .Callback((ByRefTypeReference actualByRefTypeReference) => byRefTypeReference = actualByRefTypeReference);
+
+            await _Factory.Create(typeof(int).MakeByRefType()).AcceptAsync(_Visitor);
+
+            Assert.True(byRefTypeReference.ReferentType == typeof(int));
+            Assert.True(byRefTypeReference == typeof(int).MakeByRefType());
+            Assert.True(byRefTypeReference != typeof(int));
+        }
+
+        [Fact]
         public async Task CreateFromConstant_ReturnsConstantReference()
         {
             ConstantReference constantReference = null;

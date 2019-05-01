@@ -18,7 +18,7 @@ namespace CodeMap.ReferenceData
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override void Accept(MemberReferenceVisitor visitor)
-            => visitor.VisitPointerType(this);
+            => visitor.VisitPointer(this);
 
         /// <summary>Asynchronously accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
@@ -26,7 +26,7 @@ namespace CodeMap.ReferenceData
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override Task AcceptAsync(MemberReferenceVisitor visitor, CancellationToken cancellationToken)
-            => visitor.VisitPointerTypeAsync(this, cancellationToken);
+            => visitor.VisitPointerAsync(this, cancellationToken);
 
         /// <summary>Determines whether the current <see cref="PointerTypeReference"/> is equal to the provided <paramref name="type"/>.</summary>
         /// <param name="type">The <see cref="Type"/> to compare to.</param>

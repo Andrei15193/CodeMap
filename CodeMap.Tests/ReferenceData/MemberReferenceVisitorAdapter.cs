@@ -14,11 +14,14 @@ namespace CodeMap.Tests.ReferenceData
         protected override void VisitType(TypeReference type)
             => _memberReferenceVisitor.VisitType(type);
 
-        protected override void VisitArrayType(ArrayTypeReference arrayType)
+        protected override void VisitArray(ArrayTypeReference arrayType)
             => _memberReferenceVisitor.VisitArray(arrayType);
 
-        protected override void VisitPointerType(PointerTypeReference pointerType)
+        protected override void VisitPointer(PointerTypeReference pointerType)
             => _memberReferenceVisitor.VisitPointer(pointerType);
+
+        protected override void VisitByRef(ByRefTypeReference byRefType)
+            => _memberReferenceVisitor.VisitByRef(byRefType);
 
         protected override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
             => _memberReferenceVisitor.VisitGenericTypeParameter(genericTypeParameter);

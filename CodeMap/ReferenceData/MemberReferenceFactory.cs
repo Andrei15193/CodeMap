@@ -84,6 +84,9 @@ namespace CodeMap.ReferenceData
                 case Type type when type.IsPointer:
                     return _GetPointerTypeReference(type);
 
+                case Type type when type.IsByRef:
+                    return _GetByRefTypeReference(type);
+
                 case Type type when type.IsGenericTypeParameter:
                     return _GetGenericTypeParameterReference(type);
 
@@ -146,6 +149,15 @@ namespace CodeMap.ReferenceData
             return (
                 pointerType,
                 () => pointerType.ReferentType = (BaseTypeReference)Create(type.GetElementType())
+            );
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetByRefTypeReference(Type type)
+        {
+            var byRefType = new ByRefTypeReference();
+            return (
+                byRefType,
+                () => byRefType.ReferentType = (BaseTypeReference)Create(type.GetElementType())
             );
         }
 
