@@ -12,34 +12,6 @@ namespace CodeMap.ReferenceData
     /// <summary>Represents a type reference.</summary>
     public class TypeReference : BaseTypeReference
     {
-        /// <summary>Determines whether the provided <paramref name="typeReference"/> and <paramref name="type"/> are equal.</summary>
-        /// <param name="typeReference">The <see cref="TypeReference"/> to compare.</param>
-        /// <param name="type">The <see cref="Type"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
-        public static bool operator ==(TypeReference typeReference, Type type)
-            => Equals(typeReference, type);
-
-        /// <summary>Determines whether the provided <paramref name="typeReference"/> and <paramref name="type"/> are not equal.</summary>
-        /// <param name="typeReference">The <see cref="TypeReference"/> to compare.</param>
-        /// <param name="type">The <see cref="Type"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
-        public static bool operator !=(TypeReference typeReference, Type type)
-            => !Equals(typeReference, type);
-
-        /// <summary>Determines whether the provided <paramref name="typeReference"/> and <paramref name="type"/> are equal.</summary>
-        /// <param name="type">The <see cref="Type"/> to compare.</param>
-        /// <param name="typeReference">The <see cref="TypeReference"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
-        public static bool operator ==(Type type, TypeReference typeReference)
-            => Equals(typeReference, type);
-
-        /// <summary>Determines whether the provided <paramref name="typeReference"/> and <paramref name="type"/> are not equal.</summary>
-        /// <param name="type">The <see cref="Type"/> to compare.</param>
-        /// <param name="typeReference">The <see cref="TypeReference"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
-        public static bool operator !=(Type type, TypeReference typeReference)
-            => !Equals(typeReference, type);
-
         internal TypeReference()
         {
         }

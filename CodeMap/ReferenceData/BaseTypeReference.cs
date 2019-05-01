@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace CodeMap.ReferenceData
 {
-    /// <summary>Represents a base type reference.</summary>
+    /// <summary>Represents a base class for type reference such as concrete types, generic type definitions, arrays and so on.</summary>
     public abstract class BaseTypeReference : MemberReference, IEquatable<Type>
     {
         /// <summary>Determines whether the provided <paramref name="typeReference"/> and <paramref name="type"/> are equal.</summary>
