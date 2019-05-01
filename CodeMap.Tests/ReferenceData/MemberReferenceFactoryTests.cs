@@ -7,31 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace CodeMap.Tests
+namespace CodeMap.Tests.ReferenceData
 {
-    public interface ITestMemberReferenceVisitor
-    {
-        void VisitType(TypeReference type);
-
-        void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter);
-    }
-
-    public class MemberReferenceVisitorAdapter : MemberReferenceVisitor
-    {
-        private readonly ITestMemberReferenceVisitor _memberReferenceVisitor;
-
-        public MemberReferenceVisitorAdapter(ITestMemberReferenceVisitor memberReferenceVisitor)
-        {
-            _memberReferenceVisitor = memberReferenceVisitor;
-        }
-
-        protected override void VisitType(TypeReference type)
-            => _memberReferenceVisitor.VisitType(type);
-
-        protected override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
-            => _memberReferenceVisitor.VisitGenericTypeParameter(genericTypeParameter);
-    }
-
     public class MemberReferenceFactoryTests
     {
         private MemberReferenceFactory _Factory { get; }
