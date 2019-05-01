@@ -171,6 +171,20 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
+        public async Task CreateFromGenericTypeParameter_ReturnsGenericTypeParameterReference()
+        {
+            GenericTypeParameterReference genericParameterReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitGenericTypeParameter(It.IsNotNull<GenericTypeParameterReference>()))
+                .Callback((GenericTypeParameterReference actualGenericParameterReference) => genericParameterReference = actualGenericParameterReference);
+
+            await _Factory.Create(typeof(IEnumerable<>).GetGenericArguments().Single()).AcceptAsync(_Visitor);
+
+            Assert.Equal("T", genericParameterReference.Name);
+            Assert.True(genericParameterReference.DeclaringType == typeof(IEnumerable<>));
+        }
+
+        [Fact]
         public async Task CreateFromConstant_ReturnsConstantReference()
         {
             ConstantReference constantReference = null;
@@ -200,17 +214,24 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromGenericTypeParameter_ReturnsGenericTypeParameterReference()
+        public async Task CreateFromConstructor_ReturnsConstructorReference()
         {
-            GenericTypeParameterReference genericParameterReference = null;
+            ConstructorReference constructorReference = null;
             _VisitorMock
-                .Setup(visitor => visitor.VisitGenericTypeParameter(It.IsNotNull<GenericTypeParameterReference>()))
-                .Callback((GenericTypeParameterReference actualGenericParameterReference) => genericParameterReference = actualGenericParameterReference);
+                .Setup(visitor => visitor.VisitConstructor(It.IsNotNull<ConstructorReference>()))
+                .Callback((ConstructorReference actualConstructorReference) => constructorReference = actualConstructorReference);
 
-            await _Factory.Create(typeof(IEnumerable<>).GetGenericArguments().Single()).AcceptAsync(_Visitor);
+            await _Factory.Create(typeof(string).GetConstructor(new[] { typeof(char), typeof(int) })).AcceptAsync(_Visitor);
 
-            Assert.Equal("T", genericParameterReference.Name);
-            Assert.True(genericParameterReference.DeclaringType == typeof(IEnumerable<>));
+            Assert.True(constructorReference.DeclaringType == typeof(string));
+            Assert.True(constructorReference
+                .ParameterTypes
+                .Zip(
+                    new[] { typeof(char), typeof(int) },
+                    (typeReference, type) => (TypeReference: typeReference, Type: type)
+                )
+                .All(pair => pair.TypeReference == pair.Type)
+            );
         }
 
         [Fact]

@@ -31,5 +31,8 @@ namespace CodeMap.Tests.ReferenceData
 
         protected override void VisitField(FieldReference field)
             => _memberReferenceVisitor.VisitField(field);
+
+        protected override void VisitConstructor(ConstructorReference constructor)
+            => _memberReferenceVisitor.VisitConstructor(constructor);
     }
 }

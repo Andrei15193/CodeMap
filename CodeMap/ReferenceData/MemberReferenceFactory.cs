@@ -99,6 +99,9 @@ namespace CodeMap.ReferenceData
                 case FieldInfo fieldInfo:
                     return _GetFieldReference(fieldInfo);
 
+                case ConstructorInfo constructorInfo:
+                    return _GetConstructorReference(constructorInfo);
+
                 default:
                     throw new ArgumentException("Unknown member type.", nameof(memberInfo));
             }
@@ -195,6 +198,23 @@ namespace CodeMap.ReferenceData
             return (
                 constantReference,
                 () => constantReference.DeclaringType = (TypeReference)Create(fieldInfo.DeclaringType)
+            );
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetConstructorReference(ConstructorInfo constructorInfo)
+        {
+            var constructorReference = new ConstructorReference();
+            return (
+                constructorReference,
+                () =>
+                {
+                    constructorReference.DeclaringType = (TypeReference)Create(constructorInfo.DeclaringType);
+                    constructorReference.ParameterTypes = constructorInfo
+                        .GetParameters()
+                        .Select(parameter => Create(parameter.ParameterType))
+                        .Cast<BaseTypeReference>()
+                        .AsReadOnlyList();
+                }
             );
         }
 

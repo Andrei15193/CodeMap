@@ -153,5 +153,26 @@ namespace CodeMap.ReferenceData
                 return Task.FromException(exception);
             }
         }
+
+        /// <summary>Visits the given <paramref name="constructor"/>.</summary>
+        /// <param name="constructor">The <see cref="ConstructorReference"/> to visit.</param>
+        protected internal abstract void VisitConstructor(ConstructorReference constructor);
+
+        /// <summary>Asynchronously visits the given <paramref name="constructor"/>.</summary>
+        /// <param name="constructor">The <see cref="ConstructorReference"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitConstructorAsync(ConstructorReference constructor, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitConstructor(constructor);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
     }
 }

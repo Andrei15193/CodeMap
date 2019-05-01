@@ -17,5 +17,7 @@ namespace CodeMap.Tests.ReferenceData
         void VisitConstant(ConstantReference constant);
 
         void VisitField(FieldReference field);
+
+        void VisitConstructor(ConstructorReference constructor);
     }
 }
