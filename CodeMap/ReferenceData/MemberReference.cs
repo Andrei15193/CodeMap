@@ -58,11 +58,6 @@ namespace CodeMap.ReferenceData
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         public abstract Task AcceptAsync(MemberReferenceVisitor visitor, CancellationToken cancellationToken);
 
-        /// <summary>Determines whether the current <see cref="MemberReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
-        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="MemberInfo"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
-        public abstract bool Equals(MemberInfo memberInfo);
-
         /// <summary>Determines whether the current <see cref="MemberReference"/> is equal to the provided <paramref name="obj"/>.</summary>
         /// <param name="obj">The <see cref="object"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="MemberReference"/> references the provided <paramref name="obj"/>; <c>false</c> otherwise.</returns>
@@ -75,5 +70,10 @@ namespace CodeMap.ReferenceData
             => obj is MemberInfo memberInfo
                 ? Equals(memberInfo)
                 : base.Equals(obj);
+
+        /// <summary>Determines whether the current <see cref="MemberReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
+        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="MemberInfo"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
+        public abstract bool Equals(MemberInfo memberInfo);
     }
 }

@@ -3,6 +3,7 @@ using CodeMap.Tests.Data;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -98,6 +99,23 @@ namespace CodeMap.Tests.ReferenceData
 
             Assert.IsType<VoidTypeReference>(typeReference);
             Assert.True(typeReference == typeof(void));
+            Assert.True(typeReference != typeof(int));
+        }
+
+        [Fact]
+        public async Task CreateDynamicTypeReference()
+        {
+            TypeReference typeReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitType(It.IsNotNull<TypeReference>()))
+                .Callback((TypeReference actualTypeReference) => typeReference = actualTypeReference);
+
+            await _Factory.CreateDynamic().AcceptAsync(_Visitor);
+
+            Assert.IsType<DynamicTypeReference>(typeReference);
+            Assert.True(typeReference == typeof(object));
+            Assert.True(typeReference == typeof(IDynamicMetaObjectProvider));
+            Assert.True(typeReference == typeof(DynamicObject));
             Assert.True(typeReference != typeof(int));
         }
 

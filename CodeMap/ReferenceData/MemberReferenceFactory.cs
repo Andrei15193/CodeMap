@@ -36,6 +36,15 @@ namespace CodeMap.ReferenceData
             return memberReference;
         }
 
+        /// <summary>Creates a <see cref="DynamicTypeReference"/> that can be used to represent dynamic typed parameters.</summary>
+        /// <returns>Returns a <see cref="DynamicTypeReference"/>.</returns>
+        public DynamicTypeReference CreateDynamic()
+        {
+            var typeReference = new DynamicTypeReference();
+            _InitializeTypeReference(typeof(object), typeReference);
+            return typeReference;
+        }
+
         /// <summary>Creates an <see cref="AssemblyReference"/> for the provided <paramref name="assembly"/>.</summary>
         /// <param name="assembly">The <see cref="Assembly"/> for which to create the reference.</param>
         /// <returns>Returns an <see cref="AssemblyReference"/> for the provided <paramref name="assembly"/>.</returns>
@@ -94,15 +103,10 @@ namespace CodeMap.ReferenceData
 
         private (MemberReference MemberReference, Action CircularReferenceSetter) _GetTypeReference(Type type)
         {
-            var declaringType = type.GetDeclaringType();
-            var typeReference = type == typeof(void) ? new VoidTypeReference() : new TypeReference();
-            typeReference.Name = type.GetTypeName().ToString();
-            typeReference.Namespace = type.Namespace;
-            typeReference.DeclaringType = declaringType != null
-                ? (TypeReference)Create(declaringType)
-                : null;
-            typeReference.Assembly = Create(type.Assembly);
-
+            var typeReference = type == typeof(void)
+                ? new VoidTypeReference()
+                : new TypeReference();
+            _InitializeTypeReference(type, typeReference);
             return (
                 typeReference,
                 () => typeReference.GenericArguments = type
@@ -111,6 +115,17 @@ namespace CodeMap.ReferenceData
                     .Cast<BaseTypeReference>()
                     .AsReadOnlyList()
             );
+        }
+
+        private void _InitializeTypeReference(Type type, TypeReference typeReference)
+        {
+            var declaringType = type.GetDeclaringType();
+            typeReference.Name = type.GetTypeName().ToString();
+            typeReference.Namespace = type.Namespace;
+            typeReference.DeclaringType = declaringType != null
+                ? (TypeReference)Create(declaringType)
+                : null;
+            typeReference.Assembly = Create(type.Assembly);
         }
 
         private static AssemblyReference _GetAssemblyReference(AssemblyName assemblyName)
