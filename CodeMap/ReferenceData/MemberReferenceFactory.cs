@@ -93,6 +93,9 @@ namespace CodeMap.ReferenceData
                 case FieldInfo fieldInfo when fieldInfo.IsLiteral:
                     return _GetConstantReference(fieldInfo);
 
+                case FieldInfo fieldInfo:
+                    return _GetFieldReference(fieldInfo);
+
                 default:
                     throw new ArgumentException("Unknown member type.", nameof(memberInfo));
             }
@@ -164,6 +167,18 @@ namespace CodeMap.ReferenceData
             {
                 Name = fieldInfo.Name,
                 Value = fieldInfo.GetValue(null)
+            };
+            return (
+                constantReference,
+                () => constantReference.DeclaringType = (TypeReference)Create(fieldInfo.DeclaringType)
+            );
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetFieldReference(FieldInfo fieldInfo)
+        {
+            var constantReference = new FieldReference
+            {
+                Name = fieldInfo.Name
             };
             return (
                 constantReference,

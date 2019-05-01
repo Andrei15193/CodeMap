@@ -25,5 +25,8 @@ namespace CodeMap.Tests.ReferenceData
 
         protected override void VisitConstant(ConstantReference constant)
             => _memberReferenceVisitor.VisitConstant(constant);
+
+        protected override void VisitField(FieldReference field)
+            => _memberReferenceVisitor.VisitField(field);
     }
 }

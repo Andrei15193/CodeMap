@@ -171,6 +171,20 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
+        public async Task CreateFromField_ReturnsFieldReference()
+        {
+            FieldReference fieldReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitField(It.IsNotNull<FieldReference>()))
+                .Callback((FieldReference actualFieldReference) => fieldReference = actualFieldReference);
+
+            await _Factory.Create(typeof(string).GetField(nameof(string.Empty))).AcceptAsync(_Visitor);
+
+            Assert.Equal("Empty", fieldReference.Name);
+            Assert.True(fieldReference.DeclaringType == typeof(string));
+        }
+
+        [Fact]
         public async Task CreateFromGenericTypeParameter_ReturnsGenericTypeParameterReference()
         {
             GenericTypeParameterReference genericParameterReference = null;

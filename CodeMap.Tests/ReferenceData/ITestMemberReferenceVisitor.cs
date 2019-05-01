@@ -13,5 +13,7 @@ namespace CodeMap.Tests.ReferenceData
         void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter);
 
         void VisitConstant(ConstantReference constant);
+
+        void VisitField(FieldReference field);
     }
 }
