@@ -3,6 +3,7 @@
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,7 +67,7 @@ namespace CodeMap.ReferenceData
             if (visitor == null)
                 throw new ArgumentNullException(nameof(visitor));
 
-            visitor.VisitTypeReference(this);
+            visitor.VisitType(this);
         }
 
         /// <summary>Asynchronously accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
@@ -77,9 +78,9 @@ namespace CodeMap.ReferenceData
         public override Task AcceptAsync(MemberReferenceVisitor visitor, CancellationToken cancellationToken)
         {
             if (visitor == null)
-                throw new ArgumentNullException(nameof(visitor));
+                return Task.FromException(new ArgumentNullException(nameof(visitor)));
 
-            return visitor.VisitTypeReferenceAsync(this, cancellationToken);
+            return visitor.VisitTypeAsync(this, cancellationToken);
         }
 
         /// <summary>Determines whether the current <see cref="TypeReference"/> is equal to the provided <paramref name="type"/>.</summary>
@@ -87,7 +88,31 @@ namespace CodeMap.ReferenceData
         /// <returns>Returns <c>true</c> if the current <see cref="TypeReference"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(Type type)
         {
-            return false;
+            if (type == null || type.IsPointer || type.IsArray || type.IsByRef || type.IsGenericParameter)
+                return false;
+
+            var declaryingType = type.GetDeclaringType();
+            var genericArgumentsOffset = declaryingType?.GetGenericArguments().Length ?? 0;
+            var genericArguments = type.GetGenericArguments();
+            return
+                Name.AsSpan().Equals(type.GetTypeName(), StringComparison.OrdinalIgnoreCase)
+                && string.Equals(Namespace, type.Namespace, StringComparison.OrdinalIgnoreCase)
+                && DeclaringType == declaryingType
+                && GenericArguments.Count == genericArguments.Length - genericArgumentsOffset
+                && _CompareGenericArguments(type, genericArguments.Skip(genericArgumentsOffset))
+                && Assembly == type.Assembly.GetName();
+        }
+
+        private bool _CompareGenericArguments(Type type, IEnumerable<Type> genericArguments)
+        {
+            if (GenericArguments.OfType<GenericParameterReference>().Any())
+                return type.IsGenericTypeDefinition;
+            else
+                return GenericArguments.Zip(
+                    genericArguments,
+                    (typeReference, genericArgument) => (TypeReference: typeReference, GenericArgument: genericArgument)
+                )
+                .All(pair => pair.TypeReference == pair.GenericArgument);
         }
     }
 }

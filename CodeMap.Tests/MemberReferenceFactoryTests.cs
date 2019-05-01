@@ -1,6 +1,9 @@
 ﻿using CodeMap.ReferenceData;
+using CodeMap.Tests.Data;
 using Moq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -8,7 +11,9 @@ namespace CodeMap.Tests
 {
     public interface ITestMemberReferenceVisitor
     {
-        void VisitTypeReference(TypeReference typeReference);
+        void VisitType(TypeReference type);
+
+        void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter);
     }
 
     public class MemberReferenceVisitorAdapter : MemberReferenceVisitor
@@ -20,8 +25,11 @@ namespace CodeMap.Tests
             _memberReferenceVisitor = memberReferenceVisitor;
         }
 
-        protected override void VisitTypeReference(TypeReference typeReference)
-            => _memberReferenceVisitor.VisitTypeReference(typeReference);
+        protected override void VisitType(TypeReference type)
+            => _memberReferenceVisitor.VisitType(type);
+
+        protected override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
+            => _memberReferenceVisitor.VisitGenericTypeParameter(genericTypeParameter);
     }
 
     public class MemberReferenceFactoryTests
@@ -44,17 +52,75 @@ namespace CodeMap.Tests
         {
             TypeReference typeReference = null;
             _VisitorMock
-                .Setup(visitor => visitor.VisitTypeReference(It.IsNotNull<TypeReference>()))
+                .Setup(visitor => visitor.VisitType(It.IsNotNull<TypeReference>()))
                 .Callback((TypeReference actualTypeReference) => typeReference = actualTypeReference);
 
-            var memberReference = _Factory.Create(typeof(int));
-            await memberReference.AcceptAsync(_Visitor);
+            await _Factory.Create(typeof(int)).AcceptAsync(_Visitor);
 
             Assert.Equal("Int32", typeReference.Name);
             Assert.Equal("System", typeReference.Namespace);
             Assert.Empty(typeReference.GenericArguments);
             Assert.Null(typeReference.DeclaringType);
             Assert.True(typeof(int).Assembly == typeReference.Assembly);
+        }
+
+        [Fact]
+        public async Task TypeReference_IsEqualToInitialType()
+        {
+            TypeReference typeReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitType(It.IsNotNull<TypeReference>()))
+                .Callback((TypeReference actualTypeReference) => typeReference = actualTypeReference);
+            var type = typeof(TestClass<int>.NestedTestClass<IEnumerable<string>, IDictionary<long, decimal>>);
+
+            await _Factory.Create(type).AcceptAsync(_Visitor);
+
+            Assert.True(typeReference == type);
+            Assert.True(type == typeReference);
+            Assert.True(typeReference != type.GetGenericTypeDefinition());
+            Assert.True(type.GetGenericTypeDefinition() != typeReference);
+
+            Assert.True(typeReference.DeclaringType == typeof(TestClass<int>));
+            Assert.True(typeof(TestClass<int>) == typeReference.DeclaringType);
+            Assert.True(typeReference.DeclaringType != typeof(TestClass<>));
+            Assert.True(typeof(TestClass<>) != typeReference.DeclaringType);
+        }
+
+        [Fact]
+        public async Task TypeReference_IsEqualToInitialGenericTypeDefinition()
+        {
+            TypeReference typeReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitType(It.IsNotNull<TypeReference>()))
+                .Callback((TypeReference actualTypeReference) => typeReference = actualTypeReference);
+            var type = typeof(TestClass<int>.NestedTestClass<IEnumerable<string>, IDictionary<long, decimal>>);
+            var genericTypeDefinition = type.GetGenericTypeDefinition();
+
+            await _Factory.Create(genericTypeDefinition).AcceptAsync(_Visitor);
+
+            Assert.True(typeReference == genericTypeDefinition);
+            Assert.True(genericTypeDefinition == typeReference);
+            Assert.True(typeReference != type);
+            Assert.True(type != typeReference);
+
+            Assert.True(typeReference.DeclaringType == typeof(TestClass<>));
+            Assert.True(typeof(TestClass<>) == typeReference.DeclaringType);
+            Assert.True(typeReference.DeclaringType != typeof(TestClass<int>));
+            Assert.True(typeof(TestClass<int>) != typeReference.DeclaringType);
+        }
+
+        [Fact]
+        public async Task CreateFromGenericTypeParameter_ReturnsGenericTypeParameterReference()
+        {
+            GenericTypeParameterReference genericParameterReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitGenericTypeParameter(It.IsNotNull<GenericTypeParameterReference>()))
+                .Callback((GenericTypeParameterReference actualGenericParameterReference) => genericParameterReference = actualGenericParameterReference);
+
+            await _Factory.Create(typeof(IEnumerable<>).GetGenericArguments().Single()).AcceptAsync(_Visitor);
+
+            Assert.Equal("T", genericParameterReference.Name);
+            Assert.True(genericParameterReference.DeclaringType == typeof(IEnumerable<>));
         }
 
         [Fact]

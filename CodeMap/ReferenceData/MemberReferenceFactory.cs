@@ -26,20 +26,14 @@ namespace CodeMap.ReferenceData
             if (memberInfo == null)
                 throw new ArgumentNullException(nameof(memberInfo));
 
-            switch (memberInfo)
+            if (!_cachedMemberReferences.TryGetValue(memberInfo, out var memberReference))
             {
-                case Type type:
-                    return new TypeReference
-                    {
-                        Name = type.Name,
-                        Namespace = type.Namespace,
-                        GenericArguments = Enumerable.Empty<BaseTypeReference>().AsReadOnlyList(),
-                        Assembly = Create(type.Assembly)
-                    };
-
-                default:
-                    throw new ArgumentException("Unknown member type.", nameof(memberInfo));
+                Action circularReferenceSetter;
+                (memberReference, circularReferenceSetter) = _GetMemberReference(memberInfo);
+                _cachedMemberReferences.Add(memberInfo, memberReference);
+                circularReferenceSetter?.Invoke();
             }
+            return memberReference;
         }
 
         /// <summary>Creates an <see cref="AssemblyReference"/> for the provided <paramref name="assembly"/>.</summary>
@@ -69,6 +63,55 @@ namespace CodeMap.ReferenceData
                 _cachedAssemblyReferences.Add(assemblyName, assemblyReference);
             }
             return assemblyReference;
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetMemberReference(MemberInfo memberInfo)
+        {
+            switch (memberInfo)
+            {
+                case Type type when type.IsGenericTypeParameter:
+                    return _GetGenericTypeParameterReference(type);
+
+                case Type type:
+                    return _GetTypeReference(type);
+
+                default:
+                    throw new ArgumentException("Unknown member type.", nameof(memberInfo));
+            }
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetGenericTypeParameterReference(Type type)
+        {
+            var genericTypeParameter = new GenericTypeParameterReference
+            {
+                Name = type.Name
+            };
+            return (
+                genericTypeParameter,
+                () => genericTypeParameter.DeclaringType = (TypeReference)Create(type.DeclaringType)
+            );
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetTypeReference(Type type)
+        {
+            var declaringType = type.GetDeclaringType();
+            var typeReference = new TypeReference
+            {
+                Name = type.GetTypeName().ToString(),
+                Namespace = type.Namespace,
+                DeclaringType = declaringType != null
+                    ? (TypeReference)Create(declaringType)
+                    : null,
+                Assembly = Create(type.Assembly),
+            };
+            return (
+                typeReference,
+                () => typeReference.GenericArguments = type
+                    .GetCurrentGenericArguments()
+                    .Select(Create)
+                    .Cast<BaseTypeReference>()
+                    .AsReadOnlyList()
+            );
         }
 
         private static AssemblyReference _GetAssemblyReference(AssemblyName assemblyName)
