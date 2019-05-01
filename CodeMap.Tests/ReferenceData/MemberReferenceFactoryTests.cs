@@ -156,6 +156,21 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
+        public async Task CreateFromConstant_ReturnsConstantReference()
+        {
+            ConstantReference constantReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitConstant(It.IsNotNull<ConstantReference>()))
+                .Callback((ConstantReference actualConstantReference) => constantReference = actualConstantReference);
+
+            await _Factory.Create(typeof(int).GetField(nameof(int.MaxValue))).AcceptAsync(_Visitor);
+
+            Assert.Equal("MaxValue", constantReference.Name);
+            Assert.Equal(int.MaxValue, constantReference.Value);
+            Assert.True(constantReference.DeclaringType == typeof(int));
+        }
+
+        [Fact]
         public async Task CreateFromGenericTypeParameter_ReturnsGenericTypeParameterReference()
         {
             GenericTypeParameterReference genericParameterReference = null;

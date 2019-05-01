@@ -31,7 +31,7 @@ namespace CodeMap.ReferenceData
                 Action circularReferenceSetter;
                 (memberReference, circularReferenceSetter) = _GetMemberReference(memberInfo);
                 _cachedMemberReferences.Add(memberInfo, memberReference);
-                circularReferenceSetter?.Invoke();
+                circularReferenceSetter();
             }
             return memberReference;
         }
@@ -90,9 +90,39 @@ namespace CodeMap.ReferenceData
                 case Type type:
                     return _GetTypeReference(type);
 
+                case FieldInfo fieldInfo when fieldInfo.IsLiteral:
+                    return _GetConstantReference(fieldInfo);
+
                 default:
                     throw new ArgumentException("Unknown member type.", nameof(memberInfo));
             }
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetTypeReference(Type type)
+        {
+            var typeReference = type == typeof(void)
+                ? new VoidTypeReference()
+                : new TypeReference();
+            _InitializeTypeReference(type, typeReference);
+            return (
+                typeReference,
+                () => typeReference.GenericArguments = type
+                    .GetCurrentGenericArguments()
+                    .Select(Create)
+                    .Cast<BaseTypeReference>()
+                    .AsReadOnlyList()
+            );
+        }
+
+        private void _InitializeTypeReference(Type type, TypeReference typeReference)
+        {
+            var declaringType = type.GetDeclaringType();
+            typeReference.Name = type.GetTypeName().ToString();
+            typeReference.Namespace = type.Namespace;
+            typeReference.DeclaringType = declaringType != null
+                ? (TypeReference)Create(declaringType)
+                : null;
+            typeReference.Assembly = Create(type.Assembly);
         }
 
         private (MemberReference MemberReference, Action CircularReferenceSetter) _GetArrayTypeReference(Type type)
@@ -128,31 +158,17 @@ namespace CodeMap.ReferenceData
             );
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetTypeReference(Type type)
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetConstantReference(FieldInfo fieldInfo)
         {
-            var typeReference = type == typeof(void)
-                ? new VoidTypeReference()
-                : new TypeReference();
-            _InitializeTypeReference(type, typeReference);
+            var constantReference = new ConstantReference
+            {
+                Name = fieldInfo.Name,
+                Value = fieldInfo.GetValue(null)
+            };
             return (
-                typeReference,
-                () => typeReference.GenericArguments = type
-                    .GetCurrentGenericArguments()
-                    .Select(Create)
-                    .Cast<BaseTypeReference>()
-                    .AsReadOnlyList()
+                constantReference,
+                () => constantReference.DeclaringType = (TypeReference)Create(fieldInfo.DeclaringType)
             );
-        }
-
-        private void _InitializeTypeReference(Type type, TypeReference typeReference)
-        {
-            var declaringType = type.GetDeclaringType();
-            typeReference.Name = type.GetTypeName().ToString();
-            typeReference.Namespace = type.Namespace;
-            typeReference.DeclaringType = declaringType != null
-                ? (TypeReference)Create(declaringType)
-                : null;
-            typeReference.Assembly = Create(type.Assembly);
         }
 
         private static AssemblyReference _GetAssemblyReference(AssemblyName assemblyName)

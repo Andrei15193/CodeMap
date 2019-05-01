@@ -11,5 +11,7 @@ namespace CodeMap.Tests.ReferenceData
         void VisitPointer(PointerTypeReference pointerType);
 
         void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter);
+
+        void VisitConstant(ConstantReference constant);
     }
 }

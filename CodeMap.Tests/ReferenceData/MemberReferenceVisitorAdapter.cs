@@ -22,5 +22,8 @@ namespace CodeMap.Tests.ReferenceData
 
         protected override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
             => _memberReferenceVisitor.VisitGenericTypeParameter(genericTypeParameter);
+
+        protected override void VisitConstant(ConstantReference constant)
+            => _memberReferenceVisitor.VisitConstant(constant);
     }
 }
