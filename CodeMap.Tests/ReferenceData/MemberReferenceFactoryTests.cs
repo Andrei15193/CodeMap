@@ -120,6 +120,24 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
+        public async Task CreateFromArray_ReturnsArrayTypeReference()
+        {
+            ArrayTypeReference arrayTypeReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitArray(It.IsNotNull<ArrayTypeReference>()))
+                .Callback((ArrayTypeReference actualArrayTypeReference) => arrayTypeReference = actualArrayTypeReference);
+
+            await _Factory.Create(typeof(decimal[][,])).AcceptAsync(_Visitor);
+
+            Assert.Equal(1, arrayTypeReference.Rank);
+            var nestedArray = Assert.IsType<ArrayTypeReference>(arrayTypeReference.ItemType);
+            Assert.Equal(2, nestedArray.Rank);
+            Assert.True(nestedArray.ItemType == typeof(decimal));
+            Assert.True(arrayTypeReference == typeof(decimal[][,]));
+            Assert.True(arrayTypeReference != typeof(decimal[,][]));
+        }
+
+        [Fact]
         public async Task CreateFromGenericTypeParameter_ReturnsGenericTypeParameterReference()
         {
             GenericTypeParameterReference genericParameterReference = null;

@@ -4,15 +4,18 @@ using System.Threading.Tasks;
 
 namespace CodeMap.ReferenceData
 {
-    /// <summary>Represents a generic type parameter reference.</summary>
-    public sealed class GenericTypeParameterReference : GenericParameterReference
+    /// <summary>Represents an array type reference.</summary>
+    public sealed class ArrayTypeReference : BaseTypeReference
     {
-        internal GenericTypeParameterReference()
+        internal ArrayTypeReference()
         {
         }
 
-        /// <summary>The type declaring the generic parameter.</summary>
-        public TypeReference DeclaringType { get; internal set; }
+        /// <summary>The rank of the array.</summary>
+        public int Rank { get; internal set; }
+
+        /// <summary>The item type of the array.</summary>
+        public BaseTypeReference ItemType { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
@@ -22,7 +25,7 @@ namespace CodeMap.ReferenceData
             if (visitor == null)
                 throw new ArgumentNullException(nameof(visitor));
 
-            visitor.VisitGenericTypeParameter(this);
+            visitor.VisitArrayType(this);
         }
 
         /// <summary>Asynchronously accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
@@ -35,15 +38,16 @@ namespace CodeMap.ReferenceData
             if (visitor == null)
                 return Task.FromException(new ArgumentNullException(nameof(visitor)));
 
-            return visitor.VisitGenericTypeParameterAsync(this, cancellationToken);
+            return visitor.VisitArrayTypeAsync(this, cancellationToken);
         }
 
-        /// <summary>Determines whether the current <see cref="GenericTypeParameterReference"/> is equal to the provided <paramref name="type"/>.</summary>
+        /// <summary>Determines whether the current <see cref="ArrayTypeReference"/> is equal to the provided <paramref name="type"/>.</summary>
         /// <param name="type">The <see cref="Type"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="GenericTypeParameterReference"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
+        /// <returns>Returns <c>true</c> if the current <see cref="ArrayTypeReference"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(Type type)
             => type != null
-            && base.Equals(type)
-            && DeclaringType == type.DeclaringType;
+            && type.IsArray
+            && Rank == type.GetArrayRank()
+            && ItemType == type.GetElementType();
     }
 }

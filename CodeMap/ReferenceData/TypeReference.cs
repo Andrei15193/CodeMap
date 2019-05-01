@@ -31,7 +31,7 @@ namespace CodeMap.ReferenceData
         /// <summary>The declaring assembly.</summary>
         public AssemblyReference Assembly { get; internal set; }
 
-        /// <summary>Asynchronously accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
+        /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override void Accept(MemberReferenceVisitor visitor)

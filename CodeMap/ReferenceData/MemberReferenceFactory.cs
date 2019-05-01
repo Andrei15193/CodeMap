@@ -78,6 +78,9 @@ namespace CodeMap.ReferenceData
         {
             switch (memberInfo)
             {
+                case Type type when type.IsArray:
+                    return _GetArrayTypeReference(type);
+
                 case Type type when type.IsGenericTypeParameter:
                     return _GetGenericTypeParameterReference(type);
 
@@ -87,6 +90,18 @@ namespace CodeMap.ReferenceData
                 default:
                     throw new ArgumentException("Unknown member type.", nameof(memberInfo));
             }
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetArrayTypeReference(Type type)
+        {
+            var arrayType = new ArrayTypeReference
+            {
+                Rank = type.GetArrayRank()
+            };
+            return (
+                arrayType,
+                () => arrayType.ItemType = (BaseTypeReference)Create(type.GetElementType())
+            );
         }
 
         private (MemberReference MemberReference, Action CircularReferenceSetter) _GetGenericTypeParameterReference(Type type)

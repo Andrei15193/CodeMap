@@ -14,6 +14,9 @@ namespace CodeMap.Tests.ReferenceData
         protected override void VisitType(TypeReference type)
             => _memberReferenceVisitor.VisitType(type);
 
+        protected override void VisitArrayType(ArrayTypeReference arrayType)
+            => _memberReferenceVisitor.VisitArray(arrayType);
+
         protected override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
             => _memberReferenceVisitor.VisitGenericTypeParameter(genericTypeParameter);
     }
