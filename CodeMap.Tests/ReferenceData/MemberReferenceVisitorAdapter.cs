@@ -37,5 +37,8 @@ namespace CodeMap.Tests.ReferenceData
 
         protected override void VisitEvent(EventReference @event)
             => _memberReferenceVisitor.VisitEvent(@event);
+
+        protected override void VisitProperty(PropertyReference property)
+            => _memberReferenceVisitor.VisitProperty(property);
     }
 }

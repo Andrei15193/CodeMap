@@ -250,6 +250,28 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
+        public async Task CreateFromProperty_ReturnsPropertyReference()
+        {
+            PropertyReference propertyReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitProperty(It.IsNotNull<PropertyReference>()))
+                .Callback((PropertyReference actualPropertyReference) => propertyReference = actualPropertyReference);
+
+            await _Factory.Create(typeof(IDictionary<string, string>).GetDefaultMembers().Single()).AcceptAsync(_Visitor);
+
+            Assert.Equal("Item", propertyReference.Name);
+            Assert.True(propertyReference.DeclaringType == typeof(IDictionary<string, string>));
+            Assert.True(propertyReference
+                .ParameterTypes
+                .Zip(
+                    new[] { typeof(string) },
+                    (typeReference, type) => (TypeReference: typeReference, Type: type)
+                )
+                .All(pair => pair.TypeReference == pair.Type)
+            );
+        }
+
+        [Fact]
         public void CreateFromAssembly_ReturnsAssemblyReference()
         {
             var assemblyReference = _Factory.Create(typeof(GlobalTestClass).Assembly);

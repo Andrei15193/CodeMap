@@ -21,5 +21,7 @@ namespace CodeMap.Tests.ReferenceData
         void VisitConstructor(ConstructorReference constructor);
 
         void VisitEvent(EventReference @event);
+
+        void VisitProperty(PropertyReference property);
     }
 }

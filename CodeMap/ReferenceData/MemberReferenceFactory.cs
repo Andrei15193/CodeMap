@@ -105,6 +105,9 @@ namespace CodeMap.ReferenceData
                 case EventInfo eventInfo:
                     return _GetEventReference(eventInfo);
 
+                case PropertyInfo propertyInfo:
+                    return _GetPropertyReference(propertyInfo);
+
                 default:
                     throw new ArgumentException("Unknown member type.", nameof(memberInfo));
             }
@@ -230,6 +233,26 @@ namespace CodeMap.ReferenceData
             return (
                 eventReference,
                 () => eventReference.DeclaringType = (TypeReference)Create(eventInfo.DeclaringType)
+            );
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetPropertyReference(PropertyInfo propertyInfo)
+        {
+            var propertyReference = new PropertyReference
+            {
+                Name = propertyInfo.Name
+            };
+            return (
+                propertyReference,
+                () =>
+                {
+                    propertyReference.DeclaringType = (TypeReference)Create(propertyInfo.DeclaringType);
+                    propertyReference.ParameterTypes = propertyInfo
+                        .GetIndexParameters()
+                        .Select(parameter => Create(parameter.ParameterType))
+                        .Cast<BaseTypeReference>()
+                        .AsReadOnlyList();
+                }
             );
         }
 

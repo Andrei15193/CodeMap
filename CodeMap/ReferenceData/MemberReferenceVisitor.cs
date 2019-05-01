@@ -195,5 +195,26 @@ namespace CodeMap.ReferenceData
                 return Task.FromException(exception);
             }
         }
+
+        /// <summary>Visits the given <paramref name="property"/>.</summary>
+        /// <param name="property">The <see cref="PropertyReference"/> to visit.</param>
+        protected internal abstract void VisitProperty(PropertyReference property);
+
+        /// <summary>Asynchronously visits the given <paramref name="property"/>.</summary>
+        /// <param name="property">The <see cref="PropertyReference"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitPropertyAsync(PropertyReference property, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitProperty(property);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
     }
 }
