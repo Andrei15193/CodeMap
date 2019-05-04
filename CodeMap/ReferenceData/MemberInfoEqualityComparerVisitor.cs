@@ -7,7 +7,6 @@ namespace CodeMap.ReferenceData
 {
     internal sealed class MemberInfoEqualityComparerVisitor : MemberReferenceVisitor
     {
-        private bool _areEqual;
         private MemberInfo _current;
         private readonly IDictionary<MemberReference, MemberInfo> _checked = new Dictionary<MemberReference, MemberInfo>();
 
@@ -15,11 +14,10 @@ namespace CodeMap.ReferenceData
         {
             _current = memberInfo;
             _checked = new Dictionary<MemberReference, MemberInfo>();
-            _areEqual = true;
+            AreEqual = true;
         }
 
-        public bool AreEqual
-            => _areEqual;
+        public bool AreEqual { get; private set; }
 
         protected internal override void VisitType(TypeReference typeReference)
         {
@@ -378,7 +376,7 @@ namespace CodeMap.ReferenceData
         private void _SetNotEqual()
         {
             _current = null;
-            _areEqual = false;
+            AreEqual = false;
         }
     }
 }
