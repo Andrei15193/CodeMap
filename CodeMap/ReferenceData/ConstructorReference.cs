@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeMap.ReferenceData
 {
     /// <summary>Represents a constructor reference.</summary>
-    public sealed class ConstructorReference : MemberReference, IEquatable<ConstructorInfo>
+    public sealed class ConstructorReference : MemberReference
     {
         internal ConstructorReference()
         {
@@ -32,19 +31,5 @@ namespace CodeMap.ReferenceData
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override Task AcceptAsync(MemberReferenceVisitor visitor, CancellationToken cancellationToken)
             => visitor.VisitConstructorAsync(this, cancellationToken);
-
-        /// <summary>Determines whether the current <see cref="ConstructorReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
-        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="ConstructorReference"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
-        public override bool Equals(MemberInfo memberInfo)
-            => memberInfo is ConstructorInfo constructorInfo && Equals(constructorInfo);
-
-        /// <summary>Determines whether the current <see cref="ConstructorReference"/> is equal to the provided <paramref name="constructorInfo"/>.</summary>
-        /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="ConstructorReference"/> references the provided <paramref name="constructorInfo"/>; <c>false</c> otherwise.</returns>
-        public bool Equals(ConstructorInfo constructorInfo)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

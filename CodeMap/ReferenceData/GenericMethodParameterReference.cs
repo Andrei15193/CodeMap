@@ -4,24 +4,21 @@ using System.Threading.Tasks;
 
 namespace CodeMap.ReferenceData
 {
-    /// <summary>Represents an array type reference.</summary>
-    public sealed class ArrayTypeReference : BaseTypeReference
+    /// <summary>Represents a generic method parameter reference.</summary>
+    public sealed class GenericMethodParameterReference : GenericParameterReference
     {
-        internal ArrayTypeReference()
+        internal GenericMethodParameterReference()
         {
         }
 
-        /// <summary>The array rank.</summary>
-        public int Rank { get; internal set; }
-
-        /// <summary>The array item type.</summary>
-        public BaseTypeReference ItemType { get; internal set; }
+        /// <summary>The generic parameter declaring method.</summary>
+        public MethodReference DeclaringMethod { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override void Accept(MemberReferenceVisitor visitor)
-            => visitor.VisitArray(this);
+            => visitor.VisitGenericMethodParameter(this);
 
         /// <summary>Asynchronously accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
@@ -29,6 +26,6 @@ namespace CodeMap.ReferenceData
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override Task AcceptAsync(MemberReferenceVisitor visitor, CancellationToken cancellationToken)
-            => visitor.VisitArrayAsync(this, cancellationToken);
+            => visitor.VisitGenericMethodParameterAsync(this, cancellationToken);
     }
 }

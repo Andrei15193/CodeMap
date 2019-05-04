@@ -27,13 +27,5 @@ namespace CodeMap.ReferenceData
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override Task AcceptAsync(MemberReferenceVisitor visitor, CancellationToken cancellationToken)
             => visitor.VisitPointerAsync(this, cancellationToken);
-
-        /// <summary>Determines whether the current <see cref="PointerTypeReference"/> is equal to the provided <paramref name="type"/>.</summary>
-        /// <param name="type">The <see cref="Type"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="PointerTypeReference"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
-        public override bool Equals(Type type)
-            => type != null
-            && type.IsPointer
-            && ReferentType == type.GetElementType();
     }
 }

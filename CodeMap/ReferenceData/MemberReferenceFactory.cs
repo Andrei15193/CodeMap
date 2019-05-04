@@ -40,7 +40,12 @@ namespace CodeMap.ReferenceData
         /// <returns>Returns a <see cref="DynamicTypeReference"/>.</returns>
         public DynamicTypeReference CreateDynamic()
         {
-            var typeReference = new DynamicTypeReference();
+            var typeReference = new DynamicTypeReference
+            {
+                GenericArguments = Enumerable
+                    .Empty<GenericTypeParameterReference>()
+                    .AsReadOnlyList()
+            };
             _InitializeTypeReference(typeof(object), typeReference);
             return typeReference;
         }
@@ -90,6 +95,9 @@ namespace CodeMap.ReferenceData
                 case Type type when type.IsGenericTypeParameter:
                     return _GetGenericTypeParameterReference(type);
 
+                case Type type when type.IsGenericMethodParameter:
+                    return _GetGenericMethodParameterReference(type);
+
                 case Type type:
                     return _GetTypeReference(type);
 
@@ -108,6 +116,9 @@ namespace CodeMap.ReferenceData
                 case PropertyInfo propertyInfo:
                     return _GetPropertyReference(propertyInfo);
 
+                case MethodInfo methodInfo:
+                    return _GetMethodReference(methodInfo);
+
                 default:
                     throw new ArgumentException("Unknown member type.", nameof(memberInfo));
             }
@@ -121,11 +132,18 @@ namespace CodeMap.ReferenceData
             _InitializeTypeReference(type, typeReference);
             return (
                 typeReference,
-                () => typeReference.GenericArguments = type
-                    .GetCurrentGenericArguments()
-                    .Select(Create)
-                    .Cast<BaseTypeReference>()
-                    .AsReadOnlyList()
+                () =>
+                {
+                    var declaringType = type.GetDeclaringType();
+                    typeReference.DeclaringType = declaringType != null
+                       ? (TypeReference)Create(declaringType)
+                       : null;
+                    typeReference.GenericArguments = type
+                        .GetCurrentGenericArguments()
+                        .Select(Create)
+                        .Cast<BaseTypeReference>()
+                        .AsReadOnlyList();
+                }
             );
         }
 
@@ -134,51 +152,60 @@ namespace CodeMap.ReferenceData
             var declaringType = type.GetDeclaringType();
             typeReference.Name = type.GetTypeName().ToString();
             typeReference.Namespace = type.Namespace;
-            typeReference.DeclaringType = declaringType != null
-                ? (TypeReference)Create(declaringType)
-                : null;
             typeReference.Assembly = Create(type.Assembly);
         }
 
         private (MemberReference MemberReference, Action CircularReferenceSetter) _GetArrayTypeReference(Type type)
         {
-            var arrayType = new ArrayTypeReference
+            var arrayTypeReference = new ArrayTypeReference
             {
                 Rank = type.GetArrayRank()
             };
             return (
-                arrayType,
-                () => arrayType.ItemType = (BaseTypeReference)Create(type.GetElementType())
+                arrayTypeReference,
+                () => arrayTypeReference.ItemType = (BaseTypeReference)Create(type.GetElementType())
             );
         }
 
         private (MemberReference MemberReference, Action CircularReferenceSetter) _GetPointerTypeReference(Type type)
         {
-            var pointerType = new PointerTypeReference();
+            var pointerTypeReference = new PointerTypeReference();
             return (
-                pointerType,
-                () => pointerType.ReferentType = (BaseTypeReference)Create(type.GetElementType())
+                pointerTypeReference,
+                () => pointerTypeReference.ReferentType = (BaseTypeReference)Create(type.GetElementType())
             );
         }
 
         private (MemberReference MemberReference, Action CircularReferenceSetter) _GetByRefTypeReference(Type type)
         {
-            var byRefType = new ByRefTypeReference();
+            var byRefTypeReference = new ByRefTypeReference();
             return (
-                byRefType,
-                () => byRefType.ReferentType = (BaseTypeReference)Create(type.GetElementType())
+                byRefTypeReference,
+                () => byRefTypeReference.ReferentType = (BaseTypeReference)Create(type.GetElementType())
             );
         }
 
         private (MemberReference MemberReference, Action CircularReferenceSetter) _GetGenericTypeParameterReference(Type type)
         {
-            var genericTypeParameter = new GenericTypeParameterReference
+            var genericTypeParameterReference = new GenericTypeParameterReference
             {
                 Name = type.Name
             };
             return (
-                genericTypeParameter,
-                () => genericTypeParameter.DeclaringType = (TypeReference)Create(type.DeclaringType)
+                genericTypeParameterReference,
+                () => genericTypeParameterReference.DeclaringType = (TypeReference)Create(type.DeclaringType)
+            );
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetGenericMethodParameterReference(Type type)
+        {
+            var genericMethodParameterReference = new GenericMethodParameterReference
+            {
+                Name = type.Name
+            };
+            return (
+                genericMethodParameterReference,
+                () => genericMethodParameterReference.DeclaringMethod = (MethodReference)Create(type.DeclaringMethod)
             );
         }
 
@@ -249,6 +276,31 @@ namespace CodeMap.ReferenceData
                     propertyReference.DeclaringType = (TypeReference)Create(propertyInfo.DeclaringType);
                     propertyReference.ParameterTypes = propertyInfo
                         .GetIndexParameters()
+                        .Select(parameter => Create(parameter.ParameterType))
+                        .Cast<BaseTypeReference>()
+                        .AsReadOnlyList();
+                }
+            );
+        }
+
+        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetMethodReference(MethodInfo methodInfo)
+        {
+            var methodReference = new MethodReference
+            {
+                Name = methodInfo.Name
+            };
+            return (
+                methodReference,
+                () =>
+                {
+                    methodReference.GenericArguments = methodInfo
+                        .GetGenericArguments()
+                        .Select(Create)
+                        .Cast<BaseTypeReference>()
+                        .AsReadOnlyList();
+                    methodReference.DeclaringType = (TypeReference)Create(methodInfo.DeclaringType);
+                    methodReference.ParameterTypes = methodInfo
+                        .GetParameters()
                         .Select(parameter => Create(parameter.ParameterType))
                         .Cast<BaseTypeReference>()
                         .AsReadOnlyList();

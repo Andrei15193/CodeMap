@@ -3588,10 +3588,10 @@ namespace CodeMap
         private static int _GetGenericParameterAbsolutePosition(TypeGenericParameterData typeGenericParameterData)
         {
             var genericParameterPosition = typeGenericParameterData.Position;
-            var declaryingType = typeGenericParameterData.DeclaringType.DeclaringType;
-            while (declaryingType != null)
+            var declaringType = typeGenericParameterData.DeclaringType.DeclaringType;
+            while (declaringType != null)
             {
-                switch (declaryingType)
+                switch (declaringType)
                 {
                     case ClassDocumentationElement @class:
                         genericParameterPosition += @class.GenericParameters.Count;
@@ -3601,7 +3601,7 @@ namespace CodeMap
                         genericParameterPosition += @struct.GenericParameters.Count;
                         break;
                 }
-                declaryingType = declaryingType.DeclaringType;
+                declaringType = declaringType.DeclaringType;
             }
             return genericParameterPosition;
         }

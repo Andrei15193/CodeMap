@@ -26,6 +26,9 @@ namespace CodeMap.Tests.ReferenceData
         protected override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
             => _memberReferenceVisitor.VisitGenericTypeParameter(genericTypeParameter);
 
+        protected override void VisitGenericMethodParameter(GenericMethodParameterReference genericMethodParameter)
+            => _memberReferenceVisitor.VisitGenericMethodParameter(genericMethodParameter);
+
         protected override void VisitConstant(ConstantReference constant)
             => _memberReferenceVisitor.VisitConstant(constant);
 
@@ -40,5 +43,8 @@ namespace CodeMap.Tests.ReferenceData
 
         protected override void VisitProperty(PropertyReference property)
             => _memberReferenceVisitor.VisitProperty(property);
+
+        protected override void VisitMethod(MethodReference method)
+            => _memberReferenceVisitor.VisitMethod(method);
     }
 }

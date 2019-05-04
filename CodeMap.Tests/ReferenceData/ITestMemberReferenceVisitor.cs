@@ -14,6 +14,8 @@ namespace CodeMap.Tests.ReferenceData
 
         void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter);
 
+        void VisitGenericMethodParameter(GenericMethodParameterReference genericMethodParameter);
+
         void VisitConstant(ConstantReference constant);
 
         void VisitField(FieldReference field);
@@ -23,5 +25,7 @@ namespace CodeMap.Tests.ReferenceData
         void VisitEvent(EventReference @event);
 
         void VisitProperty(PropertyReference property);
+
+        void VisitMethod(MethodReference method);
     }
 }

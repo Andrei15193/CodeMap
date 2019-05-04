@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -179,10 +180,43 @@ namespace CodeMap.Tests.ReferenceData
                 .Setup(visitor => visitor.VisitGenericTypeParameter(It.IsNotNull<GenericTypeParameterReference>()))
                 .Callback((GenericTypeParameterReference actualGenericParameterReference) => genericParameterReference = actualGenericParameterReference);
 
-            await _Factory.Create(typeof(IEnumerable<>).GetGenericArguments().Single()).AcceptAsync(_Visitor);
+            await _Factory.Create(_GetGenericTypeParameter()).AcceptAsync(_Visitor);
 
             Assert.Equal("T", genericParameterReference.Name);
             Assert.True(genericParameterReference.DeclaringType == typeof(IEnumerable<>));
+            Assert.True(genericParameterReference == _GetGenericTypeParameter());
+
+            Type _GetGenericTypeParameter()
+                => typeof(IEnumerable<>).GetGenericArguments().Single();
+        }
+
+        [Fact]
+        public async Task CreateFromGenericMethodParameter_ReturnsGenericMethodParameterReference()
+        {
+            GenericMethodParameterReference genericParameterReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitGenericMethodParameter(It.IsNotNull<GenericMethodParameterReference>()))
+                .Callback((GenericMethodParameterReference actualGenericParameterReference) => genericParameterReference = actualGenericParameterReference);
+
+            await _Factory.Create(_GetGenericMethodParameter()).AcceptAsync(_Visitor);
+
+            Assert.Equal("T", genericParameterReference.Name);
+            Assert.True(genericParameterReference.DeclaringMethod == _GetMethodInfo());
+            Assert.True(genericParameterReference == _GetGenericMethodParameter());
+
+            MethodInfo _GetMethodInfo()
+                => typeof(string)
+                    .GetMethods()
+                    .Single(
+                        methodInfo => methodInfo.Name == "Join"
+                            && methodInfo.IsGenericMethod
+                            && methodInfo.GetParameters().First().ParameterType == typeof(string)
+                    );
+
+            Type _GetGenericMethodParameter()
+                => _GetMethodInfo()
+                    .GetGenericArguments()
+                    .Single();
         }
 
         [Fact]
@@ -193,11 +227,15 @@ namespace CodeMap.Tests.ReferenceData
                 .Setup(visitor => visitor.VisitConstant(It.IsNotNull<ConstantReference>()))
                 .Callback((ConstantReference actualConstantReference) => constantReference = actualConstantReference);
 
-            await _Factory.Create(typeof(int).GetField(nameof(int.MaxValue))).AcceptAsync(_Visitor);
+            await _Factory.Create(_GetFieldInfo()).AcceptAsync(_Visitor);
 
             Assert.Equal("MaxValue", constantReference.Name);
             Assert.Equal(int.MaxValue, constantReference.Value);
             Assert.True(constantReference.DeclaringType == typeof(int));
+            Assert.True(constantReference == _GetFieldInfo());
+
+            FieldInfo _GetFieldInfo()
+                => typeof(int).GetField(nameof(int.MaxValue));
         }
 
         [Fact]
@@ -208,10 +246,14 @@ namespace CodeMap.Tests.ReferenceData
                 .Setup(visitor => visitor.VisitField(It.IsNotNull<FieldReference>()))
                 .Callback((FieldReference actualFieldReference) => fieldReference = actualFieldReference);
 
-            await _Factory.Create(typeof(string).GetField(nameof(string.Empty))).AcceptAsync(_Visitor);
+            await _Factory.Create(_GetFieldInfo()).AcceptAsync(_Visitor);
 
             Assert.Equal("Empty", fieldReference.Name);
             Assert.True(fieldReference.DeclaringType == typeof(string));
+            Assert.True(fieldReference == _GetFieldInfo());
+
+            FieldInfo _GetFieldInfo()
+                => typeof(string).GetField(nameof(string.Empty));
         }
 
         [Fact]
@@ -222,17 +264,18 @@ namespace CodeMap.Tests.ReferenceData
                 .Setup(visitor => visitor.VisitConstructor(It.IsNotNull<ConstructorReference>()))
                 .Callback((ConstructorReference actualConstructorReference) => constructorReference = actualConstructorReference);
 
-            await _Factory.Create(typeof(string).GetConstructor(new[] { typeof(char), typeof(int) })).AcceptAsync(_Visitor);
+            await _Factory.Create(_GetConstructorInfo()).AcceptAsync(_Visitor);
 
             Assert.True(constructorReference.DeclaringType == typeof(string));
             Assert.True(constructorReference
                 .ParameterTypes
-                .Zip(
-                    new[] { typeof(char), typeof(int) },
-                    (typeReference, type) => (TypeReference: typeReference, Type: type)
-                )
-                .All(pair => pair.TypeReference == pair.Type)
+                .AsEnumerable<object>()
+                .SequenceEqual(new[] { typeof(char), typeof(int) })
             );
+            Assert.True(constructorReference == _GetConstructorInfo());
+
+            ConstructorInfo _GetConstructorInfo()
+                => typeof(string).GetConstructor(new[] { typeof(char), typeof(int) });
         }
 
         [Fact]
@@ -243,10 +286,14 @@ namespace CodeMap.Tests.ReferenceData
                 .Setup(visitor => visitor.VisitEvent(It.IsNotNull<EventReference>()))
                 .Callback((EventReference actualEventReference) => eventReference = actualEventReference);
 
-            await _Factory.Create(typeof(INotifyPropertyChanged).GetEvent(nameof(INotifyPropertyChanged.PropertyChanged))).AcceptAsync(_Visitor);
+            await _Factory.Create(_GetEventInfo()).AcceptAsync(_Visitor);
 
             Assert.Equal("PropertyChanged", eventReference.Name);
             Assert.True(eventReference.DeclaringType == typeof(INotifyPropertyChanged));
+            Assert.True(eventReference == _GetEventInfo());
+
+            EventInfo _GetEventInfo()
+                => typeof(INotifyPropertyChanged).GetEvent(nameof(INotifyPropertyChanged.PropertyChanged));
         }
 
         [Fact]
@@ -257,18 +304,93 @@ namespace CodeMap.Tests.ReferenceData
                 .Setup(visitor => visitor.VisitProperty(It.IsNotNull<PropertyReference>()))
                 .Callback((PropertyReference actualPropertyReference) => propertyReference = actualPropertyReference);
 
-            await _Factory.Create(typeof(IDictionary<string, string>).GetDefaultMembers().Single()).AcceptAsync(_Visitor);
+            await _Factory.Create(_GetPropertyInfo()).AcceptAsync(_Visitor);
 
             Assert.Equal("Item", propertyReference.Name);
             Assert.True(propertyReference.DeclaringType == typeof(IDictionary<string, string>));
             Assert.True(propertyReference
                 .ParameterTypes
-                .Zip(
-                    new[] { typeof(string) },
-                    (typeReference, type) => (TypeReference: typeReference, Type: type)
-                )
-                .All(pair => pair.TypeReference == pair.Type)
+                .AsEnumerable<object>()
+                .SequenceEqual(new[] { typeof(string) })
             );
+            Assert.True(propertyReference == _GetPropertyInfo());
+
+            PropertyInfo _GetPropertyInfo()
+                => typeof(IDictionary<string, string>).GetDefaultMembers().OfType<PropertyInfo>().Single();
+        }
+
+        [Fact]
+        public async Task CreateFromMethod_ReturnsMethodReference()
+        {
+            MethodReference methodReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitMethod(It.IsNotNull<MethodReference>()))
+                .Callback((MethodReference actualMethodReference) => methodReference = actualMethodReference);
+
+            await _Factory.Create(_GetMethodInfo()).AcceptAsync(_Visitor);
+
+            Assert.Equal("Join", methodReference.Name);
+            Assert.True(methodReference
+                .GenericArguments
+                .AsEnumerable<object>()
+                .SequenceEqual(new[] { typeof(int) })
+            );
+            Assert.True(methodReference.DeclaringType == typeof(string));
+            Assert.True(methodReference
+                .ParameterTypes
+                .AsEnumerable<object>()
+                .SequenceEqual(new[] { typeof(string), typeof(IEnumerable<int>) })
+            );
+            Assert.True(methodReference == _GetMethodInfo());
+            Assert.True(methodReference != _GetMethodInfo().GetGenericMethodDefinition());
+
+            MethodInfo _GetMethodInfo()
+                => typeof(string)
+                    .GetMethods()
+                    .Single(
+                        methodInfo => methodInfo.Name == "Join"
+                            && methodInfo.IsGenericMethod
+                            && methodInfo.GetParameters().First().ParameterType == typeof(string)
+                    )
+                    .MakeGenericMethod(typeof(int));
+        }
+
+        [Fact]
+        public async Task CreateFromGenericMethodDefinition_ReturnsMethodReference()
+        {
+            MethodReference methodReference = null;
+            _VisitorMock
+                .Setup(visitor => visitor.VisitMethod(It.IsNotNull<MethodReference>()))
+                .Callback((MethodReference actualMethodReference) => methodReference = actualMethodReference);
+
+            await _Factory.Create(_GetMethodInfo()).AcceptAsync(_Visitor);
+
+            Assert.Equal("Join", methodReference.Name);
+            Assert.True(methodReference
+                .GenericArguments
+                .AsEnumerable<object>()
+                .SequenceEqual(new[] { _GetGenericArgument() })
+            );
+            Assert.True(methodReference.DeclaringType == typeof(string));
+            Assert.True(methodReference
+                .ParameterTypes
+                .AsEnumerable<object>()
+                .SequenceEqual(new[] { typeof(string), typeof(IEnumerable<>).MakeGenericType(_GetGenericArgument()) })
+            );
+            Assert.True(methodReference == _GetMethodInfo());
+            Assert.True(methodReference != _GetMethodInfo().MakeGenericMethod(typeof(int)));
+
+            MethodInfo _GetMethodInfo()
+                => typeof(string)
+                    .GetMethods()
+                    .Single(
+                        methodInfo => methodInfo.Name == "Join"
+                            && methodInfo.IsGenericMethod
+                            && methodInfo.GetParameters().First().ParameterType == typeof(string)
+                    );
+
+            Type _GetGenericArgument()
+                => _GetMethodInfo().GetGenericArguments().Single();
         }
 
         [Fact]

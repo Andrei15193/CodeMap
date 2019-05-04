@@ -112,6 +112,27 @@ namespace CodeMap.ReferenceData
             }
         }
 
+        /// <summary>Visits the given <paramref name="genericMethodParameter"/>.</summary>
+        /// <param name="genericMethodParameter">The <see cref="GenericMethodParameterReference"/> to visit.</param>
+        protected internal abstract void VisitGenericMethodParameter(GenericMethodParameterReference genericMethodParameter);
+
+        /// <summary>Asynchronously visits the given <paramref name="genericMethodParameter"/>.</summary>
+        /// <param name="genericMethodParameter">The <see cref="GenericMethodParameterReference"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitGenericMethodParameterAsync(GenericMethodParameterReference genericMethodParameter, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitGenericMethodParameter(genericMethodParameter);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
         /// <summary>Visits the given <paramref name="constant"/>.</summary>
         /// <param name="constant">The <see cref="ConstantReference"/> to visit.</param>
         protected internal abstract void VisitConstant(ConstantReference constant);
@@ -209,6 +230,27 @@ namespace CodeMap.ReferenceData
             try
             {
                 VisitProperty(property);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
+
+        /// <summary>Visits the given <paramref name="method"/>.</summary>
+        /// <param name="method">The <see cref="MethodReference"/> to visit.</param>
+        protected internal abstract void VisitMethod(MethodReference method);
+
+        /// <summary>Asynchronously visits the given <paramref name="method"/>.</summary>
+        /// <param name="method">The <see cref="MethodReference"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitMethodAsync(MethodReference method, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitMethod(method);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
