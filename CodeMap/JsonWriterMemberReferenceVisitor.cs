@@ -120,6 +120,11 @@ namespace CodeMap
         /// <param name="byRef">The <see cref="ByRefTypeReference"/> to visit.</param>
         protected internal override void VisitByRef(ByRefTypeReference byRef)
         {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "byRef");
+            _jsonWriter.WritePropertyName("referentType");
+            byRef.ReferentType.Accept(this);
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Asynchronously visits the given <paramref name="byRef"/>.</summary>

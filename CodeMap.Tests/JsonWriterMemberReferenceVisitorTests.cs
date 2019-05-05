@@ -92,6 +92,30 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public async Task SerializeByRefType()
+        {
+            await _AssertAsync(
+                typeof(short).MakeByRefType(),
+                @"{
+    ""kind"": ""byRef"",
+    ""referentType"": {
+        ""kind"": ""specific"",
+        ""name"": ""Int16"",
+        ""namespace"": ""System"",
+        ""declaringType"": null,
+        ""genericArguments"": [],
+        ""assembly"": {
+            ""name"": ""System.Private.CoreLib"",
+            ""version"": ""4.0.0.0"",
+            ""culture"": """",
+            ""publicKeyToken"": ""7cec85d7bea7798e""
+        }
+    }
+}"
+            );
+        }
+
+        [Fact]
         public async Task SerializeConstructedGenericType()
         {
             await _AssertAsync(
