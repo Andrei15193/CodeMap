@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CodeMap.ReferenceData;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +13,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The event type.</summary>
-        public TypeReferenceData Type { get; internal set; }
+        public BaseTypeReference Type { get; internal set; }
 
         /// <summary>Indicates whether the event is static.</summary>
         public bool IsStatic { get; internal set; }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CodeMap.ReferenceData;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The underlying type of the enum members.</summary>
-        public TypeReferenceData UnderlyingType { get; internal set; }
+        public TypeReference UnderlyingType { get; internal set; }
 
         /// <summary>The enum members.</summary>
         public IReadOnlyList<ConstantDocumentationElement> Members { get; internal set; }

@@ -1,4 +1,4 @@
-﻿using CodeMap.Elements;
+﻿using CodeMap.ReferenceData;
 
 namespace CodeMap
 {
@@ -10,7 +10,7 @@ namespace CodeMap
         }
 
         /// <summary>The type of the parameter.</summary>
-        public TypeReferenceData Type { get; internal set; }
+        public BaseTypeReference Type { get; internal set; }
 
         /// <summary>The name of the parameter.</summary>
         public string Name { get; internal set; }

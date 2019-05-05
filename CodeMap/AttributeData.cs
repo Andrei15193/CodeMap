@@ -1,7 +1,7 @@
-﻿using System;
+﻿using CodeMap.ReferenceData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeMap.Elements;
 
 namespace CodeMap
 {
@@ -12,7 +12,7 @@ namespace CodeMap
         /// <param name="type">The type of the attribute.</param>
         /// <param name="positionalParameters">The used positional (constructor) parameters.</param>
         /// <param name="namedParameters">The used named parameters (fields or properties).</param>
-        public AttributeData(TypeReferenceData type, IEnumerable<AttributeParameterData> positionalParameters, IEnumerable<AttributeParameterData> namedParameters)
+        public AttributeData(TypeReference type, IEnumerable<AttributeParameterData> positionalParameters, IEnumerable<AttributeParameterData> namedParameters)
         {
             Type = type;
 
@@ -28,7 +28,7 @@ namespace CodeMap
         }
 
         /// <summary>The type of the attribute.</summary>
-        public TypeReferenceData Type { get; }
+        public TypeReference Type { get; }
 
         /// <summary>The used positional (constructor) parameters.</summary>
         public IReadOnlyList<AttributeParameterData> PositionalParameters { get; }

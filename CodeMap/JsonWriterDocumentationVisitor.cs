@@ -1,7 +1,9 @@
 ﻿using CodeMap.Elements;
+using CodeMap.ReferenceData;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -2211,7 +2213,7 @@ namespace CodeMap
             await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
-        private void _WriteImplementedInterfacesReferences(IEnumerable<TypeReferenceData> implementedInterfaces)
+        private void _WriteImplementedInterfacesReferences(IEnumerable<TypeReference> implementedInterfaces)
         {
             _jsonWriter.WritePropertyName("implementedInterfaces");
             _jsonWriter.WriteStartArray();
@@ -2220,7 +2222,7 @@ namespace CodeMap
             _jsonWriter.WriteEndArray();
         }
 
-        private async Task _WriteImplementedInterfacesReferencesAsync(IEnumerable<TypeReferenceData> implementedInterfaces, CancellationToken cancellationToken)
+        private async Task _WriteImplementedInterfacesReferencesAsync(IEnumerable<TypeReference> implementedInterfaces, CancellationToken cancellationToken)
         {
             await _jsonWriter.WritePropertyNameAsync("implementedInterfaces", cancellationToken);
             await _jsonWriter.WriteStartArrayAsync(cancellationToken);
@@ -2469,158 +2471,16 @@ namespace CodeMap
             await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
-        private void _WriteTypeReference(TypeReferenceData typeReferenceData)
+        private void _WriteTypeReference(BaseTypeReference typeReference)
         {
-            switch (typeReferenceData)
-            {
-                case VoidTypeData voidTypeData:
-                    _jsonWriter.WriteStartObject();
-                    _jsonWriter.WritePropertyName("kind");
-                    _jsonWriter.WriteValue("void");
-                    _jsonWriter.WriteEndObject();
-                    break;
-
-                case DynamicTypeData dynamicTypeData:
-                    _jsonWriter.WriteStartObject();
-                    _jsonWriter.WritePropertyName("kind");
-                    _jsonWriter.WriteValue("dynamic");
-                    _jsonWriter.WriteEndObject();
-                    break;
-
-                case TypeData typeData:
-                    _jsonWriter.WriteStartObject();
-                    _jsonWriter.WritePropertyName("kind");
-                    _jsonWriter.WriteValue("specific");
-                    _jsonWriter.WritePropertyName("name");
-                    _jsonWriter.WriteValue(typeData.Name);
-                    _jsonWriter.WritePropertyName("namespace");
-                    _jsonWriter.WriteValue(typeData.Namespace);
-                    _jsonWriter.WritePropertyName("declaringType");
-                    if (typeData.DeclaringType != null)
-                        _WriteTypeReference(typeData.DeclaringType);
-                    else
-                        _jsonWriter.WriteNull();
-                    _jsonWriter.WritePropertyName("fullName");
-                    _jsonWriter.WriteValue(_GetFullName(typeData));
-
-                    _jsonWriter.WritePropertyName("assembly");
-                    _WriteAssemblyReference(typeData.Assembly);
-
-                    _jsonWriter.WritePropertyName("genericArguments");
-                    _jsonWriter.WriteStartArray();
-                    foreach (var genericArgument in typeData.GenericArguments)
-                        _WriteTypeReference(genericArgument);
-                    _jsonWriter.WriteEndArray();
-
-                    _jsonWriter.WriteEndObject();
-                    break;
-
-                case PointerTypeData pointerTypeData:
-                    _jsonWriter.WriteStartObject();
-                    _jsonWriter.WritePropertyName("kind");
-                    _jsonWriter.WriteValue("pointer");
-                    _jsonWriter.WritePropertyName("referent");
-                    _WriteTypeReference(pointerTypeData.ReferentType);
-                    _jsonWriter.WriteEndObject();
-                    break;
-
-                case GenericParameterData genericParameterData:
-                    _jsonWriter.WriteStartObject();
-                    _jsonWriter.WritePropertyName("kind");
-                    _jsonWriter.WriteValue("genericParameter");
-                    _jsonWriter.WritePropertyName("name");
-                    _jsonWriter.WriteValue(genericParameterData.Name);
-                    _jsonWriter.WriteEndObject();
-                    break;
-
-                case ArrayTypeData arrayTypeData:
-                    _jsonWriter.WriteStartObject();
-                    _jsonWriter.WritePropertyName("kind");
-                    _jsonWriter.WriteValue("array");
-                    _jsonWriter.WritePropertyName("rank");
-                    _jsonWriter.WriteValue(arrayTypeData.Rank);
-                    _jsonWriter.WritePropertyName("item");
-                    _WriteTypeReference(arrayTypeData.ItemType);
-                    _jsonWriter.WriteEndObject();
-                    break;
-            }
+            var jsonWriterVisitor = new JsonWriterMemberReferenceVisitor(_jsonWriter);
+            typeReference.Accept(jsonWriterVisitor);
         }
 
-        private async Task _WriteTypeReferenceAsync(TypeReferenceData typeReferenceData, CancellationToken cancellationToken)
+        private Task _WriteTypeReferenceAsync(BaseTypeReference typeReference, CancellationToken cancellationToken)
         {
-            switch (typeReferenceData)
-            {
-                case VoidTypeData voidTypeData:
-                    await _jsonWriter.WriteStartObjectAsync(cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
-                    await _jsonWriter.WriteValueAsync("void", cancellationToken);
-                    await _jsonWriter.WriteEndObjectAsync(cancellationToken);
-                    break;
-
-                case DynamicTypeData dynamicTypeData:
-                    await _jsonWriter.WriteStartObjectAsync(cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
-                    await _jsonWriter.WriteValueAsync("dynamic", cancellationToken);
-                    await _jsonWriter.WriteEndObjectAsync(cancellationToken);
-                    break;
-
-                case TypeData typeData:
-                    await _jsonWriter.WriteStartObjectAsync(cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
-                    await _jsonWriter.WriteValueAsync("specific", cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
-                    await _jsonWriter.WriteValueAsync(typeData.Name, cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("namespace", cancellationToken);
-                    await _jsonWriter.WriteValueAsync(typeData.Namespace, cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("declaringType", cancellationToken);
-                    if (typeData.DeclaringType != null)
-                        await _WriteTypeReferenceAsync(typeData.DeclaringType, cancellationToken);
-                    else
-                        await _jsonWriter.WriteNullAsync(cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("fullName", cancellationToken);
-                    await _jsonWriter.WriteValueAsync(_GetFullName(typeData), cancellationToken);
-
-                    await _jsonWriter.WritePropertyNameAsync("assembly", cancellationToken);
-                    await _WriteAssemblyReferenceAsync(typeData.Assembly, cancellationToken);
-
-                    await _jsonWriter.WritePropertyNameAsync("genericArguments", cancellationToken);
-                    await _jsonWriter.WriteStartArrayAsync(cancellationToken);
-                    foreach (var genericArgument in typeData.GenericArguments)
-                        await _WriteTypeReferenceAsync(genericArgument, cancellationToken);
-                    await _jsonWriter.WriteEndArrayAsync(cancellationToken);
-
-                    await _jsonWriter.WriteEndObjectAsync(cancellationToken);
-                    break;
-
-                case PointerTypeData pointerTypeData:
-                    await _jsonWriter.WriteStartObjectAsync(cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
-                    await _jsonWriter.WriteValueAsync("pointer", cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("referent", cancellationToken);
-                    await _WriteTypeReferenceAsync(pointerTypeData.ReferentType, cancellationToken);
-                    await _jsonWriter.WriteEndObjectAsync(cancellationToken);
-                    break;
-
-                case GenericParameterData genericParameterData:
-                    await _jsonWriter.WriteStartObjectAsync(cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
-                    await _jsonWriter.WriteValueAsync("genericParameter", cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("name", cancellationToken);
-                    await _jsonWriter.WriteValueAsync(genericParameterData.Name, cancellationToken);
-                    await _jsonWriter.WriteEndObjectAsync(cancellationToken);
-                    break;
-
-                case ArrayTypeData arrayTypeData:
-                    await _jsonWriter.WriteStartObjectAsync(cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("kind", cancellationToken);
-                    await _jsonWriter.WriteValueAsync("array", cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("rank", cancellationToken);
-                    await _jsonWriter.WriteValueAsync(arrayTypeData.Rank, cancellationToken);
-                    await _jsonWriter.WritePropertyNameAsync("item", cancellationToken);
-                    await _WriteTypeReferenceAsync(arrayTypeData.ItemType, cancellationToken);
-                    await _jsonWriter.WriteEndObjectAsync(cancellationToken);
-                    break;
-            }
+            var jsonWriterVisitor = new JsonWriterMemberReferenceVisitor(_jsonWriter);
+            return typeReference.AcceptAsync(jsonWriterVisitor, cancellationToken);
         }
 
         private void _WriteAccessModifier(AccessModifier accessModifier)
@@ -2791,8 +2651,8 @@ namespace CodeMap
                         WriteValue(item);
                     _jsonWriter.WriteEndArray();
                 }
-                else if (value is TypeReferenceData typeReferenceData)
-                    _WriteTypeReference(typeReferenceData);
+                else if (value is TypeReference typeReference)
+                    _WriteTypeReference(typeReference);
                 else
                 {
                     var valueType = value.GetType();
@@ -2830,8 +2690,8 @@ namespace CodeMap
                         await WriteValueAsync(item);
                     await _jsonWriter.WriteEndArrayAsync(cancellationToken);
                 }
-                else if (value is TypeReferenceData typeReferenceData)
-                    await _WriteTypeReferenceAsync(typeReferenceData, cancellationToken);
+                else if (value is TypeReference typeReference)
+                    await _WriteTypeReferenceAsync(typeReference, cancellationToken);
                 else
                 {
                     var valueType = value.GetType();
@@ -3249,18 +3109,18 @@ namespace CodeMap
             await _jsonWriter.WriteEndObjectAsync(cancellationToken);
         }
 
-        private static string _GetFullName(TypeData typeData)
+        private static string _GetFullName(TypeReference typeReference)
         {
             var fullNameBuilder = new StringBuilder();
 
-            if (!string.IsNullOrWhiteSpace(typeData.Namespace))
-                fullNameBuilder.Append(typeData.Namespace);
-            var nestingChain = new Stack<TypeData>();
-            nestingChain.Push(typeData);
-            while (typeData.DeclaringType is TypeData declaringTypeData)
+            if (!string.IsNullOrWhiteSpace(typeReference.Namespace))
+                fullNameBuilder.Append(typeReference.Namespace);
+            var nestingChain = new Stack<TypeReference>();
+            nestingChain.Push(typeReference);
+            while (typeReference.DeclaringType != null)
             {
-                nestingChain.Push(declaringTypeData);
-                typeData = declaringTypeData;
+                nestingChain.Push(typeReference.DeclaringType);
+                typeReference = typeReference.DeclaringType;
             }
             do
             {
@@ -3526,34 +3386,34 @@ namespace CodeMap
             return idBuilder;
         }
 
-        private static string _GetTypeReferenceId(TypeReferenceData typeReferenceData)
-            => _AppendTypeReferenceId(new StringBuilder(), typeReferenceData).ToString();
+        private static string _GetTypeReferenceId(BaseTypeReference typeReference)
+            => _AppendTypeReferenceId(new StringBuilder(), typeReference).ToString();
 
-        private static StringBuilder _AppendTypeReferenceId(StringBuilder idBuilder, TypeReferenceData typeReferenceData)
+        private static StringBuilder _AppendTypeReferenceId(StringBuilder idBuilder, BaseTypeReference typeReference)
         {
-            switch (typeReferenceData)
+            switch (typeReference)
             {
-                case VoidTypeData voidTypeData:
+                case VoidTypeReference voidType:
                     return idBuilder.Append("System.Void");
 
-                case DynamicTypeData dynamicTypeData:
+                case DynamicTypeReference dynamicType:
                     return idBuilder.Append("System.Object");
 
-                case TypeData typeData:
-                    if (typeData.DeclaringType == null)
+                case TypeReference type:
+                    if (type.DeclaringType == null)
                     {
-                        if (!string.IsNullOrWhiteSpace(typeData.Namespace))
-                            idBuilder.Append(typeData.Namespace).Append('.');
+                        if (!string.IsNullOrWhiteSpace(type.Namespace))
+                            idBuilder.Append(type.Namespace).Append('.');
                     }
                     else
-                        _AppendTypeReferenceId(idBuilder, typeData.DeclaringType).Append('.');
+                        _AppendTypeReferenceId(idBuilder, type.DeclaringType).Append('.');
 
-                    idBuilder.Append(typeData.Name);
-                    if (typeData.GenericArguments.Count > 0)
+                    idBuilder.Append(type.Name);
+                    if (type.GenericArguments.Count > 0)
                     {
                         idBuilder.Append('<');
                         var isFirst = true;
-                        foreach (var genericArgument in typeData.GenericArguments)
+                        foreach (var genericArgument in type.GenericArguments)
                         {
                             if (isFirst)
                                 isFirst = false;
@@ -3565,45 +3425,29 @@ namespace CodeMap
                     }
                     return idBuilder;
 
-                case PointerTypeData pointerTypeData:
-                    return _AppendTypeReferenceId(idBuilder, pointerTypeData.ReferentType).Append('*');
+                case PointerTypeReference pointerType:
+                    return _AppendTypeReferenceId(idBuilder, pointerType.ReferentType).Append('*');
 
-                case TypeGenericParameterData typeGenericParameterData:
-                    return idBuilder.Append('`').Append(_GetGenericParameterAbsolutePosition(typeGenericParameterData));
+                case GenericTypeParameterReference genericTypeParameter:
+                    return idBuilder.Append('`').Append(
+                        (genericTypeParameter.DeclaringType.DeclaringType?.GenericArguments.Count ?? 0)
+                        + genericTypeParameter.DeclaringType.GenericArguments.TakeWhile(g => g != genericTypeParameter).Count()
+                    );
 
-                case MethodGenericParameterTypeData methodGenericParameterData:
-                    return idBuilder.Append("``").Append(methodGenericParameterData.Position);
+                case GenericMethodParameterReference genericMethodParameter:
+                    return idBuilder.Append("``").Append(
+                        genericMethodParameter.DeclaringMethod.GenericArguments.TakeWhile(g => g != genericMethodParameter).Count()
+                    );
 
-                case ArrayTypeData arrayTypeData:
-                    return _AppendTypeReferenceId(idBuilder, arrayTypeData.ItemType)
+                case ArrayTypeReference arrayType:
+                    return _AppendTypeReferenceId(idBuilder, arrayType.ItemType)
                         .Append('[')
-                        .Append(new string(',', arrayTypeData.Rank - 1))
+                        .Append(new string(',', arrayType.Rank - 1))
                         .Append(']');
 
                 default:
                     return idBuilder;
             }
-        }
-
-        private static int _GetGenericParameterAbsolutePosition(TypeGenericParameterData typeGenericParameterData)
-        {
-            var genericParameterPosition = typeGenericParameterData.Position;
-            var declaringType = typeGenericParameterData.DeclaringType.DeclaringType;
-            while (declaringType != null)
-            {
-                switch (declaringType)
-                {
-                    case ClassDocumentationElement @class:
-                        genericParameterPosition += @class.GenericParameters.Count;
-                        break;
-
-                    case StructDocumentationElement @struct:
-                        genericParameterPosition += @struct.GenericParameters.Count;
-                        break;
-                }
-                declaringType = declaringType.DeclaringType;
-            }
-            return genericParameterPosition;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodeMap.ReferenceData;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace CodeMap.Elements
         public IReadOnlyList<TypeGenericParameterData> GenericParameters { get; internal set; }
 
         /// <summary>The implemented interfaces.</summary>
-        public IReadOnlyCollection<TypeReferenceData> ImplementedInterfaces { get; internal set; }
+        public IReadOnlyCollection<TypeReference> ImplementedInterfaces { get; internal set; }
 
         /// <summary>The declared members.</summary>
         public IReadOnlyCollection<MemberDocumentationElement> Members { get; internal set; }

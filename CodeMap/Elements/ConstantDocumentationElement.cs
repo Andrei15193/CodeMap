@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodeMap.ReferenceData;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace CodeMap.Elements
         new public object Value { get; internal set; }
 
         /// <summary>The constant type.</summary>
-        public TypeReferenceData Type { get; internal set; }
+        public BaseTypeReference Type { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CodeMap.ReferenceData;
+using System.Collections.Generic;
 
 namespace CodeMap.Elements
 {
@@ -13,7 +14,7 @@ namespace CodeMap.Elements
         public string Name { get; internal set; }
 
         /// <summary>The parameter type.</summary>
-        public TypeReferenceData Type { get; internal set; }
+        public BaseTypeReference Type { get; internal set; }
 
         /// <summary>The parameter attributes.</summary>
         public IReadOnlyCollection<AttributeData> Attributes { get; internal set; }

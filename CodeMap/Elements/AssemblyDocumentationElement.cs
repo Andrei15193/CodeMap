@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+using CodeMap.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

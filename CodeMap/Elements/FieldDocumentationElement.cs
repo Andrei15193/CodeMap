@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodeMap.ReferenceData;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The field type.</summary>
-        public TypeReferenceData Type { get; internal set; }
+        public BaseTypeReference Type { get; internal set; }
 
         /// <summary>Indicates whether the field is static.</summary>
         public bool IsStatic { get; internal set; }

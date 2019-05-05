@@ -36,6 +36,18 @@ namespace CodeMap.ReferenceData
             return memberReference;
         }
 
+        /// <summary>Creates a <see cref="BaseTypeReference"/> for the provided <paramref name="type"/>.</summary>
+        /// <param name="type">The <see cref="Type"/> for which to create the reference.</param>
+        /// <returns>Returns an <see cref="BaseTypeReference"/> for the provided <paramref name="type"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="type"/> is <c>null</c>.</exception>
+        public BaseTypeReference Create(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
+            return (BaseTypeReference)Create(memberInfo: type);
+        }
+
         /// <summary>Creates a <see cref="DynamicTypeReference"/> that can be used to represent dynamic typed parameters.</summary>
         /// <returns>Returns a <see cref="DynamicTypeReference"/>.</returns>
         public DynamicTypeReference CreateDynamic()
@@ -155,7 +167,7 @@ namespace CodeMap.ReferenceData
             typeReference.Assembly = Create(type.Assembly);
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetArrayTypeReference(Type type)
+        private (ArrayTypeReference MemberReference, Action CircularReferenceSetter) _GetArrayTypeReference(Type type)
         {
             var arrayTypeReference = new ArrayTypeReference
             {
@@ -163,29 +175,29 @@ namespace CodeMap.ReferenceData
             };
             return (
                 arrayTypeReference,
-                () => arrayTypeReference.ItemType = (BaseTypeReference)Create(type.GetElementType())
+                () => arrayTypeReference.ItemType = Create(type.GetElementType())
             );
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetPointerTypeReference(Type type)
+        private (PointerTypeReference MemberReference, Action CircularReferenceSetter) _GetPointerTypeReference(Type type)
         {
             var pointerTypeReference = new PointerTypeReference();
             return (
                 pointerTypeReference,
-                () => pointerTypeReference.ReferentType = (BaseTypeReference)Create(type.GetElementType())
+                () => pointerTypeReference.ReferentType = Create(type.GetElementType())
             );
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetByRefTypeReference(Type type)
+        private (ByRefTypeReference MemberReference, Action CircularReferenceSetter) _GetByRefTypeReference(Type type)
         {
             var byRefTypeReference = new ByRefTypeReference();
             return (
                 byRefTypeReference,
-                () => byRefTypeReference.ReferentType = (BaseTypeReference)Create(type.GetElementType())
+                () => byRefTypeReference.ReferentType = Create(type.GetElementType())
             );
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetGenericTypeParameterReference(Type type)
+        private (GenericTypeParameterReference MemberReference, Action CircularReferenceSetter) _GetGenericTypeParameterReference(Type type)
         {
             var genericTypeParameterReference = new GenericTypeParameterReference
             {
@@ -197,7 +209,7 @@ namespace CodeMap.ReferenceData
             );
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetGenericMethodParameterReference(Type type)
+        private (GenericMethodParameterReference MemberReference, Action CircularReferenceSetter) _GetGenericMethodParameterReference(Type type)
         {
             var genericMethodParameterReference = new GenericMethodParameterReference
             {
@@ -209,7 +221,7 @@ namespace CodeMap.ReferenceData
             );
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetConstantReference(FieldInfo fieldInfo)
+        private (ConstantReference MemberReference, Action CircularReferenceSetter) _GetConstantReference(FieldInfo fieldInfo)
         {
             var constantReference = new ConstantReference
             {
@@ -222,7 +234,7 @@ namespace CodeMap.ReferenceData
             );
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetFieldReference(FieldInfo fieldInfo)
+        private (FieldReference MemberReference, Action CircularReferenceSetter) _GetFieldReference(FieldInfo fieldInfo)
         {
             var constantReference = new FieldReference
             {
@@ -234,7 +246,7 @@ namespace CodeMap.ReferenceData
             );
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetConstructorReference(ConstructorInfo constructorInfo)
+        private (ConstructorReference MemberReference, Action CircularReferenceSetter) _GetConstructorReference(ConstructorInfo constructorInfo)
         {
             var constructorReference = new ConstructorReference();
             return (
@@ -251,7 +263,7 @@ namespace CodeMap.ReferenceData
             );
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetEventReference(EventInfo eventInfo)
+        private (EventReference MemberReference, Action CircularReferenceSetter) _GetEventReference(EventInfo eventInfo)
         {
             var eventReference = new EventReference
             {
@@ -263,7 +275,7 @@ namespace CodeMap.ReferenceData
             );
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetPropertyReference(PropertyInfo propertyInfo)
+        private (PropertyReference MemberReference, Action CircularReferenceSetter) _GetPropertyReference(PropertyInfo propertyInfo)
         {
             var propertyReference = new PropertyReference
             {
@@ -283,7 +295,7 @@ namespace CodeMap.ReferenceData
             );
         }
 
-        private (MemberReference MemberReference, Action CircularReferenceSetter) _GetMethodReference(MethodInfo methodInfo)
+        private (MethodReference MemberReference, Action CircularReferenceSetter) _GetMethodReference(MethodInfo methodInfo)
         {
             var methodReference = new MethodReference
             {

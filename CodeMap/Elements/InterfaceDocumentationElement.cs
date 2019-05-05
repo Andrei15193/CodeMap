@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodeMap.ReferenceData;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace CodeMap.Elements
         public IReadOnlyList<TypeGenericParameterData> GenericParameters { get; internal set; }
 
         /// <summary>The base interfaces.</summary>
-        public IReadOnlyCollection<TypeReferenceData> BaseInterfaces { get; internal set; }
+        public IReadOnlyCollection<TypeReference> BaseInterfaces { get; internal set; }
 
         /// <summary>The declared events.</summary>
         public IReadOnlyCollection<EventDocumentationElement> Events { get; internal set; }

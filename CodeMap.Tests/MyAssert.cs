@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CodeMap.Elements;
+using CodeMap.ReferenceData;
 using CodeMap.Tests.Data;
 using Xunit;
 
@@ -509,7 +510,21 @@ namespace CodeMap.Tests
                 .AssertEmpty(() => attributeData.NamedParameters);
 
         public static TTypeReference AssertTypeReference<TTypeReference>(this TTypeReference typeReference, Type type)
-            where TTypeReference : TypeReferenceData
+            where TTypeReference : BaseTypeReference
+        {
+            Assert.True(typeReference == type);
+            Assert.True(type == typeReference);
+            Assert.False(typeReference != type);
+            Assert.False(type != typeReference);
+
+            var otherType = type == typeof(object) ? typeof(string) : typeof(object);
+            Assert.True(typeReference != otherType);
+            Assert.True(otherType != typeReference);
+            return typeReference;
+        }
+
+        public static TGenericParameterData AssertGenericParameter<TGenericParameterData>(this TGenericParameterData typeReference, Type type)
+            where TGenericParameterData : GenericParameterData
         {
             Assert.True(typeReference == type);
             Assert.True(type == typeReference);
@@ -1138,7 +1153,7 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TInstance AssertTypeReference<TInstance>(this TInstance instance, Func<TypeReferenceData> selector, Type type)
+        public static TInstance AssertTypeReference<TInstance>(this TInstance instance, Func<BaseTypeReference> selector, Type type)
         {
             selector().AssertTypeReference(type);
             return instance;
@@ -1185,10 +1200,10 @@ namespace CodeMap.Tests
             return assemblyName;
         }
 
-        public static TInstance AssertDynamicType<TInstance>(this TInstance instance, Func<TypeReferenceData> selector)
+        public static TInstance AssertDynamicType<TInstance>(this TInstance instance, Func<BaseTypeReference> selector)
             => instance
                 .AssertTypeReference(selector, typeof(object))
-                .AssertMember(selector, type => type.AssertIs<DynamicTypeData>());
+                .AssertMember(selector, type => type.AssertIs<DynamicTypeReference>());
 
         public static AttributeData AssertDynamicTypeAttribute(this AttributeData attribute, bool[] transformFlags = null)
             => attribute
@@ -2066,7 +2081,7 @@ namespace CodeMap.Tests
                             () => method.Return.Type,
                             returnType => returnType
                                 .AssertTypeReference(typeof(void))
-                                .AssertIs<VoidTypeData>()
+                                .AssertIs<VoidTypeReference>()
                         )
                         .AssertCollectionMember(
                             () => method.GenericParameters,
@@ -2680,10 +2695,10 @@ namespace CodeMap.Tests
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
         public static TInstance AssertTypeReference<TInstance>(this TInstance instance, string @namespace, string name)
-            where TInstance : TypeReferenceData
+            where TInstance : BaseTypeReference
         {
             instance
-                .AssertIs<TypeData>(
+                .AssertIs<TypeReference>(
                     instanceTypeReference =>
                         instanceTypeReference
                             .AssertEqual(() => instanceTypeReference.Name, name)
@@ -2693,22 +2708,22 @@ namespace CodeMap.Tests
         }
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
-        public static TInstance AssertTypeReference<TInstance>(this TInstance instance, Func<TypeReferenceData> selector, string @namespace, string name)
+        public static TInstance AssertTypeReference<TInstance>(this TInstance instance, Func<BaseTypeReference> selector, string @namespace, string name)
         {
             selector().AssertTypeReference(@namespace, name);
             return instance;
         }
 
-        public static TInstance AssertGenericArguments<TInstance>(this TInstance instance, params Action<TypeReferenceData>[] callbacks)
-            where TInstance : TypeReferenceData
+        public static TInstance AssertGenericArguments<TInstance>(this TInstance instance, params Action<BaseTypeReference>[] callbacks)
+            where TInstance : BaseTypeReference
         {
-            instance.AssertIs<TypeData>(
+            instance.AssertIs<TypeReference>(
                 instanceTypeReference => instanceTypeReference.AssertCollectionMember(() => instanceTypeReference.GenericArguments, callbacks)
             );
             return instance;
         }
 
-        public static TInstance AssertGenericArguments<TInstance>(this TInstance instance, Func<TypeReferenceData> selector, params Action<TypeReferenceData>[] callbacks)
+        public static TInstance AssertGenericArguments<TInstance>(this TInstance instance, Func<BaseTypeReference> selector, params Action<BaseTypeReference>[] callbacks)
         {
             selector().AssertGenericArguments(callbacks);
             return instance;
@@ -2716,10 +2731,10 @@ namespace CodeMap.Tests
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
         public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, string name, Version version)
-            where TInstance : TypeReferenceData
+            where TInstance : BaseTypeReference
         {
             instance
-                .AssertIs<TypeData>(
+                .AssertIs<TypeReference>(
                     instanceTypeReference =>
                         instanceTypeReference.AssertMember(
                             () => instanceTypeReference.Assembly,
@@ -2733,10 +2748,10 @@ namespace CodeMap.Tests
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
         public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, string name, Version version, string culture, string publicKeyToken)
-            where TInstance : TypeReferenceData
+            where TInstance : BaseTypeReference
         {
             instance
-                .AssertIs<TypeData>(
+                .AssertIs<TypeReference>(
                     instanceTypeReference =>
                         instanceTypeReference.AssertMember(
                             () => instanceTypeReference.Assembly,
@@ -2751,14 +2766,14 @@ namespace CodeMap.Tests
         }
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
-        public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, Func<TypeReferenceData> selector, string name, Version version)
+        public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, Func<BaseTypeReference> selector, string name, Version version)
         {
             selector().AssertTypeReferenceAssembly(name, version);
             return instance;
         }
 
         [Obsolete("Equality comparisons have been implemented for instances that resemble .NET types, use them instead")]
-        public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, Func<TypeReferenceData> selector, string name, Version version, string culture, string publicKeyToken)
+        public static TInstance AssertTypeReferenceAssembly<TInstance>(this TInstance instance, Func<BaseTypeReference> selector, string name, Version version, string culture, string publicKeyToken)
         {
             selector().AssertTypeReferenceAssembly(name, version, culture, publicKeyToken);
             return instance;

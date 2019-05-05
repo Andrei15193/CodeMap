@@ -1,4 +1,5 @@
 ﻿using CodeMap.Elements;
+using CodeMap.ReferenceData;
 using CodeMap.Tests.Data;
 using Moq;
 using System;
@@ -139,7 +140,7 @@ namespace CodeMap.Tests
                         .AssertTypeReference(() => delegateDocumentationElement.Return.Type, typeof(void))
                         .AssertMember(
                             () => delegateDocumentationElement.Return.Type,
-                            returnType => returnType.AssertIs<VoidTypeData>()
+                            returnType => returnType.AssertIs<VoidTypeReference>()
                         )
                         .AssertCollectionMember(
                             () => delegateDocumentationElement.Return.Attributes,
@@ -803,7 +804,7 @@ namespace CodeMap.Tests
                                     genericParameter
                                         .AssertEqual(() => genericParameter.Name, "TParam1")
                                         .AssertEqual(() => genericParameter.Position, 0)
-                                        .AssertTypeReference(typeGenericParameters[0])
+                                        .AssertGenericParameter(typeGenericParameters[0])
                                         .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
                                         .AssertTrue(() => genericParameter.IsCovariant)
                                         .AssertFalse(() => genericParameter.IsContravariant)
@@ -815,7 +816,7 @@ namespace CodeMap.Tests
                                     genericParameter
                                         .AssertEqual(() => genericParameter.Name, "TParam2")
                                         .AssertEqual(() => genericParameter.Position, 1)
-                                        .AssertTypeReference(typeGenericParameters[1])
+                                        .AssertGenericParameter(typeGenericParameters[1])
                                         .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
                                         .AssertFalse(() => genericParameter.IsCovariant)
                                         .AssertTrue(() => genericParameter.IsContravariant)
@@ -827,7 +828,7 @@ namespace CodeMap.Tests
                                     genericParameter
                                         .AssertEqual(() => genericParameter.Name, "TParam3")
                                         .AssertEqual(() => genericParameter.Position, 2)
-                                        .AssertTypeReference(typeGenericParameters[2])
+                                        .AssertGenericParameter(typeGenericParameters[2])
                                         .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
                                         .AssertFalse(() => genericParameter.IsCovariant)
                                         .AssertFalse(() => genericParameter.IsContravariant)
@@ -839,7 +840,7 @@ namespace CodeMap.Tests
                                     genericParameter
                                         .AssertEqual(() => genericParameter.Name, "TParam4")
                                         .AssertEqual(() => genericParameter.Position, 3)
-                                        .AssertTypeReference(typeGenericParameters[3])
+                                        .AssertGenericParameter(typeGenericParameters[3])
                                         .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
                                         .AssertFalse(() => genericParameter.IsCovariant)
                                         .AssertFalse(() => genericParameter.IsContravariant)
@@ -851,7 +852,7 @@ namespace CodeMap.Tests
                                     genericParameter
                                         .AssertEqual(() => genericParameter.Name, "TParam5")
                                         .AssertEqual(() => genericParameter.Position, 4)
-                                        .AssertTypeReference(typeGenericParameters[4])
+                                        .AssertGenericParameter(typeGenericParameters[4])
                                         .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
                                         .AssertFalse(() => genericParameter.IsCovariant)
                                         .AssertFalse(() => genericParameter.IsContravariant)
@@ -860,13 +861,18 @@ namespace CodeMap.Tests
                                         .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
                                         .AssertCollectionMember(
                                             () => genericParameter.TypeConstraints,
-                                            type => type.AssertSame(interfaceDocumentationElement.GenericParameters.First())
+                                            type => type.AssertIs<GenericTypeParameterReference>(
+                                                genericParameterReference => genericParameterReference.AssertEqual(
+                                                    () => genericParameterReference.Name,
+                                                    interfaceDocumentationElement.GenericParameters.First().Name
+                                                )
+                                            )
                                         ),
                                 genericParameter =>
                                     genericParameter
                                         .AssertEqual(() => genericParameter.Name, "TParam6")
                                         .AssertEqual(() => genericParameter.Position, 5)
-                                        .AssertTypeReference(typeGenericParameters[5])
+                                        .AssertGenericParameter(typeGenericParameters[5])
                                         .AssertSame(() => genericParameter.DeclaringType, interfaceDocumentationElement)
                                         .AssertFalse(() => genericParameter.IsCovariant)
                                         .AssertFalse(() => genericParameter.IsContravariant)
@@ -875,7 +881,12 @@ namespace CodeMap.Tests
                                         .AssertFalse(() => genericParameter.HasDefaultConstructorConstraint)
                                         .AssertCollectionMember(
                                             () => genericParameter.TypeConstraints,
-                                            type => type.AssertSame(interfaceDocumentationElement.GenericParameters.First()),
+                                            type => type.AssertIs<GenericTypeParameterReference>(
+                                                genericParameterReference => genericParameterReference.AssertEqual(
+                                                    () => genericParameterReference.Name,
+                                                    interfaceDocumentationElement.GenericParameters.First().Name
+                                                )
+                                            ),
                                             type => type.AssertTypeReference(
                                                 typeof(IComparable<>).MakeGenericType(typeGenericParameters[0])
                                             )
@@ -1039,7 +1050,7 @@ namespace CodeMap.Tests
         public void AssertTypeReferenceToNestedGenericType()
         {
             var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
-            var typeReference = (TypeData)classDocumentationElement
+            var typeReference = (TypeReference)classDocumentationElement
                 .Methods
                 .Single(method => method.Name == "TestMethod")
                 .Parameters

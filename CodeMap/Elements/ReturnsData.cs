@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using CodeMap.ReferenceData;
+using System.Collections.Generic;
 
 namespace CodeMap.Elements
 {
@@ -12,7 +11,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The return type.</summary>
-        public TypeReferenceData Type { get; internal set; }
+        public BaseTypeReference Type { get; internal set; }
 
         /// <summary>The return attributes.</summary>
         public IReadOnlyCollection<AttributeData> Attributes { get; internal set; }

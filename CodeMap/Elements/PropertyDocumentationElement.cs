@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CodeMap.ReferenceData;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +13,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The property type.</summary>
-        public TypeReferenceData Type { get; internal set; }
+        public BaseTypeReference Type { get; internal set; }
 
         /// <summary>Indicates whether the property is static.</summary>
         public bool IsStatic { get; internal set; }
@@ -43,7 +43,7 @@ namespace CodeMap.Elements
         public IReadOnlyList<ParameterData> Parameters { get; internal set; }
 
         /// <summary>Documentation about the how the value of the property is calculated.</summary>
-        new public ValueDocumentationElement Value { get; internal set; }
+        public new ValueDocumentationElement Value { get; internal set; }
 
         /// <summary>Documented exceptions that might be thrown when using the property.</summary>
         public IReadOnlyCollection<ExceptionData> Exceptions { get; internal set; }

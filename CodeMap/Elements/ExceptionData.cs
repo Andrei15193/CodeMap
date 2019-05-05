@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using CodeMap.ReferenceData;
 
 namespace CodeMap.Elements
 {
@@ -10,7 +10,7 @@ namespace CodeMap.Elements
         }
 
         /// <summary>The type of the exception.</summary>
-        public TypeReferenceData Type { get; internal set; }
+        public TypeReference Type { get; internal set; }
 
         /// <summary>The description of the cases where the exception is thrown.</summary>
         public BlockDescriptionDocumentationElement Description { get; internal set; }

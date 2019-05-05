@@ -449,6 +449,13 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
+        public void CreateFromNullType_ThrowsExceptions()
+        {
+            var exception = Assert.Throws<ArgumentNullException>("type", () => _Factory.Create(type: null));
+            Assert.Equal(new ArgumentNullException("type").Message, exception.Message);
+        }
+
+        [Fact]
         public void CreateFromNullAssembly_ThrowsException()
         {
             var exception = Assert.Throws<ArgumentNullException>("assembly", () => _Factory.Create(assembly: null));
