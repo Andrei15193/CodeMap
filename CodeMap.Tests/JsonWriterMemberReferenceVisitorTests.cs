@@ -1,6 +1,8 @@
 ﻿using CodeMap.ReferenceData;
+using CodeMap.Tests.Data;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -10,6 +12,8 @@ namespace CodeMap.Tests
 {
     public class JsonWriterMemberReferenceVisitorTests
     {
+        private const string _TestDataPublicKeyToken = "";
+
         [Fact]
         public async Task SerializeSimpleType()
         {
@@ -26,6 +30,94 @@ namespace CodeMap.Tests
         ""version"": ""4.0.0.0"",
         ""culture"": """",
         ""publicKeyToken"": ""7cec85d7bea7798e""
+    }
+}"
+            );
+        }
+
+        [Fact]
+        public async Task SerializeConstructedGenericType()
+        {
+            await _AssertAsync(
+                typeof(TestClass<int>.NestedTestClass<IEnumerable<string>, decimal>),
+                @"{
+    ""kind"": ""specific"",
+    ""name"": ""NestedTestClass"",
+    ""namespace"": ""CodeMap.Tests.Data"",
+    ""declaringType"": {
+        ""kind"": ""specific"",
+        ""name"": ""TestClass"",
+        ""namespace"": ""CodeMap.Tests.Data"",
+        ""declaringType"": null,
+        ""genericArguments"": [
+            {
+                ""kind"": ""specific"",
+                ""name"": ""Int32"",
+                ""namespace"": ""System"",
+                ""declaringType"": null,
+                ""genericArguments"": [],
+                ""assembly"": {
+                    ""name"": ""System.Private.CoreLib"",
+                    ""version"": ""4.0.0.0"",
+                    ""culture"": """",
+                    ""publicKeyToken"": ""7cec85d7bea7798e""
+                }
+            }
+        ],
+        ""assembly"": {
+            ""name"": ""CodeMap.Tests.Data"",
+            ""version"": ""1.2.3.4"",
+            ""culture"": """",
+            ""publicKeyToken"": """ + _TestDataPublicKeyToken + @"""
+        }
+    },
+    ""genericArguments"": [
+        {
+            ""kind"": ""specific"",
+            ""name"": ""IEnumerable"",
+            ""namespace"": ""System.Collections.Generic"",
+            ""declaringType"": null,
+            ""genericArguments"": [
+                {
+                    ""kind"": ""specific"",
+                    ""name"": ""String"",
+                    ""namespace"": ""System"",
+                    ""declaringType"": null,
+                    ""genericArguments"": [],
+                    ""assembly"": {
+                        ""name"": ""System.Private.CoreLib"",
+                        ""version"": ""4.0.0.0"",
+                        ""culture"": """",
+                        ""publicKeyToken"": ""7cec85d7bea7798e""
+                    }
+                }
+            ],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        },
+        {
+            ""kind"": ""specific"",
+            ""name"": ""Decimal"",
+            ""namespace"": ""System"",
+            ""declaringType"": null,
+            ""genericArguments"": [],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        }
+    ],
+    ""assembly"": {
+        ""name"": ""CodeMap.Tests.Data"",
+        ""version"": ""1.2.3.4"",
+        ""culture"": """",
+        ""publicKeyToken"": """ + _TestDataPublicKeyToken + @"""
     }
 }"
             );
