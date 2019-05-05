@@ -143,7 +143,12 @@ namespace CodeMap
         /// <summary>Visits the given <paramref name="genericTypeParameter"/>.</summary>
         /// <param name="genericTypeParameter">The <see cref="GenericTypeParameterReference"/> to visit.</param>
         protected internal override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
-            => _WriteGenericParameterReference(genericTypeParameter);
+        {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "genericTypeParameter");
+            _jsonWriter.WriteProperty("name", genericTypeParameter.Name);
+            _jsonWriter.WriteEndObject();
+        }
 
         /// <summary>Asynchronously visits the given <paramref name="genericTypeParameter"/>.</summary>
         /// <param name="genericTypeParameter">The <see cref="GenericTypeParameterReference"/> to visit.</param>
@@ -166,6 +171,10 @@ namespace CodeMap
         /// <param name="genericMethodParameter">The <see cref="GenericMethodParameterReference"/> to visit.</param>
         protected internal override void VisitGenericMethodParameter(GenericMethodParameterReference genericMethodParameter)
         {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "genericMethodParameter");
+            _jsonWriter.WriteProperty("name", genericMethodParameter.Name);
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Asynchronously visits the given <paramref name="genericMethodParameter"/>.</summary>
@@ -331,6 +340,13 @@ namespace CodeMap
         /// <param name="method">The <see cref="MethodReference"/> to visit.</param>
         protected internal override void VisitMethod(MethodReference method)
         {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "method");
+            _jsonWriter.WriteProperty("name", method.Name);
+            _jsonWriter.WriteProperty("declaringType", this, method.DeclaringType);
+            _jsonWriter.WriteProperty("genericArguments", this, method.GenericArguments);
+            _jsonWriter.WriteProperty("parameterTypes", this, method.ParameterTypes);
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Asynchronously visits the given <paramref name="method"/>.</summary>
@@ -348,14 +364,6 @@ namespace CodeMap
             {
                 return Task.FromException(exception);
             }
-        }
-
-        private void _WriteGenericParameterReference(GenericParameterReference genericParameter)
-        {
-            _jsonWriter.WriteStartObject();
-            _jsonWriter.WriteProperty("kind", "genericParameter");
-            _jsonWriter.WriteProperty("name", genericParameter.Name);
-            _jsonWriter.WriteEndObject();
         }
 
         private void _WriteAssemblyReference(AssemblyReference assembly)

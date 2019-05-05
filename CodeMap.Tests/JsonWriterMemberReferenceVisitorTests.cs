@@ -243,7 +243,7 @@ namespace CodeMap.Tests
         ""declaringType"": null,
         ""genericArguments"": [
             {
-                ""kind"": ""genericParameter"",
+                ""kind"": ""genericTypeParameter"",
                 ""name"": ""TParam1""
             }
         ],
@@ -256,11 +256,11 @@ namespace CodeMap.Tests
     },
     ""genericArguments"": [
         {
-            ""kind"": ""genericParameter"",
+            ""kind"": ""genericTypeParameter"",
             ""name"": ""TParam2""
         },
         {
-            ""kind"": ""genericParameter"",
+            ""kind"": ""genericTypeParameter"",
             ""name"": ""TParam3""
         }
     ],
@@ -290,7 +290,7 @@ namespace CodeMap.Tests
         ""declaringType"": null,
         ""genericArguments"": [
             {
-                ""kind"": ""genericParameter"",
+                ""kind"": ""genericTypeParameter"",
                 ""name"": ""TParam1""
             }
         ],
@@ -320,7 +320,7 @@ namespace CodeMap.Tests
         ""declaringType"": null,
         ""genericArguments"": [
             {
-                ""kind"": ""genericParameter"",
+                ""kind"": ""genericTypeParameter"",
                 ""name"": ""TParam1""
             }
         ],
@@ -454,6 +454,195 @@ namespace CodeMap.Tests
             ""namespace"": ""System"",
             ""declaringType"": null,
             ""genericArguments"": [],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        }
+    ]
+}"
+            );
+        }
+
+        [Fact]
+        public async Task SerializeMethod()
+        {
+            await _AssertAsync(
+                typeof(int).GetMethod("Parse", new[] { typeof(string) }),
+                @"{
+    ""kind"": ""method"",
+    ""name"": ""Parse"",
+    ""declaringType"": {
+        ""kind"": ""specific"",
+        ""name"": ""Int32"",
+        ""namespace"": ""System"",
+        ""declaringType"": null,
+        ""genericArguments"": [],
+        ""assembly"": {
+            ""name"": ""System.Private.CoreLib"",
+            ""version"": ""4.0.0.0"",
+            ""culture"": """",
+            ""publicKeyToken"": ""7cec85d7bea7798e""
+        }
+    },
+    ""genericArguments"": [],
+    ""parameterTypes"": [
+        {
+            ""kind"": ""specific"",
+            ""name"": ""String"",
+            ""namespace"": ""System"",
+            ""declaringType"": null,
+            ""genericArguments"": [],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        }
+    ]
+}"
+            );
+        }
+
+        [Fact]
+        public async Task SerializeConstructedGenericMethod()
+        {
+            await _AssertAsync(
+                typeof(string)
+                    .GetMethod("Join", new[] { typeof(string), typeof(IEnumerable<>).MakeGenericType(Type.MakeGenericMethodParameter(0)) })
+                    .MakeGenericMethod(typeof(int)),
+                @"{
+    ""kind"": ""method"",
+    ""name"": ""Join"",
+    ""declaringType"": {
+        ""kind"": ""specific"",
+        ""name"": ""String"",
+        ""namespace"": ""System"",
+        ""declaringType"": null,
+        ""genericArguments"": [],
+        ""assembly"": {
+            ""name"": ""System.Private.CoreLib"",
+            ""version"": ""4.0.0.0"",
+            ""culture"": """",
+            ""publicKeyToken"": ""7cec85d7bea7798e""
+        }
+    },
+    ""genericArguments"": [
+        {
+            ""kind"": ""specific"",
+            ""name"": ""Int32"",
+            ""namespace"": ""System"",
+            ""declaringType"": null,
+            ""genericArguments"": [],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        }
+    ],
+    ""parameterTypes"": [
+        {
+            ""kind"": ""specific"",
+            ""name"": ""String"",
+            ""namespace"": ""System"",
+            ""declaringType"": null,
+            ""genericArguments"": [],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        },
+        {
+            ""kind"": ""specific"",
+            ""name"": ""IEnumerable"",
+            ""namespace"": ""System.Collections.Generic"",
+            ""declaringType"": null,
+            ""genericArguments"": [
+                {
+                    ""kind"": ""specific"",
+                    ""name"": ""Int32"",
+                    ""namespace"": ""System"",
+                    ""declaringType"": null,
+                    ""genericArguments"": [],
+                    ""assembly"": {
+                        ""name"": ""System.Private.CoreLib"",
+                        ""version"": ""4.0.0.0"",
+                        ""culture"": """",
+                        ""publicKeyToken"": ""7cec85d7bea7798e""
+                    }
+                }
+            ],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        }
+    ]
+}"
+            );
+        }
+
+        [Fact]
+        public async Task SerializeGenericMethodDefinition()
+        {
+            await _AssertAsync(
+                typeof(string).GetMethod("Join", new[] { typeof(string), typeof(IEnumerable<>).MakeGenericType(Type.MakeGenericMethodParameter(0)) }),
+                @"{
+    ""kind"": ""method"",
+    ""name"": ""Join"",
+    ""declaringType"": {
+        ""kind"": ""specific"",
+        ""name"": ""String"",
+        ""namespace"": ""System"",
+        ""declaringType"": null,
+        ""genericArguments"": [],
+        ""assembly"": {
+            ""name"": ""System.Private.CoreLib"",
+            ""version"": ""4.0.0.0"",
+            ""culture"": """",
+            ""publicKeyToken"": ""7cec85d7bea7798e""
+        }
+    },
+    ""genericArguments"": [
+        {
+            ""kind"": ""genericMethodParameter"",
+            ""name"": ""T""
+        }
+    ],
+    ""parameterTypes"": [
+        {
+            ""kind"": ""specific"",
+            ""name"": ""String"",
+            ""namespace"": ""System"",
+            ""declaringType"": null,
+            ""genericArguments"": [],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        },
+        {
+            ""kind"": ""specific"",
+            ""name"": ""IEnumerable"",
+            ""namespace"": ""System.Collections.Generic"",
+            ""declaringType"": null,
+            ""genericArguments"": [
+                {
+                    ""kind"": ""genericMethodParameter"",
+                    ""name"": ""T""
+                }
+            ],
             ""assembly"": {
                 ""name"": ""System.Private.CoreLib"",
                 ""version"": ""4.0.0.0"",
