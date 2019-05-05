@@ -200,6 +200,13 @@ namespace CodeMap
         /// <param name="constant">The <see cref="ConstantReference"/> to visit.</param>
         protected internal override void VisitConstant(ConstantReference constant)
         {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "constant");
+            _jsonWriter.WriteProperty("name", constant.Name);
+            _jsonWriter.WriteProperty("value", constant.Value);
+            _jsonWriter.WritePropertyName("declaringType");
+            constant.DeclaringType.Accept(this);
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Asynchronously visits the given <paramref name="constant"/>.</summary>
