@@ -45,17 +45,25 @@ namespace CodeMap
         /// <param name="type">The <see cref="TypeReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitTypeAsync(TypeReference type, CancellationToken cancellationToken)
+        protected internal override async Task VisitTypeAsync(TypeReference type, CancellationToken cancellationToken)
         {
-            try
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+
+            if (type is VoidTypeReference)
+                await _jsonWriter.WritePropertyAsync("kind", "specific/void", cancellationToken).ConfigureAwait(false);
+            else if (type is DynamicTypeReference)
+                await _jsonWriter.WritePropertyAsync("kind", "specific/dynamic", cancellationToken).ConfigureAwait(false);
+            else
             {
-                VisitType(type);
-                return Task.CompletedTask;
+                await _jsonWriter.WritePropertyAsync("kind", "specific", cancellationToken).ConfigureAwait(false);
+                await _jsonWriter.WritePropertyAsync("name", type.Name, cancellationToken).ConfigureAwait(false);
+                await _jsonWriter.WritePropertyAsync("namespace", type.Namespace, cancellationToken).ConfigureAwait(false);
+                await _jsonWriter.WritePropertyAsync("declaringType", this, type.DeclaringType, cancellationToken).ConfigureAwait(false);
+                await _jsonWriter.WritePropertyAsync("genericArguments", this, type.GenericArguments, cancellationToken).ConfigureAwait(false);
+                await _WriteAssemblyReferenceAsync(type.Assembly, cancellationToken).ConfigureAwait(false);
             }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Visits the given <paramref name="array"/>.</summary>
@@ -73,17 +81,13 @@ namespace CodeMap
         /// <param name="array">The <see cref="ArrayTypeReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitArrayAsync(ArrayTypeReference array, CancellationToken cancellationToken)
+        protected internal override async Task VisitArrayAsync(ArrayTypeReference array, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitArray(array);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "array", cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("rank", array.Rank, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("itemType", this, array.ItemType, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Visits the given <paramref name="pointer"/>.</summary>
@@ -100,17 +104,12 @@ namespace CodeMap
         /// <param name="pointer">The <see cref="PointerTypeReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitPointerAsync(PointerTypeReference pointer, CancellationToken cancellationToken)
+        protected internal override async Task VisitPointerAsync(PointerTypeReference pointer, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitPointer(pointer);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "pointer", cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("referentType", this, pointer.ReferentType, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Visits the given <paramref name="byRef"/>.</summary>
@@ -127,17 +126,12 @@ namespace CodeMap
         /// <param name="byRef">The <see cref="ByRefTypeReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitByRefAsync(ByRefTypeReference byRef, CancellationToken cancellationToken)
+        protected internal override async Task VisitByRefAsync(ByRefTypeReference byRef, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitByRef(byRef);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "byRef",cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("referentType", this, byRef.ReferentType, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Visits the given <paramref name="genericTypeParameter"/>.</summary>
@@ -154,17 +148,12 @@ namespace CodeMap
         /// <param name="genericTypeParameter">The <see cref="GenericTypeParameterReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitGenericTypeParameterAsync(GenericTypeParameterReference genericTypeParameter, CancellationToken cancellationToken)
+        protected internal override async Task VisitGenericTypeParameterAsync(GenericTypeParameterReference genericTypeParameter, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitGenericTypeParameter(genericTypeParameter);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "genericTypeParameter", cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("name", genericTypeParameter.Name, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Visits the given <paramref name="genericMethodParameter"/>.</summary>
@@ -181,17 +170,12 @@ namespace CodeMap
         /// <param name="genericMethodParameter">The <see cref="GenericMethodParameterReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitGenericMethodParameterAsync(GenericMethodParameterReference genericMethodParameter, CancellationToken cancellationToken)
+        protected internal override async Task VisitGenericMethodParameterAsync(GenericMethodParameterReference genericMethodParameter, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitGenericMethodParameter(genericMethodParameter);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "genericMethodParameter", cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("name", genericMethodParameter.Name, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Visits the given <paramref name="constant"/>.</summary>
@@ -210,17 +194,14 @@ namespace CodeMap
         /// <param name="constant">The <see cref="ConstantReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitConstantAsync(ConstantReference constant, CancellationToken cancellationToken)
+        protected internal override async Task VisitConstantAsync(ConstantReference constant, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitConstant(constant);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "constant", cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("name", constant.Name, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("value", constant.Value, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("declaringType", this, constant.DeclaringType, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Visits the given <paramref name="field"/>.</summary>
@@ -238,17 +219,13 @@ namespace CodeMap
         /// <param name="field">The <see cref="FieldReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitFieldAsync(FieldReference field, CancellationToken cancellationToken)
+        protected internal override async Task VisitFieldAsync(FieldReference field, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitField(field);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "field", cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("name", field.Name, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("declaringType", this, field.DeclaringType, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Visits the given <paramref name="constructor"/>.</summary>
@@ -266,17 +243,13 @@ namespace CodeMap
         /// <param name="constructor">The <see cref="ConstructorReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitConstructorAsync(ConstructorReference constructor, CancellationToken cancellationToken)
+        protected internal override async Task VisitConstructorAsync(ConstructorReference constructor, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitConstructor(constructor);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "constructor", cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("declaringType", this, constructor.DeclaringType, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("parameterTypes", this, constructor.ParameterTypes, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Visits the given <paramref name="event"/>.</summary>
@@ -294,17 +267,13 @@ namespace CodeMap
         /// <param name="event">The <see cref="EventReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitEventAsync(EventReference @event, CancellationToken cancellationToken)
+        protected internal override async Task VisitEventAsync(EventReference @event, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitEvent(@event);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "event", cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("name", @event.Name, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("declaringType", this, @event.DeclaringType, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Visits the given <paramref name="property"/>.</summary>
@@ -323,17 +292,14 @@ namespace CodeMap
         /// <param name="property">The <see cref="PropertyReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitPropertyAsync(PropertyReference property, CancellationToken cancellationToken)
+        protected internal override async Task VisitPropertyAsync(PropertyReference property, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitProperty(property);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "property", cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("name", property.Name, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("declaringType", this, property.DeclaringType, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("parameterTypes", this, property.ParameterTypes, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>Visits the given <paramref name="method"/>.</summary>
@@ -353,17 +319,15 @@ namespace CodeMap
         /// <param name="method">The <see cref="MethodReference"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal override Task VisitMethodAsync(MethodReference method, CancellationToken cancellationToken)
+        protected internal override async Task VisitMethodAsync(MethodReference method, CancellationToken cancellationToken)
         {
-            try
-            {
-                VisitMethod(method);
-                return Task.CompletedTask;
-            }
-            catch (Exception exception)
-            {
-                return Task.FromException(exception);
-            }
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "method", cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("name", method.Name, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("declaringType", this, method.DeclaringType, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("genericArguments", this, method.GenericArguments, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("parameterTypes", this, method.ParameterTypes, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
         private void _WriteAssemblyReference(AssemblyReference assembly)
@@ -375,6 +339,17 @@ namespace CodeMap
             _jsonWriter.WriteProperty("culture", assembly.Culture);
             _jsonWriter.WriteProperty("publicKeyToken", assembly.PublicKeyToken);
             _jsonWriter.WriteEndObject();
+        }
+
+        private async Task _WriteAssemblyReferenceAsync(AssemblyReference assembly, CancellationToken cancellationToken)
+        {
+            await _jsonWriter.WritePropertyNameAsync("assembly", cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("name", assembly.Name, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("version", assembly.Version.ToString(), cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("culture", assembly.Culture, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("publicKeyToken", assembly.PublicKeyToken, cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

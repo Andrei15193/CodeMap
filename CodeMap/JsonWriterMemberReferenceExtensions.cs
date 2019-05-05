@@ -16,8 +16,8 @@ namespace CodeMap
 
         public static async Task WritePropertyAsync(this JsonWriter jsonWriter, string propertyName, object value, CancellationToken cancellationToken)
         {
-            await jsonWriter.WritePropertyNameAsync(propertyName, cancellationToken);
-            await jsonWriter.WriteValueAsync(value, cancellationToken);
+            await jsonWriter.WritePropertyNameAsync(propertyName, cancellationToken).ConfigureAwait(false);
+            await jsonWriter.WriteValueAsync(value, cancellationToken).ConfigureAwait(false);
         }
 
         public static void WriteProperty(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, MemberReference memberReference)
@@ -31,11 +31,11 @@ namespace CodeMap
 
         public static async Task WritePropertyAsync(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, MemberReference memberReference, CancellationToken cancellationToken)
         {
-            await jsonWriter.WritePropertyNameAsync(propertyName, cancellationToken);
+            await jsonWriter.WritePropertyNameAsync(propertyName, cancellationToken).ConfigureAwait(false);
             if (memberReference != null)
-                await memberReference.AcceptAsync(visitor, cancellationToken);
+                await memberReference.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
             else
-                await jsonWriter.WriteNullAsync(cancellationToken);
+                await jsonWriter.WriteNullAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public static void WriteProperty(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, IEnumerable<MemberReference> memberReferences)
@@ -49,11 +49,11 @@ namespace CodeMap
 
         public static async Task WritePropertyAsync(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, IEnumerable<MemberReference> memberReferences, CancellationToken cancellationToken)
         {
-            await jsonWriter.WritePropertyNameAsync(propertyName, cancellationToken);
-            await jsonWriter.WriteStartArrayAsync(cancellationToken);
+            await jsonWriter.WritePropertyNameAsync(propertyName, cancellationToken).ConfigureAwait(false);
+            await jsonWriter.WriteStartArrayAsync(cancellationToken).ConfigureAwait(false);
             foreach (var item in memberReferences)
-                await item.AcceptAsync(visitor, cancellationToken);
-            await jsonWriter.WriteEndArrayAsync(cancellationToken);
+                await item.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+            await jsonWriter.WriteEndArrayAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }
