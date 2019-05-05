@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
@@ -407,6 +408,60 @@ namespace CodeMap.Tests
             ""publicKeyToken"": ""b03f5f7f11d50a3a""
         }
     }
+}"
+            );
+        }
+
+        [Fact]
+        public async Task SerializeProperty()
+        {
+            await _AssertAsync(
+                typeof(IList<string>).GetDefaultMembers().OfType<PropertyInfo>().Single(),
+                @"{
+    ""kind"": ""property"",
+    ""name"": ""Item"",
+    ""declaringType"": {
+        ""kind"": ""specific"",
+        ""name"": ""IList"",
+        ""namespace"": ""System.Collections.Generic"",
+        ""declaringType"": null,
+        ""genericArguments"": [
+            {
+                ""kind"": ""specific"",
+                ""name"": ""String"",
+                ""namespace"": ""System"",
+                ""declaringType"": null,
+                ""genericArguments"": [],
+                ""assembly"": {
+                    ""name"": ""System.Private.CoreLib"",
+                    ""version"": ""4.0.0.0"",
+                    ""culture"": """",
+                    ""publicKeyToken"": ""7cec85d7bea7798e""
+                }
+            }
+        ],
+        ""assembly"": {
+            ""name"": ""System.Private.CoreLib"",
+            ""version"": ""4.0.0.0"",
+            ""culture"": """",
+            ""publicKeyToken"": ""7cec85d7bea7798e""
+        }
+    },
+    ""parameterTypes"": [
+        {
+            ""kind"": ""specific"",
+            ""name"": ""Int32"",
+            ""namespace"": ""System"",
+            ""declaringType"": null,
+            ""genericArguments"": [],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        }
+    ]
 }"
             );
         }

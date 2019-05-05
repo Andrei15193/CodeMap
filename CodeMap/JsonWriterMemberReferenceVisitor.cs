@@ -302,6 +302,12 @@ namespace CodeMap
         /// <param name="property">The <see cref="PropertyReference"/> to visit.</param>
         protected internal override void VisitProperty(PropertyReference property)
         {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "property");
+            _jsonWriter.WriteProperty("name", property.Name);
+            _jsonWriter.WriteProperty("declaringType", this, property.DeclaringType);
+            _jsonWriter.WriteProperty("parameterTypes", this, property.ParameterTypes);
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Asynchronously visits the given <paramref name="property"/>.</summary>
