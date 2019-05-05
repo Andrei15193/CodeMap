@@ -24,20 +24,29 @@ namespace CodeMap
         {
             _jsonWriter.WriteStartObject();
 
-            _jsonWriter.WriteProperty("kind", "specific");
-            _jsonWriter.WriteProperty("name", type.Name);
-            _jsonWriter.WriteProperty("namespace", type.Namespace);
-            _jsonWriter.WritePropertyIfNotNull(
-                "declaringType",
-                type.DeclaringType,
-                declaringType => declaringType.Accept(this)
-            );
-            _jsonWriter.WritePropertyCollection(
-                "genericArguments",
-                type.GenericArguments,
-                genericArgument => genericArgument.Accept(this)
-            );
-            _WriteAssemblyReference(type.Assembly);
+            switch (type)
+            {
+                case VoidTypeReference @void:
+                    _jsonWriter.WriteProperty("kind", "specific/void");
+                    break;
+
+                default:
+                    _jsonWriter.WriteProperty("kind", "specific");
+                    _jsonWriter.WriteProperty("name", type.Name);
+                    _jsonWriter.WriteProperty("namespace", type.Namespace);
+                    _jsonWriter.WritePropertyIfNotNull(
+                        "declaringType",
+                        type.DeclaringType,
+                        declaringType => declaringType.Accept(this)
+                    );
+                    _jsonWriter.WritePropertyCollection(
+                        "genericArguments",
+                        type.GenericArguments,
+                        genericArgument => genericArgument.Accept(this)
+                    );
+                    _WriteAssemblyReference(type.Assembly);
+                    break;
+            }
 
             _jsonWriter.WriteEndObject();
         }

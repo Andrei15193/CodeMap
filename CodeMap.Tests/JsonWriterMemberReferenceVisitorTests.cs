@@ -36,6 +36,17 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public async Task SerializeVoidType()
+        {
+            await _AssertAsync(
+                typeof(void),
+                @"{
+    ""kind"": ""specific/void""
+}"
+            );
+        }
+
+        [Fact]
         public async Task SerializeArrayType()
         {
             await _AssertAsync(
