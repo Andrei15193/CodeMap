@@ -12,7 +12,7 @@ namespace CodeMap.Tests
 {
     public class JsonWriterMemberReferenceVisitorTests
     {
-        private const string _TestDataPublicKeyToken = "";
+        private const string _testDataPublicKeyToken = "";
 
         [Fact]
         public async Task SerializeSimpleType()
@@ -68,7 +68,7 @@ namespace CodeMap.Tests
             ""name"": ""CodeMap.Tests.Data"",
             ""version"": ""1.2.3.4"",
             ""culture"": """",
-            ""publicKeyToken"": """ + _TestDataPublicKeyToken + @"""
+            ""publicKeyToken"": """ + _testDataPublicKeyToken + @"""
         }
     },
     ""genericArguments"": [
@@ -117,7 +117,54 @@ namespace CodeMap.Tests
         ""name"": ""CodeMap.Tests.Data"",
         ""version"": ""1.2.3.4"",
         ""culture"": """",
-        ""publicKeyToken"": """ + _TestDataPublicKeyToken + @"""
+        ""publicKeyToken"": """ + _testDataPublicKeyToken + @"""
+    }
+}"
+            );
+        }
+
+        [Fact]
+        public async Task SerializeGenericTypeDefinition()
+        {
+            await _AssertAsync(
+                typeof(TestClass<int>.NestedTestClass<IEnumerable<string>, decimal>).GetGenericTypeDefinition(),
+                @"{
+    ""kind"": ""specific"",
+    ""name"": ""NestedTestClass"",
+    ""namespace"": ""CodeMap.Tests.Data"",
+    ""declaringType"": {
+        ""kind"": ""specific"",
+        ""name"": ""TestClass"",
+        ""namespace"": ""CodeMap.Tests.Data"",
+        ""declaringType"": null,
+        ""genericArguments"": [
+            {
+                ""kind"": ""genericParameter"",
+                ""name"": ""TParam1""
+            }
+        ],
+        ""assembly"": {
+            ""name"": ""CodeMap.Tests.Data"",
+            ""version"": ""1.2.3.4"",
+            ""culture"": """",
+            ""publicKeyToken"": """ + _testDataPublicKeyToken + @"""
+        }
+    },
+    ""genericArguments"": [
+        {
+            ""kind"": ""genericParameter"",
+            ""name"": ""TParam2""
+        },
+        {
+            ""kind"": ""genericParameter"",
+            ""name"": ""TParam3""
+        }
+    ],
+    ""assembly"": {
+        ""name"": ""CodeMap.Tests.Data"",
+        ""version"": ""1.2.3.4"",
+        ""culture"": """",
+        ""publicKeyToken"": """ + _testDataPublicKeyToken + @"""
     }
 }"
             );

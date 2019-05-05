@@ -131,8 +131,7 @@ namespace CodeMap
         /// <summary>Visits the given <paramref name="genericTypeParameter"/>.</summary>
         /// <param name="genericTypeParameter">The <see cref="GenericTypeParameterReference"/> to visit.</param>
         protected internal override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
-        {
-        }
+            => _WriteGenericParameterReference(genericTypeParameter);
 
         /// <summary>Asynchronously visits the given <paramref name="genericTypeParameter"/>.</summary>
         /// <param name="genericTypeParameter">The <see cref="GenericTypeParameterReference"/> to visit.</param>
@@ -310,6 +309,14 @@ namespace CodeMap
             {
                 return Task.FromException(exception);
             }
+        }
+
+        private void _WriteGenericParameterReference(GenericParameterReference genericParameter)
+        {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "genericParameter");
+            _jsonWriter.WriteProperty("name", genericParameter.Name);
+            _jsonWriter.WriteEndObject();
         }
 
         private void _WriteAssemblyReference(AssemblyReference assembly)
