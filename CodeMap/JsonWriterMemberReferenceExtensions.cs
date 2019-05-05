@@ -1,13 +1,12 @@
 ﻿using CodeMap.ReferenceData;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeMap
 {
-    internal static class JsonWriterExtensions
+    internal static class JsonWriterMemberReferenceExtensions
     {
         public static void WriteProperty(this JsonWriter jsonWriter, string propertyName, object value)
         {
@@ -48,7 +47,7 @@ namespace CodeMap
             jsonWriter.WriteEndArray();
         }
 
-        public static async Task WritePropertyCollectionAsync<T>(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, IEnumerable<MemberReference> memberReferences, CancellationToken cancellationToken)
+        public static async Task WritePropertyAsync(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, IEnumerable<MemberReference> memberReferences, CancellationToken cancellationToken)
         {
             await jsonWriter.WritePropertyNameAsync(propertyName, cancellationToken);
             await jsonWriter.WriteStartArrayAsync(cancellationToken);

@@ -246,6 +246,11 @@ namespace CodeMap
         /// <param name="constructor">The <see cref="ConstructorReference"/> to visit.</param>
         protected internal override void VisitConstructor(ConstructorReference constructor)
         {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "constructor");
+            _jsonWriter.WriteProperty("declaringType", this, constructor.DeclaringType);
+            _jsonWriter.WriteProperty("parameterTypes", this, constructor.ParameterTypes);
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Asynchronously visits the given <paramref name="constructor"/>.</summary>

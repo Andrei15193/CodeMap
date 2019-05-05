@@ -333,6 +333,58 @@ namespace CodeMap.Tests
             );
         }
 
+        [Fact]
+        public async Task SerializeConstructor()
+        {
+            await _AssertAsync(
+                typeof(string).GetConstructor(new[] { typeof(char), typeof(int) }),
+                @"{
+    ""kind"": ""constructor"",
+    ""declaringType"": {
+        ""kind"": ""specific"",
+        ""name"": ""String"",
+        ""namespace"": ""System"",
+        ""declaringType"": null,
+        ""genericArguments"": [],
+        ""assembly"": {
+            ""name"": ""System.Private.CoreLib"",
+            ""version"": ""4.0.0.0"",
+            ""culture"": """",
+            ""publicKeyToken"": ""7cec85d7bea7798e""
+        }
+    },
+    ""parameterTypes"": [
+        {
+            ""kind"": ""specific"",
+            ""name"": ""Char"",
+            ""namespace"": ""System"",
+            ""declaringType"": null,
+            ""genericArguments"": [],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        },
+        {
+            ""kind"": ""specific"",
+            ""name"": ""Int32"",
+            ""namespace"": ""System"",
+            ""declaringType"": null,
+            ""genericArguments"": [],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        }
+    ]
+}"
+            );
+        }
+
         private static Task _AssertAsync(MemberInfo memberInfo, string expectedJson)
             => _AssertAsync(memberReferenceFactory => memberReferenceFactory.Create(memberInfo), expectedJson);
 
