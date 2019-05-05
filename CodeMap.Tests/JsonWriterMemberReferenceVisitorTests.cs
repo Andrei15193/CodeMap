@@ -47,6 +47,17 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public async Task SerializeDynamicType()
+        {
+            await _AssertAsync(
+                memberReferenceFactory => memberReferenceFactory.CreateDynamic(),
+                @"{
+    ""kind"": ""specific/dynamic""
+}"
+            );
+        }
+
+        [Fact]
         public async Task SerializeArrayType()
         {
             await _AssertAsync(
@@ -261,7 +272,10 @@ namespace CodeMap.Tests
             );
         }
 
-        private static async Task _AssertAsync(MemberInfo memberInfo, string expectedJson)
+        private static Task _AssertAsync(MemberInfo memberInfo, string expectedJson)
+            => _AssertAsync(memberReferenceFactory => memberReferenceFactory.Create(memberInfo), expectedJson);
+
+        private static async Task _AssertAsync(Func<MemberReferenceFactory, MemberReference> memberReferenceProvider, string expectedJson)
         {
             var expected = NormalizeJson(expectedJson);
             await CompareJson(
@@ -286,7 +300,7 @@ namespace CodeMap.Tests
                         var memberReferenceFactory = new MemberReferenceFactory();
                         var jsonWriterVisitor = new JsonWriterMemberReferenceVisitor(jsonWriter);
 
-                        var memberReference = memberReferenceFactory.Create(memberInfo);
+                        var memberReference = memberReferenceProvider(memberReferenceFactory);
                         await visitCallback(memberReference, jsonWriterVisitor);
 
                     }

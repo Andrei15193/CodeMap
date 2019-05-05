@@ -24,28 +24,26 @@ namespace CodeMap
         {
             _jsonWriter.WriteStartObject();
 
-            switch (type)
+            if (type is VoidTypeReference)
+                _jsonWriter.WriteProperty("kind", "specific/void");
+            else if (type is DynamicTypeReference)
+                _jsonWriter.WriteProperty("kind", "specific/dynamic");
+            else
             {
-                case VoidTypeReference @void:
-                    _jsonWriter.WriteProperty("kind", "specific/void");
-                    break;
-
-                default:
-                    _jsonWriter.WriteProperty("kind", "specific");
-                    _jsonWriter.WriteProperty("name", type.Name);
-                    _jsonWriter.WriteProperty("namespace", type.Namespace);
-                    _jsonWriter.WritePropertyIfNotNull(
-                        "declaringType",
-                        type.DeclaringType,
-                        declaringType => declaringType.Accept(this)
-                    );
-                    _jsonWriter.WritePropertyCollection(
-                        "genericArguments",
-                        type.GenericArguments,
-                        genericArgument => genericArgument.Accept(this)
-                    );
-                    _WriteAssemblyReference(type.Assembly);
-                    break;
+                _jsonWriter.WriteProperty("kind", "specific");
+                _jsonWriter.WriteProperty("name", type.Name);
+                _jsonWriter.WriteProperty("namespace", type.Namespace);
+                _jsonWriter.WritePropertyIfNotNull(
+                    "declaringType",
+                    type.DeclaringType,
+                    declaringType => declaringType.Accept(this)
+                );
+                _jsonWriter.WritePropertyCollection(
+                    "genericArguments",
+                    type.GenericArguments,
+                    genericArgument => genericArgument.Accept(this)
+                );
+                _WriteAssemblyReference(type.Assembly);
             }
 
             _jsonWriter.WriteEndObject();
