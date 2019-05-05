@@ -36,6 +36,35 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public async Task SerializeArrayType()
+        {
+            await _AssertAsync(
+                typeof(int[][,]),
+                @"{
+    ""kind"": ""array"",
+    ""rank"": 1,
+    ""itemType"": {
+        ""kind"": ""array"",
+        ""rank"": 2,
+        ""itemType"": {
+            ""kind"": ""specific"",
+            ""name"": ""Int32"",
+            ""namespace"": ""System"",
+            ""declaringType"": null,
+            ""genericArguments"": [],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        }
+    }
+}"
+            );
+        }
+
+        [Fact]
         public async Task SerializeConstructedGenericType()
         {
             await _AssertAsync(

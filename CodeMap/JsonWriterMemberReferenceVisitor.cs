@@ -63,6 +63,12 @@ namespace CodeMap
         /// <param name="array">The <see cref="ArrayTypeReference"/> to visit.</param>
         protected internal override void VisitArray(ArrayTypeReference array)
         {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "array");
+            _jsonWriter.WriteProperty("rank", array.Rank);
+            _jsonWriter.WritePropertyName("itemType");
+            array.ItemType.Accept(this);
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Asynchronously visits the given <paramref name="array"/>.</summary>
