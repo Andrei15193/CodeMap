@@ -303,6 +303,36 @@ namespace CodeMap.Tests
             );
         }
 
+        [Fact]
+        public async Task SerializeField()
+        {
+            await _AssertAsync(
+                typeof(TestClass<>).GetField("TestField", BindingFlags.Instance | BindingFlags.NonPublic),
+                @"{
+    ""kind"": ""field"",
+    ""name"": ""TestField"",
+    ""declaringType"": {
+        ""kind"": ""specific"",
+        ""name"": ""TestClass"",
+        ""namespace"": ""CodeMap.Tests.Data"",
+        ""declaringType"": null,
+        ""genericArguments"": [
+            {
+                ""kind"": ""genericParameter"",
+                ""name"": ""TParam1""
+            }
+        ],
+        ""assembly"": {
+            ""name"": ""CodeMap.Tests.Data"",
+            ""version"": ""1.2.3.4"",
+            ""culture"": """",
+            ""publicKeyToken"": """ + _testDataPublicKeyToken + @"""
+        }
+    }
+}"
+            );
+        }
+
         private static Task _AssertAsync(MemberInfo memberInfo, string expectedJson)
             => _AssertAsync(memberReferenceFactory => memberReferenceFactory.Create(memberInfo), expectedJson);
 

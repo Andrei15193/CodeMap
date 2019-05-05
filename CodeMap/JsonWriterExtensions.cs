@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CodeMap.ReferenceData;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -20,39 +21,39 @@ namespace CodeMap
             await jsonWriter.WriteValueAsync(value, cancellationToken);
         }
 
-        public static void WritePropertyIfNotNull<T>(this JsonWriter jsonWriter, string propertyName, T value, Action<T> valueWriterCallback)
+        public static void WriteProperty(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, MemberReference memberReference)
         {
             jsonWriter.WritePropertyName(propertyName);
-            if (value != null)
-                valueWriterCallback(value);
+            if (memberReference != null)
+                memberReference.Accept(visitor);
             else
                 jsonWriter.WriteNull();
         }
 
-        public static async Task WritePropertyIfNotNullAsync<T>(this JsonWriter jsonWriter, string propertyName, T value, Func<T, Task> valueWriterCallback, CancellationToken cancellationToken)
+        public static async Task WritePropertyAsync(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, MemberReference memberReference, CancellationToken cancellationToken)
         {
             await jsonWriter.WritePropertyNameAsync(propertyName, cancellationToken);
-            if (value != null)
-                await valueWriterCallback(value);
+            if (memberReference != null)
+                await memberReference.AcceptAsync(visitor, cancellationToken);
             else
                 await jsonWriter.WriteNullAsync(cancellationToken);
         }
 
-        public static void WritePropertyCollection<T>(this JsonWriter jsonWriter, string propertyName, IEnumerable<T> collection, Action<T> itemWriterCallback)
+        public static void WriteProperty(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, IEnumerable<MemberReference> memberReferences)
         {
             jsonWriter.WritePropertyName(propertyName);
             jsonWriter.WriteStartArray();
-            foreach (var item in collection)
-                itemWriterCallback(item);
+            foreach (var memberReference in memberReferences)
+                memberReference.Accept(visitor);
             jsonWriter.WriteEndArray();
         }
 
-        public static async Task WritePropertyCollectionAsync<T>(this JsonWriter jsonWriter, string propertyName, IEnumerable<T> collection, Func<T, Task> itemWriterCallback, CancellationToken cancellationToken)
+        public static async Task WritePropertyCollectionAsync<T>(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, IEnumerable<MemberReference> memberReferences, CancellationToken cancellationToken)
         {
             await jsonWriter.WritePropertyNameAsync(propertyName, cancellationToken);
             await jsonWriter.WriteStartArrayAsync(cancellationToken);
-            foreach (var item in collection)
-                await itemWriterCallback(item);
+            foreach (var item in memberReferences)
+                await item.AcceptAsync(visitor, cancellationToken);
             await jsonWriter.WriteEndArrayAsync(cancellationToken);
         }
     }

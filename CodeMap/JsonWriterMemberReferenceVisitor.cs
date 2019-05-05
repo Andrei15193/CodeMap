@@ -33,16 +33,8 @@ namespace CodeMap
                 _jsonWriter.WriteProperty("kind", "specific");
                 _jsonWriter.WriteProperty("name", type.Name);
                 _jsonWriter.WriteProperty("namespace", type.Namespace);
-                _jsonWriter.WritePropertyIfNotNull(
-                    "declaringType",
-                    type.DeclaringType,
-                    declaringType => declaringType.Accept(this)
-                );
-                _jsonWriter.WritePropertyCollection(
-                    "genericArguments",
-                    type.GenericArguments,
-                    genericArgument => genericArgument.Accept(this)
-                );
+                _jsonWriter.WriteProperty("declaringType", this, type.DeclaringType);
+                _jsonWriter.WriteProperty("genericArguments", this, type.GenericArguments);
                 _WriteAssemblyReference(type.Assembly);
             }
 
@@ -73,8 +65,7 @@ namespace CodeMap
             _jsonWriter.WriteStartObject();
             _jsonWriter.WriteProperty("kind", "array");
             _jsonWriter.WriteProperty("rank", array.Rank);
-            _jsonWriter.WritePropertyName("itemType");
-            array.ItemType.Accept(this);
+            _jsonWriter.WriteProperty("itemType", this, array.ItemType);
             _jsonWriter.WriteEndObject();
         }
 
@@ -101,8 +92,7 @@ namespace CodeMap
         {
             _jsonWriter.WriteStartObject();
             _jsonWriter.WriteProperty("kind", "pointer");
-            _jsonWriter.WritePropertyName("referentType");
-            pointer.ReferentType.Accept(this);
+            _jsonWriter.WriteProperty("referentType", this, pointer.ReferentType);
             _jsonWriter.WriteEndObject();
         }
 
@@ -129,8 +119,7 @@ namespace CodeMap
         {
             _jsonWriter.WriteStartObject();
             _jsonWriter.WriteProperty("kind", "byRef");
-            _jsonWriter.WritePropertyName("referentType");
-            byRef.ReferentType.Accept(this);
+            _jsonWriter.WriteProperty("referentType", this, byRef.ReferentType);
             _jsonWriter.WriteEndObject();
         }
 
@@ -204,8 +193,7 @@ namespace CodeMap
             _jsonWriter.WriteProperty("kind", "constant");
             _jsonWriter.WriteProperty("name", constant.Name);
             _jsonWriter.WriteProperty("value", constant.Value);
-            _jsonWriter.WritePropertyName("declaringType");
-            constant.DeclaringType.Accept(this);
+            _jsonWriter.WriteProperty("declaringType", this, constant.DeclaringType);
             _jsonWriter.WriteEndObject();
         }
 
@@ -230,6 +218,11 @@ namespace CodeMap
         /// <param name="field">The <see cref="FieldReference"/> to visit.</param>
         protected internal override void VisitField(FieldReference field)
         {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "field");
+            _jsonWriter.WriteProperty("name", field.Name);
+            _jsonWriter.WriteProperty("declaringType", this, field.DeclaringType);
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Asynchronously visits the given <paramref name="field"/>.</summary>
