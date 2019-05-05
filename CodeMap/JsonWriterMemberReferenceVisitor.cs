@@ -274,6 +274,11 @@ namespace CodeMap
         /// <param name="event">The <see cref="EventReference"/> to visit.</param>
         protected internal override void VisitEvent(EventReference @event)
         {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "event");
+            _jsonWriter.WriteProperty("name", @event.Name);
+            _jsonWriter.WriteProperty("declaringType", this, @event.DeclaringType);
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Asynchronously visits the given <paramref name="event"/>.</summary>

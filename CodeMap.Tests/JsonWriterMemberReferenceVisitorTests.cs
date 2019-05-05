@@ -3,6 +3,7 @@ using CodeMap.Tests.Data;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -381,6 +382,31 @@ namespace CodeMap.Tests
             }
         }
     ]
+}"
+            );
+        }
+
+        [Fact]
+        public async Task SerializeEvent()
+        {
+            await _AssertAsync(
+                typeof(INotifyPropertyChanged).GetEvent("PropertyChanged", BindingFlags.Instance | BindingFlags.Public),
+                @"{
+    ""kind"": ""event"",
+    ""name"": ""PropertyChanged"",
+    ""declaringType"": {
+        ""kind"": ""specific"",
+        ""name"": ""INotifyPropertyChanged"",
+        ""namespace"": ""System.ComponentModel"",
+        ""declaringType"": null,
+        ""genericArguments"": [],
+        ""assembly"": {
+            ""name"": ""System.ObjectModel"",
+            ""version"": ""4.1.1.0"",
+            ""culture"": """",
+            ""publicKeyToken"": ""b03f5f7f11d50a3a""
+        }
+    }
 }"
             );
         }
