@@ -92,6 +92,11 @@ namespace CodeMap
         /// <param name="pointer">The <see cref="PointerTypeReference"/> to visit.</param>
         protected internal override void VisitPointer(PointerTypeReference pointer)
         {
+            _jsonWriter.WriteStartObject();
+            _jsonWriter.WriteProperty("kind", "pointer");
+            _jsonWriter.WritePropertyName("referentType");
+            pointer.ReferentType.Accept(this);
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Asynchronously visits the given <paramref name="pointer"/>.</summary>

@@ -65,6 +65,33 @@ namespace CodeMap.Tests
         }
 
         [Fact]
+        public async Task SerializePointerType()
+        {
+            await _AssertAsync(
+                typeof(long**),
+                @"{
+    ""kind"": ""pointer"",
+    ""referentType"": {
+        ""kind"": ""pointer"",
+        ""referentType"": {
+            ""kind"": ""specific"",
+            ""name"": ""Int64"",
+            ""namespace"": ""System"",
+            ""declaringType"": null,
+            ""genericArguments"": [],
+            ""assembly"": {
+                ""name"": ""System.Private.CoreLib"",
+                ""version"": ""4.0.0.0"",
+                ""culture"": """",
+                ""publicKeyToken"": ""7cec85d7bea7798e""
+            }
+        }
+    }
+}"
+            );
+        }
+
+        [Fact]
         public async Task SerializeConstructedGenericType()
         {
             await _AssertAsync(
