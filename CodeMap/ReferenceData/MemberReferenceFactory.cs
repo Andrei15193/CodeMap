@@ -8,13 +8,16 @@ namespace CodeMap.ReferenceData
     /// <summary>Represents a <see cref="MemberReference"/> factory.</summary>
     public class MemberReferenceFactory
     {
-        private readonly IDictionary<AssemblyName, AssemblyReference> _cachedAssemblyReferences = new Dictionary<AssemblyName, AssemblyReference>(new AssemblyNameEqualityComparer());
-        private readonly IDictionary<MemberInfo, MemberReference> _cachedMemberReferences = new Dictionary<MemberInfo, MemberReference>();
+        private DynamicTypeReference _dynamicTypeReference;
+        private readonly IDictionary<AssemblyName, AssemblyReference> _cachedAssemblyReferences;
+        private readonly IDictionary<MemberInfo, MemberReference> _cachedMemberReferences;
 
         /// <summary>Initializes a new instance of the <see cref="MemberReferenceFactory"/> class.</summary>
         public MemberReferenceFactory()
         {
+            _dynamicTypeReference = null;
             _cachedAssemblyReferences = new Dictionary<AssemblyName, AssemblyReference>(new AssemblyNameEqualityComparer());
+            _cachedMemberReferences = new Dictionary<MemberInfo, MemberReference>();
         }
 
         /// <summary>Creates an <see cref="MemberReference"/> for the provided <paramref name="memberInfo"/>.</summary>
@@ -52,14 +55,17 @@ namespace CodeMap.ReferenceData
         /// <returns>Returns a <see cref="DynamicTypeReference"/>.</returns>
         public DynamicTypeReference CreateDynamic()
         {
-            var typeReference = new DynamicTypeReference
+            if (_dynamicTypeReference == null)
             {
-                GenericArguments = Enumerable
-                    .Empty<GenericTypeParameterReference>()
-                    .AsReadOnlyList()
-            };
-            _InitializeTypeReference(typeof(object), typeReference);
-            return typeReference;
+                _dynamicTypeReference = new DynamicTypeReference
+                {
+                    GenericArguments = Enumerable
+                        .Empty<GenericTypeParameterReference>()
+                        .AsReadOnlyList()
+                };
+                _InitializeTypeReference(typeof(object), _dynamicTypeReference);
+            }
+            return _dynamicTypeReference;
         }
 
         /// <summary>Creates an <see cref="AssemblyReference"/> for the provided <paramref name="assembly"/>.</summary>

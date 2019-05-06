@@ -10,7 +10,6 @@ namespace CodeMap
 {
     internal class AssemblyDocumentationElementFactory
     {
-        private readonly DynamicTypeReference _dynamicTypeData;
         private readonly MemberReferenceFactory _memberReferenceFactory = new MemberReferenceFactory();
         private readonly MemberDocumentation _emptyMemberDocumentation = new MemberDocumentation(string.Empty);
         private readonly BlockDescriptionDocumentationElement _emptyBlockDocumentationElementCollection = DocumentationElement.BlockDescription(Enumerable.Empty<BlockDocumentationElement>());
@@ -21,7 +20,6 @@ namespace CodeMap
         {
             _canonicalNameResolver = canonicalNameResolver;
             _membersDocumentation = membersDocumentation;
-            _dynamicTypeData = _memberReferenceFactory.CreateDynamic();
         }
 
         public AssemblyDocumentationElement Create(Assembly assembly)
@@ -169,7 +167,7 @@ namespace CodeMap
                 Return = new ReturnsData
                 {
                     Type = invokeMethodInfo.ReturnType == typeof(object) && invokeMethodInfo.ReturnParameter.GetCustomAttribute<DynamicAttribute>() != null
-                        ? _dynamicTypeData
+                        ? _memberReferenceFactory.CreateDynamic()
                         : _memberReferenceFactory.Create(invokeMethodInfo.ReturnType),
                     Description = memberDocumentation.Returns,
                     Attributes = _MapAttributesDataFrom(invokeMethodInfo.ReturnParameter.CustomAttributes)
@@ -409,7 +407,7 @@ namespace CodeMap
                 AccessModifier = _GetAccessModifierFrom(field),
                 Value = field.GetValue(null),
                 Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() != null
-                    ? _dynamicTypeData
+                    ? _memberReferenceFactory.CreateDynamic()
                     : _memberReferenceFactory.Create(field.FieldType),
                 Attributes = _MapAttributesDataFrom(field.CustomAttributes),
                 DeclaringType = declaringType,
@@ -431,7 +429,7 @@ namespace CodeMap
                 IsStatic = field.IsStatic,
                 IsShadowing = _IsShadowing(field),
                 Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() != null
-                    ? _dynamicTypeData
+                    ? _memberReferenceFactory.CreateDynamic()
                     : _memberReferenceFactory.Create(field.FieldType),
                 Attributes = _MapAttributesDataFrom(field.CustomAttributes),
                 DeclaringType = declaringType,
@@ -592,7 +590,7 @@ namespace CodeMap
                 Return = new ReturnsData
                 {
                     Type = method.ReturnType == typeof(object) && method.ReturnParameter.GetCustomAttribute<DynamicAttribute>() != null
-                        ? _dynamicTypeData
+                        ? _memberReferenceFactory.CreateDynamic()
                         : _memberReferenceFactory.Create(method.ReturnType),
                     Description = memberDocumentation.Returns,
                     Attributes = _MapAttributesDataFrom(method.ReturnParameter.CustomAttributes)
@@ -796,7 +794,7 @@ namespace CodeMap
             {
                 Name = parameter.Name,
                 Type = _UnwrapeByRef(parameter.ParameterType) == typeof(object) && parameter.GetCustomAttribute<DynamicAttribute>() != null
-                    ? _dynamicTypeData
+                    ? _memberReferenceFactory.CreateDynamic()
                     : _memberReferenceFactory.Create(_UnwrapeByRef(parameter.ParameterType)),
                 Attributes = _MapAttributesDataFrom(parameter.CustomAttributes),
                 IsInputByReference = parameter.ParameterType.IsByRef && parameter.IsIn,
