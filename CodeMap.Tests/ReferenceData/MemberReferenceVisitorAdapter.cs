@@ -46,5 +46,8 @@ namespace CodeMap.Tests.ReferenceData
 
         protected override void VisitMethod(MethodReference method)
             => _memberReferenceVisitor.VisitMethod(method);
+
+        protected override void VisitAssembly(AssemblyReference assembly)
+            => _memberReferenceVisitor.VisitAssembly(assembly);
     }
 }

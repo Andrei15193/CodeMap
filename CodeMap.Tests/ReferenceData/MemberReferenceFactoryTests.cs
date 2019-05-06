@@ -41,7 +41,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.Equal("System", typeReference.Namespace);
             Assert.Empty(typeReference.GenericArguments);
             Assert.Null(typeReference.DeclaringType);
-            Assert.True(typeof(int).Assembly == typeReference.Assembly);
+            Assert.True(typeReference.Assembly == typeof(int).Assembly.GetName());
         }
 
         [Fact]
@@ -394,9 +394,15 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public void CreateFromAssembly_ReturnsAssemblyReference()
+        public async Task CreateFromAssembly_ReturnsAssemblyReference()
         {
-            var assemblyReference = _Factory.Create(typeof(GlobalTestClass).Assembly);
+            AssemblyReference assemblyReference = null;
+
+            _VisitorMock
+                .Setup(visitor => visitor.VisitAssembly(It.IsNotNull<AssemblyReference>()))
+                .Callback((AssemblyReference actualAssemblyReference) => assemblyReference = actualAssemblyReference);
+
+            await _Factory.Create(typeof(TestClass<>).Assembly).AcceptAsync(_Visitor);
 
             Assert.Equal("CodeMap.Tests.Data", assemblyReference.Name);
             Assert.Equal(new Version(1, 2, 3, 4), assemblyReference.Version);
@@ -405,27 +411,20 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public void CreateFromAssemblyName_ReturnsAssemblyReference()
+        public async Task CreateFromAssemblyName_ReturnsAssemblyReference()
         {
-            var assemblyReference = _Factory.Create(typeof(GlobalTestClass).Assembly.GetName());
+            AssemblyReference assemblyReference = null;
+
+            _VisitorMock
+                .Setup(visitor => visitor.VisitAssembly(It.IsNotNull<AssemblyReference>()))
+                .Callback((AssemblyReference actualAssemblyReference) => assemblyReference = actualAssemblyReference);
+
+            await _Factory.Create(typeof(TestClass<>).Assembly.GetName()).AcceptAsync(_Visitor);
 
             Assert.Equal("CodeMap.Tests.Data", assemblyReference.Name);
             Assert.Equal(new Version(1, 2, 3, 4), assemblyReference.Version);
             Assert.Empty(assemblyReference.Culture);
             Assert.Empty(assemblyReference.PublicKeyToken);
-        }
-
-        [Fact]
-        public void AssemblyReference_IsEqualToInitialAssembly()
-        {
-            var assembly = typeof(GlobalTestClass).Assembly;
-            var otherAssembly = typeof(MemberReferenceFactoryTests).Assembly;
-            var assemblyReference = _Factory.Create(assembly);
-
-            Assert.True(assemblyReference == assembly);
-            Assert.True(assembly == assemblyReference);
-            Assert.True(assemblyReference != otherAssembly);
-            Assert.True(otherAssembly != assemblyReference);
         }
 
         [Fact]

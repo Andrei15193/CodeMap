@@ -354,6 +354,11 @@ namespace CodeMap.ReferenceData
             }
         }
 
+        protected internal override void VisitAssembly(AssemblyReference assembly)
+        {
+            AreEqual = false;
+        }
+
         private bool _ShouldStopComparing(MemberReference memberReference)
         {
             if (!AreEqual)

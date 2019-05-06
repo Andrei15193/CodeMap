@@ -27,5 +27,7 @@ namespace CodeMap.Tests.ReferenceData
         void VisitProperty(PropertyReference property);
 
         void VisitMethod(MethodReference method);
+
+        void VisitAssembly(AssemblyReference assembly);
     }
 }

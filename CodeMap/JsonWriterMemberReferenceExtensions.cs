@@ -29,6 +29,24 @@ namespace CodeMap
                 jsonWriter.WriteNull();
         }
 
+        public static async Task WritePropertyAsync(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, AssemblyReference assemblyReference, CancellationToken cancellationToken)
+        {
+            await jsonWriter.WritePropertyNameAsync(propertyName, cancellationToken).ConfigureAwait(false);
+            if (assemblyReference != null)
+                await assemblyReference.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
+            else
+                await jsonWriter.WriteNullAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        public static void WriteProperty(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, AssemblyReference assemblyReference)
+        {
+            jsonWriter.WritePropertyName(propertyName);
+            if (assemblyReference != null)
+                assemblyReference.Accept(visitor);
+            else
+                jsonWriter.WriteNull();
+        }
+
         public static async Task WritePropertyAsync(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, MemberReference memberReference, CancellationToken cancellationToken)
         {
             await jsonWriter.WritePropertyNameAsync(propertyName, cancellationToken).ConfigureAwait(false);

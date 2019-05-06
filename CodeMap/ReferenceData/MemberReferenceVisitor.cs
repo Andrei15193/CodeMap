@@ -258,5 +258,26 @@ namespace CodeMap.ReferenceData
                 return Task.FromException(exception);
             }
         }
+
+        /// <summary>Visits the given <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyReference"/> to visit.</param>
+        protected internal abstract void VisitAssembly(AssemblyReference assembly);
+
+        /// <summary>Asynchronously visits the given <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyReference"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal virtual Task VisitAssemblyAsync(AssemblyReference assembly, CancellationToken cancellationToken)
+        {
+            try
+            {
+                VisitAssembly(assembly);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                return Task.FromException(exception);
+            }
+        }
     }
 }

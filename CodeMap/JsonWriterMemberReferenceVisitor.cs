@@ -35,7 +35,7 @@ namespace CodeMap
                 _jsonWriter.WriteProperty("namespace", type.Namespace);
                 _jsonWriter.WriteProperty("declaringType", this, type.DeclaringType);
                 _jsonWriter.WriteProperty("genericArguments", this, type.GenericArguments);
-                _WriteAssemblyReference(type.Assembly);
+                _jsonWriter.WriteProperty("assembly", this, type.Assembly);
             }
 
             _jsonWriter.WriteEndObject();
@@ -60,7 +60,7 @@ namespace CodeMap
                 await _jsonWriter.WritePropertyAsync("namespace", type.Namespace, cancellationToken).ConfigureAwait(false);
                 await _jsonWriter.WritePropertyAsync("declaringType", this, type.DeclaringType, cancellationToken).ConfigureAwait(false);
                 await _jsonWriter.WritePropertyAsync("genericArguments", this, type.GenericArguments, cancellationToken).ConfigureAwait(false);
-                await _WriteAssemblyReferenceAsync(type.Assembly, cancellationToken).ConfigureAwait(false);
+                await _jsonWriter.WritePropertyAsync("assembly", this, type.Assembly, cancellationToken).ConfigureAwait(false);
             }
 
             await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
@@ -129,7 +129,7 @@ namespace CodeMap
         protected internal override async Task VisitByRefAsync(ByRefTypeReference byRef, CancellationToken cancellationToken)
         {
             await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
-            await _jsonWriter.WritePropertyAsync("kind", "byRef",cancellationToken).ConfigureAwait(false);
+            await _jsonWriter.WritePropertyAsync("kind", "byRef", cancellationToken).ConfigureAwait(false);
             await _jsonWriter.WritePropertyAsync("referentType", this, byRef.ReferentType, cancellationToken).ConfigureAwait(false);
             await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -330,9 +330,10 @@ namespace CodeMap
             await _jsonWriter.WriteEndObjectAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        private void _WriteAssemblyReference(AssemblyReference assembly)
+        /// <summary>Visits the given <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyReference"/> to visit.</param>
+        protected internal override void VisitAssembly(AssemblyReference assembly)
         {
-            _jsonWriter.WritePropertyName("assembly");
             _jsonWriter.WriteStartObject();
             _jsonWriter.WriteProperty("name", assembly.Name);
             _jsonWriter.WriteProperty("version", assembly.Version.ToString());
@@ -341,9 +342,12 @@ namespace CodeMap
             _jsonWriter.WriteEndObject();
         }
 
-        private async Task _WriteAssemblyReferenceAsync(AssemblyReference assembly, CancellationToken cancellationToken)
+        /// <summary>Asynchronously visits the given <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyReference"/> to visit.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
+        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
+        protected internal override async Task VisitAssemblyAsync(AssemblyReference assembly, CancellationToken cancellationToken)
         {
-            await _jsonWriter.WritePropertyNameAsync("assembly", cancellationToken).ConfigureAwait(false);
             await _jsonWriter.WriteStartObjectAsync(cancellationToken).ConfigureAwait(false);
             await _jsonWriter.WritePropertyAsync("name", assembly.Name, cancellationToken).ConfigureAwait(false);
             await _jsonWriter.WritePropertyAsync("version", assembly.Version.ToString(), cancellationToken).ConfigureAwait(false);
