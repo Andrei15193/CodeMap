@@ -1,4 +1,4 @@
-﻿using CodeMap.Elements;
+﻿using CodeMap.DeclarationNodes;
 using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace CodeMap.Tests
         private const string _jsonTestDataFileName = "testData.release";
 #endif
 
-        private readonly AssemblyDocumentationElement _testDataDocumentation;
+        private readonly AssemblyDeclaration _testDataDocumentation;
 
         public WriterDocumentationVisitorTests()
         {
@@ -26,7 +26,7 @@ namespace CodeMap.Tests
                 .Where(dependency => dependency.Name == "CodeMap.Tests.Data")
                 .Select(Assembly.Load)
                 .Single();
-            _testDataDocumentation = DocumentationElement.Create(testDataAssembly);
+            _testDataDocumentation = DeclarationNode.Create(testDataAssembly);
         }
 
         [Fact]

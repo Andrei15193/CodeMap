@@ -1,4 +1,5 @@
-﻿using CodeMap.Elements;
+﻿using CodeMap.DocumentationElements;
+using CodeMap.DeclarationNodes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

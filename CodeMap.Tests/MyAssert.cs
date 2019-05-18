@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using CodeMap.Elements;
+using CodeMap.DeclarationNodes;
 using CodeMap.ReferenceData;
 using CodeMap.Tests.Data;
 using Xunit;
@@ -14,13 +14,13 @@ namespace CodeMap.Tests
 {
     internal static class MyAssert
     {
-        public static EnumDocumentationElement AssertDocumentation(this EnumDocumentationElement enumDocumentationElement, MemberDocumentation memberDocumentation)
+        public static EnumDeclaration AssertDocumentation(this EnumDeclaration enumDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(enumDocumentationElement, memberDocumentation);
             return enumDocumentationElement;
         }
 
-        public static DelegateDocumentationElement AssertDocumentation(this DelegateDocumentationElement delegateDocumentationElement, MemberDocumentation memberDocumentation)
+        public static DelegateDeclaration AssertDocumentation(this DelegateDeclaration delegateDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(delegateDocumentationElement, memberDocumentation);
             foreach (var genericParameterPosition in Enumerable.Range(0, 1))
@@ -69,7 +69,7 @@ namespace CodeMap.Tests
             return delegateDocumentationElement;
         }
 
-        public static InterfaceDocumentationElement AssertDocumentation(this InterfaceDocumentationElement interfaceDocumentationElement, MemberDocumentation memberDocumentation)
+        public static InterfaceDeclaration AssertDocumentation(this InterfaceDeclaration interfaceDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(interfaceDocumentationElement, memberDocumentation);
 
@@ -90,7 +90,7 @@ namespace CodeMap.Tests
             return interfaceDocumentationElement;
         }
 
-        public static ClassDocumentationElement AssertDocumentation(this ClassDocumentationElement classDocumentationElement, MemberDocumentation memberDocumentation)
+        public static ClassDeclaration AssertDocumentation(this ClassDeclaration classDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(classDocumentationElement, memberDocumentation);
 
@@ -111,7 +111,7 @@ namespace CodeMap.Tests
             return classDocumentationElement;
         }
 
-        public static StructDocumentationElement AssertDocumentation(this StructDocumentationElement structDocumentationElement, MemberDocumentation memberDocumentation)
+        public static StructDeclaration AssertDocumentation(this StructDeclaration structDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(structDocumentationElement, memberDocumentation);
 
@@ -132,7 +132,7 @@ namespace CodeMap.Tests
             return structDocumentationElement;
         }
 
-        private static TypeDocumentationElement _AssertDocumentation(TypeDocumentationElement typeDocumentationElement, MemberDocumentation memberDocumentation)
+        private static TypeDeclaration _AssertDocumentation(TypeDeclaration typeDocumentationElement, MemberDocumentation memberDocumentation)
         {
             Assert.Same(memberDocumentation.Summary, typeDocumentationElement.Summary);
             Assert.Same(memberDocumentation.Remarks, typeDocumentationElement.Remarks);
@@ -141,13 +141,13 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static EnumDocumentationElement AssertNoDocumentation(this EnumDocumentationElement enumDocumentationElement)
+        public static EnumDeclaration AssertNoDocumentation(this EnumDeclaration enumDocumentationElement)
         {
             _AssertNoDocumentation(enumDocumentationElement);
             return enumDocumentationElement;
         }
 
-        public static DelegateDocumentationElement AssertNoDocumentation(this DelegateDocumentationElement delegateDocumentationElement)
+        public static DelegateDeclaration AssertNoDocumentation(this DelegateDeclaration delegateDocumentationElement)
         {
             _AssertNoDocumentation(delegateDocumentationElement);
             foreach (var genericParameter in delegateDocumentationElement.GenericParameters)
@@ -159,7 +159,7 @@ namespace CodeMap.Tests
             return delegateDocumentationElement;
         }
 
-        public static InterfaceDocumentationElement AssertNoDocumentation(this InterfaceDocumentationElement interfaceDocumentationElement)
+        public static InterfaceDeclaration AssertNoDocumentation(this InterfaceDeclaration interfaceDocumentationElement)
         {
             _AssertNoDocumentation(interfaceDocumentationElement);
             foreach (var genericParameter in interfaceDocumentationElement.GenericParameters)
@@ -173,7 +173,7 @@ namespace CodeMap.Tests
             return interfaceDocumentationElement;
         }
 
-        public static ClassDocumentationElement AssertNoDocumentation(this ClassDocumentationElement classDocumentationElement)
+        public static ClassDeclaration AssertNoDocumentation(this ClassDeclaration classDocumentationElement)
         {
             _AssertNoDocumentation(classDocumentationElement);
             foreach (var genericParameter in classDocumentationElement.GenericParameters)
@@ -193,7 +193,7 @@ namespace CodeMap.Tests
             return classDocumentationElement;
         }
 
-        public static StructDocumentationElement AssertNoDocumentation(this StructDocumentationElement structDocumentationElement)
+        public static StructDeclaration AssertNoDocumentation(this StructDeclaration structDocumentationElement)
         {
             _AssertNoDocumentation(structDocumentationElement);
             foreach (var genericParameter in structDocumentationElement.GenericParameters)
@@ -213,7 +213,7 @@ namespace CodeMap.Tests
             return structDocumentationElement;
         }
 
-        public static AssemblyDocumentationElement AssertNoDocumentation(this AssemblyDocumentationElement assemblyDocumentationElement)
+        public static AssemblyDeclaration AssertNoDocumentation(this AssemblyDeclaration assemblyDocumentationElement)
         {
             Assert.Empty(assemblyDocumentationElement.Summary.Content);
             Assert.Empty(assemblyDocumentationElement.Remarks.Content);
@@ -222,7 +222,7 @@ namespace CodeMap.Tests
             return assemblyDocumentationElement;
         }
 
-        public static NamespaceDocumentationElement AssertNoDocumentation(this NamespaceDocumentationElement namespaceDocumentationElement)
+        public static NamespaceDeclaration AssertNoDocumentation(this NamespaceDeclaration namespaceDocumentationElement)
         {
             Assert.Empty(namespaceDocumentationElement.Summary.Content);
             Assert.Empty(namespaceDocumentationElement.Remarks.Content);
@@ -231,7 +231,7 @@ namespace CodeMap.Tests
             return namespaceDocumentationElement;
         }
 
-        private static void _AssertNoDocumentation(EventDocumentationElement @event)
+        private static void _AssertNoDocumentation(EventDeclaration @event)
         {
             Assert.Empty(@event.Summary.Content);
             Assert.Empty(@event.Remarks.Content);
@@ -240,7 +240,7 @@ namespace CodeMap.Tests
             Assert.Empty(@event.Exceptions);
         }
 
-        private static void _AssertNoDocumentation(PropertyDocumentationElement property)
+        private static void _AssertNoDocumentation(PropertyDeclaration property)
         {
             Assert.Empty(property.Summary.Content);
             foreach (var parameter in property.Parameters)
@@ -252,7 +252,7 @@ namespace CodeMap.Tests
             Assert.Empty(property.RelatedMembers);
         }
 
-        private static void _AssertNoDocumentation(MethodDocumentationElement method)
+        private static void _AssertNoDocumentation(MethodDeclaration method)
         {
             Assert.Empty(method.Summary.Content);
             foreach (var genericParameter in method.GenericParameters)
@@ -265,7 +265,7 @@ namespace CodeMap.Tests
             Assert.Empty(method.RelatedMembers);
         }
 
-        private static TypeDocumentationElement _AssertNoDocumentation(TypeDocumentationElement typeDocumentationElement)
+        private static TypeDeclaration _AssertNoDocumentation(TypeDeclaration typeDocumentationElement)
         {
             Assert.Empty(typeDocumentationElement.Summary.Content);
             Assert.Empty(typeDocumentationElement.Remarks.Content);
@@ -274,19 +274,19 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static ConstantDocumentationElement AssertDocumentation(this ConstantDocumentationElement constantDocumentationElement, MemberDocumentation memberDocumentation)
+        public static ConstantDeclaration AssertDocumentation(this ConstantDeclaration constantDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(constantDocumentationElement, memberDocumentation);
             return constantDocumentationElement;
         }
 
-        public static FieldDocumentationElement AssertDocumentation(this FieldDocumentationElement fieldDocumentationElement, MemberDocumentation memberDocumentation)
+        public static FieldDeclaration AssertDocumentation(this FieldDeclaration fieldDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(fieldDocumentationElement, memberDocumentation);
             return fieldDocumentationElement;
         }
 
-        public static ConstructorDocumentationElement AssertDocumentation(this ConstructorDocumentationElement constructorDocumentationElement, MemberDocumentation memberDocumentation)
+        public static ConstructorDeclaration AssertDocumentation(this ConstructorDeclaration constructorDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(constructorDocumentationElement, memberDocumentation);
             foreach (var parameter in constructorDocumentationElement.Parameters)
@@ -316,7 +316,7 @@ namespace CodeMap.Tests
             return constructorDocumentationElement;
         }
 
-        public static EventDocumentationElement AssertDocumentation(this EventDocumentationElement eventDocumentationElement, MemberDocumentation memberDocumentation)
+        public static EventDeclaration AssertDocumentation(this EventDeclaration eventDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(eventDocumentationElement, memberDocumentation);
             memberDocumentation
@@ -337,7 +337,7 @@ namespace CodeMap.Tests
             return eventDocumentationElement;
         }
 
-        public static PropertyDocumentationElement AssertDocumentation(this PropertyDocumentationElement propertyDocumentationElement, MemberDocumentation memberDocumentation)
+        public static PropertyDeclaration AssertDocumentation(this PropertyDeclaration propertyDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(propertyDocumentationElement, memberDocumentation);
             foreach (var parameter in propertyDocumentationElement.Parameters)
@@ -368,7 +368,7 @@ namespace CodeMap.Tests
             return propertyDocumentationElement;
         }
 
-        public static MethodDocumentationElement AssertDocumentation(this MethodDocumentationElement methodDocumentationElement, MemberDocumentation memberDocumentation)
+        public static MethodDeclaration AssertDocumentation(this MethodDeclaration methodDocumentationElement, MemberDocumentation memberDocumentation)
         {
             _AssertDocumentation(methodDocumentationElement, memberDocumentation);
             foreach (var genericParameter in methodDocumentationElement.GenericParameters)
@@ -407,7 +407,7 @@ namespace CodeMap.Tests
             return methodDocumentationElement;
         }
 
-        private static MemberDocumentationElement _AssertDocumentation(this MemberDocumentationElement typeDocumentationElement, MemberDocumentation memberDocumentation)
+        private static MemberDeclaration _AssertDocumentation(this MemberDeclaration typeDocumentationElement, MemberDocumentation memberDocumentation)
         {
             Assert.Same(memberDocumentation.Summary, typeDocumentationElement.Summary);
             Assert.Same(memberDocumentation.Remarks, typeDocumentationElement.Remarks);
@@ -416,19 +416,19 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static ConstantDocumentationElement AssertNoDocumentation(this ConstantDocumentationElement constantDocumentationElement)
+        public static ConstantDeclaration AssertNoDocumentation(this ConstantDeclaration constantDocumentationElement)
         {
             _AssertNoDocumentation(constantDocumentationElement);
             return constantDocumentationElement;
         }
 
-        public static FieldDocumentationElement AssertNoDocumentation(this FieldDocumentationElement fieldDocumentationElement)
+        public static FieldDeclaration AssertNoDocumentation(this FieldDeclaration fieldDocumentationElement)
         {
             _AssertNoDocumentation(fieldDocumentationElement);
             return fieldDocumentationElement;
         }
 
-        public static ConstructorDocumentationElement AssertNoDocumentation(this ConstructorDocumentationElement constructorDocumentationElement)
+        public static ConstructorDeclaration AssertNoDocumentation(this ConstructorDeclaration constructorDocumentationElement)
         {
             _AssertNoDocumentation(constructorDocumentationElement);
             foreach (var parameter in constructorDocumentationElement.Parameters)
@@ -437,14 +437,14 @@ namespace CodeMap.Tests
             return constructorDocumentationElement;
         }
 
-        public static EventDocumentationElement AssertNoDocumentation(this EventDocumentationElement eventDocumentationElement)
+        public static EventDeclaration AssertNoDocumentation(this EventDeclaration eventDocumentationElement)
         {
-            _AssertNoDocumentation((MemberDocumentationElement)eventDocumentationElement);
+            _AssertNoDocumentation((MemberDeclaration)eventDocumentationElement);
             Assert.Empty(eventDocumentationElement.Exceptions);
             return eventDocumentationElement;
         }
 
-        public static PropertyDocumentationElement AssertNoDocumentation(this PropertyDocumentationElement propertyDocumentationElement)
+        public static PropertyDeclaration AssertNoDocumentation(this PropertyDeclaration propertyDocumentationElement)
         {
             _AssertNoDocumentation(propertyDocumentationElement);
             foreach (var parameter in propertyDocumentationElement.Parameters)
@@ -454,7 +454,7 @@ namespace CodeMap.Tests
             return propertyDocumentationElement;
         }
 
-        public static MethodDocumentationElement AssertNoDocumentation(this MethodDocumentationElement methodDocumentationElement)
+        public static MethodDeclaration AssertNoDocumentation(this MethodDeclaration methodDocumentationElement)
         {
             _AssertNoDocumentation(methodDocumentationElement);
             foreach (var genericParameter in methodDocumentationElement.GenericParameters)
@@ -466,7 +466,7 @@ namespace CodeMap.Tests
             return methodDocumentationElement;
         }
 
-        private static MemberDocumentationElement _AssertNoDocumentation(this MemberDocumentationElement memberDocumentationElement)
+        private static MemberDeclaration _AssertNoDocumentation(this MemberDeclaration memberDocumentationElement)
         {
             Assert.Empty(memberDocumentationElement.Summary.Content);
             Assert.Empty(memberDocumentationElement.Remarks.Content);
@@ -538,7 +538,7 @@ namespace CodeMap.Tests
         }
 
         public static TTypeDocumentationElement AssertType<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Type type)
-            where TTypeDocumentationElement : TypeDocumentationElement
+            where TTypeDocumentationElement : TypeDeclaration
         {
             Assert.True(typeDocumentationElement == type);
             Assert.True(type == typeDocumentationElement);
@@ -551,7 +551,7 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static FieldDocumentationElement AssertTestField(this FieldDocumentationElement fieldDocumentationElement, TypeDocumentationElement declaringType, string attributeValuePrefix)
+        public static FieldDeclaration AssertTestField(this FieldDeclaration fieldDocumentationElement, TypeDeclaration declaringType, string attributeValuePrefix)
             => fieldDocumentationElement
                 .AssertEqual(() => fieldDocumentationElement.Name, "TestField")
                 .AssertCollectionMember(
@@ -565,7 +565,7 @@ namespace CodeMap.Tests
                 .AssertFalse(() => fieldDocumentationElement.IsStatic)
                 .AssertFalse(() => fieldDocumentationElement.IsShadowing);
 
-        public static FieldDocumentationElement AssertReadOnlyField(this FieldDocumentationElement field, TypeDocumentationElement declaringType)
+        public static FieldDeclaration AssertReadOnlyField(this FieldDeclaration field, TypeDeclaration declaringType)
             => field
                 .AssertEqual(() => field.Name, "ReadonlyTestField")
                 .AssertEmpty(() => field.Attributes)
@@ -576,7 +576,7 @@ namespace CodeMap.Tests
                 .AssertFalse(() => field.IsStatic)
                 .AssertFalse(() => field.IsShadowing);
 
-        public static FieldDocumentationElement AssertShadowingField(this FieldDocumentationElement field, TypeDocumentationElement declaringType)
+        public static FieldDeclaration AssertShadowingField(this FieldDeclaration field, TypeDeclaration declaringType)
             => field
                 .AssertEqual(() => field.Name, "ShadowedTestField")
                 .AssertEmpty(() => field.Attributes)
@@ -587,7 +587,7 @@ namespace CodeMap.Tests
                 .AssertFalse(() => field.IsStatic)
                 .AssertTrue(() => field.IsShadowing);
 
-        public static FieldDocumentationElement AssertStaticField(this FieldDocumentationElement field, TypeDocumentationElement declaringType)
+        public static FieldDeclaration AssertStaticField(this FieldDeclaration field, TypeDeclaration declaringType)
             => field
                 .AssertEqual(() => field.Name, "StaticTestField")
                 .AssertEmpty(() => field.Attributes)
@@ -598,8 +598,8 @@ namespace CodeMap.Tests
                 .AssertTrue(() => field.IsStatic)
                 .AssertFalse(() => field.IsShadowing);
 
-        public static TTypeDocumentationElement AssertTestEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string eventName, string attributeValuePrefix, bool checkAccessors = false)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertTestEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDeclaration>> selector, string eventName, string attributeValuePrefix, bool checkAccessors = false)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -641,8 +641,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertShadowingEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string eventName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertShadowingEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDeclaration>> selector, string eventName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -665,8 +665,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertAbstractEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string eventName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertAbstractEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDeclaration>> selector, string eventName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -689,8 +689,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertVirtualEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string eventName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertVirtualEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDeclaration>> selector, string eventName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -713,8 +713,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertOverrideEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string eventName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertOverrideEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDeclaration>> selector, string eventName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -737,8 +737,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertStaticEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string eventName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertStaticEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDeclaration>> selector, string eventName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -761,8 +761,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertSealedEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDocumentationElement>> selector, string eventName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertSealedEvent<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<EventDeclaration>> selector, string eventName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -785,8 +785,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertTestProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDocumentationElement>> selector, string propertyName, string attributeValuePrefix)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertTestProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDeclaration>> selector, string propertyName, string attributeValuePrefix)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -827,8 +827,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertIndexProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDocumentationElement>> selector, Type typeGenericParameter, string attributeValuePrefix)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertIndexProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDeclaration>> selector, Type typeGenericParameter, string attributeValuePrefix)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -1009,8 +1009,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertAbstractProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDocumentationElement>> selector, string propertyName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertAbstractProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDeclaration>> selector, string propertyName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -1033,8 +1033,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertVirtualProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDocumentationElement>> selector, string propertyName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertVirtualProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDeclaration>> selector, string propertyName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -1057,8 +1057,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertOverrideProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDocumentationElement>> selector, string propertyName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertOverrideProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDeclaration>> selector, string propertyName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -1081,8 +1081,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertSealedProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDocumentationElement>> selector, string propertyName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertSealedProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDeclaration>> selector, string propertyName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -1105,8 +1105,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertShadowingProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDocumentationElement>> selector, string propertyName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertShadowingProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDeclaration>> selector, string propertyName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -1129,8 +1129,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertStaticProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDocumentationElement>> selector, string propertyName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertStaticProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDeclaration>> selector, string propertyName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -1159,7 +1159,7 @@ namespace CodeMap.Tests
             return instance;
         }
 
-        public static TInstance AssertAssembly<TInstance>(this TInstance instance, Func<AssemblyDocumentationElement> selector, Assembly assembly)
+        public static TInstance AssertAssembly<TInstance>(this TInstance instance, Func<AssemblyDeclaration> selector, Assembly assembly)
         {
             var assemblyDocumentationElement = selector();
             var coreAssembly = typeof(object).Assembly;
@@ -1239,8 +1239,8 @@ namespace CodeMap.Tests
                 .AssertEmpty(() => attributeData.PositionalParameters)
                 .AssertEmpty(() => attributeData.NamedParameters);
 
-        public static TTypeDocumentationElement AssertTypeGenericParameters<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<TypeGenericParameterData>> selector)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertTypeGenericParameters<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<GenericTypeParameterData>> selector)
+            where TTypeDocumentationElement : TypeDeclaration
             => typeDocumentationElement
                 .AssertCollectionMember(
                     selector,
@@ -1256,7 +1256,7 @@ namespace CodeMap.Tests
                         .AssertEmpty(() => genericParameter.TypeConstraints)
                 );
 
-        public static DelegateDocumentationElement AssertDelegateParameters(this DelegateDocumentationElement delegateDocumentationElement, Type genericParameter)
+        public static DelegateDeclaration AssertDelegateParameters(this DelegateDeclaration delegateDocumentationElement, Type genericParameter)
             => delegateDocumentationElement
                 .AssertCollectionMember(
                     () => delegateDocumentationElement.Parameters,
@@ -1653,14 +1653,14 @@ namespace CodeMap.Tests
                         .AssertEqual(() => parameter.DefaultValue, "test")
                 );
 
-        public static ConstructorDocumentationElement AssertDefaultConstructor(this ConstructorDocumentationElement constructorDocumentationElement, TypeDocumentationElement declaringType)
+        public static ConstructorDeclaration AssertDefaultConstructor(this ConstructorDeclaration constructorDocumentationElement, TypeDeclaration declaringType)
             => constructorDocumentationElement
                 .AssertEqual(() => constructorDocumentationElement.Name, declaringType.Name)
                 .AssertEmpty(() => constructorDocumentationElement.Attributes)
                 .AssertSame(() => constructorDocumentationElement.DeclaringType, declaringType)
                 .AssertEmpty(() => constructorDocumentationElement.Parameters);
 
-        public static ConstructorDocumentationElement AssertTestConstructor(this ConstructorDocumentationElement constructorDocumentationElement, TypeDocumentationElement declaringType, Type typeGenericParameter, string attributeValuePrefix)
+        public static ConstructorDeclaration AssertTestConstructor(this ConstructorDeclaration constructorDocumentationElement, TypeDeclaration declaringType, Type typeGenericParameter, string attributeValuePrefix)
             => constructorDocumentationElement
                 .AssertEqual(() => constructorDocumentationElement.Name, declaringType.Name)
                 .AssertCollectionMember(
@@ -2063,8 +2063,8 @@ namespace CodeMap.Tests
                         .AssertEqual(() => parameter.DefaultValue, "test")
                 );
 
-        public static TTypeDocumentationElement AssertTestMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDocumentationElement>> selector, string methodName, Type typeGenericParameter, Type methodGenericParameter, string attributeValuePrefix)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertTestMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDeclaration>> selector, string methodName, Type typeGenericParameter, Type methodGenericParameter, string attributeValuePrefix)
+            where TTypeDocumentationElement : TypeDeclaration
             => typeDocumentationElement
                 .AssertCollectionMember(
                     () => selector().Where(method => method.Name == methodName),
@@ -2523,8 +2523,8 @@ namespace CodeMap.Tests
                         )
                 );
 
-        public static TTypeDocumentationElement AssertAbstractMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDocumentationElement>> selector, string methodName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertAbstractMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDeclaration>> selector, string methodName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -2549,8 +2549,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertVirtualMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDocumentationElement>> selector, string methodName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertVirtualMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDeclaration>> selector, string methodName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -2575,8 +2575,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertOverrideMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDocumentationElement>> selector, string methodName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertOverrideMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDeclaration>> selector, string methodName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -2601,8 +2601,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertSealedMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDocumentationElement>> selector, string methodName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertSealedMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDeclaration>> selector, string methodName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -2627,8 +2627,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertShadowingMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDocumentationElement>> selector, string methodName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertShadowingMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDeclaration>> selector, string methodName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(
@@ -2653,8 +2653,8 @@ namespace CodeMap.Tests
             return typeDocumentationElement;
         }
 
-        public static TTypeDocumentationElement AssertStaticMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDocumentationElement>> selector, string methodName)
-            where TTypeDocumentationElement : TypeDocumentationElement
+        public static TTypeDocumentationElement AssertStaticMethod<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<MethodDeclaration>> selector, string methodName)
+            where TTypeDocumentationElement : TypeDeclaration
         {
             typeDocumentationElement
                 .AssertCollectionMember(

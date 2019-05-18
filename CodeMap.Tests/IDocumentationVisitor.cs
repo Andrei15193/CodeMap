@@ -1,35 +1,35 @@
 ﻿using System.Reflection;
-using CodeMap.Elements;
+using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Tests
 {
     public interface IDocumentationVisitor
     {
-        void VisitAssembly(AssemblyDocumentationElement assembly);
+        void VisitAssembly(AssemblyDeclaration assembly);
 
-        void VisitNamespace(NamespaceDocumentationElement @namespace);
+        void VisitNamespace(NamespaceDeclaration @namespace);
 
-        void VisitEnum(EnumDocumentationElement @enum);
+        void VisitEnum(EnumDeclaration @enum);
 
-        void VisitDelegate(DelegateDocumentationElement @delegate);
+        void VisitDelegate(DelegateDeclaration @delegate);
 
-        void VisitInterface(InterfaceDocumentationElement @interface);
+        void VisitInterface(InterfaceDeclaration @interface);
 
-        void VisitClass(ClassDocumentationElement @class);
+        void VisitClass(ClassDeclaration @class);
 
-        void VisitStruct(StructDocumentationElement @struct);
+        void VisitStruct(StructDeclaration @struct);
 
-        void VisitConstant(ConstantDocumentationElement constant);
+        void VisitConstant(ConstantDeclaration constant);
 
-        void VisitField(FieldDocumentationElement field);
+        void VisitField(FieldDeclaration field);
 
-        void VisitConstructor(ConstructorDocumentationElement constructor);
+        void VisitConstructor(ConstructorDeclaration constructor);
 
-        void VisitEvent(EventDocumentationElement @event);
+        void VisitEvent(EventDeclaration @event);
 
-        void VisitProperty(PropertyDocumentationElement property);
+        void VisitProperty(PropertyDeclaration property);
 
-        void VisitMethod(MethodDocumentationElement method);
+        void VisitMethod(MethodDeclaration method);
 
         void VisitSummaryBeginning();
 

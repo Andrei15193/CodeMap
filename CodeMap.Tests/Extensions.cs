@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CodeMap.DocumentationElements;
+using Moq;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using CodeMap.Elements;
-using Moq;
 
 namespace CodeMap.Tests
 {

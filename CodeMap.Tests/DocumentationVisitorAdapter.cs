@@ -1,4 +1,4 @@
-﻿using CodeMap.Elements;
+﻿using CodeMap.DeclarationNodes;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -13,67 +13,67 @@ namespace CodeMap.Tests
             _documentationVisitor = documentationVisitor;
         }
 
-        protected override void VisitAssembly(AssemblyDocumentationElement assembly)
+        protected override void VisitAssembly(AssemblyDeclaration assembly)
         {
             _documentationVisitor.VisitAssembly(assembly);
         }
 
-        protected override void VisitNamespace(NamespaceDocumentationElement @namespace)
+        protected override void VisitNamespace(NamespaceDeclaration @namespace)
         {
             _documentationVisitor.VisitNamespace(@namespace);
         }
 
-        protected override void VisitEnum(EnumDocumentationElement @enum)
+        protected override void VisitEnum(EnumDeclaration @enum)
         {
             _documentationVisitor.VisitEnum(@enum);
         }
 
-        protected override void VisitDelegate(DelegateDocumentationElement @delegate)
+        protected override void VisitDelegate(DelegateDeclaration @delegate)
         {
             _documentationVisitor.VisitDelegate(@delegate);
         }
 
-        protected override void VisitInterface(InterfaceDocumentationElement @interface)
+        protected override void VisitInterface(InterfaceDeclaration @interface)
         {
             _documentationVisitor.VisitInterface(@interface);
         }
 
-        protected override void VisitClass(ClassDocumentationElement @class)
+        protected override void VisitClass(ClassDeclaration @class)
         {
             _documentationVisitor.VisitClass(@class);
         }
 
-        protected override void VisitStruct(StructDocumentationElement @struct)
+        protected override void VisitStruct(StructDeclaration @struct)
         {
             _documentationVisitor.VisitStruct(@struct);
         }
 
-        protected override void VisitConstant(ConstantDocumentationElement constant)
+        protected override void VisitConstant(ConstantDeclaration constant)
         {
             _documentationVisitor.VisitConstant(constant);
         }
 
-        protected override void VisitField(FieldDocumentationElement field)
+        protected override void VisitField(FieldDeclaration field)
         {
             _documentationVisitor.VisitField(field);
         }
 
-        protected override void VisitConstructor(ConstructorDocumentationElement constructor)
+        protected override void VisitConstructor(ConstructorDeclaration constructor)
         {
             _documentationVisitor.VisitConstructor(constructor);
         }
 
-        protected override void VisitEvent(EventDocumentationElement @event)
+        protected override void VisitEvent(EventDeclaration @event)
         {
             _documentationVisitor.VisitEvent(@event);
         }
 
-        protected override void VisitProperty(PropertyDocumentationElement property)
+        protected override void VisitProperty(PropertyDeclaration property)
         {
             _documentationVisitor.VisitProperty(property);
         }
 
-        protected override void VisitMethod(MethodDocumentationElement method)
+        protected override void VisitMethod(MethodDeclaration method)
         {
             _documentationVisitor.VisitMethod(method);
         }

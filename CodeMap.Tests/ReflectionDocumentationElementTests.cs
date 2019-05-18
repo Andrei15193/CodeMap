@@ -1,4 +1,5 @@
-﻿using CodeMap.Elements;
+﻿using CodeMap.DocumentationElements;
+using CodeMap.DeclarationNodes;
 using CodeMap.ReferenceData;
 using CodeMap.Tests.Data;
 using Moq;
@@ -28,7 +29,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateEnumDocumentationElement()
         {
-            var typeDocumentationElement = DocumentationElement.Create(typeof(TestEnum));
+            var typeDocumentationElement = DeclarationNode.Create(typeof(TestEnum));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestEnum")
@@ -41,7 +42,7 @@ namespace CodeMap.Tests
                     () => typeDocumentationElement.Attributes,
                     attribute => attribute.AssertTestAttribute("enum")
                 )
-                .AssertIs<EnumDocumentationElement>(
+                .AssertIs<EnumDeclaration>(
                     enumDocumentationElement => enumDocumentationElement
                         .AssertTypeReference(() => enumDocumentationElement.UnderlyingType, typeof(byte))
                         .AssertCollectionMember(
@@ -95,11 +96,11 @@ namespace CodeMap.Tests
                 }
             );
 
-            var typeDocumentationElement = DocumentationElement.Create(typeof(TestEnum), membersDocumentation);
+            var typeDocumentationElement = DeclarationNode.Create(typeof(TestEnum), membersDocumentation);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestEnum")
-                .AssertIs<EnumDocumentationElement>(
+                .AssertIs<EnumDeclaration>(
                     enumDocumentationElement => enumDocumentationElement
                         .AssertCollectionMember(
                             () => enumDocumentationElement.Members,
@@ -122,7 +123,7 @@ namespace CodeMap.Tests
         {
             var delegateType = typeof(TestDelegate<>);
             var genericParameterType = delegateType.GetGenericArguments().Single();
-            var typeDocumentationElement = DocumentationElement.Create(delegateType);
+            var typeDocumentationElement = DeclarationNode.Create(delegateType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestDelegate")
@@ -135,7 +136,7 @@ namespace CodeMap.Tests
                     () => typeDocumentationElement.Attributes,
                     attribute => attribute.AssertTestAttribute("delegate")
                 )
-                .AssertIs<DelegateDocumentationElement>(
+                .AssertIs<DelegateDeclaration>(
                     delegateDocumentationElement => delegateDocumentationElement
                         .AssertTypeReference(() => delegateDocumentationElement.Return.Type, typeof(void))
                         .AssertMember(
@@ -164,11 +165,11 @@ namespace CodeMap.Tests
             );
 
             var delegateType = typeof(TestDelegate<>);
-            var typeDocumentationElement = DocumentationElement.Create(delegateType, membersDocumentation);
+            var typeDocumentationElement = DeclarationNode.Create(delegateType, membersDocumentation);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestDelegate")
-                .AssertIs<DelegateDocumentationElement>()
+                .AssertIs<DelegateDeclaration>()
                 .AssertDocumentation(memberDocumentation);
         }
 
@@ -179,7 +180,7 @@ namespace CodeMap.Tests
             var typeGenericParameter = interfaceType.GetGenericArguments().Single();
             var methodGenericParameter = interfaceType.GetMethod("TestMethod").GetGenericArguments().Single();
 
-            var typeDocumentationElement = DocumentationElement.Create(interfaceType);
+            var typeDocumentationElement = DeclarationNode.Create(interfaceType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "ITestInterface")
@@ -193,7 +194,7 @@ namespace CodeMap.Tests
                     attribute => attribute.AssertTestAttribute("interface"),
                     attribute => attribute.AssertDefaultMemberAttribute()
                 )
-                .AssertIs<InterfaceDocumentationElement>(
+                .AssertIs<InterfaceDeclaration>(
                     interfaceDocumentationElement => interfaceDocumentationElement
                         .AssertTypeGenericParameters(() => interfaceDocumentationElement.GenericParameters)
                         .AssertCollectionMember(
@@ -236,10 +237,10 @@ namespace CodeMap.Tests
                 }
             );
 
-            var typeDocumentationElement = DocumentationElement.Create(typeof(ITestInterface<>), membersDocumentation);
+            var typeDocumentationElement = DeclarationNode.Create(typeof(ITestInterface<>), membersDocumentation);
 
             typeDocumentationElement
-                .AssertIs<InterfaceDocumentationElement>(
+                .AssertIs<InterfaceDeclaration>(
                     interfaceDocumentationElement =>
                         interfaceDocumentationElement
                             .AssertCollectionMember(
@@ -269,15 +270,15 @@ namespace CodeMap.Tests
             var typeGenericParameter = classType.GetGenericArguments().Single();
             var methodGenericParameter = classType.GetMethod("TestMethod").GetGenericArguments().Single();
 
-            var typeDocumentationElement = DocumentationElement.Create(classType);
-            var baseTypeDocumentationElement = DocumentationElement.Create(typeof(TestBaseClass));
+            var typeDocumentationElement = DeclarationNode.Create(classType);
+            var baseTypeDocumentationElement = DeclarationNode.Create(typeof(TestBaseClass));
 
             baseTypeDocumentationElement
                 .AssertEqual(() => baseTypeDocumentationElement.Name, "TestBaseClass")
                 .AssertEqual(() => baseTypeDocumentationElement.Namespace.Name, "CodeMap.Tests.Data")
                 .AssertAssembly(() => baseTypeDocumentationElement.Assembly, typeof(TestBaseClass).Assembly)
                 .AssertSame(() => baseTypeDocumentationElement.Assembly, baseTypeDocumentationElement.Namespace.Assembly)
-                .AssertIs<ClassDocumentationElement>(
+                .AssertIs<ClassDeclaration>(
                     baseClassDocumentationElement => baseClassDocumentationElement
                         .AssertTypeReference(() => baseClassDocumentationElement.BaseClass, typeof(object))
                         .AssertAbstractEvent(() => baseClassDocumentationElement.Events, "AbstractTestEvent")
@@ -303,7 +304,7 @@ namespace CodeMap.Tests
                     attribute => attribute.AssertTestAttribute("class"),
                     attribute => attribute.AssertDefaultMemberAttribute()
                 )
-                .AssertIs<ClassDocumentationElement>(
+                .AssertIs<ClassDeclaration>(
                     classDocumentationElement => classDocumentationElement
                         .AssertFalse(() => classDocumentationElement.IsAbstract)
                         .AssertFalse(() => classDocumentationElement.IsSealed)
@@ -433,10 +434,10 @@ namespace CodeMap.Tests
                 }
             );
 
-            var typeDocumentationElement = DocumentationElement.Create(typeof(TestClass<>), membersDocumentation);
+            var typeDocumentationElement = DeclarationNode.Create(typeof(TestClass<>), membersDocumentation);
 
             typeDocumentationElement
-                .AssertIs<ClassDocumentationElement>(
+                .AssertIs<ClassDeclaration>(
                     classDocumentationElement =>
                         classDocumentationElement
                             .AssertCollectionMember(
@@ -488,11 +489,11 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementForAbstractClass()
         {
-            var typeDocumentationElement = DocumentationElement.Create(typeof(TestAbstractClass));
+            var typeDocumentationElement = DeclarationNode.Create(typeof(TestAbstractClass));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestAbstractClass")
-                .AssertIs<ClassDocumentationElement>(
+                .AssertIs<ClassDeclaration>(
                     classDocumentationElement => classDocumentationElement
                         .AssertTrue(() => classDocumentationElement.IsAbstract)
                         .AssertFalse(() => classDocumentationElement.IsSealed)
@@ -503,11 +504,11 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementForSealedClass()
         {
-            var typeDocumentationElement = DocumentationElement.Create(typeof(TestSealedClass));
+            var typeDocumentationElement = DeclarationNode.Create(typeof(TestSealedClass));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestSealedClass")
-                .AssertIs<ClassDocumentationElement>(
+                .AssertIs<ClassDeclaration>(
                     classDocumentationElement => classDocumentationElement
                         .AssertFalse(() => classDocumentationElement.IsAbstract)
                         .AssertTrue(() => classDocumentationElement.IsSealed)
@@ -518,11 +519,11 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementForStaticClass()
         {
-            var typeDocumentationElement = DocumentationElement.Create(typeof(TestStaticClass));
+            var typeDocumentationElement = DeclarationNode.Create(typeof(TestStaticClass));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestStaticClass")
-                .AssertIs<ClassDocumentationElement>(
+                .AssertIs<ClassDeclaration>(
                     classDocumentationElement => classDocumentationElement
                         .AssertFalse(() => classDocumentationElement.IsAbstract)
                         .AssertFalse(() => classDocumentationElement.IsSealed)
@@ -533,11 +534,11 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateClassDocumentationElementNestedTypes()
         {
-            var typeDocumentationElement = DocumentationElement.Create(typeof(TestClass<>));
+            var typeDocumentationElement = DeclarationNode.Create(typeof(TestClass<>));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestClass")
-                .AssertIs<ClassDocumentationElement>(
+                .AssertIs<ClassDeclaration>(
                     classDocumentationElement => classDocumentationElement
                         .AssertCollectionMember(
                             () => classDocumentationElement.NestedEnums,
@@ -579,7 +580,7 @@ namespace CodeMap.Tests
             var typeGenericParameter = structType.GetGenericArguments().Single();
             var methodGenericParameter = structType.GetMethod("TestMethod").GetGenericArguments().Single();
 
-            var typeDocumentationElement = DocumentationElement.Create(structType);
+            var typeDocumentationElement = DeclarationNode.Create(structType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestStruct")
@@ -593,7 +594,7 @@ namespace CodeMap.Tests
                     attribute => attribute.AssertTestAttribute("struct"),
                     attribute => attribute.AssertDefaultMemberAttribute()
                 )
-                .AssertIs<StructDocumentationElement>(
+                .AssertIs<StructDeclaration>(
                     structDocumentationElement => structDocumentationElement
                         .AssertTypeGenericParameters(() => structDocumentationElement.GenericParameters)
                         .AssertCollectionMember(
@@ -698,10 +699,10 @@ namespace CodeMap.Tests
                 }
             );
 
-            var typeDocumentationElement = DocumentationElement.Create(typeof(TestStruct<>), membersDocumentation);
+            var typeDocumentationElement = DeclarationNode.Create(typeof(TestStruct<>), membersDocumentation);
 
             typeDocumentationElement
-                .AssertIs<StructDocumentationElement>(
+                .AssertIs<StructDeclaration>(
                     structDocumentationElement =>
                         structDocumentationElement
                             .AssertCollectionMember(
@@ -746,11 +747,11 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateStructDocumentationElementNestedTypes()
         {
-            var typeDocumentationElement = DocumentationElement.Create(typeof(TestStruct<>));
+            var typeDocumentationElement = DeclarationNode.Create(typeof(TestStruct<>));
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "TestStruct")
-                .AssertIs<StructDocumentationElement>(
+                .AssertIs<StructDeclaration>(
                     structDocumentationElement => structDocumentationElement
                         .AssertCollectionMember(
                             () => structDocumentationElement.NestedEnums,
@@ -791,11 +792,11 @@ namespace CodeMap.Tests
             var interfaceType = typeof(ITestGenericParameter<,,,,,>);
             var typeGenericParameters = interfaceType.GetGenericArguments();
 
-            var typeDocumentationElement = DocumentationElement.Create(interfaceType);
+            var typeDocumentationElement = DeclarationNode.Create(interfaceType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "ITestGenericParameter")
-                .AssertIs<InterfaceDocumentationElement>(
+                .AssertIs<InterfaceDeclaration>(
                     interfaceDocumentationElement =>
                         interfaceDocumentationElement
                             .AssertCollectionMember(
@@ -901,11 +902,11 @@ namespace CodeMap.Tests
             var classType = typeof(TestClass<>.NestedTestClass<,>);
             var typeGenericParameters = classType.GetGenericArguments();
 
-            var typeDocumentationElement = DocumentationElement.Create(classType);
+            var typeDocumentationElement = DeclarationNode.Create(classType);
 
             typeDocumentationElement
                 .AssertEqual(() => typeDocumentationElement.Name, "NestedTestClass")
-                .AssertIs<ClassDocumentationElement>(
+                .AssertIs<ClassDeclaration>(
                     classDocumentationElement =>
                         classDocumentationElement
                             .AssertCollectionMember(
@@ -925,7 +926,7 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateAssemblyDocumentationElement()
         {
-            var assemblyDocumentationElement = DocumentationElement.Create(_TestDataAssembly);
+            var assemblyDocumentationElement = DeclarationNode.Create(_TestDataAssembly);
 
             assemblyDocumentationElement
                 .AssertEqual(() => assemblyDocumentationElement.Name, "CodeMap.Tests.Data")
@@ -964,7 +965,7 @@ namespace CodeMap.Tests
                                 @class => @class.AssertType(typeof(GlobalTestClass))
                             )
                             .AssertEmpty(() => @namespace.Structs)
-                            .AssertIs<GlobalNamespaceDocumentationElement>()
+                            .AssertIs<GlobalNamespaceDeclaration>()
                             .AssertNoDocumentation(),
                     @namespace =>
                         @namespace
@@ -1049,7 +1050,7 @@ namespace CodeMap.Tests
         [Fact]
         public void AssertTypeReferenceToNestedGenericType()
         {
-            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var classDocumentationElement = (ClassDeclaration)DeclarationNode.Create(typeof(TestClass<>));
             var typeReference = (TypeReference)classDocumentationElement
                 .Methods
                 .Single(method => method.Name == "TestMethod")
@@ -1081,7 +1082,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task AssemblyDocumentationElementCallVisitorMethods()
         {
-            var assemblyDocumentationElement = DocumentationElement.Create(_TestDataAssembly);
+            var assemblyDocumentationElement = DeclarationNode.Create(_TestDataAssembly);
             await _VerifyVisitorAsync(
                 assemblyDocumentationElement,
                 visitor => visitor.VisitAssembly(assemblyDocumentationElement)
@@ -1091,7 +1092,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task NamespaceDocumentationElementCallVisitorMethods()
         {
-            var namespaceDocumentationElement = DocumentationElement.Create(_TestDataAssembly).Namespaces.Single(@namespace => @namespace.Name == "CodeMap.Tests.Data");
+            var namespaceDocumentationElement = DeclarationNode.Create(_TestDataAssembly).Namespaces.Single(@namespace => @namespace.Name == "CodeMap.Tests.Data");
             await _VerifyVisitorAsync(
                 namespaceDocumentationElement,
                 visitor => visitor.VisitNamespace(namespaceDocumentationElement)
@@ -1101,7 +1102,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task EnumDocumentationElementCallVisitorMethods()
         {
-            var enumDocumentationElement = (EnumDocumentationElement)DocumentationElement.Create(typeof(TestEnum)); 
+            var enumDocumentationElement = (EnumDeclaration)DeclarationNode.Create(typeof(TestEnum)); 
             await _VerifyVisitorAsync(
                 enumDocumentationElement,
                 visitor => visitor.VisitEnum(enumDocumentationElement)
@@ -1111,7 +1112,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task DelegateDocumentationElementCallVisitorMethods()
         {
-            var delegateDocumentationElement = (DelegateDocumentationElement)DocumentationElement.Create(typeof(TestDelegate<>));
+            var delegateDocumentationElement = (DelegateDeclaration)DeclarationNode.Create(typeof(TestDelegate<>));
             await _VerifyVisitorAsync(
                 delegateDocumentationElement,
                 visitor => visitor.VisitDelegate(delegateDocumentationElement)
@@ -1121,7 +1122,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task InterfaceDocumentationElementCallVisitorMethods()
         {
-            var interfaceDocumentationElement = (InterfaceDocumentationElement)DocumentationElement.Create(typeof(ITestInterface<>));
+            var interfaceDocumentationElement = (InterfaceDeclaration)DeclarationNode.Create(typeof(ITestInterface<>));
             await _VerifyVisitorAsync(
                 interfaceDocumentationElement,
                 visitor => visitor.VisitInterface(interfaceDocumentationElement)
@@ -1131,7 +1132,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ClassDocumentationElementCallVisitorMethods()
         {
-            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var classDocumentationElement = (ClassDeclaration)DeclarationNode.Create(typeof(TestClass<>));
             await _VerifyVisitorAsync(
                 classDocumentationElement,
                 visitor => visitor.VisitClass(classDocumentationElement)
@@ -1141,7 +1142,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task StructDocumentationElementCallVisitorMethods()
         {
-            var structDocumentationElement = (StructDocumentationElement)DocumentationElement.Create(typeof(TestStruct<>));
+            var structDocumentationElement = (StructDeclaration)DeclarationNode.Create(typeof(TestStruct<>));
             await _VerifyVisitorAsync(
                 structDocumentationElement,
                 visitor => visitor.VisitStruct(structDocumentationElement)
@@ -1151,7 +1152,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ConstantDocumentationElementCallVisitorMethods()
         {
-            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var classDocumentationElement = (ClassDeclaration)DeclarationNode.Create(typeof(TestClass<>));
             var constantDocumentationElement = classDocumentationElement.Constants.Single(constant => constant.Name == "TestConstant");
             await _VerifyVisitorAsync(
                 constantDocumentationElement,
@@ -1162,7 +1163,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task FieldDocumentationElementCallVisitorMethods()
         {
-            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var classDocumentationElement = (ClassDeclaration)DeclarationNode.Create(typeof(TestClass<>));
             var fieldDocumentationElement = classDocumentationElement.Fields.Single(field => field.Name == "TestField");
             await _VerifyVisitorAsync(
                 fieldDocumentationElement,
@@ -1173,7 +1174,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task ConstructorDocumentationElementCallVisitorMethods()
         {
-            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var classDocumentationElement = (ClassDeclaration)DeclarationNode.Create(typeof(TestClass<>));
             var constructorDocumentationElement = classDocumentationElement.Constructors.Single(constructor => constructor.Name == "TestClass");
             await _VerifyVisitorAsync(
                 constructorDocumentationElement,
@@ -1184,7 +1185,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task EventDocumentationElementCallVisitorMethods()
         {
-            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var classDocumentationElement = (ClassDeclaration)DeclarationNode.Create(typeof(TestClass<>));
             var eventDocumentationElement = classDocumentationElement.Events.Single(@event => @event.Name == "TestEvent");
             await _VerifyVisitorAsync(
                 eventDocumentationElement,
@@ -1195,7 +1196,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task PropertyDocumentationElementCallVisitorMethods()
         {
-            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var classDocumentationElement = (ClassDeclaration)DeclarationNode.Create(typeof(TestClass<>));
             var propertyDocumentationElement = classDocumentationElement.Properties.Single(property => property.Name == "TestProperty");
             await _VerifyVisitorAsync(
                 propertyDocumentationElement,
@@ -1206,7 +1207,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task MethodDocumentationElementCallVisitorMethods()
         {
-            var classDocumentationElement = (ClassDocumentationElement)DocumentationElement.Create(typeof(TestClass<>));
+            var classDocumentationElement = (ClassDeclaration)DeclarationNode.Create(typeof(TestClass<>));
             var methodDocumentationElement = classDocumentationElement.Methods.Single(method => method.Name == "TestMethod");
             await _VerifyVisitorAsync(
                 methodDocumentationElement,
@@ -1217,33 +1218,33 @@ namespace CodeMap.Tests
         [Fact]
         public void CreateFromNullAssemblyThrowsException()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => DocumentationElement.Create(assembly: null));
+            var exception = Assert.Throws<ArgumentNullException>(() => DeclarationNode.Create(assembly: null));
             Assert.Equal(new ArgumentNullException("assembly").Message, exception.Message);
         }
 
         [Fact]
         public void CreateFromAssemblyAndNullMembersDocumentationThrowsException()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => DocumentationElement.Create(typeof(object).Assembly, null));
+            var exception = Assert.Throws<ArgumentNullException>(() => DeclarationNode.Create(typeof(object).Assembly, null));
             Assert.Equal(new ArgumentNullException("membersDocumentation").Message, exception.Message);
         }
 
         [Fact]
         public void CreateFromNullTypeThrowsException()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => DocumentationElement.Create(type: null));
+            var exception = Assert.Throws<ArgumentNullException>(() => DeclarationNode.Create(type: null));
             Assert.Equal(new ArgumentNullException("type").Message, exception.Message);
         }
 
         [Fact]
         public void CreateFromTypeAndNullMembersDocumentationThrowsException()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => DocumentationElement.Create(typeof(object), null));
+            var exception = Assert.Throws<ArgumentNullException>(() => DeclarationNode.Create(typeof(object), null));
             Assert.Equal(new ArgumentNullException("membersDocumentation").Message, exception.Message);
         }
 
         private static async Task _VerifyVisitorAsync<TDocumentationElement>(TDocumentationElement documentationElement, Expression<Action<IDocumentationVisitor>> verifyExpression)
-            where TDocumentationElement : DocumentationElement
+            where TDocumentationElement : DeclarationNode
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             documentationElement.Accept(new DocumentationVisitorAdapter(visitorMock.Object));

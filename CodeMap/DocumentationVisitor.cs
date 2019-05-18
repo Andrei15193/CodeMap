@@ -1,4 +1,4 @@
-﻿using CodeMap.Elements;
+﻿using CodeMap.DeclarationNodes;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -15,17 +15,17 @@ namespace CodeMap
         {
         }
 
-        /// <summary>Visits an <see cref="AssemblyDocumentationElement"/>.</summary>
-        /// <param name="assembly">The <see cref="AssemblyDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitAssembly(AssemblyDocumentationElement assembly)
+        /// <summary>Visits an <see cref="AssemblyDeclaration"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyDeclaration"/> to visit.</param>
+        protected internal virtual void VisitAssembly(AssemblyDeclaration assembly)
         {
         }
 
-        /// <summary>Visits an <see cref="AssemblyDocumentationElement"/>.</summary>
-        /// <param name="assembly">The <see cref="AssemblyDocumentationElement"/> to visit.</param>
+        /// <summary>Visits an <see cref="AssemblyDeclaration"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitAssemblyAsync(AssemblyDocumentationElement assembly, CancellationToken cancellationToken)
+        protected internal virtual Task VisitAssemblyAsync(AssemblyDeclaration assembly, CancellationToken cancellationToken)
         {
             try
             {
@@ -38,17 +38,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits a <see cref="NamespaceDocumentationElement"/>.</summary>
-        /// <param name="namespace">The <see cref="NamespaceDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitNamespace(NamespaceDocumentationElement @namespace)
+        /// <summary>Visits a <see cref="NamespaceDeclaration"/>.</summary>
+        /// <param name="namespace">The <see cref="NamespaceDeclaration"/> to visit.</param>
+        protected internal virtual void VisitNamespace(NamespaceDeclaration @namespace)
         {
         }
 
-        /// <summary>Visits a <see cref="NamespaceDocumentationElement"/>.</summary>
-        /// <param name="namespace">The <see cref="NamespaceDocumentationElement"/> to visit.</param>
+        /// <summary>Visits a <see cref="NamespaceDeclaration"/>.</summary>
+        /// <param name="namespace">The <see cref="NamespaceDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitNamespaceAsync(NamespaceDocumentationElement @namespace, CancellationToken cancellationToken)
+        protected internal virtual Task VisitNamespaceAsync(NamespaceDeclaration @namespace, CancellationToken cancellationToken)
         {
             try
             {
@@ -61,17 +61,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits an <see cref="EnumDocumentationElement"/>.</summary>
-        /// <param name="enum">The <see cref="EnumDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitEnum(EnumDocumentationElement @enum)
+        /// <summary>Visits an <see cref="EnumDeclaration"/>.</summary>
+        /// <param name="enum">The <see cref="EnumDeclaration"/> to visit.</param>
+        protected internal virtual void VisitEnum(EnumDeclaration @enum)
         {
         }
 
-        /// <summary>Visits an <see cref="EnumDocumentationElement"/>.</summary>
-        /// <param name="enum">The <see cref="EnumDocumentationElement"/> to visit.</param>
+        /// <summary>Visits an <see cref="EnumDeclaration"/>.</summary>
+        /// <param name="enum">The <see cref="EnumDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitEnumAsync(EnumDocumentationElement @enum, CancellationToken cancellationToken)
+        protected internal virtual Task VisitEnumAsync(EnumDeclaration @enum, CancellationToken cancellationToken)
         {
             try
             {
@@ -84,17 +84,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits a <see cref="DelegateDocumentationElement"/>.</summary>
-        /// <param name="delegate">The <see cref="DelegateDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitDelegate(DelegateDocumentationElement @delegate)
+        /// <summary>Visits a <see cref="DelegateDeclaration"/>.</summary>
+        /// <param name="delegate">The <see cref="DelegateDeclaration"/> to visit.</param>
+        protected internal virtual void VisitDelegate(DelegateDeclaration @delegate)
         {
         }
 
-        /// <summary>Visits a <see cref="DelegateDocumentationElement"/>.</summary>
-        /// <param name="delegate">The <see cref="DelegateDocumentationElement"/> to visit.</param>
+        /// <summary>Visits a <see cref="DelegateDeclaration"/>.</summary>
+        /// <param name="delegate">The <see cref="DelegateDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitDelegateAsync(DelegateDocumentationElement @delegate, CancellationToken cancellationToken)
+        protected internal virtual Task VisitDelegateAsync(DelegateDeclaration @delegate, CancellationToken cancellationToken)
         {
             try
             {
@@ -107,17 +107,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits an <see cref="InterfaceDocumentationElement"/>.</summary>
-        /// <param name="interface">The <see cref="InterfaceDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitInterface(InterfaceDocumentationElement @interface)
+        /// <summary>Visits an <see cref="InterfaceDeclaration"/>.</summary>
+        /// <param name="interface">The <see cref="InterfaceDeclaration"/> to visit.</param>
+        protected internal virtual void VisitInterface(InterfaceDeclaration @interface)
         {
         }
 
-        /// <summary>Visits an <see cref="InterfaceDocumentationElement"/>.</summary>
-        /// <param name="interface">The <see cref="InterfaceDocumentationElement"/> to visit.</param>
+        /// <summary>Visits an <see cref="InterfaceDeclaration"/>.</summary>
+        /// <param name="interface">The <see cref="InterfaceDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitInterfaceAsync(InterfaceDocumentationElement @interface, CancellationToken cancellationToken)
+        protected internal virtual Task VisitInterfaceAsync(InterfaceDeclaration @interface, CancellationToken cancellationToken)
         {
             try
             {
@@ -130,17 +130,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits a <see cref="ClassDocumentationElement"/>.</summary>
-        /// <param name="class">The <see cref="ClassDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitClass(ClassDocumentationElement @class)
+        /// <summary>Visits a <see cref="ClassDeclaration"/>.</summary>
+        /// <param name="class">The <see cref="ClassDeclaration"/> to visit.</param>
+        protected internal virtual void VisitClass(ClassDeclaration @class)
         {
         }
 
-        /// <summary>Visits a <see cref="ClassDocumentationElement"/>.</summary>
-        /// <param name="class">The <see cref="ClassDocumentationElement"/> to visit.</param>
+        /// <summary>Visits a <see cref="ClassDeclaration"/>.</summary>
+        /// <param name="class">The <see cref="ClassDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitClassAsync(ClassDocumentationElement @class, CancellationToken cancellationToken)
+        protected internal virtual Task VisitClassAsync(ClassDeclaration @class, CancellationToken cancellationToken)
         {
             try
             {
@@ -153,17 +153,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits a <see cref="StructDocumentationElement"/>.</summary>
-        /// <param name="struct">The <see cref="StructDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitStruct(StructDocumentationElement @struct)
+        /// <summary>Visits a <see cref="StructDeclaration"/>.</summary>
+        /// <param name="struct">The <see cref="StructDeclaration"/> to visit.</param>
+        protected internal virtual void VisitStruct(StructDeclaration @struct)
         {
         }
 
-        /// <summary>Visits a <see cref="StructDocumentationElement"/>.</summary>
-        /// <param name="struct">The <see cref="StructDocumentationElement"/> to visit.</param>
+        /// <summary>Visits a <see cref="StructDeclaration"/>.</summary>
+        /// <param name="struct">The <see cref="StructDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitStructAsync(StructDocumentationElement @struct, CancellationToken cancellationToken)
+        protected internal virtual Task VisitStructAsync(StructDeclaration @struct, CancellationToken cancellationToken)
         {
             try
             {
@@ -176,17 +176,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits a <see cref="ConstantDocumentationElement"/>.</summary>
-        /// <param name="constant">The <see cref="ConstantDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitConstant(ConstantDocumentationElement constant)
+        /// <summary>Visits a <see cref="ConstantDeclaration"/>.</summary>
+        /// <param name="constant">The <see cref="ConstantDeclaration"/> to visit.</param>
+        protected internal virtual void VisitConstant(ConstantDeclaration constant)
         {
         }
 
-        /// <summary>Visits a <see cref="ConstantDocumentationElement"/>.</summary>
-        /// <param name="constant">The <see cref="ConstantDocumentationElement"/> to visit.</param>
+        /// <summary>Visits a <see cref="ConstantDeclaration"/>.</summary>
+        /// <param name="constant">The <see cref="ConstantDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitConstantAsync(ConstantDocumentationElement constant, CancellationToken cancellationToken)
+        protected internal virtual Task VisitConstantAsync(ConstantDeclaration constant, CancellationToken cancellationToken)
         {
             try
             {
@@ -199,17 +199,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits a <see cref="FieldDocumentationElement"/>.</summary>
-        /// <param name="field">The <see cref="FieldDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitField(FieldDocumentationElement field)
+        /// <summary>Visits a <see cref="FieldDeclaration"/>.</summary>
+        /// <param name="field">The <see cref="FieldDeclaration"/> to visit.</param>
+        protected internal virtual void VisitField(FieldDeclaration field)
         {
         }
 
-        /// <summary>Visits a <see cref="FieldDocumentationElement"/>.</summary>
-        /// <param name="field">The <see cref="FieldDocumentationElement"/> to visit.</param>
+        /// <summary>Visits a <see cref="FieldDeclaration"/>.</summary>
+        /// <param name="field">The <see cref="FieldDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitFieldAsync(FieldDocumentationElement field, CancellationToken cancellationToken)
+        protected internal virtual Task VisitFieldAsync(FieldDeclaration field, CancellationToken cancellationToken)
         {
             try
             {
@@ -222,17 +222,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits a <see cref="ConstructorDocumentationElement"/>.</summary>
-        /// <param name="constructor">The <see cref="ConstructorDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitConstructor(ConstructorDocumentationElement constructor)
+        /// <summary>Visits a <see cref="ConstructorDeclaration"/>.</summary>
+        /// <param name="constructor">The <see cref="ConstructorDeclaration"/> to visit.</param>
+        protected internal virtual void VisitConstructor(ConstructorDeclaration constructor)
         {
         }
 
-        /// <summary>Visits a <see cref="ConstructorDocumentationElement"/>.</summary>
-        /// <param name="constructor">The <see cref="ConstructorDocumentationElement"/> to visit.</param>
+        /// <summary>Visits a <see cref="ConstructorDeclaration"/>.</summary>
+        /// <param name="constructor">The <see cref="ConstructorDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitConstructorAsync(ConstructorDocumentationElement constructor, CancellationToken cancellationToken)
+        protected internal virtual Task VisitConstructorAsync(ConstructorDeclaration constructor, CancellationToken cancellationToken)
         {
             try
             {
@@ -245,17 +245,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits a <see cref="EventDocumentationElement"/>.</summary>
-        /// <param name="event">The <see cref="EventDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitEvent(EventDocumentationElement @event)
+        /// <summary>Visits a <see cref="EventDeclaration"/>.</summary>
+        /// <param name="event">The <see cref="EventDeclaration"/> to visit.</param>
+        protected internal virtual void VisitEvent(EventDeclaration @event)
         {
         }
 
-        /// <summary>Visits a <see cref="EventDocumentationElement"/>.</summary>
-        /// <param name="event">The <see cref="EventDocumentationElement"/> to visit.</param>
+        /// <summary>Visits a <see cref="EventDeclaration"/>.</summary>
+        /// <param name="event">The <see cref="EventDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitEventAsync(EventDocumentationElement @event, CancellationToken cancellationToken)
+        protected internal virtual Task VisitEventAsync(EventDeclaration @event, CancellationToken cancellationToken)
         {
             try
             {
@@ -268,17 +268,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits a <see cref="PropertyDocumentationElement"/>.</summary>
-        /// <param name="property">The <see cref="PropertyDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitProperty(PropertyDocumentationElement property)
+        /// <summary>Visits a <see cref="PropertyDeclaration"/>.</summary>
+        /// <param name="property">The <see cref="PropertyDeclaration"/> to visit.</param>
+        protected internal virtual void VisitProperty(PropertyDeclaration property)
         {
         }
 
-        /// <summary>Visits a <see cref="PropertyDocumentationElement"/>.</summary>
-        /// <param name="property">The <see cref="PropertyDocumentationElement"/> to visit.</param>
+        /// <summary>Visits a <see cref="PropertyDeclaration"/>.</summary>
+        /// <param name="property">The <see cref="PropertyDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitPropertyAsync(PropertyDocumentationElement property, CancellationToken cancellationToken)
+        protected internal virtual Task VisitPropertyAsync(PropertyDeclaration property, CancellationToken cancellationToken)
         {
             try
             {
@@ -291,17 +291,17 @@ namespace CodeMap
             }
         }
 
-        /// <summary>Visits a <see cref="MethodDocumentationElement"/>.</summary>
-        /// <param name="method">The <see cref="MethodDocumentationElement"/> to visit.</param>
-        protected internal virtual void VisitMethod(MethodDocumentationElement method)
+        /// <summary>Visits a <see cref="MethodDeclaration"/>.</summary>
+        /// <param name="method">The <see cref="MethodDeclaration"/> to visit.</param>
+        protected internal virtual void VisitMethod(MethodDeclaration method)
         {
         }
 
-        /// <summary>Visits a <see cref="MethodDocumentationElement"/>.</summary>
-        /// <param name="method">The <see cref="MethodDocumentationElement"/> to visit.</param>
+        /// <summary>Visits a <see cref="MethodDeclaration"/>.</summary>
+        /// <param name="method">The <see cref="MethodDeclaration"/> to visit.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected internal virtual Task VisitMethodAsync(MethodDocumentationElement method, CancellationToken cancellationToken)
+        protected internal virtual Task VisitMethodAsync(MethodDeclaration method, CancellationToken cancellationToken)
         {
             try
             {
