@@ -48,7 +48,7 @@ namespace CodeMap.DeclarationNodes
             if (membersDocumentation == null)
                 throw new ArgumentNullException(nameof(membersDocumentation));
 
-            return new AssemblyDocumentationElementFactory(
+            return new DeclarationNodeFactory(
                     new CanonicalNameResolver(new[] { assembly }.Concat(assembly.GetReferencedAssemblies().Select(Assembly.Load))),
                     membersDocumentation
                 )
@@ -183,19 +183,19 @@ namespace CodeMap.DeclarationNodes
         }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
-        /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
-        public abstract void Accept(DocumentationVisitor visitor);
+        /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>
+        public abstract void Accept(DeclarationNodeVisitor visitor);
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
-        /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
+        /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public Task AcceptAsync(DocumentationVisitor visitor)
+        public Task AcceptAsync(DeclarationNodeVisitor visitor)
             => AcceptAsync(visitor, CancellationToken.None);
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
-        /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
+        /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
         /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public abstract Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken);
+        public abstract Task AcceptAsync(DeclarationNodeVisitor visitor, CancellationToken cancellationToken);
     }
 }

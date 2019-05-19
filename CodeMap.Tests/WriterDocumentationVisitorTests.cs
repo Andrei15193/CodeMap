@@ -37,15 +37,21 @@ namespace CodeMap.Tests
             object actualJsonSync, actualJsonAsync;
             using (var stringWriter = new StringWriter())
             {
-                using (var jsonWriterVisitor = new JsonWriterDocumentationVisitor(new JsonTextWriter(stringWriter)))
+                using (var jsonWriter = new JsonTextWriter(stringWriter))
+                {
+                    var jsonWriterVisitor = new JsonWriterDeclarationNodeVisitor(jsonWriter);
                     _testDataDocumentation.Accept(jsonWriterVisitor);
+                }
                 actualJsonSync = _NormalizeJson(stringWriter.ToString());
             }
 
             using (var stringWriter = new StringWriter())
             {
-                using (var jsonWriterVisitor = new JsonWriterDocumentationVisitor(new JsonTextWriter(stringWriter)))
+                using (var jsonWriter = new JsonTextWriter(stringWriter))
+                {
+                    var jsonWriterVisitor = new JsonWriterDeclarationNodeVisitor(jsonWriter);
                     await _testDataDocumentation.AcceptAsync(jsonWriterVisitor);
+                }
                 actualJsonAsync = _NormalizeJson(stringWriter.ToString());
             }
 

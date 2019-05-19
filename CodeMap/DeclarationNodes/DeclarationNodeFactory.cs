@@ -7,9 +7,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace CodeMap
+namespace CodeMap.DeclarationNodes
 {
-    internal class AssemblyDocumentationElementFactory
+    internal class DeclarationNodeFactory
     {
         private readonly MemberReferenceFactory _memberReferenceFactory = new MemberReferenceFactory();
         private readonly MemberDocumentation _emptyMemberDocumentation = new MemberDocumentation(string.Empty);
@@ -17,7 +17,7 @@ namespace CodeMap
         private readonly CanonicalNameResolver _canonicalNameResolver;
         private readonly MemberDocumentationCollection _membersDocumentation;
 
-        public AssemblyDocumentationElementFactory(CanonicalNameResolver canonicalNameResolver, MemberDocumentationCollection membersDocumentation)
+        public DeclarationNodeFactory(CanonicalNameResolver canonicalNameResolver, MemberDocumentationCollection membersDocumentation)
         {
             _canonicalNameResolver = canonicalNameResolver;
             _membersDocumentation = membersDocumentation;

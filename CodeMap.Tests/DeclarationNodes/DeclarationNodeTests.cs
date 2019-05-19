@@ -1,5 +1,5 @@
-﻿using CodeMap.DocumentationElements;
-using CodeMap.DeclarationNodes;
+﻿using CodeMap.DeclarationNodes;
+using CodeMap.DocumentationElements;
 using CodeMap.ReferenceData;
 using CodeMap.Tests.Data;
 using Moq;
@@ -14,12 +14,12 @@ using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace CodeMap.Tests
+namespace CodeMap.Tests.DeclarationNodes
 {
-    public class ReflectionDocumentationElementTests
+    public class DeclarationNodeTests
     {
         private static Assembly _TestDataAssembly
-            => typeof(ReflectionDocumentationElementTests)
+            => typeof(DeclarationNodeTests)
                 .Assembly
                 .GetReferencedAssemblies()
                 .Where(dependency => dependency.Name == "CodeMap.Tests.Data")
@@ -1102,7 +1102,7 @@ namespace CodeMap.Tests
         [Fact]
         public async Task EnumDocumentationElementCallVisitorMethods()
         {
-            var enumDocumentationElement = (EnumDeclaration)DeclarationNode.Create(typeof(TestEnum)); 
+            var enumDocumentationElement = (EnumDeclaration)DeclarationNode.Create(typeof(TestEnum));
             await _VerifyVisitorAsync(
                 enumDocumentationElement,
                 visitor => visitor.VisitEnum(enumDocumentationElement)
@@ -1243,16 +1243,16 @@ namespace CodeMap.Tests
             Assert.Equal(new ArgumentNullException("membersDocumentation").Message, exception.Message);
         }
 
-        private static async Task _VerifyVisitorAsync<TDocumentationElement>(TDocumentationElement documentationElement, Expression<Action<IDocumentationVisitor>> verifyExpression)
+        private static async Task _VerifyVisitorAsync<TDocumentationElement>(TDocumentationElement documentationElement, Expression<Action<IDeclarationNodeVisitor>> verifyExpression)
             where TDocumentationElement : DeclarationNode
         {
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            documentationElement.Accept(new DocumentationVisitorAdapter(visitorMock.Object));
+            var visitorMock = new Mock<IDeclarationNodeVisitor>();
+            documentationElement.Accept(new DeclarationNodeVisitorAdapter(visitorMock.Object));
             visitorMock.Verify(verifyExpression, Times.Once());
             visitorMock.VerifyNoOtherCalls();
 
-            var asyncVisitorMock = new Mock<IDocumentationVisitor>();
-            await documentationElement.AcceptAsync(new DocumentationVisitorAdapter(asyncVisitorMock.Object));
+            var asyncVisitorMock = new Mock<IDeclarationNodeVisitor>();
+            await documentationElement.AcceptAsync(new DeclarationNodeVisitorAdapter(asyncVisitorMock.Object));
             asyncVisitorMock.Verify(verifyExpression, Times.Once());
             asyncVisitorMock.VerifyNoOtherCalls();
         }
