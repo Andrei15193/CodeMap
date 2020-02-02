@@ -1,4 +1,4 @@
-[![Build status](https://andrei15193.visualstudio.com/CodeMap/_apis/build/status/CodeMap.CI)](https://andrei15193.visualstudio.com/CodeMap/_build/latest?definitionId=-1)
+![.NET Core](https://github.com/Andrei15193/CodeMap/workflows/.NET%20Core/badge.svg?branch=master&event=push)
 
 Visual Studio enables developers to write comprehensive documentation inside
 their code using XML in three slashed comments,
