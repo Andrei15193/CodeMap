@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace CodeMap
+namespace CodeMap.DocumentationElements
 {
     /// <summary>Resolves XML documentation canonical names from a given <see cref="MemberInfo"/>.</summary>
     public class CanonicalNameResolver

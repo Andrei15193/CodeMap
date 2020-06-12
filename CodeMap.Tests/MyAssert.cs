@@ -1,13 +1,14 @@
-﻿using System;
+﻿using CodeMap.DeclarationNodes;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
+using CodeMap.Tests.Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using CodeMap.DeclarationNodes;
-using CodeMap.ReferenceData;
-using CodeMap.Tests.Data;
 using Xunit;
 
 namespace CodeMap.Tests
@@ -1178,7 +1179,7 @@ namespace CodeMap.Tests
             Assert.True(assemblyName == assemblyDocumentationElement);
             Assert.False(assemblyDocumentationElement != assemblyName);
             Assert.False(assemblyName != assemblyDocumentationElement);
-            
+
             Assert.True(assemblyDocumentationElement != coreAssemblyName);
             Assert.True(coreAssemblyName != assemblyDocumentationElement);
 

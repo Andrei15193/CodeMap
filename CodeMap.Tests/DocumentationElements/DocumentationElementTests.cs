@@ -3,10 +3,9 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace CodeMap.Tests
+namespace CodeMap.Tests.DocumentationElements
 {
     public class DocumentationElementTests
     {
@@ -19,14 +18,14 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task TextElementCallsVisitorMethod()
+        public void TextElementCallsVisitorMethod()
         {
             const string text = "some text";
 
             var visitorMock = new Mock<IDocumentationVisitor>();
             var textElement = DocumentationElement.Text(text);
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 textElement,
                 visitor => visitor.VisitText(text)
             );
@@ -41,14 +40,14 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task InlineCodeElementCallsVisitorMethod()
+        public void InlineCodeElementCallsVisitorMethod()
         {
             const string code = "piece of code";
 
             var visitorMock = new Mock<IDocumentationVisitor>();
             var inlineCode = DocumentationElement.InlineCode(code);
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 inlineCode,
                 visitor => visitor.VisitInlineCode(code)
             );
@@ -69,14 +68,14 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task InlineReferenceElementCallsVisitorMethod()
+        public void InlineReferenceElementCallsVisitorMethod()
         {
             var referredMember = GetType().GetMembers().First();
 
             var visitorMock = new Mock<IDocumentationVisitor>();
             var memberReference = DocumentationElement.MemberReference(referredMember);
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 memberReference,
                 visitor => visitor.VisitInlineReference(referredMember)
             );
@@ -91,12 +90,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task ParameterReferenceElementCallsVisitorMethod()
+        public void ParameterReferenceElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var parameterReference = DocumentationElement.ParameterReference("parameter");
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 parameterReference,
                 visitor => visitor.VisitParameterReference("parameter")
             );
@@ -111,14 +110,14 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task ParameterGenericReferenceElementCallsVisitorMethod()
+        public void ParameterGenericReferenceElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var genericParameterReference = DocumentationElement.GenericParameterReference("genericParameter");
 
-            await visitorMock.VerifyAcceptMethods(
-                genericParameterReference,
-                visitor => visitor.VisitGenericParameterReference("genericParameter")
+            visitorMock.VerifyAcceptMethods(
+               genericParameterReference,
+               visitor => visitor.VisitGenericParameterReference("genericParameter")
             );
         }
 
@@ -139,12 +138,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task ParagraphElementCallsVisitorBeginningAndEndingMethods()
+        public void ParagraphElementCallsVisitorBeginningAndEndingMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var paragraph = DocumentationElement.Paragraph(Enumerable.Empty<InlineDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 paragraph,
                 visitor => visitor.VisitParagraphBeginning(),
                 visitor => visitor.VisitParagraphEnding()
@@ -152,7 +151,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task ParagraphElementCallsVisitorMethods()
+        public void ParagraphElementCallsVisitorMethods()
         {
             const string text = "plain text";
             const string code = "piece of code";
@@ -172,7 +171,7 @@ namespace CodeMap.Tests
                 }
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 paragraph,
                 visitor => visitor.VisitParagraphBeginning(),
 
@@ -195,13 +194,13 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task CodeBlockElementCallsVisitorMethods()
+        public void CodeBlockElementCallsVisitorMethods()
         {
             const string code = "code block";
             var visitorMock = new Mock<IDocumentationVisitor>();
             var codeBlock = DocumentationElement.CodeBlock(code);
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 codeBlock,
                 visitor => visitor.VisitCodeBlock(code)
             );
@@ -224,12 +223,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task ListItemElementCallsVisitorBeginningAndEndingMethods()
+        public void ListItemElementCallsVisitorBeginningAndEndingMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var listItem = DocumentationElement.ListItem(Enumerable.Empty<InlineDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 listItem,
                 visitor => visitor.VisitListItemBeginning(),
                 visitor => visitor.VisitListItemEnding()
@@ -237,7 +236,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task ListItemElementCallsVisitorMethods()
+        public void ListItemElementCallsVisitorMethods()
         {
             const string text = "plain text";
             const string code = "piece of code";
@@ -257,7 +256,7 @@ namespace CodeMap.Tests
                 }
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 listItem,
                 visitor => visitor.VisitListItemBeginning(),
 
@@ -288,12 +287,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task UnorderedListElementCallsVisitorBeginningAndEndingMethods()
+        public void UnorderedListElementCallsVisitorBeginningAndEndingMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var unorderedList = DocumentationElement.UnorderedList(Enumerable.Empty<ListItemDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 unorderedList,
                 visitor => visitor.VisitUnorderedListBeginning(),
                 visitor => visitor.VisitUnorderedListEnding()
@@ -301,7 +300,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task UnorderedListElementCallsVisitorMethods()
+        public void UnorderedListElementCallsVisitorMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var unorderedList = DocumentationElement.UnorderedList(
@@ -312,7 +311,7 @@ namespace CodeMap.Tests
                 }
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 unorderedList,
                 new InvocationCheck(visitor => visitor.VisitUnorderedListBeginning(), Times.Once()),
 
@@ -340,12 +339,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task OrderedListElementCallsVisitorBeginningAndEndingMethods()
+        public void OrderedListElementCallsVisitorBeginningAndEndingMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var orederedList = DocumentationElement.OrderedList(Enumerable.Empty<ListItemDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 orederedList,
                 visitor => visitor.VisitOrderedListBeginning(),
                 visitor => visitor.VisitOrderedListEnding()
@@ -353,7 +352,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task OrderedListElementCallsVisitorMethods()
+        public void OrderedListElementCallsVisitorMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var orederdList = DocumentationElement.OrderedList(
@@ -364,7 +363,7 @@ namespace CodeMap.Tests
                 }
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 orederdList,
                 new InvocationCheck(visitor => visitor.VisitOrderedListBeginning(), Times.Once()),
 
@@ -432,7 +431,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task DefinitionListItemElementCallsVisitorBeginningAndEndingMethods()
+        public void DefinitionListItemElementCallsVisitorBeginningAndEndingMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var definitionListItem = DocumentationElement.DefinitionListItem(
@@ -440,7 +439,7 @@ namespace CodeMap.Tests
                 Enumerable.Empty<InlineDocumentationElement>()
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 definitionListItem,
                 visitor => visitor.VisitDefinitionListItemBeginning(),
                 visitor => visitor.VisitDefinitionTermBeginning(),
@@ -452,7 +451,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task DefinitionListItemElementCallsVisitorMethods()
+        public void DefinitionListItemElementCallsVisitorMethods()
         {
             const string termText = "term plain text";
             const string termCode = "term piece of code";
@@ -486,7 +485,7 @@ namespace CodeMap.Tests
                 }
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 definitionListItem,
                 visitor => visitor.VisitDefinitionListItemBeginning(),
 
@@ -541,12 +540,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task DefinitionListElementCallsVisitorBeginningAndEndingMethods()
+        public void DefinitionListElementCallsVisitorBeginningAndEndingMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var definitionList = DocumentationElement.DefinitionList(Enumerable.Empty<DefinitionListItemDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 definitionList,
                 visitor => visitor.VisitDefinitionListBeginning(),
                 visitor => visitor.VisitDefinitionListTitleBeginning(),
@@ -556,7 +555,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task DefinitionListElementCallsVisitorMethods()
+        public void DefinitionListElementCallsVisitorMethods()
         {
             const string text = "plain text";
             const string code = "piece of code";
@@ -589,7 +588,7 @@ namespace CodeMap.Tests
                 }
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 definitionList,
                 new InvocationCheck(visitor => visitor.VisitDefinitionListBeginning(), Times.Once()),
 
@@ -630,12 +629,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task TableCellElementCallsVisitorBeginningAndEndingMethods()
+        public void TableCellElementCallsVisitorBeginningAndEndingMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var tableCell = DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 tableCell,
                 visitor => visitor.VisitTableCellBeginning(),
                 visitor => visitor.VisitTableCellEnding()
@@ -643,7 +642,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task TableCellElementCallsVisitorMethods()
+        public void TableCellElementCallsVisitorMethods()
         {
             const string text = "plain text";
             const string code = "piece of code";
@@ -663,7 +662,7 @@ namespace CodeMap.Tests
                 }
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 tableCell,
                 visitor => visitor.VisitTableCellBeginning(),
 
@@ -694,12 +693,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task TableRowElementCallsVisitorBeginningAndEndingMethods()
+        public void TableRowElementCallsVisitorBeginningAndEndingMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var tableRow = DocumentationElement.TableRow(Enumerable.Empty<TableCellDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 tableRow,
                 visitor => visitor.VisitTableRowBeginning(),
                 visitor => visitor.VisitTableRowEnding()
@@ -707,7 +706,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task TableRowElementCallsVisitorMethods()
+        public void TableRowElementCallsVisitorMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var tableRow = DocumentationElement.TableRow(
@@ -717,7 +716,7 @@ namespace CodeMap.Tests
                     DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>())
                 });
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 tableRow,
                 new InvocationCheck(visitor => visitor.VisitTableRowBeginning(), Times.Once()),
 
@@ -745,12 +744,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task TableColumnElementCallsVisitorBeginningAndEndingMethods()
+        public void TableColumnElementCallsVisitorBeginningAndEndingMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var tableColumn = DocumentationElement.TableColumn(Enumerable.Empty<InlineDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 tableColumn,
                 visitor => visitor.VisitTableColumnBeginning(),
                 visitor => visitor.VisitTableColumnEnding()
@@ -758,7 +757,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task TableColumnElementCallsVisitorMethods()
+        public void TableColumnElementCallsVisitorMethods()
         {
             const string text = "plain text";
             const string code = "piece of code";
@@ -778,7 +777,7 @@ namespace CodeMap.Tests
                 }
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 tableColumn,
                 visitor => visitor.VisitTableColumnBeginning(),
 
@@ -837,7 +836,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task TableElementCallsVisitorBeginningAndEndingMethods()
+        public void TableElementCallsVisitorBeginningAndEndingMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var tableColumn = DocumentationElement.Table(
@@ -845,7 +844,7 @@ namespace CodeMap.Tests
                 Enumerable.Empty<TableRowDocumentationElement>()
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 tableColumn,
                 visitor => visitor.VisitTableBeginning(),
                 visitor => visitor.VisitTableEnding()
@@ -853,7 +852,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task TableElementCallsVisitorMethods()
+        public void TableElementCallsVisitorMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var table = DocumentationElement.Table(
@@ -869,7 +868,7 @@ namespace CodeMap.Tests
                 }
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 table,
                 new InvocationCheck(visitor => visitor.VisitTableBeginning(), Times.Once()),
 
@@ -892,7 +891,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task TableElementCallsVisitorMethodsForMissingColumns()
+        public void TableElementCallsVisitorMethodsForMissingColumns()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var table = DocumentationElement.Table(
@@ -919,7 +918,7 @@ namespace CodeMap.Tests
                 }
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 table,
                 new[]
                 {
@@ -943,7 +942,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task TableElementCallsVisitorMethodsForMissingCells()
+        public void TableElementCallsVisitorMethodsForMissingCells()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var table = DocumentationElement.Table(
@@ -970,7 +969,7 @@ namespace CodeMap.Tests
                 }
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 table,
                 new[]
                 {
@@ -1015,14 +1014,14 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task HeaderlessTableElementCallsVisitorBeginningAndEndingMethods()
+        public void HeaderlessTableElementCallsVisitorBeginningAndEndingMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var tableColumn = DocumentationElement.Table(
                 Enumerable.Empty<TableRowDocumentationElement>()
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 tableColumn,
                 visitor => visitor.VisitTableBeginning(),
                 visitor => visitor.VisitTableEnding()
@@ -1030,7 +1029,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task HeaderlessTableElementCallsVisitorMethods()
+        public void HeaderlessTableElementCallsVisitorMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var table = DocumentationElement.Table(
@@ -1046,7 +1045,7 @@ namespace CodeMap.Tests
                 )
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 table,
                 new InvocationCheck(visitor => visitor.VisitTableBeginning(), Times.Once()),
                 new InvocationCheck(visitor => visitor.VisitTableBodyBeginning(), Times.Once()),
@@ -1062,7 +1061,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task HeaderlessTableElementCallsVisitorMethodsForMissingCells()
+        public void HeaderlessTableElementCallsVisitorMethodsForMissingCells()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var table = DocumentationElement.Table(
@@ -1075,7 +1074,7 @@ namespace CodeMap.Tests
                 )
             );
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 table,
                 new[]
                 {
@@ -1110,12 +1109,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task SummaryElementCallsBeginningAndEndingVisitorMethods()
+        public void SummaryElementCallsBeginningAndEndingVisitorMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var summary = DocumentationElement.Summary(Enumerable.Empty<BlockDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 summary,
                 visitor => visitor.VisitSummaryBeginning(),
                 visitor => visitor.VisitSummaryEnding()
@@ -1123,7 +1122,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task SummaryElementCallsVisitorMethods()
+        public void SummaryElementCallsVisitorMethods()
         {
             const string code = "piece of code";
 
@@ -1139,7 +1138,7 @@ namespace CodeMap.Tests
                     DocumentationElement.Table(Enumerable.Empty<TableColumnDocumentationElement>(), Enumerable.Empty<TableRowDocumentationElement>())
                 });
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 summary,
                 visitor => visitor.VisitSummaryBeginning(),
 
@@ -1183,12 +1182,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task RemarksElementCallsBeginningAndEndingVisitorMethods()
+        public void RemarksElementCallsBeginningAndEndingVisitorMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var remarks = DocumentationElement.Remarks(Enumerable.Empty<BlockDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 remarks,
                 visitor => visitor.VisitRemarksBeginning(),
                 visitor => visitor.VisitRemarksEnding()
@@ -1196,7 +1195,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task RemarksElementCallsVisitorMethods()
+        public void RemarksElementCallsVisitorMethods()
         {
             const string code = "piece of code";
 
@@ -1212,7 +1211,7 @@ namespace CodeMap.Tests
                     DocumentationElement.Table(Enumerable.Empty<TableColumnDocumentationElement>(), Enumerable.Empty<TableRowDocumentationElement>())
                 });
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 remarks,
                 visitor => visitor.VisitRemarksBeginning(),
 
@@ -1256,12 +1255,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task ExampleElementCallsBeginningAndEndingVisitorMethods()
+        public void ExampleElementCallsBeginningAndEndingVisitorMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var example = DocumentationElement.Example(Enumerable.Empty<BlockDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 example,
                 visitor => visitor.VisitExampleBeginning(),
                 visitor => visitor.VisitExampleEnding()
@@ -1269,7 +1268,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task ExampleElementCallsVisitorMethods()
+        public void ExampleElementCallsVisitorMethods()
         {
             const string code = "piece of code";
 
@@ -1285,7 +1284,7 @@ namespace CodeMap.Tests
                     DocumentationElement.Table(Enumerable.Empty<TableColumnDocumentationElement>(), Enumerable.Empty<TableRowDocumentationElement>())
                 });
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 example,
                 visitor => visitor.VisitExampleBeginning(),
 
@@ -1329,12 +1328,12 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task ValueElementCallsBeginningAndEndingVisitorMethods()
+        public void ValueElementCallsBeginningAndEndingVisitorMethods()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var value = DocumentationElement.Value(Enumerable.Empty<BlockDocumentationElement>());
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 value,
                 visitor => visitor.VisitValueBeginning(),
                 visitor => visitor.VisitValueEnding()
@@ -1342,7 +1341,7 @@ namespace CodeMap.Tests
         }
 
         [Fact]
-        public async Task ValueElementCallsVisitorMethods()
+        public void ValueElementCallsVisitorMethods()
         {
             const string code = "piece of code";
 
@@ -1358,7 +1357,7 @@ namespace CodeMap.Tests
                     DocumentationElement.Table(Enumerable.Empty<TableColumnDocumentationElement>(), Enumerable.Empty<TableRowDocumentationElement>())
                 });
 
-            await visitorMock.VerifyAcceptMethods(
+            visitorMock.VerifyAcceptMethods(
                 value,
                 visitor => visitor.VisitValueBeginning(),
 

@@ -1,6 +1,6 @@
 ﻿using CodeMap.ReferenceData;
 
-namespace CodeMap
+namespace CodeMap.DeclarationNodes
 {
     /// <summary>Contains information used for an attribute parameter.</summary>
     public class AttributeParameterData

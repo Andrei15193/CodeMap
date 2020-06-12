@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CodeMap
+namespace CodeMap.DeclarationNodes
 {
     /// <summary>Contains the information used to decorate a member with an attribute.</summary>
     public class AttributeData

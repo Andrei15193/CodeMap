@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CodeMap.DocumentationElements
 {
@@ -36,18 +34,6 @@ namespace CodeMap.DocumentationElements
             foreach (var contentElement in Cells)
                 contentElement.Accept(visitor);
             visitor.VisitTableRowEnding();
-        }
-
-        /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
-        /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
-        {
-            await visitor.VisitTableRowBeginningAsync(XmlAttributes, cancellationToken).ConfigureAwait(false);
-            foreach (var cell in Cells)
-                await cell.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
-            await visitor.VisitTableRowEndingAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -1,10 +1,9 @@
-﻿using System;
+﻿using CodeMap.DocumentationElements;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CodeMap.DeclarationNodes
 {
@@ -25,7 +24,7 @@ namespace CodeMap.DeclarationNodes
             {
                 MemberDocumentationCollection membersDocumentation;
                 using (var xmlDocumentationReader = xmlDocumentationFileInfo.OpenText())
-                    membersDocumentation = Task.Run(() => new XmlDocumentationReader().ReadAsync(xmlDocumentationReader)).Result;
+                    membersDocumentation = new XmlDocumentationReader().Read(xmlDocumentationReader);
 
                 return Create(assembly, membersDocumentation);
             }
@@ -53,62 +52,6 @@ namespace CodeMap.DeclarationNodes
                     membersDocumentation
                 )
                 .Create(assembly);
-        }
-
-        /// <summary>Creates an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</summary>
-        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDeclaration"/>.</param>
-        /// <returns>Returns an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
-        /// <remarks>The associated XML documentation file is searched in the folder from where the assembly was loaded,
-        /// if one is found then it is used, otherwise no written documentation is added to the result.</remarks>
-        public static Task<AssemblyDeclaration> CreateAsync(Assembly assembly)
-            => CreateAsync(assembly, CancellationToken.None);
-
-        /// <summary>Creates an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</summary>
-        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDeclaration"/>.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
-        /// <remarks>The associated XML documentation file is searched in the folder from where the assembly was loaded,
-        /// if one is found then it is used, otherwise no written documentation is added to the result.</remarks>
-        public static async Task<AssemblyDeclaration> CreateAsync(Assembly assembly, CancellationToken cancellationToken)
-        {
-            if (assembly == null)
-                throw new ArgumentNullException(nameof(assembly));
-
-            var xmlDocumentationFileInfo = new FileInfo(Path.ChangeExtension(assembly.Location, ".xml"));
-            if (xmlDocumentationFileInfo.Exists)
-                using (var xmlDocumentationReader = xmlDocumentationFileInfo.OpenText())
-                    return await CreateAsync(assembly, xmlDocumentationReader, cancellationToken).ConfigureAwait(false);
-            else
-                return Create(assembly);
-        }
-
-        /// <summary>Creates an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</summary>
-        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDeclaration"/>.</param>
-        /// <param name="xmlDocumentationReader">A <see cref="TextReader"/> for reading the associated XML documentation file.</param>
-        /// <returns>Returns an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> or <paramref name="xmlDocumentationReader"/> are <c>null</c>.</exception>
-        public static Task<AssemblyDeclaration> CreateAsync(Assembly assembly, TextReader xmlDocumentationReader)
-            => CreateAsync(assembly, xmlDocumentationReader);
-
-        /// <summary>Creates an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</summary>
-        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDeclaration"/>.</param>
-        /// <param name="xmlDocumentationReader">A <see cref="TextReader"/> for reading the associated XML documentation file.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> or <paramref name="xmlDocumentationReader"/> are <c>null</c>.</exception>
-        public static async Task<AssemblyDeclaration> CreateAsync(Assembly assembly, TextReader xmlDocumentationReader, CancellationToken cancellationToken)
-        {
-            if (assembly == null)
-                throw new ArgumentNullException(nameof(assembly));
-            if (xmlDocumentationReader == null)
-                throw new ArgumentNullException(nameof(xmlDocumentationReader));
-
-            return Create(
-                assembly,
-                await new XmlDocumentationReader().ReadAsync(xmlDocumentationReader, cancellationToken).ConfigureAwait(false)
-            );
         }
 
         /// <summary>Creates a <see cref="TypeDeclaration"/> from the provided <paramref name="type"/>.</summary>
@@ -185,17 +128,5 @@ namespace CodeMap.DeclarationNodes
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>
         public abstract void Accept(DeclarationNodeVisitor visitor);
-
-        /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
-        /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public Task AcceptAsync(DeclarationNodeVisitor visitor)
-            => AcceptAsync(visitor, CancellationToken.None);
-
-        /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
-        /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public abstract Task AcceptAsync(DeclarationNodeVisitor visitor, CancellationToken cancellationToken);
     }
 }

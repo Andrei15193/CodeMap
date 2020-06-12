@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="testData.debug.json" />
-    <EmbeddedResource Include="testData.release.json" />
+    <EmbeddedResource Include="Json\testData.debug.json" />
+    <EmbeddedResource Include="Json\testData.release.json" />
   </ItemGroup>
 
   <ItemGroup>

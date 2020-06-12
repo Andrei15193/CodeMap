@@ -1,10 +1,8 @@
-﻿using CodeMap.DocumentationElements;
-using CodeMap.DeclarationNodes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CodeMap
+namespace CodeMap.DocumentationElements
 {
     /// <summary>Represents a documentation entry for a specific member in the XML documentation.</summary>
     public sealed class MemberDocumentation

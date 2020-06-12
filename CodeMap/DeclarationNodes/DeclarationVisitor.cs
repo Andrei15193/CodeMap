@@ -1,10 +1,10 @@
 ﻿namespace CodeMap.DeclarationNodes
 {
-    /// <summary>Represents a visitor for <see cref="DeclarationNode"/> instances.</summary>
-    public abstract class DeclarationNodeVisitor
+    /// <summary>Represents a visitor for traversing an assembly declaration tree.</summary>
+    public abstract class DeclarationVisitor
     {
-        /// <summary>Initializes a new instance of the <see cref="DeclarationNodeVisitor"/> class.</summary>
-        protected DeclarationNodeVisitor()
+        /// <summary>Initializes a new instance of the <see cref="DeclarationVisitor"/> class.</summary>
+        protected DeclarationVisitor()
         {
         }
 

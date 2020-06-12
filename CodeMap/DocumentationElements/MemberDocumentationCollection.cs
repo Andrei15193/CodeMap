@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace CodeMap
+namespace CodeMap.DocumentationElements
 {
     /// <summary>Represents a lookup collection for <see cref="MemberDocumentation"/> objects.</summary>
     /// <remarks>
@@ -20,6 +20,7 @@ namespace CodeMap
         /// <summary>Initializes a new instance of the <see cref="MemberDocumentationCollection"/> class.</summary>
         /// <param name="membersDocumentation">A collection of <see cref="MemberDocumentation"/> objects to initialize the collection with.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="membersDocumentation"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="membersDocumentation"/> contains <c>null</c> items.</exception>
         public MemberDocumentationCollection(IEnumerable<MemberDocumentation> membersDocumentation)
         {
             _membersDocumentation = membersDocumentation

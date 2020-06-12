@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CodeMap.DocumentationElements
 {
@@ -112,32 +110,6 @@ namespace CodeMap.DocumentationElements
             }
 
             visitor.VisitTableEnding();
-        }
-
-        /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
-        /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
-        {
-            await visitor.VisitTableBeginningAsync(XmlAttributes, cancellationToken).ConfigureAwait(false);
-
-            if (Columns.Count > 0)
-            {
-                await visitor.VisitTableHeadingBeginningAsync(cancellationToken).ConfigureAwait(false);
-                foreach (var column in Columns)
-                    await column.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
-                await visitor.VisitTableHeadingEndingAsync(cancellationToken).ConfigureAwait(false);
-            }
-            if (Rows.Count > 0)
-            {
-                await visitor.VisitTableBodyBeginningAsync(cancellationToken).ConfigureAwait(false);
-                foreach (var row in Rows)
-                    await row.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
-                await visitor.VisitTableBodyEndingAsync(cancellationToken).ConfigureAwait(false);
-            }
-
-            await visitor.VisitTableEndingAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

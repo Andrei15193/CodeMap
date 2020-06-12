@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CodeMap.DocumentationElements
 {
@@ -43,25 +41,6 @@ namespace CodeMap.DocumentationElements
             visitor.VisitDefinitionTermDescriptionEnding();
 
             visitor.VisitDefinitionListItemEnding();
-        }
-
-        /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree asynchronously.</summary>
-        /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        public override async Task AcceptAsync(DocumentationVisitor visitor, CancellationToken cancellationToken)
-        {
-            await visitor.VisitDefinitionListItemBeginningAsync(XmlAttributes, cancellationToken).ConfigureAwait(false);
-
-            await visitor.VisitDefinitionTermBeginningAsync(Term.XmlAttributes, cancellationToken).ConfigureAwait(false);
-            await Term.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
-            await visitor.VisitDefinitionTermEndingAsync(cancellationToken).ConfigureAwait(false);
-
-            await visitor.VisitDefinitionTermDescriptionBeginningAsync(Description.XmlAttributes, cancellationToken).ConfigureAwait(false);
-            await Description.AcceptAsync(visitor, cancellationToken).ConfigureAwait(false);
-            await visitor.VisitDefinitionTermDescriptionEndingAsync(cancellationToken).ConfigureAwait(false);
-
-            await visitor.VisitDefinitionListItemEndingAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

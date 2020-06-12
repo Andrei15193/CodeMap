@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace CodeMap.Tests.ReferenceData
@@ -28,14 +27,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromSimpleType_ReturnsSpecificTypeReference()
+        public void CreateFromSimpleType_ReturnsSpecificTypeReference()
         {
             TypeReference typeReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitType(It.IsNotNull<TypeReference>()))
                 .Callback((TypeReference actualTypeReference) => typeReference = actualTypeReference);
 
-            await _Factory.Create(typeof(int)).AcceptAsync(_Visitor);
+            _Factory.Create(typeof(int)).Accept(_Visitor);
 
             Assert.Equal("Int32", typeReference.Name);
             Assert.Equal("System", typeReference.Namespace);
@@ -45,7 +44,7 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task TypeReference_IsEqualToInitialType()
+        public void TypeReference_IsEqualToInitialType()
         {
             TypeReference typeReference = null;
             _VisitorMock
@@ -53,7 +52,7 @@ namespace CodeMap.Tests.ReferenceData
                 .Callback((TypeReference actualTypeReference) => typeReference = actualTypeReference);
             var type = typeof(TestClass<int>.NestedTestClass<IEnumerable<string>, IDictionary<long, decimal>>);
 
-            await _Factory.Create(type).AcceptAsync(_Visitor);
+            _Factory.Create(type).Accept(_Visitor);
 
             Assert.True(typeReference == type);
             Assert.True(type == typeReference);
@@ -67,7 +66,7 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task TypeReference_IsEqualToInitialGenericTypeDefinition()
+        public void TypeReference_IsEqualToInitialGenericTypeDefinition()
         {
             TypeReference typeReference = null;
             _VisitorMock
@@ -76,7 +75,7 @@ namespace CodeMap.Tests.ReferenceData
             var type = typeof(TestClass<int>.NestedTestClass<IEnumerable<string>, IDictionary<long, decimal>>);
             var genericTypeDefinition = type.GetGenericTypeDefinition();
 
-            await _Factory.Create(genericTypeDefinition).AcceptAsync(_Visitor);
+            _Factory.Create(genericTypeDefinition).Accept(_Visitor);
 
             Assert.True(typeReference == genericTypeDefinition);
             Assert.True(genericTypeDefinition == typeReference);
@@ -90,14 +89,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromVoidType_ReturnsVoidTypeReference()
+        public void CreateFromVoidType_ReturnsVoidTypeReference()
         {
             TypeReference typeReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitType(It.IsNotNull<TypeReference>()))
                 .Callback((TypeReference actualTypeReference) => typeReference = actualTypeReference);
 
-            await _Factory.Create(typeof(void)).AcceptAsync(_Visitor);
+            _Factory.Create(typeof(void)).Accept(_Visitor);
 
             Assert.IsType<VoidTypeReference>(typeReference);
             Assert.True(typeReference == typeof(void));
@@ -105,14 +104,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateDynamicTypeReference()
+        public void CreateDynamicTypeReference()
         {
             TypeReference typeReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitType(It.IsNotNull<TypeReference>()))
                 .Callback((TypeReference actualTypeReference) => typeReference = actualTypeReference);
 
-            await _Factory.CreateDynamic().AcceptAsync(_Visitor);
+            _Factory.CreateDynamic().Accept(_Visitor);
 
             Assert.IsType<DynamicTypeReference>(typeReference);
             Assert.True(typeReference == typeof(object));
@@ -122,14 +121,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromArray_ReturnsArrayTypeReference()
+        public void CreateFromArray_ReturnsArrayTypeReference()
         {
             ArrayTypeReference arrayTypeReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitArray(It.IsNotNull<ArrayTypeReference>()))
                 .Callback((ArrayTypeReference actualArrayTypeReference) => arrayTypeReference = actualArrayTypeReference);
 
-            await _Factory.Create(typeof(decimal[][,])).AcceptAsync(_Visitor);
+            _Factory.Create(typeof(decimal[][,])).Accept(_Visitor);
 
             Assert.Equal(1, arrayTypeReference.Rank);
             var itemArrayTypeReference = Assert.IsType<ArrayTypeReference>(arrayTypeReference.ItemType);
@@ -140,14 +139,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromPointerType_ReturnsPointerTypeReference()
+        public void CreateFromPointerType_ReturnsPointerTypeReference()
         {
             PointerTypeReference pointerTypeReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitPointer(It.IsNotNull<PointerTypeReference>()))
                 .Callback((PointerTypeReference actualPointerTypeReference) => pointerTypeReference = actualPointerTypeReference);
 
-            await _Factory.Create(typeof(int**)).AcceptAsync(_Visitor);
+            _Factory.Create(typeof(int**)).Accept(_Visitor);
 
             var referentPointerTypeReference = Assert.IsType<PointerTypeReference>(pointerTypeReference.ReferentType);
             Assert.True(referentPointerTypeReference.ReferentType == typeof(int));
@@ -158,14 +157,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromByRefType_ReturnsByRefTypeReference()
+        public void CreateFromByRefType_ReturnsByRefTypeReference()
         {
             ByRefTypeReference byRefTypeReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitByRef(It.IsNotNull<ByRefTypeReference>()))
                 .Callback((ByRefTypeReference actualByRefTypeReference) => byRefTypeReference = actualByRefTypeReference);
 
-            await _Factory.Create(typeof(int).MakeByRefType()).AcceptAsync(_Visitor);
+            _Factory.Create(typeof(int).MakeByRefType()).Accept(_Visitor);
 
             Assert.True(byRefTypeReference.ReferentType == typeof(int));
             Assert.True(byRefTypeReference == typeof(int).MakeByRefType());
@@ -173,14 +172,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromGenericTypeParameter_ReturnsGenericTypeParameterReference()
+        public void CreateFromGenericTypeParameter_ReturnsGenericTypeParameterReference()
         {
             GenericTypeParameterReference genericParameterReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitGenericTypeParameter(It.IsNotNull<GenericTypeParameterReference>()))
                 .Callback((GenericTypeParameterReference actualGenericParameterReference) => genericParameterReference = actualGenericParameterReference);
 
-            await _Factory.Create(_GetGenericTypeParameter()).AcceptAsync(_Visitor);
+            _Factory.Create(_GetGenericTypeParameter()).Accept(_Visitor);
 
             Assert.Equal("T", genericParameterReference.Name);
             Assert.True(genericParameterReference.DeclaringType == typeof(IEnumerable<>));
@@ -191,14 +190,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromGenericMethodParameter_ReturnsGenericMethodParameterReference()
+        public void CreateFromGenericMethodParameter_ReturnsGenericMethodParameterReference()
         {
             GenericMethodParameterReference genericParameterReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitGenericMethodParameter(It.IsNotNull<GenericMethodParameterReference>()))
                 .Callback((GenericMethodParameterReference actualGenericParameterReference) => genericParameterReference = actualGenericParameterReference);
 
-            await _Factory.Create(_GetGenericMethodParameter()).AcceptAsync(_Visitor);
+            _Factory.Create(_GetGenericMethodParameter()).Accept(_Visitor);
 
             Assert.Equal("T", genericParameterReference.Name);
             Assert.True(genericParameterReference.DeclaringMethod == _GetMethodInfo());
@@ -220,14 +219,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromConstant_ReturnsConstantReference()
+        public void CreateFromConstant_ReturnsConstantReference()
         {
             ConstantReference constantReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitConstant(It.IsNotNull<ConstantReference>()))
                 .Callback((ConstantReference actualConstantReference) => constantReference = actualConstantReference);
 
-            await _Factory.Create(_GetFieldInfo()).AcceptAsync(_Visitor);
+            _Factory.Create(_GetFieldInfo()).Accept(_Visitor);
 
             Assert.Equal("MaxValue", constantReference.Name);
             Assert.Equal(int.MaxValue, constantReference.Value);
@@ -239,14 +238,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromField_ReturnsFieldReference()
+        public void CreateFromField_ReturnsFieldReference()
         {
             FieldReference fieldReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitField(It.IsNotNull<FieldReference>()))
                 .Callback((FieldReference actualFieldReference) => fieldReference = actualFieldReference);
 
-            await _Factory.Create(_GetFieldInfo()).AcceptAsync(_Visitor);
+            _Factory.Create(_GetFieldInfo()).Accept(_Visitor);
 
             Assert.Equal("Empty", fieldReference.Name);
             Assert.True(fieldReference.DeclaringType == typeof(string));
@@ -257,14 +256,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromConstructor_ReturnsConstructorReference()
+        public void CreateFromConstructor_ReturnsConstructorReference()
         {
             ConstructorReference constructorReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitConstructor(It.IsNotNull<ConstructorReference>()))
                 .Callback((ConstructorReference actualConstructorReference) => constructorReference = actualConstructorReference);
 
-            await _Factory.Create(_GetConstructorInfo()).AcceptAsync(_Visitor);
+            _Factory.Create(_GetConstructorInfo()).Accept(_Visitor);
 
             Assert.True(constructorReference.DeclaringType == typeof(string));
             Assert.True(constructorReference
@@ -279,14 +278,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromEvent_ReturnsEventReference()
+        public void CreateFromEvent_ReturnsEventReference()
         {
             EventReference eventReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitEvent(It.IsNotNull<EventReference>()))
                 .Callback((EventReference actualEventReference) => eventReference = actualEventReference);
 
-            await _Factory.Create(_GetEventInfo()).AcceptAsync(_Visitor);
+            _Factory.Create(_GetEventInfo()).Accept(_Visitor);
 
             Assert.Equal("PropertyChanged", eventReference.Name);
             Assert.True(eventReference.DeclaringType == typeof(INotifyPropertyChanged));
@@ -297,14 +296,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromProperty_ReturnsPropertyReference()
+        public void CreateFromProperty_ReturnsPropertyReference()
         {
             PropertyReference propertyReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitProperty(It.IsNotNull<PropertyReference>()))
                 .Callback((PropertyReference actualPropertyReference) => propertyReference = actualPropertyReference);
 
-            await _Factory.Create(_GetPropertyInfo()).AcceptAsync(_Visitor);
+            _Factory.Create(_GetPropertyInfo()).Accept(_Visitor);
 
             Assert.Equal("Item", propertyReference.Name);
             Assert.True(propertyReference.DeclaringType == typeof(IDictionary<string, string>));
@@ -320,14 +319,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromMethod_ReturnsMethodReference()
+        public void CreateFromMethod_ReturnsMethodReference()
         {
             MethodReference methodReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitMethod(It.IsNotNull<MethodReference>()))
                 .Callback((MethodReference actualMethodReference) => methodReference = actualMethodReference);
 
-            await _Factory.Create(_GetMethodInfo()).AcceptAsync(_Visitor);
+            _Factory.Create(_GetMethodInfo()).Accept(_Visitor);
 
             Assert.Equal("Join", methodReference.Name);
             Assert.True(methodReference
@@ -356,14 +355,14 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromGenericMethodDefinition_ReturnsMethodReference()
+        public void CreateFromGenericMethodDefinition_ReturnsMethodReference()
         {
             MethodReference methodReference = null;
             _VisitorMock
                 .Setup(visitor => visitor.VisitMethod(It.IsNotNull<MethodReference>()))
                 .Callback((MethodReference actualMethodReference) => methodReference = actualMethodReference);
 
-            await _Factory.Create(_GetMethodInfo()).AcceptAsync(_Visitor);
+            _Factory.Create(_GetMethodInfo()).Accept(_Visitor);
 
             Assert.Equal("Join", methodReference.Name);
             Assert.True(methodReference
@@ -394,7 +393,7 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromAssembly_ReturnsAssemblyReference()
+        public void CreateFromAssembly_ReturnsAssemblyReference()
         {
             AssemblyReference assemblyReference = null;
 
@@ -402,7 +401,7 @@ namespace CodeMap.Tests.ReferenceData
                 .Setup(visitor => visitor.VisitAssembly(It.IsNotNull<AssemblyReference>()))
                 .Callback((AssemblyReference actualAssemblyReference) => assemblyReference = actualAssemblyReference);
 
-            await _Factory.Create(typeof(TestClass<>).Assembly).AcceptAsync(_Visitor);
+            _Factory.Create(typeof(TestClass<>).Assembly).Accept(_Visitor);
 
             Assert.Equal("CodeMap.Tests.Data", assemblyReference.Name);
             Assert.Equal(new Version(1, 2, 3, 4), assemblyReference.Version);
@@ -411,7 +410,7 @@ namespace CodeMap.Tests.ReferenceData
         }
 
         [Fact]
-        public async Task CreateFromAssemblyName_ReturnsAssemblyReference()
+        public void CreateFromAssemblyName_ReturnsAssemblyReference()
         {
             AssemblyReference assemblyReference = null;
 
@@ -419,7 +418,7 @@ namespace CodeMap.Tests.ReferenceData
                 .Setup(visitor => visitor.VisitAssembly(It.IsNotNull<AssemblyReference>()))
                 .Callback((AssemblyReference actualAssemblyReference) => assemblyReference = actualAssemblyReference);
 
-            await _Factory.Create(typeof(TestClass<>).Assembly.GetName()).AcceptAsync(_Visitor);
+            _Factory.Create(typeof(TestClass<>).Assembly.GetName()).Accept(_Visitor);
 
             Assert.Equal("CodeMap.Tests.Data", assemblyReference.Name);
             Assert.Equal(new Version(1, 2, 3, 4), assemblyReference.Version);

@@ -1,4 +1,5 @@
-﻿using CodeMap.ReferenceData;
+﻿using CodeMap.Json;
+using CodeMap.ReferenceData;
 using CodeMap.Tests.Data;
 using Newtonsoft.Json;
 using System;
@@ -7,19 +8,17 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace CodeMap.Tests
+namespace CodeMap.Tests.Json
 {
     public class JsonWriterMemberReferenceVisitorTests
     {
         private const string _testDataPublicKeyToken = "";
 
         [Fact]
-        public async Task SerializeSimpleType()
-        {
-            await _AssertAsync(
+        public void SerializeSimpleType()
+            => _Assert(
                 typeof(int),
                 @"{
     ""kind"": ""specific"",
@@ -35,34 +34,28 @@ namespace CodeMap.Tests
     }
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeVoidType()
-        {
-            await _AssertAsync(
+        public void SerializeVoidType()
+            => _Assert(
                 typeof(void),
                 @"{
     ""kind"": ""specific/void""
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeDynamicType()
-        {
-            await _AssertAsync(
+        public void SerializeDynamicType()
+            => _Assert(
                 memberReferenceFactory => memberReferenceFactory.CreateDynamic(),
                 @"{
     ""kind"": ""specific/dynamic""
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeArrayType()
-        {
-            await _AssertAsync(
+        public void SerializeArrayType()
+            => _Assert(
                 typeof(int[][,]),
                 @"{
     ""kind"": ""array"",
@@ -86,12 +79,10 @@ namespace CodeMap.Tests
     }
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializePointerType()
-        {
-            await _AssertAsync(
+        public void SerializePointerType()
+            => _Assert(
                 typeof(long**),
                 @"{
     ""kind"": ""pointer"",
@@ -113,12 +104,10 @@ namespace CodeMap.Tests
     }
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeByRefType()
-        {
-            await _AssertAsync(
+        public void SerializeByRefType()
+            => _Assert(
                 typeof(short).MakeByRefType(),
                 @"{
     ""kind"": ""byRef"",
@@ -137,12 +126,10 @@ namespace CodeMap.Tests
     }
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeConstructedGenericType()
-        {
-            await _AssertAsync(
+        public void SerializeConstructedGenericType()
+            => _Assert(
                 typeof(TestClass<int>.NestedTestClass<IEnumerable<string>, decimal>),
                 @"{
     ""kind"": ""specific"",
@@ -225,12 +212,10 @@ namespace CodeMap.Tests
     }
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeGenericTypeDefinition()
-        {
-            await _AssertAsync(
+        public void SerializeGenericTypeDefinition()
+            => _Assert(
                 typeof(TestClass<int>.NestedTestClass<IEnumerable<string>, decimal>).GetGenericTypeDefinition(),
                 @"{
     ""kind"": ""specific"",
@@ -272,12 +257,10 @@ namespace CodeMap.Tests
     }
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeConstant()
-        {
-            await _AssertAsync(
+        public void SerializeConstant()
+            => _Assert(
                 typeof(TestClass<>).GetField("TestConstant", BindingFlags.Static | BindingFlags.NonPublic),
                 @"{
     ""kind"": ""constant"",
@@ -303,12 +286,10 @@ namespace CodeMap.Tests
     }
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeField()
-        {
-            await _AssertAsync(
+        public void SerializeField()
+            => _Assert(
                 typeof(TestClass<>).GetField("TestField", BindingFlags.Instance | BindingFlags.NonPublic),
                 @"{
     ""kind"": ""field"",
@@ -333,12 +314,10 @@ namespace CodeMap.Tests
     }
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeConstructor()
-        {
-            await _AssertAsync(
+        public void SerializeConstructor()
+            => _Assert(
                 typeof(string).GetConstructor(new[] { typeof(char), typeof(int) }),
                 @"{
     ""kind"": ""constructor"",
@@ -385,12 +364,10 @@ namespace CodeMap.Tests
     ]
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeEvent()
-        {
-            await _AssertAsync(
+        public void SerializeEvent()
+            => _Assert(
                 typeof(INotifyPropertyChanged).GetEvent("PropertyChanged", BindingFlags.Instance | BindingFlags.Public),
                 @"{
     ""kind"": ""event"",
@@ -410,12 +387,10 @@ namespace CodeMap.Tests
     }
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeProperty()
-        {
-            await _AssertAsync(
+        public void SerializeProperty()
+            => _Assert(
                 typeof(IList<string>).GetDefaultMembers().OfType<PropertyInfo>().Single(),
                 @"{
     ""kind"": ""property"",
@@ -464,12 +439,10 @@ namespace CodeMap.Tests
     ]
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeMethod()
-        {
-            await _AssertAsync(
+        public void SerializeMethod()
+            => _Assert(
                 typeof(int).GetMethod("Parse", new[] { typeof(string) }),
                 @"{
     ""kind"": ""method"",
@@ -505,12 +478,10 @@ namespace CodeMap.Tests
     ]
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeConstructedGenericMethod()
-        {
-            await _AssertAsync(
+        public void SerializeConstructedGenericMethod()
+            => _Assert(
                 typeof(string)
                     .GetMethod("Join", new[] { typeof(string), typeof(IEnumerable<>).MakeGenericType(Type.MakeGenericMethodParameter(0)) })
                     .MakeGenericMethod(typeof(int)),
@@ -589,12 +560,10 @@ namespace CodeMap.Tests
     ]
 }"
             );
-        }
 
         [Fact]
-        public async Task SerializeGenericMethodDefinition()
-        {
-            await _AssertAsync(
+        public void SerializeGenericMethodDefinition()
+            => _Assert(
                 typeof(string).GetMethod("Join", new[] { typeof(string), typeof(IEnumerable<>).MakeGenericType(Type.MakeGenericMethodParameter(0)) }),
                 @"{
     ""kind"": ""method"",
@@ -653,43 +622,26 @@ namespace CodeMap.Tests
     ]
 }"
             );
-        }
 
-        private static Task _AssertAsync(MemberInfo memberInfo, string expectedJson)
-            => _AssertAsync(memberReferenceFactory => memberReferenceFactory.Create(memberInfo), expectedJson);
+        private static void _Assert(MemberInfo memberInfo, string expectedJson)
+            => _Assert(memberReferenceFactory => memberReferenceFactory.Create(memberInfo), expectedJson);
 
-        private static async Task _AssertAsync(Func<MemberReferenceFactory, MemberReference> memberReferenceProvider, string expectedJson)
+        private static void _Assert(Func<MemberReferenceFactory, MemberReference> memberReferenceProvider, string expectedJson)
         {
             var expected = NormalizeJson(expectedJson);
-            await CompareJson(
-                (memberReference, memberReferenceVisitor) =>
-                {
-                    memberReference.Accept(memberReferenceVisitor);
-                    return Task.CompletedTask;
-                }
-            );
 
-            await CompareJson(
-                (memberReference, memberReferenceVisitor) => memberReference.AcceptAsync(memberReferenceVisitor)
-            );
-
-            async Task CompareJson(Func<MemberReference, MemberReferenceVisitor, Task> visitCallback)
+            using (var stringWriter = new StringWriter())
             {
-                string actualJson;
-                using (var stringWriter = new StringWriter())
+                using (var jsonWriter = new JsonTextWriter(stringWriter))
                 {
-                    using (var jsonWriter = new JsonTextWriter(stringWriter))
-                    {
-                        var memberReferenceFactory = new MemberReferenceFactory();
-                        var jsonWriterVisitor = new JsonWriterMemberReferenceVisitor(jsonWriter);
+                    var memberReferenceFactory = new MemberReferenceFactory();
+                    var jsonWriterVisitor = new JsonWriterMemberReferenceVisitor(jsonWriter);
 
-                        var memberReference = memberReferenceProvider(memberReferenceFactory);
-                        await visitCallback(memberReference, jsonWriterVisitor);
+                    var memberReference = memberReferenceProvider(memberReferenceFactory);
+                    memberReference.Accept(jsonWriterVisitor);
 
-                    }
-                    actualJson = stringWriter.ToString();
                 }
-
+                var actualJson = stringWriter.ToString();
                 Assert.Equal(expected, NormalizeJson(actualJson));
             }
 

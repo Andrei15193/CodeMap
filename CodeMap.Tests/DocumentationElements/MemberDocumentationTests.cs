@@ -1,7 +1,8 @@
-﻿using System;
+﻿using CodeMap.DocumentationElements;
+using System;
 using Xunit;
 
-namespace CodeMap.Tests
+namespace CodeMap.Tests.DocumentationElements
 {
     public class MemberDocumentationTests
     {

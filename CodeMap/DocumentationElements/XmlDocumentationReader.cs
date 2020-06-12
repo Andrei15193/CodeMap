@@ -1,15 +1,13 @@
-﻿using CodeMap.DocumentationElements;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace CodeMap
+namespace CodeMap.DocumentationElements
 {
     /// <summary>Represents an XML documentation reader.</summary>
     public class XmlDocumentationReader
@@ -28,23 +26,13 @@ namespace CodeMap
         }
 
         /// <summary>Reads the XML documentation into <see cref="MemberDocumentation"/> items.</summary>
-        /// <param name="textReader">The <see cref="TextReader"/> from which to load <see cref="MemberDocumentation"/> items.</param>
-        /// <returns>Returns a collection of <see cref="MemberDocumentation"/> loaded from the provided <paramref name="textReader"/> wrapped in a <see cref="Task{TResult}"/>.</returns>
-        public Task<MemberDocumentationCollection> ReadAsync(TextReader textReader)
-            => ReadAsync(textReader, CancellationToken.None);
-
-        /// <summary>Reads the XML documentation into <see cref="MemberDocumentation"/> items.</summary>
-        /// <param name="textReader">The <see cref="TextReader"/> from which to load <see cref="MemberDocumentation"/> items.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a collection of <see cref="MemberDocumentation"/> loaded from the provided <paramref name="textReader"/> wrapped in a <see cref="Task{TResult}"/>.</returns>
-        public async Task<MemberDocumentationCollection> ReadAsync(TextReader textReader, CancellationToken cancellationToken)
+        /// <param name="input">The <see cref="TextReader"/> from which to load <see cref="MemberDocumentation"/> items.</param>
+        /// <returns>Returns a collection of <see cref="MemberDocumentation"/> loaded from the provided <paramref name="input"/> wrapped in a <see cref="Task{TResult}"/>.</returns>
+        public MemberDocumentationCollection Read(TextReader input)
         {
-            if (textReader == null)
-                throw new ArgumentNullException(nameof(textReader));
-
             XDocument documentation;
-            using (var xmlReader = XmlReader.Create(textReader, new XmlReaderSettings { Async = true }))
-                documentation = await XDocument.LoadAsync(xmlReader, LoadOptions.PreserveWhitespace, cancellationToken).ConfigureAwait(false);
+            using (var xmlReader = XmlReader.Create(input))
+                documentation = XDocument.Load(xmlReader, LoadOptions.PreserveWhitespace);
 
             return new MemberDocumentationCollection(
                 documentation

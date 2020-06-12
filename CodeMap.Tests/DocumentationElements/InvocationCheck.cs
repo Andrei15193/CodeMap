@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Linq.Expressions;
-using Moq;
 
-namespace CodeMap.Tests
+namespace CodeMap.Tests.DocumentationElements
 {
     internal class InvocationCheck
     {

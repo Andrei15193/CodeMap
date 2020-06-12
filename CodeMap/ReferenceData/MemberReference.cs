@@ -2,8 +2,6 @@
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 using System;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CodeMap.ReferenceData
 {
@@ -46,20 +44,6 @@ namespace CodeMap.ReferenceData
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public abstract void Accept(MemberReferenceVisitor visitor);
-
-        /// <summary>Asynchronously accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
-        /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
-        public Task AcceptAsync(MemberReferenceVisitor visitor)
-            => AcceptAsync(visitor, CancellationToken.None);
-
-        /// <summary>Asynchronously accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
-        /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to signal cancellation.</param>
-        /// <returns>Returns a <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
-        public abstract Task AcceptAsync(MemberReferenceVisitor visitor, CancellationToken cancellationToken);
 
         /// <summary>Determines whether the current <see cref="MemberReference"/> is equal to the provided <paramref name="obj"/>.</summary>
         /// <param name="obj">The <see cref="object"/> to compare to.</param>

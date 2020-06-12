@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace CodeMap.Tests
+namespace CodeMap.Tests.DocumentationElements
 {
     public class BlockDescriptionDocumentationElementTests
     {
