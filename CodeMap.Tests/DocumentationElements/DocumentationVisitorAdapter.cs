@@ -1,6 +1,4 @@
 ﻿using CodeMap.DocumentationElements;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace CodeMap.Tests.DocumentationElements
 {
@@ -11,136 +9,64 @@ namespace CodeMap.Tests.DocumentationElements
         public DocumentationVisitorAdapter(IDocumentationVisitor documentationVisitor)
             => _documentationVisitor = documentationVisitor;
 
-        protected override void VisitSummaryBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitSummaryBeginning();
+        protected override void VisitCodeBlock(CodeBlockDocumentationElement codeBlock)
+            => _documentationVisitor.VisitCodeBlock(codeBlock);
 
-        protected override void VisitSummaryEnding()
-            => _documentationVisitor.VisitSummaryEnding();
+        protected override void VisitDefinitionList(DefinitionListDocumentationElement definitionList)
+            => _documentationVisitor.VisitDefinitionList(definitionList);
 
-        protected override void VisitRemarksBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitRemarksBeginning();
+        protected override void VisitDefinitionListItem(DefinitionListItemDocumentationElement definitionListItem)
+            => _documentationVisitor.VisitDefinitionListItem(definitionListItem);
 
-        protected override void VisitRemarksEnding()
-            => _documentationVisitor.VisitRemarksEnding();
+        protected override void VisitExample(ExampleDocumentationElement example)
+            => _documentationVisitor.VisitExample(example);
 
-        protected override void VisitExampleBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitExampleBeginning();
+        protected override void VisitGenericParameterReference(GenericParameterReferenceDocumentationElement genericParameterReference)
+            => _documentationVisitor.VisitGenericParameterReference(genericParameterReference);
 
-        protected override void VisitExampleEnding()
-            => _documentationVisitor.VisitExampleEnding();
+        protected override void VisitInlineCode(InlineCodeDocumentationElement inlineCode)
+            => _documentationVisitor.VisitInlineCode(inlineCode);
 
-        protected override void VisitValueBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitValueBeginning();
+        protected override void VisitInlineReference(MemberInfoReferenceDocumentationElement memberInfoReference)
+            => _documentationVisitor.VisitInlineReference(memberInfoReference);
 
-        protected override void VisitValueEnding()
-            => _documentationVisitor.VisitValueEnding();
+        protected override void VisitListItem(ListItemDocumentationElement listItem)
+            => _documentationVisitor.VisitListItem(listItem);
 
-        protected override void VisitParagraphBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitParagraphBeginning();
+        protected override void VisitOrderedList(OrderedListDocumentationElement orderedList)
+            => _documentationVisitor.VisitOrderedList(orderedList);
 
-        protected override void VisitCodeBlock(string code, IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitCodeBlock(code);
+        protected override void VisitParagraph(ParagraphDocumentationElement paragraph)
+            => _documentationVisitor.VisitParagraph(paragraph);
 
-        protected override void VisitParagraphEnding()
-            => _documentationVisitor.VisitParagraphEnding();
+        protected override void VisitParameterReference(ParameterReferenceDocumentationElement parameterReference)
+            => _documentationVisitor.VisitParameterReference(parameterReference);
 
-        protected override void VisitUnorderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitUnorderedListBeginning();
+        protected override void VisitRemarks(RemarksDocumentationElement remarks)
+            => _documentationVisitor.VisitRemarks(remarks);
 
-        protected override void VisitUnorderedListEnding()
-            => _documentationVisitor.VisitUnorderedListEnding();
+        protected override void VisitSummary(SummaryDocumentationElement summary)
+            => _documentationVisitor.VisitSummary(summary);
 
-        protected override void VisitOrderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitOrderedListBeginning();
+        protected override void VisitTable(TableDocumentationElement table)
+            => _documentationVisitor.VisitTable(table);
 
-        protected override void VisitOrderedListEnding()
-            => _documentationVisitor.VisitOrderedListEnding();
+        protected override void VisitTableCell(TableCellDocumentationElement tableCell)
+            => _documentationVisitor.VisitTableCell(tableCell);
 
-        protected override void VisitListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitListItemBeginning();
+        protected override void VisitTableColumn(TableColumnDocumentationElement tableColumn)
+            => _documentationVisitor.VisitTableColumn(tableColumn);
 
-        protected override void VisitListItemEnding()
-            => _documentationVisitor.VisitListItemEnding();
+        protected override void VisitTableRow(TableRowDocumentationElement tableRow)
+            => _documentationVisitor.VisitTableRow(tableRow);
 
-        protected override void VisitDefinitionListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitDefinitionListBeginning();
-
-        protected override void VisitDefinitionListEnding()
-            => _documentationVisitor.VisitDefinitionListEnding();
-
-        protected override void VisitDefinitionListTitleBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitDefinitionListTitleBeginning();
-
-        protected override void VisitDefinitionListTitleEnding()
-            => _documentationVisitor.VisitDefinitionListTitleEnding();
-
-        protected override void VisitDefinitionListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitDefinitionListItemBeginning();
-
-        protected override void VisitDefinitionListItemEnding()
-            => _documentationVisitor.VisitDefinitionListItemEnding();
-
-        protected override void VisitDefinitionTermBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitDefinitionTermBeginning();
-
-        protected override void VisitDefinitionTermEnding()
-            => _documentationVisitor.VisitDefinitionTermEnding();
-
-        protected override void VisitDefinitionTermDescriptionBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitDefinitionTermDescriptionBeginning();
-
-        protected override void VisitDefinitionTermDescriptionEnding()
-            => _documentationVisitor.VisitDefinitionTermDescriptionEnding();
-
-        protected override void VisitTableBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitTableBeginning();
-
-        protected override void VisitTableEnding()
-            => _documentationVisitor.VisitTableEnding();
-
-        protected override void VisitTableHeadingBeginning()
-            => _documentationVisitor.VisitTableHeadingBeginning();
-
-        protected override void VisitTableHeadingEnding()
-            => _documentationVisitor.VisitTableHeadingEnding();
-
-        protected override void VisitTableColumnBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitTableColumnBeginning();
-
-        protected override void VisitTableColumnEnding()
-            => _documentationVisitor.VisitTableColumnEnding();
-
-        protected override void VisitTableBodyBeginning()
-            => _documentationVisitor.VisitTableBodyBeginning();
-
-        protected override void VisitTableBodyEnding()
-            => _documentationVisitor.VisitTableBodyEnding();
-
-        protected override void VisitTableRowBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitTableRowBeginning();
-
-        protected override void VisitTableRowEnding()
-            => _documentationVisitor.VisitTableRowEnding();
-
-        protected override void VisitTableCellBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitTableCellBeginning();
-
-        protected override void VisitTableCellEnding()
-            => _documentationVisitor.VisitTableCellEnding();
-
-        protected override void VisitText(string text)
+        protected override void VisitText(TextDocumentationElement text)
             => _documentationVisitor.VisitText(text);
 
-        protected override void VisitInlineCode(string code, IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitInlineCode(code);
+        protected override void VisitUnorderedList(UnorderedListDocumentationElement unorderedList)
+            => _documentationVisitor.VisitUnorderedList(unorderedList);
 
-        protected override void VisitInlineReference(MemberInfo referredMember, IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitInlineReference(referredMember);
-
-        protected override void VisitParameterReference(string parameterName, IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitParameterReference(parameterName);
-
-        protected override void VisitGenericParameterReference(string genericParameterName, IReadOnlyDictionary<string, string> xmlAttributes)
-            => _documentationVisitor.VisitGenericParameterReference(genericParameterName);
+        protected override void VisitValue(ValueDocumentationElement value)
+            => _documentationVisitor.VisitValue(value);
     }
 }

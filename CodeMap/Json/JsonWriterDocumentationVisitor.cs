@@ -20,376 +20,316 @@ namespace CodeMap.Json
             _jsonWriter = jsonWriter ?? throw new ArgumentNullException(nameof(jsonWriter));
         }
 
-        /// <summary>Visits the beginning of a summary element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>summary</c> element.</param>
-        protected internal override void VisitSummaryBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits a summary element.</summary>
+        /// <param name="summary">The <see cref="SummaryDocumentationElement"/> to visit.</param>
+        protected internal override void VisitSummary(SummaryDocumentationElement summary)
         {
             _jsonWriter.WritePropertyName("summary");
             _jsonWriter.WriteStartObject();
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(summary.XmlAttributes);
 
             _jsonWriter.WritePropertyName("content");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of a summary element.</summary>
-        protected internal override void VisitSummaryEnding()
-        {
+            foreach (var element in summary.Content)
+                element.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of a remarks element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>remarks</c> element.</param>
-        protected internal override void VisitRemarksBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits a remarks element.</summary>
+        /// <param name="remarks">The <see cref="RemarksDocumentationElement"/> to visit.</param>
+        protected internal override void VisitRemarks(RemarksDocumentationElement remarks)
         {
             _jsonWriter.WritePropertyName("remarks");
             _jsonWriter.WriteStartObject();
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(remarks.XmlAttributes);
 
             _jsonWriter.WritePropertyName("content");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of a remarks element.</summary>
-        protected internal override void VisitRemarksEnding()
-        {
+            foreach (var element in remarks.Content)
+                element.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of an example element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>example</c> element.</param>
-        protected internal override void VisitExampleBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits an example element.</summary>
+        /// <param name="example">The <see cref="ExampleDocumentationElement"/> to visit.</param>
+        protected internal override void VisitExample(ExampleDocumentationElement example)
         {
             _jsonWriter.WriteStartObject();
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(example.XmlAttributes);
 
             _jsonWriter.WritePropertyName("content");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of an example element.</summary>
-        protected internal override void VisitExampleEnding()
-        {
+            foreach (var element in example.Content)
+                element.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of a value element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>value</c> element.</param>
-        protected internal override void VisitValueBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits a value element.</summary>
+        /// <param name="value">The <see cref="ValueDocumentationElement"/> to visit.</param>
+        protected internal override void VisitValue(ValueDocumentationElement value)
         {
             _jsonWriter.WritePropertyName("value");
             _jsonWriter.WriteStartObject();
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(value.XmlAttributes);
 
             _jsonWriter.WritePropertyName("content");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of a value element.</summary>
-        protected internal override void VisitValueEnding()
-        {
+            foreach (var element in value.Content)
+                element.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of a paragraph element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>para</c> element.</param>
-        protected internal override void VisitParagraphBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits a paragraph element.</summary>
+        /// <param name="paragraph">The <see cref="ParagraphDocumentationElement"/> to visit.</param>
+        protected internal override void VisitParagraph(ParagraphDocumentationElement paragraph)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("paragraph");
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(paragraph.XmlAttributes);
             _jsonWriter.WritePropertyName("content");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of a paragraph element.</summary>
-        protected internal override void VisitParagraphEnding()
-        {
+            foreach (var element in paragraph.Content)
+                element.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a code block element.</summary>
-        /// <param name="code">The text inside the code block.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>code</c> element.</param>
-        protected internal override void VisitCodeBlock(string code, IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <param name="codeBlock">The <see cref="CodeBlockDocumentationElement"/> to visit.</param>
+        protected internal override void VisitCodeBlock(CodeBlockDocumentationElement codeBlock)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("codeBlock");
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(codeBlock.XmlAttributes);
             _jsonWriter.WritePropertyName("content");
-            _jsonWriter.WriteValue(code);
+            _jsonWriter.WriteValue(codeBlock.Code);
 
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of an unordered list element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
-        protected internal override void VisitUnorderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits an unordered list element.</summary>
+        /// <param name="unorderedList">The <see cref="UnorderedListDocumentationElement"/> to visit.</param>
+        protected internal override void VisitUnorderedList(UnorderedListDocumentationElement unorderedList)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("unorderedList");
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(unorderedList.XmlAttributes);
             _jsonWriter.WritePropertyName("items");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of an unordered list element.</summary>
-        protected internal override void VisitUnorderedListEnding()
-        {
+            foreach (var item in unorderedList.Items)
+                item.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of an ordered list element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
-        protected internal override void VisitOrderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits an ordered list element.</summary>
+        /// <param name="orderedList">The <see cref="OrderedListDocumentationElement"/> to visit.</param>
+        protected internal override void VisitOrderedList(OrderedListDocumentationElement orderedList)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("orderedList");
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(orderedList.XmlAttributes);
             _jsonWriter.WritePropertyName("items");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of an ordered list element.</summary>
-        protected internal override void VisitOrderedListEnding()
-        {
+            foreach (var item in orderedList.Items)
+                item.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of a list item element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> or <c>description</c> element.</param>
-        protected internal override void VisitListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits a list item element.</summary>
+        /// <param name="listItem">The <see cref="ListItemDocumentationElement"/> to visit.</param>
+        protected internal override void VisitListItem(ListItemDocumentationElement listItem)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("listItem");
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(listItem.XmlAttributes);
             _jsonWriter.WritePropertyName("content");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of a list item element.</summary>
-        protected internal override void VisitListItemEnding()
-        {
+            foreach (var element in listItem.Content)
+                element.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of a definition list element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
-        protected internal override void VisitDefinitionListBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits a definition list element.</summary>
+        /// <param name="definitionList">The <see cref="DefinitionListDocumentationElement"/> to visit.</param>
+        protected internal override void VisitDefinitionList(DefinitionListDocumentationElement definitionList)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("definitionList");
 
-            _WriteXmlAttributes(xmlAttributes);
-        }
+            _WriteXmlAttributes(definitionList.XmlAttributes);
 
-        /// <summary>Visits the ending of a definition list element.</summary>
-        protected internal override void VisitDefinitionListEnding()
-        {
-            _jsonWriter.WriteEndArray();
-            _jsonWriter.WriteEndObject();
-        }
-
-        /// <summary>Visits the beginning of a definition list title.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>listheader</c> element.</param>
-        protected internal override void VisitDefinitionListTitleBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-        {
             _jsonWriter.WritePropertyName("title");
             _jsonWriter.WriteStartObject();
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(definitionList.ListTitle.XmlAttributes);
             _jsonWriter.WritePropertyName("content");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of a definition list title.</summary>
-        protected internal override void VisitDefinitionListTitleEnding()
-        {
+            foreach (var element in definitionList.ListTitle)
+                element.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
 
             _jsonWriter.WritePropertyName("items");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the beginning of a definition list item.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
-        protected internal override void VisitDefinitionListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-        {
-            _jsonWriter.WriteStartObject();
-            _WriteXmlAttributes(xmlAttributes);
-        }
+            foreach (var item in definitionList.Items)
+                item.Accept(this);
 
-        /// <summary>Visits the ending of a definition list item.</summary>
-        protected internal override void VisitDefinitionListItemEnding()
-        {
-            _jsonWriter.WriteEndObject();
-        }
-
-        /// <summary>Visits the beginning of a definition list term.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
-        protected internal override void VisitDefinitionTermBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
-        {
-            _jsonWriter.WritePropertyName("term");
-            _jsonWriter.WriteStartObject();
-
-            _WriteXmlAttributes(xmlAttributes);
-            _jsonWriter.WritePropertyName("content");
-            _jsonWriter.WriteStartArray();
-        }
-
-        /// <summary>Visits the ending of a definition list term.</summary>
-        protected internal override void VisitDefinitionTermEnding()
-        {
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of a definition list term description.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
-        protected internal override void VisitDefinitionTermDescriptionBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits a definition list title.</summary>
+        /// <param name="definitionListItem">The <see cref="DefinitionListItemDocumentationElement"/> to visit.</param>
+        protected internal override void VisitDefinitionListItem(DefinitionListItemDocumentationElement definitionListItem)
         {
-            _jsonWriter.WritePropertyName("description");
             _jsonWriter.WriteStartObject();
+            _WriteXmlAttributes(definitionListItem.XmlAttributes);
 
-            _WriteXmlAttributes(xmlAttributes);
-            _jsonWriter.WritePropertyName("content");
-            _jsonWriter.WriteStartArray();
-        }
+            WriteItemInfo("term", definitionListItem.Term);
+            WriteItemInfo("description", definitionListItem.Description);
 
-        /// <summary>Visits the ending of a definition list term description.</summary>
-        protected internal override void VisitDefinitionTermDescriptionEnding()
-        {
-            _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
+
+            void WriteItemInfo(string name, InlineDescriptionDocumentationElement elementInfo)
+            {
+                _jsonWriter.WritePropertyName(name);
+                _jsonWriter.WriteStartObject();
+
+                _WriteXmlAttributes(elementInfo.XmlAttributes);
+                _jsonWriter.WritePropertyName("content");
+                _jsonWriter.WriteStartArray();
+
+                foreach (var element in elementInfo)
+                    element.Accept(this);
+
+                _jsonWriter.WriteEndArray();
+                _jsonWriter.WriteEndObject();
+            }
         }
 
-        /// <summary>Visits the beginning of a table.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
-        protected internal override void VisitTableBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits a table.</summary>
+        /// <param name="table">The <see cref="TableDocumentationElement"/> to visit.</param>
+        protected internal override void VisitTable(TableDocumentationElement table)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("table");
 
-            _WriteXmlAttributes(xmlAttributes);
-        }
+            _WriteXmlAttributes(table.XmlAttributes);
 
-        /// <summary>Visits the ending of a table.</summary>
-        protected internal override void VisitTableEnding()
-        {
-            _jsonWriter.WriteEndObject();
-        }
-
-        /// <summary>Visits the beginning of a table heading.</summary>
-        protected internal override void VisitTableHeadingBeginning()
-        {
             _jsonWriter.WritePropertyName("columns");
             _jsonWriter.WriteStartArray();
-        }
-
-        /// <summary>Visits the ending of a table heading.</summary>
-        protected internal override void VisitTableHeadingEnding()
-        {
+            foreach (var column in table.Columns)
+                column.Accept(this);
             _jsonWriter.WriteEndArray();
-        }
 
-        /// <summary>Visits the beginning of a table body.</summary>
-        protected internal override void VisitTableBodyBeginning()
-        {
             _jsonWriter.WritePropertyName("rows");
             _jsonWriter.WriteStartArray();
-        }
-
-        /// <summary>Visits the ending of a table body.</summary>
-        protected internal override void VisitTableBodyEnding()
-        {
+            foreach (var row in table.Rows)
+                row.Accept(this);
             _jsonWriter.WriteEndArray();
+
+            _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of a table column.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
-        protected internal override void VisitTableColumnBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits a table column.</summary>
+        /// <param name="tableColumn">The <see cref="TableColumnDocumentationElement"/> to visit.</param>
+        protected internal override void VisitTableColumn(TableColumnDocumentationElement tableColumn)
         {
             _jsonWriter.WriteStartObject();
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(tableColumn.XmlAttributes);
             _jsonWriter.WritePropertyName("name");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of a table column.</summary>
-        protected internal override void VisitTableColumnEnding()
-        {
+            foreach (var element in tableColumn.Name)
+                element.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of a table row.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
-        protected internal override void VisitTableRowBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits a table row.</summary>
+        /// <param name="tableRow">The <see cref="TableRowDocumentationElement"/> to visit.</param>
+        protected internal override void VisitTableRow(TableRowDocumentationElement tableRow)
         {
             _jsonWriter.WriteStartObject();
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(tableRow.XmlAttributes);
             _jsonWriter.WritePropertyName("cells");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of a table row.</summary>
-        protected internal override void VisitTableRowEnding()
-        {
+            foreach (var cell in tableRow.Cells)
+                cell.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits the beginning of a table cell.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
-        protected internal override void VisitTableCellBeginning(IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits a table cell.</summary>
+        /// <param name="tableCell">The <see cref="TableCellDocumentationElement"/> to visit.</param>
+        protected internal override void VisitTableCell(TableCellDocumentationElement tableCell)
         {
             _jsonWriter.WriteStartObject();
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(tableCell.XmlAttributes);
             _jsonWriter.WritePropertyName("content");
             _jsonWriter.WriteStartArray();
-        }
 
-        /// <summary>Visits the ending of a table cell.</summary>
-        protected internal override void VisitTableCellEnding()
-        {
+            foreach (var element in tableCell.Content)
+                element.Accept(this);
+
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits plain text.</summary>
-        /// <param name="text">The plain text inside a block element.</param>
-        protected internal override void VisitText(string text)
+        /// <param name="text">The <see cref="TextDocumentationElement"/> to visit.</param>
+        protected internal override void VisitText(TextDocumentationElement text)
         {
             _jsonWriter.WriteStartObject();
 
@@ -397,97 +337,92 @@ namespace CodeMap.Json
             _jsonWriter.WriteValue("text");
 
             _jsonWriter.WritePropertyName("content");
-            _jsonWriter.WriteValue(text);
+            _jsonWriter.WriteValue(text.Text);
 
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits an inline member reference.</summary>
-        /// <param name="canonicalName">The canonical name of the referred member.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
-        protected internal override void VisitInlineReference(string canonicalName, IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <summary>Visits an unresolved inline member reference.</summary>
+        /// <param name="memberNameReference">The <see cref="MemberNameReferenceDocumentationElement"/> to visit.</param>
+        protected internal override void VisitInlineReference(MemberNameReferenceDocumentationElement memberNameReference)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("unresolvedReference");
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(memberNameReference.XmlAttributes);
 
             _jsonWriter.WritePropertyName("canonicalName");
-            _jsonWriter.WriteValue(canonicalName);
+            _jsonWriter.WriteValue(memberNameReference.CanonicalName);
 
             _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an inline member reference.</summary>
-        /// <param name="referredMember">The referred member.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
-        protected internal override void VisitInlineReference(MemberInfo referredMember, IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <param name="memberInfoReference">The <see cref="MemberInfoReferenceDocumentationElement"/> to visit.</param>
+        protected internal override void VisitInlineReference(MemberInfoReferenceDocumentationElement memberInfoReference)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("reference");
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(memberInfoReference.XmlAttributes);
 
             _jsonWriter.WritePropertyName("id");
-            _jsonWriter.WriteValue(_GetMemberInfoIdFor(referredMember));
+            _jsonWriter.WriteValue(_GetMemberInfoIdFor(memberInfoReference.ReferredMember));
 
             _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an inline code snippet.</summary>
-        /// <param name="code">The text inside the inline code.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>c</c> element.</param>
-        protected internal override void VisitInlineCode(string code, IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <param name="inlineCode">The <see cref="InlineCodeDocumentationElement"/> to visit.</param>
+        protected internal override void VisitInlineCode(InlineCodeDocumentationElement inlineCode)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("code");
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(inlineCode.XmlAttributes);
 
             _jsonWriter.WritePropertyName("content");
-            _jsonWriter.WriteValue(code);
+            _jsonWriter.WriteValue(inlineCode.Code);
 
             _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an inline parameter reference.</summary>
-        /// <param name="parameterName">The name of the referred parameter.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>paramref</c> element.</param>
-        protected internal override void VisitParameterReference(string parameterName, IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <param name="parameterReference">The <see cref="ParameterReferenceDocumentationElement"/> to visit.</param>
+        protected internal override void VisitParameterReference(ParameterReferenceDocumentationElement parameterReference)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("parameterReference");
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(parameterReference.XmlAttributes);
 
             _jsonWriter.WritePropertyName("parameterName");
-            _jsonWriter.WriteValue(parameterName);
+            _jsonWriter.WriteValue(parameterReference.ParameterName);
 
             _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits an inline generic parameter reference.</summary>
-        /// <param name="genericParameterName">The name of the referred generic parameter.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>typeparamref</c> element.</param>
-        protected internal override void VisitGenericParameterReference(string genericParameterName, IReadOnlyDictionary<string, string> xmlAttributes)
+        /// <param name="genericParameterReference">The <see cref="GenericParameterReferenceDocumentationElement"/> to visit.</param>
+        protected internal override void VisitGenericParameterReference(GenericParameterReferenceDocumentationElement genericParameterReference)
         {
             _jsonWriter.WriteStartObject();
 
             _jsonWriter.WritePropertyName("kind");
             _jsonWriter.WriteValue("genericParameterReference");
 
-            _WriteXmlAttributes(xmlAttributes);
+            _WriteXmlAttributes(genericParameterReference.XmlAttributes);
 
             _jsonWriter.WritePropertyName("parameterName");
-            _jsonWriter.WriteValue(genericParameterName);
+            _jsonWriter.WriteValue(genericParameterReference.GenericParameterName);
 
             _jsonWriter.WriteEndObject();
         }

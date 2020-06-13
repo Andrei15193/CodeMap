@@ -26,6 +26,6 @@ namespace CodeMap.DocumentationElements
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
-            => visitor.VisitInlineReference(ReferredMember, XmlAttributes);
+            => visitor.VisitInlineReference(this);
     }
 }

@@ -91,25 +91,6 @@ namespace CodeMap.DocumentationElements
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DocumentationVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DocumentationVisitor visitor)
-        {
-            visitor.VisitTableBeginning(XmlAttributes);
-
-            if (Columns.Count > 0)
-            {
-                visitor.VisitTableHeadingBeginning();
-                foreach (var column in Columns)
-                    column.Accept(visitor);
-                visitor.VisitTableHeadingEnding();
-            }
-            if (Rows.Count > 0)
-            {
-                visitor.VisitTableBodyBeginning();
-                foreach (var row in Rows)
-                    row.Accept(visitor);
-                visitor.VisitTableBodyEnding();
-            }
-
-            visitor.VisitTableEnding();
-        }
+            => visitor.VisitTable(this);
     }
 }

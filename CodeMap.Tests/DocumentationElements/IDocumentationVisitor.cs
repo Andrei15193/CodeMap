@@ -1,95 +1,49 @@
-﻿using System.Reflection;
+﻿using CodeMap.DocumentationElements;
 
 namespace CodeMap.Tests.DocumentationElements
 {
     public interface IDocumentationVisitor
     {
-        void VisitSummaryBeginning();
+        void VisitSummary(SummaryDocumentationElement summary);
 
-        void VisitSummaryEnding();
+        void VisitRemarks(RemarksDocumentationElement remarks);
 
-        void VisitRemarksBeginning();
+        void VisitExample(ExampleDocumentationElement example);
 
-        void VisitRemarksEnding();
+        void VisitValue(ValueDocumentationElement value);
 
-        void VisitExampleBeginning();
+        void VisitParagraph(ParagraphDocumentationElement paragraph);
 
-        void VisitExampleEnding();
+        void VisitCodeBlock(CodeBlockDocumentationElement codeBlock);
 
-        void VisitValueBeginning();
+        void VisitUnorderedList(UnorderedListDocumentationElement unorderedList);
 
-        void VisitValueEnding();
+        void VisitOrderedList(OrderedListDocumentationElement orderedList);
 
-        void VisitParagraphBeginning();
+        void VisitListItem(ListItemDocumentationElement listItem);
 
-        void VisitCodeBlock(string code);
+        void VisitDefinitionList(DefinitionListDocumentationElement definitionList);
 
-        void VisitParagraphEnding();
+        void VisitDefinitionListItem(DefinitionListItemDocumentationElement definitionListItem);
 
-        void VisitUnorderedListBeginning();
+        void VisitTable(TableDocumentationElement table);
 
-        void VisitUnorderedListEnding();
+        void VisitTableColumn(TableColumnDocumentationElement tableColumn);
 
-        void VisitOrderedListBeginning();
+        void VisitTableRow(TableRowDocumentationElement tableRow);
 
-        void VisitOrderedListEnding();
+        void VisitTableCell(TableCellDocumentationElement tableCell);
 
-        void VisitListItemBeginning();
+        void VisitText(TextDocumentationElement text);
 
-        void VisitListItemEnding();
+        void VisitInlineReference(MemberNameReferenceDocumentationElement memberNameReference);
 
-        void VisitDefinitionListBeginning();
+        void VisitInlineReference(MemberInfoReferenceDocumentationElement memberInfoReference);
 
-        void VisitDefinitionListEnding();
+        void VisitInlineCode(InlineCodeDocumentationElement inlineCode);
 
-        void VisitDefinitionListTitleBeginning();
+        void VisitParameterReference(ParameterReferenceDocumentationElement parameterReference);
 
-        void VisitDefinitionListTitleEnding();
-
-        void VisitDefinitionListItemBeginning();
-
-        void VisitDefinitionListItemEnding();
-
-        void VisitDefinitionTermBeginning();
-
-        void VisitDefinitionTermEnding();
-
-        void VisitDefinitionTermDescriptionBeginning();
-
-        void VisitDefinitionTermDescriptionEnding();
-
-        void VisitTableBeginning();
-
-        void VisitTableEnding();
-
-        void VisitTableHeadingBeginning();
-
-        void VisitTableHeadingEnding();
-
-        void VisitTableColumnBeginning();
-
-        void VisitTableColumnEnding();
-
-        void VisitTableBodyBeginning();
-
-        void VisitTableBodyEnding();
-
-        void VisitTableRowBeginning();
-
-        void VisitTableRowEnding();
-
-        void VisitTableCellBeginning();
-
-        void VisitTableCellEnding();
-
-        void VisitText(string text);
-
-        void VisitInlineCode(string code);
-
-        void VisitInlineReference(MemberInfo referredMember);
-
-        void VisitParameterReference(string parameterName);
-
-        void VisitGenericParameterReference(string genericParameterName);
+        void VisitGenericParameterReference(GenericParameterReferenceDocumentationElement genericParameterReference);
     }
 }

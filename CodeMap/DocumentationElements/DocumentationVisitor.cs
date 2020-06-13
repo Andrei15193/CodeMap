@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace CodeMap.DocumentationElements
 {
@@ -12,173 +10,89 @@ namespace CodeMap.DocumentationElements
         {
         }
 
-        /// <summary>Visits the beginning of a summary element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>summary</c> element.</param>
-        protected internal abstract void VisitSummaryBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
+        /// <summary>Visits a summary element.</summary>
+        /// <param name="summary">The <see cref="SummaryDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitSummary(SummaryDocumentationElement summary);
 
-        /// <summary>Visits the ending of a summary element.</summary>
-        protected internal abstract void VisitSummaryEnding();
+        /// <summary>Visits a remarks element.</summary>
+        /// <param name="remarks">The <see cref="RemarksDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitRemarks(RemarksDocumentationElement remarks);
 
-        /// <summary>Visits the beginning of a remarks element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>remarks</c> element.</param>
-        protected internal abstract void VisitRemarksBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
+        /// <summary>Visits an example element.</summary>
+        /// <param name="example">The <see cref="ExampleDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitExample(ExampleDocumentationElement example);
 
-        /// <summary>Visits the ending of a remarks element.</summary>
-        protected internal abstract void VisitRemarksEnding();
+        /// <summary>Visits a value element.</summary>
+        /// <param name="value">The <see cref="ValueDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitValue(ValueDocumentationElement value);
 
-        /// <summary>Visits the beginning of an example element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>example</c> element.</param>
-        protected internal abstract void VisitExampleBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
-
-
-        /// <summary>Visits the ending of an example element.</summary>
-        protected internal abstract void VisitExampleEnding();
-
-        /// <summary>Visits the beginning of a value element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>value</c> element.</param>
-        protected internal abstract void VisitValueBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
-
-        /// <summary>Visits the ending of a value element.</summary>
-        protected internal abstract void VisitValueEnding();
-
-        /// <summary>Visits the beginning of a paragraph element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>para</c> element.</param>
-        protected internal abstract void VisitParagraphBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
-
-        /// <summary>Visits the ending of a paragraph element.</summary>
-        protected internal abstract void VisitParagraphEnding();
+        /// <summary>Visits a paragraph element.</summary>
+        /// <param name="paragraph">The <see cref="ParagraphDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitParagraph(ParagraphDocumentationElement paragraph);
 
         /// <summary>Visits a code block element.</summary>
-        /// <param name="code">The text inside the code block.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>code</c> element.</param>
-        protected internal abstract void VisitCodeBlock(string code, IReadOnlyDictionary<string, string> xmlAttributes);
+        /// <param name="codeBlock">The <see cref="CodeBlockDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitCodeBlock(CodeBlockDocumentationElement codeBlock);
 
-        /// <summary>Visits the beginning of an unordered list element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
-        protected internal abstract void VisitUnorderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
+        /// <summary>Visits an unordered list element.</summary>
+        /// <param name="unorderedList">The <see cref="UnorderedListDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitUnorderedList(UnorderedListDocumentationElement unorderedList);
 
-        /// <summary>Visits the ending of an unordered list element.</summary>
-        protected internal abstract void VisitUnorderedListEnding();
+        /// <summary>Visits an ordered list element.</summary>
+        /// <param name="orderedList">The <see cref="OrderedListDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitOrderedList(OrderedListDocumentationElement orderedList);
 
-        /// <summary>Visits the beginning of an ordered list element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
-        protected internal abstract void VisitOrderedListBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
+        /// <summary>Visits a list item element.</summary>
+        /// <param name="listItem">The <see cref="ListItemDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitListItem(ListItemDocumentationElement listItem);
 
-        /// <summary>Visits the ending of an ordered list element.</summary>
-        protected internal abstract void VisitOrderedListEnding();
+        /// <summary>Visits a definition list element.</summary>
+        /// <param name="definitionList">The <see cref="DefinitionListDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitDefinitionList(DefinitionListDocumentationElement definitionList);
 
-        /// <summary>Visits the beginning of a list item element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> or <c>description</c> element.</param>
-        protected internal abstract void VisitListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
+        /// <summary>Visits a definition list title.</summary>
+        /// <param name="definitionListItem">The <see cref="DefinitionListItemDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitDefinitionListItem(DefinitionListItemDocumentationElement definitionListItem);
 
-        /// <summary>Visits the ending of a list item element.</summary>
-        protected internal abstract void VisitListItemEnding();
+        /// <summary>Visits a table.</summary>
+        /// <param name="table">The <see cref="TableDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitTable(TableDocumentationElement table);
 
-        /// <summary>Visits the beginning of a definition list element.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
-        protected internal abstract void VisitDefinitionListBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
+        /// <summary>Visits a table column.</summary>
+        /// <param name="tableColumn">The <see cref="TableColumnDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitTableColumn(TableColumnDocumentationElement tableColumn);
 
-        /// <summary>Visits the ending of a definition list element.</summary>
-        protected internal abstract void VisitDefinitionListEnding();
+        /// <summary>Visits a table row.</summary>
+        /// <param name="tableRow">The <see cref="TableRowDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitTableRow(TableRowDocumentationElement tableRow);
 
-        /// <summary>Visits the beginning of a definition list title.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>listheader</c> element.</param>
-        protected internal abstract void VisitDefinitionListTitleBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
-
-        /// <summary>Visits the ending of a definition list title.</summary>
-        protected internal abstract void VisitDefinitionListTitleEnding();
-
-        /// <summary>Visits the beginning of a definition list item.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
-        protected internal abstract void VisitDefinitionListItemBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
-
-        /// <summary>Visits the ending of a definition list item.</summary>
-        protected internal abstract void VisitDefinitionListItemEnding();
-
-        /// <summary>Visits the beginning of a definition list term.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
-        protected internal abstract void VisitDefinitionTermBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
-
-        /// <summary>Visits the ending of a definition list term.</summary>
-        protected internal abstract void VisitDefinitionTermEnding();
-
-        /// <summary>Visits the beginning of a definition list term description.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
-        protected internal abstract void VisitDefinitionTermDescriptionBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
-
-        /// <summary>Visits the ending of a definition list term description.</summary>
-        protected internal abstract void VisitDefinitionTermDescriptionEnding();
-
-        /// <summary>Visits the beginning of a table.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>list</c> element.</param>
-        protected internal abstract void VisitTableBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
-
-        /// <summary>Visits the ending of a table.</summary>
-        protected internal abstract void VisitTableEnding();
-
-        /// <summary>Visits the beginning of a table heading.</summary>
-        protected internal abstract void VisitTableHeadingBeginning();
-
-        /// <summary>Visits the ending of a table heading.</summary>
-        protected internal abstract void VisitTableHeadingEnding();
-
-        /// <summary>Visits the beginning of a table body.</summary>
-        protected internal abstract void VisitTableBodyBeginning();
-
-        /// <summary>Visits the ending of a table body.</summary>
-        protected internal abstract void VisitTableBodyEnding();
-
-        /// <summary>Visits the beginning of a table column.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>term</c> element.</param>
-        protected internal abstract void VisitTableColumnBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
-
-        /// <summary>Visits the ending of a table column.</summary>
-        protected internal abstract void VisitTableColumnEnding();
-
-        /// <summary>Visits the beginning of a table row.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>item</c> element.</param>
-        protected internal abstract void VisitTableRowBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
-
-        /// <summary>Visits the ending of a table row.</summary>
-        protected internal abstract void VisitTableRowEnding();
-
-        /// <summary>Visits the beginning of a table cell.</summary>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>description</c> element.</param>
-        protected internal abstract void VisitTableCellBeginning(IReadOnlyDictionary<string, string> xmlAttributes);
-
-        /// <summary>Visits the ending of a table cell.</summary>
-        protected internal abstract void VisitTableCellEnding();
+        /// <summary>Visits a table cell.</summary>
+        /// <param name="tableCell">The <see cref="TableCellDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitTableCell(TableCellDocumentationElement tableCell);
 
         /// <summary>Visits plain text.</summary>
-        /// <param name="text">The plain text inside a block element.</param>
-        protected internal abstract void VisitText(string text);
+        /// <param name="text">The <see cref="TextDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitText(TextDocumentationElement text);
+
+        /// <summary>Visits an unresolved inline member reference.</summary>
+        /// <param name="memberNameReference">The <see cref="MemberNameReferenceDocumentationElement"/> to visit.</param>
+        protected internal virtual void VisitInlineReference(MemberNameReferenceDocumentationElement memberNameReference)
+            => throw new InvalidOperationException($"Could not find member from '{memberNameReference.CanonicalName}' canonical name. Override VisitInlineReference(MemberNameReferenceDocumentationElement) to ignore this error.");
 
         /// <summary>Visits an inline member reference.</summary>
-        /// <param name="canonicalName">The canonical name of the referred member.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
-        protected internal virtual void VisitInlineReference(string canonicalName, IReadOnlyDictionary<string, string> xmlAttributes)
-        {
-            throw new InvalidOperationException($"Could not find member from '{canonicalName}' canonical name. Override VisitInlineReference(string) to ignore this error.");
-        }
-
-        /// <summary>Visits an inline member reference.</summary>
-        /// <param name="referredMember">The referred member.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>see</c> or <c>seealso</c> element.</param>
-        protected internal abstract void VisitInlineReference(MemberInfo referredMember, IReadOnlyDictionary<string, string> xmlAttributes);
+        /// <param name="memberInfoReference">The <see cref="MemberInfoReferenceDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitInlineReference(MemberInfoReferenceDocumentationElement memberInfoReference);
 
         /// <summary>Visits an inline code snippet.</summary>
-        /// <param name="code">The text inside the inline code.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>c</c> element.</param>
-        protected internal abstract void VisitInlineCode(string code, IReadOnlyDictionary<string, string> xmlAttributes);
+        /// <param name="inlineCode">The <see cref="InlineCodeDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitInlineCode(InlineCodeDocumentationElement inlineCode);
 
         /// <summary>Visits an inline parameter reference.</summary>
-        /// <param name="parameterName">The name of the referred parameter.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>paramref</c> element.</param>
-        protected internal abstract void VisitParameterReference(string parameterName, IReadOnlyDictionary<string, string> xmlAttributes);
+        /// <param name="parameterReference">The <see cref="ParameterReferenceDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitParameterReference(ParameterReferenceDocumentationElement parameterReference);
 
         /// <summary>Visits an inline generic parameter reference.</summary>
-        /// <param name="genericParameterName">The name of the referred generic parameter.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the <c>typeparamref</c> element.</param>
-        protected internal abstract void VisitGenericParameterReference(string genericParameterName, IReadOnlyDictionary<string, string> xmlAttributes);
+        /// <param name="genericParameterReference">The <see cref="GenericParameterReferenceDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitGenericParameterReference(GenericParameterReferenceDocumentationElement genericParameterReference);
     }
 }

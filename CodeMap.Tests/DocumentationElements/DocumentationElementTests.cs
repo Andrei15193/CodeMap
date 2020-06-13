@@ -20,14 +20,12 @@ namespace CodeMap.Tests.DocumentationElements
         [Fact]
         public void TextElementCallsVisitorMethod()
         {
-            const string text = "some text";
-
             var visitorMock = new Mock<IDocumentationVisitor>();
-            var textElement = DocumentationElement.Text(text);
+            var textElement = DocumentationElement.Text("some text");
 
             visitorMock.VerifyAcceptMethods(
                 textElement,
-                visitor => visitor.VisitText(text)
+                visitor => visitor.VisitText(textElement)
             );
         }
 
@@ -42,14 +40,12 @@ namespace CodeMap.Tests.DocumentationElements
         [Fact]
         public void InlineCodeElementCallsVisitorMethod()
         {
-            const string code = "piece of code";
-
             var visitorMock = new Mock<IDocumentationVisitor>();
-            var inlineCode = DocumentationElement.InlineCode(code);
+            var inlineCode = DocumentationElement.InlineCode("piece of code");
 
             visitorMock.VerifyAcceptMethods(
                 inlineCode,
-                visitor => visitor.VisitInlineCode(code)
+                visitor => visitor.VisitInlineCode(inlineCode)
             );
         }
 
@@ -70,14 +66,12 @@ namespace CodeMap.Tests.DocumentationElements
         [Fact]
         public void InlineReferenceElementCallsVisitorMethod()
         {
-            var referredMember = GetType().GetMembers().First();
-
             var visitorMock = new Mock<IDocumentationVisitor>();
-            var memberReference = DocumentationElement.MemberReference(referredMember);
+            var memberReference = DocumentationElement.MemberReference(GetType().GetMembers().First());
 
             visitorMock.VerifyAcceptMethods(
                 memberReference,
-                visitor => visitor.VisitInlineReference(referredMember)
+                visitor => visitor.VisitInlineReference(memberReference)
             );
         }
 
@@ -97,7 +91,7 @@ namespace CodeMap.Tests.DocumentationElements
 
             visitorMock.VerifyAcceptMethods(
                 parameterReference,
-                visitor => visitor.VisitParameterReference("parameter")
+                visitor => visitor.VisitParameterReference(parameterReference)
             );
         }
 
@@ -117,7 +111,7 @@ namespace CodeMap.Tests.DocumentationElements
 
             visitorMock.VerifyAcceptMethods(
                genericParameterReference,
-               visitor => visitor.VisitGenericParameterReference("genericParameter")
+               visitor => visitor.VisitGenericParameterReference(genericParameterReference)
             );
         }
 
@@ -138,50 +132,14 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void ParagraphElementCallsVisitorBeginningAndEndingMethods()
+        public void ParagraphElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var paragraph = DocumentationElement.Paragraph(Enumerable.Empty<InlineDocumentationElement>());
 
             visitorMock.VerifyAcceptMethods(
                 paragraph,
-                visitor => visitor.VisitParagraphBeginning(),
-                visitor => visitor.VisitParagraphEnding()
-            );
-        }
-
-        [Fact]
-        public void ParagraphElementCallsVisitorMethods()
-        {
-            const string text = "plain text";
-            const string code = "piece of code";
-            var referredMember = GetType().GetMembers().First();
-            const string parameter = "parameter";
-            const string genericParameter = "genericParameter";
-
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var paragraph = DocumentationElement.Paragraph(
-                new InlineDocumentationElement[]
-                {
-                    DocumentationElement.Text(text),
-                    DocumentationElement.InlineCode(code),
-                    DocumentationElement.MemberReference(referredMember),
-                    DocumentationElement.ParameterReference(parameter),
-                    DocumentationElement.GenericParameterReference(genericParameter)
-                }
-            );
-
-            visitorMock.VerifyAcceptMethods(
-                paragraph,
-                visitor => visitor.VisitParagraphBeginning(),
-
-                visitor => visitor.VisitText(text),
-                visitor => visitor.VisitInlineCode(code),
-                visitor => visitor.VisitInlineReference(referredMember),
-                visitor => visitor.VisitParameterReference(parameter),
-                visitor => visitor.VisitGenericParameterReference(genericParameter),
-
-                visitor => visitor.VisitParagraphEnding()
+                visitor => visitor.VisitParagraph(paragraph)
             );
         }
 
@@ -196,13 +154,12 @@ namespace CodeMap.Tests.DocumentationElements
         [Fact]
         public void CodeBlockElementCallsVisitorMethods()
         {
-            const string code = "code block";
             var visitorMock = new Mock<IDocumentationVisitor>();
-            var codeBlock = DocumentationElement.CodeBlock(code);
+            var codeBlock = DocumentationElement.CodeBlock("code block");
 
             visitorMock.VerifyAcceptMethods(
                 codeBlock,
-                visitor => visitor.VisitCodeBlock(code)
+                visitor => visitor.VisitCodeBlock(codeBlock)
             );
         }
 
@@ -223,50 +180,14 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void ListItemElementCallsVisitorBeginningAndEndingMethods()
+        public void ListItemElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var listItem = DocumentationElement.ListItem(Enumerable.Empty<InlineDocumentationElement>());
 
             visitorMock.VerifyAcceptMethods(
                 listItem,
-                visitor => visitor.VisitListItemBeginning(),
-                visitor => visitor.VisitListItemEnding()
-            );
-        }
-
-        [Fact]
-        public void ListItemElementCallsVisitorMethods()
-        {
-            const string text = "plain text";
-            const string code = "piece of code";
-            var referredMember = GetType().GetMembers().First();
-            const string parameter = "parameter";
-            const string genericParameter = "genericParameter";
-
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var listItem = DocumentationElement.ListItem(
-                new InlineDocumentationElement[]
-                {
-                    DocumentationElement.Text(text),
-                    DocumentationElement.InlineCode(code),
-                    DocumentationElement.MemberReference(referredMember),
-                    DocumentationElement.ParameterReference(parameter),
-                    DocumentationElement.GenericParameterReference(genericParameter)
-                }
-            );
-
-            visitorMock.VerifyAcceptMethods(
-                listItem,
-                visitor => visitor.VisitListItemBeginning(),
-
-                visitor => visitor.VisitText(text),
-                visitor => visitor.VisitInlineCode(code),
-                visitor => visitor.VisitInlineReference(referredMember),
-                visitor => visitor.VisitParameterReference(parameter),
-                visitor => visitor.VisitGenericParameterReference(genericParameter),
-
-                visitor => visitor.VisitListItemEnding()
+                visitor => visitor.VisitListItem(listItem)
             );
         }
 
@@ -287,38 +208,14 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void UnorderedListElementCallsVisitorBeginningAndEndingMethods()
+        public void UnorderedListElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var unorderedList = DocumentationElement.UnorderedList(Enumerable.Empty<ListItemDocumentationElement>());
 
             visitorMock.VerifyAcceptMethods(
                 unorderedList,
-                visitor => visitor.VisitUnorderedListBeginning(),
-                visitor => visitor.VisitUnorderedListEnding()
-            );
-        }
-
-        [Fact]
-        public void UnorderedListElementCallsVisitorMethods()
-        {
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var unorderedList = DocumentationElement.UnorderedList(
-                new[]
-                {
-                    DocumentationElement.ListItem(Enumerable.Empty<InlineDocumentationElement>()),
-                    DocumentationElement.ListItem(Enumerable.Empty<InlineDocumentationElement>())
-                }
-            );
-
-            visitorMock.VerifyAcceptMethods(
-                unorderedList,
-                new InvocationCheck(visitor => visitor.VisitUnorderedListBeginning(), Times.Once()),
-
-                new InvocationCheck(visitor => visitor.VisitListItemBeginning(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitListItemEnding(), Times.Exactly(2)),
-
-                new InvocationCheck(visitor => visitor.VisitUnorderedListEnding(), Times.Once())
+                visitor => visitor.VisitUnorderedList(unorderedList)
             );
         }
 
@@ -339,38 +236,14 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void OrderedListElementCallsVisitorBeginningAndEndingMethods()
+        public void OrderedListElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
-            var orederedList = DocumentationElement.OrderedList(Enumerable.Empty<ListItemDocumentationElement>());
+            var orderedList = DocumentationElement.OrderedList(Enumerable.Empty<ListItemDocumentationElement>());
 
             visitorMock.VerifyAcceptMethods(
-                orederedList,
-                visitor => visitor.VisitOrderedListBeginning(),
-                visitor => visitor.VisitOrderedListEnding()
-            );
-        }
-
-        [Fact]
-        public void OrderedListElementCallsVisitorMethods()
-        {
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var orederdList = DocumentationElement.OrderedList(
-                new[]
-                {
-                    DocumentationElement.ListItem(Enumerable.Empty<InlineDocumentationElement>()),
-                    DocumentationElement.ListItem(Enumerable.Empty<InlineDocumentationElement>())
-                }
-            );
-
-            visitorMock.VerifyAcceptMethods(
-                orederdList,
-                new InvocationCheck(visitor => visitor.VisitOrderedListBeginning(), Times.Once()),
-
-                new InvocationCheck(visitor => visitor.VisitListItemBeginning(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitListItemEnding(), Times.Exactly(2)),
-
-                new InvocationCheck(visitor => visitor.VisitOrderedListEnding(), Times.Once())
+                orderedList,
+                visitor => visitor.VisitOrderedList(orderedList)
             );
         }
 
@@ -431,7 +304,7 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void DefinitionListItemElementCallsVisitorBeginningAndEndingMethods()
+        public void DefinitionListItemElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var definitionListItem = DocumentationElement.DefinitionListItem(
@@ -441,71 +314,7 @@ namespace CodeMap.Tests.DocumentationElements
 
             visitorMock.VerifyAcceptMethods(
                 definitionListItem,
-                visitor => visitor.VisitDefinitionListItemBeginning(),
-                visitor => visitor.VisitDefinitionTermBeginning(),
-                visitor => visitor.VisitDefinitionTermEnding(),
-                visitor => visitor.VisitDefinitionTermDescriptionBeginning(),
-                visitor => visitor.VisitDefinitionTermDescriptionEnding(),
-                visitor => visitor.VisitDefinitionListItemEnding()
-            );
-        }
-
-        [Fact]
-        public void DefinitionListItemElementCallsVisitorMethods()
-        {
-            const string termText = "term plain text";
-            const string termCode = "term piece of code";
-            var termReferredMember = GetType().GetMembers().First();
-            const string termParameter = "termParameter";
-            const string termGenericParameter = "termGenericParameter";
-
-            const string descriptionText = "description plain text";
-            const string descriptionCode = "description piece of code";
-            var descriptionReferredMember = GetType().GetMembers().Last();
-            const string descriptionParameter = "descriptionParameter";
-            const string descriptionGenericParameter = "descriptionGenericParameter";
-
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var definitionListItem = DocumentationElement.DefinitionListItem(
-                new InlineDocumentationElement[]
-                {
-                    DocumentationElement.Text(termText),
-                    DocumentationElement.InlineCode(termCode),
-                    DocumentationElement.MemberReference(termReferredMember),
-                    DocumentationElement.ParameterReference(termParameter),
-                    DocumentationElement.GenericParameterReference(termGenericParameter)
-                },
-                new InlineDocumentationElement[]
-                {
-                    DocumentationElement.Text(descriptionText),
-                    DocumentationElement.InlineCode(descriptionCode),
-                    DocumentationElement.MemberReference(descriptionReferredMember),
-                    DocumentationElement.ParameterReference(descriptionParameter),
-                    DocumentationElement.GenericParameterReference(descriptionGenericParameter)
-                }
-            );
-
-            visitorMock.VerifyAcceptMethods(
-                definitionListItem,
-                visitor => visitor.VisitDefinitionListItemBeginning(),
-
-                visitor => visitor.VisitDefinitionTermBeginning(),
-                visitor => visitor.VisitText(termText),
-                visitor => visitor.VisitInlineCode(termCode),
-                visitor => visitor.VisitInlineReference(termReferredMember),
-                visitor => visitor.VisitParameterReference(termParameter),
-                visitor => visitor.VisitGenericParameterReference(termGenericParameter),
-                visitor => visitor.VisitDefinitionTermEnding(),
-
-                visitor => visitor.VisitDefinitionTermDescriptionBeginning(),
-                visitor => visitor.VisitText(descriptionText),
-                visitor => visitor.VisitInlineCode(descriptionCode),
-                visitor => visitor.VisitInlineReference(descriptionReferredMember),
-                visitor => visitor.VisitParameterReference(descriptionParameter),
-                visitor => visitor.VisitGenericParameterReference(descriptionGenericParameter),
-                visitor => visitor.VisitDefinitionTermDescriptionEnding(),
-
-                visitor => visitor.VisitDefinitionListItemEnding()
+                visitor => visitor.VisitDefinitionListItem(definitionListItem)
             );
         }
 
@@ -540,75 +349,14 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void DefinitionListElementCallsVisitorBeginningAndEndingMethods()
+        public void DefinitionListElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var definitionList = DocumentationElement.DefinitionList(Enumerable.Empty<DefinitionListItemDocumentationElement>());
 
             visitorMock.VerifyAcceptMethods(
                 definitionList,
-                visitor => visitor.VisitDefinitionListBeginning(),
-                visitor => visitor.VisitDefinitionListTitleBeginning(),
-                visitor => visitor.VisitDefinitionListTitleEnding(),
-                visitor => visitor.VisitDefinitionListEnding()
-            );
-        }
-
-        [Fact]
-        public void DefinitionListElementCallsVisitorMethods()
-        {
-            const string text = "plain text";
-            const string code = "piece of code";
-            var referredMember = GetType().GetMembers().First();
-            const string parameter = "parameter";
-            const string genericParameter = "genericParameter";
-
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var definitionList = DocumentationElement.DefinitionList(
-                DocumentationElement.InlineDescription(
-                    new InlineDocumentationElement[]
-                    {
-                        DocumentationElement.Text(text),
-                        DocumentationElement.InlineCode(code),
-                        DocumentationElement.MemberReference(referredMember),
-                        DocumentationElement.ParameterReference(parameter),
-                        DocumentationElement.GenericParameterReference(genericParameter)
-                    }
-                ),
-                new[]
-                {
-                    DocumentationElement.DefinitionListItem(
-                        Enumerable.Empty<InlineDocumentationElement>(),
-                        Enumerable.Empty<InlineDocumentationElement>()
-                    ),
-                    DocumentationElement.DefinitionListItem(
-                        Enumerable.Empty<InlineDocumentationElement>(),
-                        Enumerable.Empty<InlineDocumentationElement>()
-                    )
-                }
-            );
-
-            visitorMock.VerifyAcceptMethods(
-                definitionList,
-                new InvocationCheck(visitor => visitor.VisitDefinitionListBeginning(), Times.Once()),
-
-                new InvocationCheck(visitor => visitor.VisitDefinitionListTitleBeginning(), Times.Once()),
-                new InvocationCheck(visitor => visitor.VisitText(text), Times.Once()),
-                new InvocationCheck(visitor => visitor.VisitInlineCode(code), Times.Once()),
-                new InvocationCheck(visitor => visitor.VisitInlineReference(referredMember), Times.Once()),
-                new InvocationCheck(visitor => visitor.VisitParameterReference(parameter), Times.Once()),
-                new InvocationCheck(visitor => visitor.VisitGenericParameterReference(genericParameter), Times.Once()),
-                new InvocationCheck(visitor => visitor.VisitDefinitionListTitleEnding(), Times.Once()),
-
-                new InvocationCheck(visitor => visitor.VisitDefinitionListItemBeginning(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitDefinitionTermBeginning(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitDefinitionTermEnding(), Times.Exactly(2)),
-
-                new InvocationCheck(visitor => visitor.VisitDefinitionTermDescriptionBeginning(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitDefinitionTermDescriptionEnding(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitDefinitionListItemEnding(), Times.Exactly(2)),
-
-                new InvocationCheck(visitor => visitor.VisitDefinitionListEnding(), Times.Once())
+                visitor => visitor.VisitDefinitionList(definitionList)
             );
         }
 
@@ -629,50 +377,14 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void TableCellElementCallsVisitorBeginningAndEndingMethods()
+        public void TableCellElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var tableCell = DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>());
 
             visitorMock.VerifyAcceptMethods(
                 tableCell,
-                visitor => visitor.VisitTableCellBeginning(),
-                visitor => visitor.VisitTableCellEnding()
-            );
-        }
-
-        [Fact]
-        public void TableCellElementCallsVisitorMethods()
-        {
-            const string text = "plain text";
-            const string code = "piece of code";
-            var referredMember = GetType().GetMembers().First();
-            var parameter = "parameter";
-            var genericParameter = "genericParameter";
-
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var tableCell = DocumentationElement.TableCell(
-                new InlineDocumentationElement[]
-                {
-                    DocumentationElement.Text(text),
-                    DocumentationElement.InlineCode(code),
-                    DocumentationElement.MemberReference(referredMember),
-                    DocumentationElement.ParameterReference(parameter),
-                    DocumentationElement.GenericParameterReference(genericParameter)
-                }
-            );
-
-            visitorMock.VerifyAcceptMethods(
-                tableCell,
-                visitor => visitor.VisitTableCellBeginning(),
-
-                visitor => visitor.VisitText(text),
-                visitor => visitor.VisitInlineCode(code),
-                visitor => visitor.VisitInlineReference(referredMember),
-                visitor => visitor.VisitParameterReference(parameter),
-                visitor => visitor.VisitGenericParameterReference(genericParameter),
-
-                visitor => visitor.VisitTableCellEnding()
+                visitor => visitor.VisitTableCell(tableCell)
             );
         }
 
@@ -693,37 +405,14 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void TableRowElementCallsVisitorBeginningAndEndingMethods()
+        public void TableRowElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var tableRow = DocumentationElement.TableRow(Enumerable.Empty<TableCellDocumentationElement>());
 
             visitorMock.VerifyAcceptMethods(
                 tableRow,
-                visitor => visitor.VisitTableRowBeginning(),
-                visitor => visitor.VisitTableRowEnding()
-            );
-        }
-
-        [Fact]
-        public void TableRowElementCallsVisitorMethods()
-        {
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var tableRow = DocumentationElement.TableRow(
-                new[]
-                {
-                    DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>()),
-                    DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>())
-                });
-
-            visitorMock.VerifyAcceptMethods(
-                tableRow,
-                new InvocationCheck(visitor => visitor.VisitTableRowBeginning(), Times.Once()),
-
-                new InvocationCheck(visitor => visitor.VisitTableCellBeginning(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitTableCellEnding(), Times.Exactly(2)),
-
-                new InvocationCheck(visitor => visitor.VisitTableRowEnding(), Times.Once())
+                visitor => visitor.VisitTableRow(tableRow)
             );
         }
 
@@ -744,50 +433,14 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void TableColumnElementCallsVisitorBeginningAndEndingMethods()
+        public void TableColumnElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var tableColumn = DocumentationElement.TableColumn(Enumerable.Empty<InlineDocumentationElement>());
 
             visitorMock.VerifyAcceptMethods(
                 tableColumn,
-                visitor => visitor.VisitTableColumnBeginning(),
-                visitor => visitor.VisitTableColumnEnding()
-            );
-        }
-
-        [Fact]
-        public void TableColumnElementCallsVisitorMethods()
-        {
-            const string text = "plain text";
-            const string code = "piece of code";
-            var referredMember = GetType().GetMembers().First();
-            const string parameter = "parameter";
-            const string genericParameter = "genericParameter";
-
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var tableColumn = DocumentationElement.TableColumn(
-                new InlineDocumentationElement[]
-                {
-                    DocumentationElement.Text(text),
-                    DocumentationElement.InlineCode(code),
-                    DocumentationElement.MemberReference(referredMember),
-                    DocumentationElement.ParameterReference(parameter),
-                    DocumentationElement.GenericParameterReference(genericParameter)
-                }
-            );
-
-            visitorMock.VerifyAcceptMethods(
-                tableColumn,
-                visitor => visitor.VisitTableColumnBeginning(),
-
-                visitor => visitor.VisitText(text),
-                visitor => visitor.VisitInlineCode(code),
-                visitor => visitor.VisitInlineReference(referredMember),
-                visitor => visitor.VisitParameterReference(parameter),
-                visitor => visitor.VisitGenericParameterReference(genericParameter),
-
-                visitor => visitor.VisitTableColumnEnding()
+                visitor => visitor.VisitTableColumn(tableColumn)
             );
         }
 
@@ -836,159 +489,17 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void TableElementCallsVisitorBeginningAndEndingMethods()
+        public void TableElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
-            var tableColumn = DocumentationElement.Table(
+            var table = DocumentationElement.Table(
                 Enumerable.Empty<TableColumnDocumentationElement>(),
                 Enumerable.Empty<TableRowDocumentationElement>()
             );
 
             visitorMock.VerifyAcceptMethods(
-                tableColumn,
-                visitor => visitor.VisitTableBeginning(),
-                visitor => visitor.VisitTableEnding()
-            );
-        }
-
-        [Fact]
-        public void TableElementCallsVisitorMethods()
-        {
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var table = DocumentationElement.Table(
-                new[]
-                {
-                    DocumentationElement.TableColumn(Enumerable.Empty<InlineDocumentationElement>()),
-                    DocumentationElement.TableColumn(Enumerable.Empty<InlineDocumentationElement>())
-                },
-                new[]
-                {
-                    DocumentationElement.TableRow(Enumerable.Empty<TableCellDocumentationElement>()),
-                    DocumentationElement.TableRow(Enumerable.Empty<TableCellDocumentationElement>())
-                }
-            );
-
-            visitorMock.VerifyAcceptMethods(
                 table,
-                new InvocationCheck(visitor => visitor.VisitTableBeginning(), Times.Once()),
-
-                new InvocationCheck(visitor => visitor.VisitTableHeadingBeginning(), Times.Once()),
-                new InvocationCheck(visitor => visitor.VisitTableColumnBeginning(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitTableColumnEnding(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitTableHeadingEnding(), Times.Once()),
-
-                new InvocationCheck(visitor => visitor.VisitTableBodyBeginning(), Times.Once()),
-
-                new InvocationCheck(visitor => visitor.VisitTableRowBeginning(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitTableCellBeginning(), Times.Exactly(4)),
-                new InvocationCheck(visitor => visitor.VisitTableCellEnding(), Times.Exactly(4)),
-                new InvocationCheck(visitor => visitor.VisitTableRowEnding(), Times.Exactly(2)),
-
-                new InvocationCheck(visitor => visitor.VisitTableBodyEnding(), Times.Once()),
-
-                new InvocationCheck(visitor => visitor.VisitTableEnding(), Times.Once())
-            );
-        }
-
-        [Fact]
-        public void TableElementCallsVisitorMethodsForMissingColumns()
-        {
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var table = DocumentationElement.Table(
-                new[]
-                {
-                    DocumentationElement.TableColumn(Enumerable.Empty<InlineDocumentationElement>())
-                },
-                new[]
-                {
-                    DocumentationElement.TableRow(
-                        new[]
-                        {
-                            DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>()),
-                            DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>())
-                        }
-                    ),
-                    DocumentationElement.TableRow(
-                        new[]
-                        {
-                            DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>()),
-                            DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>())
-                        }
-                    )
-                }
-            );
-
-            visitorMock.VerifyAcceptMethods(
-                table,
-                new[]
-                {
-                    new InvocationCheck(visitor => visitor.VisitTableBeginning(), Times.Once()),
-
-                    new InvocationCheck(visitor => visitor.VisitTableHeadingBeginning(), Times.Once()),
-                    new InvocationCheck(visitor => visitor.VisitTableColumnBeginning(), Times.Exactly(2)),
-                    new InvocationCheck(visitor => visitor.VisitTableColumnEnding(), Times.Exactly(2)),
-                    new InvocationCheck(visitor => visitor.VisitTableHeadingEnding(), Times.Once()),
-
-                    new InvocationCheck(visitor => visitor.VisitTableBodyBeginning(), Times.Once()),
-                    new InvocationCheck(visitor => visitor.VisitTableRowBeginning(), Times.Exactly(2)),
-                    new InvocationCheck(visitor => visitor.VisitTableCellBeginning(), Times.Exactly(4)),
-                    new InvocationCheck(visitor => visitor.VisitTableCellEnding(), Times.Exactly(4)),
-                    new InvocationCheck(visitor => visitor.VisitTableRowEnding(), Times.Exactly(2)),
-                    new InvocationCheck(visitor => visitor.VisitTableBodyEnding(), Times.Once()),
-
-                    new InvocationCheck(visitor => visitor.VisitTableEnding(), Times.Once())
-                }
-            );
-        }
-
-        [Fact]
-        public void TableElementCallsVisitorMethodsForMissingCells()
-        {
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var table = DocumentationElement.Table(
-                new[]
-                {
-                    DocumentationElement.TableColumn(Enumerable.Empty<InlineDocumentationElement>()),
-                    DocumentationElement.TableColumn(Enumerable.Empty<InlineDocumentationElement>())
-                },
-                new[]
-                {
-                    DocumentationElement.TableRow(
-                        new[]
-                        {
-                            DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>()),
-                            DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>())
-                        }
-                    ),
-                    DocumentationElement.TableRow(
-                        new[]
-                        {
-                            DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>())
-                        }
-                    )
-                }
-            );
-
-            visitorMock.VerifyAcceptMethods(
-                table,
-                new[]
-                {
-                    new InvocationCheck(visitor => visitor.VisitTableBeginning(), Times.Once()),
-
-                    new InvocationCheck(visitor => visitor.VisitTableHeadingBeginning(), Times.Once()),
-                    new InvocationCheck(visitor => visitor.VisitTableColumnBeginning(), Times.Exactly(2)),
-                    new InvocationCheck(visitor => visitor.VisitTableColumnEnding(), Times.Exactly(2)),
-                    new InvocationCheck(visitor => visitor.VisitTableHeadingEnding(), Times.Once()),
-
-                    new InvocationCheck(visitor => visitor.VisitTableBodyBeginning(), Times.Once()),
-                    new InvocationCheck(visitor => visitor.VisitTableRowBeginning(), Times.Exactly(2)),
-                    new InvocationCheck(visitor => visitor.VisitTableCellBeginning(), Times.Exactly(4)),
-                    new InvocationCheck(visitor => visitor.VisitTableCellEnding(), Times.Exactly(4)),
-                    new InvocationCheck(visitor => visitor.VisitTableRowEnding(), Times.Exactly(2)),
-                    new InvocationCheck(visitor => visitor.VisitTableBodyEnding(), Times.Once()),
-
-                    new InvocationCheck(visitor => visitor.VisitTableEnding(), Times.Once())
-                }
+                visitor => visitor.VisitTable(table)
             );
         }
 
@@ -1014,81 +525,16 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void HeaderlessTableElementCallsVisitorBeginningAndEndingMethods()
+        public void HeaderlessTableElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
-            var tableColumn = DocumentationElement.Table(
+            var table = DocumentationElement.Table(
                 Enumerable.Empty<TableRowDocumentationElement>()
             );
 
             visitorMock.VerifyAcceptMethods(
-                tableColumn,
-                visitor => visitor.VisitTableBeginning(),
-                visitor => visitor.VisitTableEnding()
-            );
-        }
-
-        [Fact]
-        public void HeaderlessTableElementCallsVisitorMethods()
-        {
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var table = DocumentationElement.Table(
-                DocumentationElement.TableRow(
-                    DocumentationElement.TableCell(
-                        Enumerable.Empty<InlineDocumentationElement>()
-                    )
-                ),
-                DocumentationElement.TableRow(
-                    DocumentationElement.TableCell(
-                        Enumerable.Empty<InlineDocumentationElement>()
-                    )
-                )
-            );
-
-            visitorMock.VerifyAcceptMethods(
                 table,
-                new InvocationCheck(visitor => visitor.VisitTableBeginning(), Times.Once()),
-                new InvocationCheck(visitor => visitor.VisitTableBodyBeginning(), Times.Once()),
-
-                new InvocationCheck(visitor => visitor.VisitTableRowBeginning(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitTableCellBeginning(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitTableCellEnding(), Times.Exactly(2)),
-                new InvocationCheck(visitor => visitor.VisitTableRowEnding(), Times.Exactly(2)),
-
-                new InvocationCheck(visitor => visitor.VisitTableBodyEnding(), Times.Once()),
-                new InvocationCheck(visitor => visitor.VisitTableEnding(), Times.Once())
-            );
-        }
-
-        [Fact]
-        public void HeaderlessTableElementCallsVisitorMethodsForMissingCells()
-        {
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var table = DocumentationElement.Table(
-                DocumentationElement.TableRow(
-                    DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>()),
-                    DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>())
-                ),
-                DocumentationElement.TableRow(
-                    DocumentationElement.TableCell(Enumerable.Empty<InlineDocumentationElement>())
-                )
-            );
-
-            visitorMock.VerifyAcceptMethods(
-                table,
-                new[]
-                {
-                    new InvocationCheck(visitor => visitor.VisitTableBeginning(), Times.Once()),
-                    new InvocationCheck(visitor => visitor.VisitTableBodyBeginning(), Times.Once()),
-
-                    new InvocationCheck(visitor => visitor.VisitTableRowBeginning(), Times.Exactly(2)),
-                    new InvocationCheck(visitor => visitor.VisitTableCellBeginning(), Times.Exactly(4)),
-                    new InvocationCheck(visitor => visitor.VisitTableCellEnding(), Times.Exactly(4)),
-                    new InvocationCheck(visitor => visitor.VisitTableRowEnding(), Times.Exactly(2)),
-
-                    new InvocationCheck(visitor => visitor.VisitTableBodyEnding(), Times.Once()),
-                    new InvocationCheck(visitor => visitor.VisitTableEnding(), Times.Once())
-                }
+                visitor => visitor.VisitTable(table)
             );
         }
 
@@ -1109,59 +555,14 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void SummaryElementCallsBeginningAndEndingVisitorMethods()
+        public void SummaryElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var summary = DocumentationElement.Summary(Enumerable.Empty<BlockDocumentationElement>());
 
             visitorMock.VerifyAcceptMethods(
                 summary,
-                visitor => visitor.VisitSummaryBeginning(),
-                visitor => visitor.VisitSummaryEnding()
-            );
-        }
-
-        [Fact]
-        public void SummaryElementCallsVisitorMethods()
-        {
-            const string code = "piece of code";
-
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var summary = DocumentationElement.Summary(
-                new BlockDocumentationElement[]
-                {
-                    DocumentationElement.Paragraph(Enumerable.Empty<InlineDocumentationElement>()),
-                    DocumentationElement.CodeBlock(code),
-                    DocumentationElement.UnorderedList(Enumerable.Empty<ListItemDocumentationElement>()),
-                    DocumentationElement.OrderedList(Enumerable.Empty<ListItemDocumentationElement>()),
-                    DocumentationElement.DefinitionList(Enumerable.Empty<DefinitionListItemDocumentationElement>()),
-                    DocumentationElement.Table(Enumerable.Empty<TableColumnDocumentationElement>(), Enumerable.Empty<TableRowDocumentationElement>())
-                });
-
-            visitorMock.VerifyAcceptMethods(
-                summary,
-                visitor => visitor.VisitSummaryBeginning(),
-
-                visitor => visitor.VisitParagraphBeginning(),
-                visitor => visitor.VisitParagraphEnding(),
-
-                visitor => visitor.VisitCodeBlock(code),
-
-                visitor => visitor.VisitUnorderedListBeginning(),
-                visitor => visitor.VisitUnorderedListEnding(),
-
-                visitor => visitor.VisitOrderedListBeginning(),
-                visitor => visitor.VisitOrderedListEnding(),
-
-                visitor => visitor.VisitDefinitionListBeginning(),
-                visitor => visitor.VisitDefinitionListTitleBeginning(),
-                visitor => visitor.VisitDefinitionListTitleEnding(),
-                visitor => visitor.VisitDefinitionListEnding(),
-
-                visitor => visitor.VisitTableBeginning(),
-                visitor => visitor.VisitTableEnding(),
-
-                visitor => visitor.VisitSummaryEnding()
+                visitor => visitor.VisitSummary(summary)
             );
         }
 
@@ -1189,52 +590,7 @@ namespace CodeMap.Tests.DocumentationElements
 
             visitorMock.VerifyAcceptMethods(
                 remarks,
-                visitor => visitor.VisitRemarksBeginning(),
-                visitor => visitor.VisitRemarksEnding()
-            );
-        }
-
-        [Fact]
-        public void RemarksElementCallsVisitorMethods()
-        {
-            const string code = "piece of code";
-
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var remarks = DocumentationElement.Remarks(
-                new BlockDocumentationElement[]
-                {
-                    DocumentationElement.Paragraph(Enumerable.Empty<InlineDocumentationElement>()),
-                    DocumentationElement.CodeBlock(code),
-                    DocumentationElement.UnorderedList(Enumerable.Empty<ListItemDocumentationElement>()),
-                    DocumentationElement.OrderedList(Enumerable.Empty<ListItemDocumentationElement>()),
-                    DocumentationElement.DefinitionList(Enumerable.Empty<DefinitionListItemDocumentationElement>()),
-                    DocumentationElement.Table(Enumerable.Empty<TableColumnDocumentationElement>(), Enumerable.Empty<TableRowDocumentationElement>())
-                });
-
-            visitorMock.VerifyAcceptMethods(
-                remarks,
-                visitor => visitor.VisitRemarksBeginning(),
-
-                visitor => visitor.VisitParagraphBeginning(),
-                visitor => visitor.VisitParagraphEnding(),
-
-                visitor => visitor.VisitCodeBlock(code),
-
-                visitor => visitor.VisitUnorderedListBeginning(),
-                visitor => visitor.VisitUnorderedListEnding(),
-
-                visitor => visitor.VisitOrderedListBeginning(),
-                visitor => visitor.VisitOrderedListEnding(),
-
-                visitor => visitor.VisitDefinitionListBeginning(),
-                visitor => visitor.VisitDefinitionListTitleBeginning(),
-                visitor => visitor.VisitDefinitionListTitleEnding(),
-                visitor => visitor.VisitDefinitionListEnding(),
-
-                visitor => visitor.VisitTableBeginning(),
-                visitor => visitor.VisitTableEnding(),
-
-                visitor => visitor.VisitRemarksEnding()
+                visitor => visitor.VisitRemarks(remarks)
             );
         }
 
@@ -1262,52 +618,7 @@ namespace CodeMap.Tests.DocumentationElements
 
             visitorMock.VerifyAcceptMethods(
                 example,
-                visitor => visitor.VisitExampleBeginning(),
-                visitor => visitor.VisitExampleEnding()
-            );
-        }
-
-        [Fact]
-        public void ExampleElementCallsVisitorMethods()
-        {
-            const string code = "piece of code";
-
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var example = DocumentationElement.Example(
-                new BlockDocumentationElement[]
-                {
-                    DocumentationElement.Paragraph(Enumerable.Empty<InlineDocumentationElement>()),
-                    DocumentationElement.CodeBlock(code),
-                    DocumentationElement.UnorderedList(Enumerable.Empty<ListItemDocumentationElement>()),
-                    DocumentationElement.OrderedList(Enumerable.Empty<ListItemDocumentationElement>()),
-                    DocumentationElement.DefinitionList(Enumerable.Empty<DefinitionListItemDocumentationElement>()),
-                    DocumentationElement.Table(Enumerable.Empty<TableColumnDocumentationElement>(), Enumerable.Empty<TableRowDocumentationElement>())
-                });
-
-            visitorMock.VerifyAcceptMethods(
-                example,
-                visitor => visitor.VisitExampleBeginning(),
-
-                visitor => visitor.VisitParagraphBeginning(),
-                visitor => visitor.VisitParagraphEnding(),
-
-                visitor => visitor.VisitCodeBlock(code),
-
-                visitor => visitor.VisitUnorderedListBeginning(),
-                visitor => visitor.VisitUnorderedListEnding(),
-
-                visitor => visitor.VisitOrderedListBeginning(),
-                visitor => visitor.VisitOrderedListEnding(),
-
-                visitor => visitor.VisitDefinitionListBeginning(),
-                visitor => visitor.VisitDefinitionListTitleBeginning(),
-                visitor => visitor.VisitDefinitionListTitleEnding(),
-                visitor => visitor.VisitDefinitionListEnding(),
-
-                visitor => visitor.VisitTableBeginning(),
-                visitor => visitor.VisitTableEnding(),
-
-                visitor => visitor.VisitExampleEnding()
+                visitor => visitor.VisitExample(example)
             );
         }
 
@@ -1335,52 +646,7 @@ namespace CodeMap.Tests.DocumentationElements
 
             visitorMock.VerifyAcceptMethods(
                 value,
-                visitor => visitor.VisitValueBeginning(),
-                visitor => visitor.VisitValueEnding()
-            );
-        }
-
-        [Fact]
-        public void ValueElementCallsVisitorMethods()
-        {
-            const string code = "piece of code";
-
-            var visitorMock = new Mock<IDocumentationVisitor>();
-            var value = DocumentationElement.Value(
-                new BlockDocumentationElement[]
-                {
-                    DocumentationElement.Paragraph(Enumerable.Empty<InlineDocumentationElement>()),
-                    DocumentationElement.CodeBlock(code),
-                    DocumentationElement.UnorderedList(Enumerable.Empty<ListItemDocumentationElement>()),
-                    DocumentationElement.OrderedList(Enumerable.Empty<ListItemDocumentationElement>()),
-                    DocumentationElement.DefinitionList(Enumerable.Empty<DefinitionListItemDocumentationElement>()),
-                    DocumentationElement.Table(Enumerable.Empty<TableColumnDocumentationElement>(), Enumerable.Empty<TableRowDocumentationElement>())
-                });
-
-            visitorMock.VerifyAcceptMethods(
-                value,
-                visitor => visitor.VisitValueBeginning(),
-
-                visitor => visitor.VisitParagraphBeginning(),
-                visitor => visitor.VisitParagraphEnding(),
-
-                visitor => visitor.VisitCodeBlock(code),
-
-                visitor => visitor.VisitUnorderedListBeginning(),
-                visitor => visitor.VisitUnorderedListEnding(),
-
-                visitor => visitor.VisitOrderedListBeginning(),
-                visitor => visitor.VisitOrderedListEnding(),
-
-                visitor => visitor.VisitDefinitionListBeginning(),
-                visitor => visitor.VisitDefinitionListTitleBeginning(),
-                visitor => visitor.VisitDefinitionListTitleEnding(),
-                visitor => visitor.VisitDefinitionListEnding(),
-
-                visitor => visitor.VisitTableBeginning(),
-                visitor => visitor.VisitTableEnding(),
-
-                visitor => visitor.VisitValueEnding()
+                visitor => visitor.VisitValue(value)
             );
         }
     }
