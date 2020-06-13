@@ -15,8 +15,17 @@ namespace CodeMap.Tests.DocumentationElements
         protected override void VisitDefinitionList(DefinitionListDocumentationElement definitionList)
             => _documentationVisitor.VisitDefinitionList(definitionList);
 
+        protected override void VisitDefinitionListTitle(DefinitionListTitleDocumentationElement definitionListTitle)
+            => _documentationVisitor.VisitDefinitionListTitle(definitionListTitle);
+
         protected override void VisitDefinitionListItem(DefinitionListItemDocumentationElement definitionListItem)
             => _documentationVisitor.VisitDefinitionListItem(definitionListItem);
+
+        protected override void VisitDefinitionListItemTerm(DefinitionListItemTermDocumentationElement definitionListItemTerm)
+            => _documentationVisitor.VisitDefinitionListItemTerm(definitionListItemTerm);
+
+        protected override void VisitDefinitionListItemDescription(DefinitionListItemDescriptionDocumentationElement definitionListItemDescription)
+            => _documentationVisitor.VisitDefinitionListItemDescription(definitionListItemDescription);
 
         protected override void VisitExample(ExampleDocumentationElement example)
             => _documentationVisitor.VisitExample(example);

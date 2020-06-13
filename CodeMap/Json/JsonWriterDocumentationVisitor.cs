@@ -201,15 +201,7 @@ namespace CodeMap.Json
 
             _WriteXmlAttributes(definitionList.XmlAttributes);
 
-            _jsonWriter.WritePropertyName("title");
-            _jsonWriter.WriteStartObject();
-
-            _WriteXmlAttributes(definitionList.ListTitle.XmlAttributes);
-            _jsonWriter.WritePropertyName("content");
-            _jsonWriter.WriteStartArray();
-
-            foreach (var element in definitionList.ListTitle)
-                element.Accept(this);
+            definitionList.ListTitle?.Accept(this);
 
             _jsonWriter.WriteEndArray();
             _jsonWriter.WriteEndObject();
@@ -224,33 +216,66 @@ namespace CodeMap.Json
             _jsonWriter.WriteEndObject();
         }
 
-        /// <summary>Visits a definition list title.</summary>
+        /// <summary>Visits a definition list title element.</summary>
+        /// <param name="definitionListTitle">The <see cref="DefinitionListTitleDocumentationElement"/> to visit.</param>
+        protected internal override void VisitDefinitionListTitle(DefinitionListTitleDocumentationElement definitionListTitle)
+        {
+            _jsonWriter.WritePropertyName("title");
+            _jsonWriter.WriteStartObject();
+
+            _WriteXmlAttributes(definitionListTitle.XmlAttributes);
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
+
+            foreach (var element in definitionListTitle.Content)
+                element.Accept(this);
+        }
+
+        /// <summary>Visits a definition list item.</summary>
         /// <param name="definitionListItem">The <see cref="DefinitionListItemDocumentationElement"/> to visit.</param>
         protected internal override void VisitDefinitionListItem(DefinitionListItemDocumentationElement definitionListItem)
         {
             _jsonWriter.WriteStartObject();
             _WriteXmlAttributes(definitionListItem.XmlAttributes);
-
-            WriteItemInfo("term", definitionListItem.Term);
-            WriteItemInfo("description", definitionListItem.Description);
-
+            definitionListItem.Term.Accept(this);
+            definitionListItem.Description.Accept(this);
             _jsonWriter.WriteEndObject();
+        }
 
-            void WriteItemInfo(string name, InlineDescriptionDocumentationElement elementInfo)
-            {
-                _jsonWriter.WritePropertyName(name);
-                _jsonWriter.WriteStartObject();
+        /// <summary>Visits a definition list item term.</summary>
+        /// <param name="definitionListItemTerm">The <see cref="DefinitionListItemTermDocumentationElement"/> to visit.</param>
+        protected internal override void VisitDefinitionListItemTerm(DefinitionListItemTermDocumentationElement definitionListItemTerm)
+        {
+            _jsonWriter.WritePropertyName("term");
+            _jsonWriter.WriteStartObject();
 
-                _WriteXmlAttributes(elementInfo.XmlAttributes);
-                _jsonWriter.WritePropertyName("content");
-                _jsonWriter.WriteStartArray();
+            _WriteXmlAttributes(definitionListItemTerm.XmlAttributes);
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
 
-                foreach (var element in elementInfo)
-                    element.Accept(this);
+            foreach (var element in definitionListItemTerm.Content)
+                element.Accept(this);
 
-                _jsonWriter.WriteEndArray();
-                _jsonWriter.WriteEndObject();
-            }
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
+        }
+
+        /// <summary>Visits a definition list item description.</summary>
+        /// <param name="definitionListItemDescription">The <see cref="DefinitionListItemDescriptionDocumentationElement"/> to visit.</param>
+        protected internal override void VisitDefinitionListItemDescription(DefinitionListItemDescriptionDocumentationElement definitionListItemDescription)
+        {
+            _jsonWriter.WritePropertyName("description");
+            _jsonWriter.WriteStartObject();
+
+            _WriteXmlAttributes(definitionListItemDescription.XmlAttributes);
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteStartArray();
+
+            foreach (var element in definitionListItemDescription.Content)
+                element.Accept(this);
+
+            _jsonWriter.WriteEndArray();
+            _jsonWriter.WriteEndObject();
         }
 
         /// <summary>Visits a table.</summary>

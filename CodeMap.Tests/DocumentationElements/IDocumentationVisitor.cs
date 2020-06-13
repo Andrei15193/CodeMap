@@ -24,7 +24,13 @@ namespace CodeMap.Tests.DocumentationElements
 
         void VisitDefinitionList(DefinitionListDocumentationElement definitionList);
 
+        void VisitDefinitionListTitle(DefinitionListTitleDocumentationElement definitionListTitle);
+
         void VisitDefinitionListItem(DefinitionListItemDocumentationElement definitionListItem);
+
+        void VisitDefinitionListItemTerm(DefinitionListItemTermDocumentationElement definitionListItemTerm);
+
+        void VisitDefinitionListItemDescription(DefinitionListItemDescriptionDocumentationElement definitionListItemDescription);
 
         void VisitTable(TableDocumentationElement table);
 

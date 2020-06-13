@@ -248,13 +248,69 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
+        public void CreatingDefinitionListItemTermElementWithNullContentThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentNullException>("content", () => DocumentationElement.DefinitionListItemTerm(null));
+
+            Assert.Equal(new ArgumentNullException("content").Message, exception.Message);
+        }
+
+        [Fact]
+        public void CreatingDefinitionListItemTermWithContentContainingNullThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentException>("content", () => DocumentationElement.DefinitionListItemTerm(new InlineDocumentationElement[] { null }));
+
+            Assert.Equal(new ArgumentException("Cannot contain 'null' elements.", "content").Message, exception.Message);
+        }
+
+        [Fact]
+        public void DefinitionListItemTermElementCallsVisitorMethod()
+        {
+            var visitorMock = new Mock<IDocumentationVisitor>();
+            var definitionListItemTerm = DocumentationElement.DefinitionListItemTerm(Enumerable.Empty<InlineDocumentationElement>());
+
+            visitorMock.VerifyAcceptMethods(
+                definitionListItemTerm,
+                visitor => visitor.VisitDefinitionListItemTerm(definitionListItemTerm)
+            );
+        }
+
+        [Fact]
+        public void CreatingDefinitionListItemDescriptionElementWithNullContentThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentNullException>("content", () => DocumentationElement.DefinitionListItemDescription(null));
+
+            Assert.Equal(new ArgumentNullException("content").Message, exception.Message);
+        }
+
+        [Fact]
+        public void CreatingDefinitionListItemDescriptionWithContentContainingNullThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentException>("content", () => DocumentationElement.DefinitionListItemDescription(new InlineDocumentationElement[] { null }));
+
+            Assert.Equal(new ArgumentException("Cannot contain 'null' elements.", "content").Message, exception.Message);
+        }
+
+        [Fact]
+        public void DefinitionListItemDescriptionElementCallsVisitorMethod()
+        {
+            var visitorMock = new Mock<IDocumentationVisitor>();
+            var definitionListItemDescription = DocumentationElement.DefinitionListItemDescription(Enumerable.Empty<InlineDocumentationElement>());
+
+            visitorMock.VerifyAcceptMethods(
+                definitionListItemDescription,
+                visitor => visitor.VisitDefinitionListItemDescription(definitionListItemDescription)
+            );
+        }
+
+        [Fact]
         public void CreatingDefinitionListItemElementWithNullTermThrowsException()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 "term",
                 () => DocumentationElement.DefinitionListItem(
                     null,
-                    Enumerable.Empty<InlineDocumentationElement>()
+                    DocumentationElement.DefinitionListItemDescription()
                 )
             );
 
@@ -267,7 +323,7 @@ namespace CodeMap.Tests.DocumentationElements
             var exception = Assert.Throws<ArgumentNullException>(
                 "description",
                 () => DocumentationElement.DefinitionListItem(
-                    Enumerable.Empty<InlineDocumentationElement>(),
+                    DocumentationElement.DefinitionListItemTerm(),
                     null
                 )
             );
@@ -276,45 +332,45 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void CreatingDefinitionListItemElementWithTermContainingNullItemsThrowsException()
-        {
-            var exception = Assert.Throws<ArgumentException>(
-                "term",
-                () => DocumentationElement.DefinitionListItem(
-                    new InlineDocumentationElement[] { null },
-                    Enumerable.Empty<InlineDocumentationElement>()
-                )
-            );
-
-            Assert.Equal(new ArgumentException("Cannot contain 'null' elements.", "term").Message, exception.Message);
-        }
-
-        [Fact]
-        public void CreatingDefinitionListItemElementWithTermDescriptionContainingNullItemsThrowsException()
-        {
-            var exception = Assert.Throws<ArgumentException>(
-                "description",
-                () => DocumentationElement.DefinitionListItem(
-                    Enumerable.Empty<InlineDocumentationElement>(),
-                    new InlineDocumentationElement[] { null }
-                )
-            );
-
-            Assert.Equal(new ArgumentException("Cannot contain 'null' elements.", "description").Message, exception.Message);
-        }
-
-        [Fact]
         public void DefinitionListItemElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var definitionListItem = DocumentationElement.DefinitionListItem(
-                Enumerable.Empty<InlineDocumentationElement>(),
-                Enumerable.Empty<InlineDocumentationElement>()
+                DocumentationElement.DefinitionListItemTerm(),
+                DocumentationElement.DefinitionListItemDescription()
             );
 
             visitorMock.VerifyAcceptMethods(
                 definitionListItem,
                 visitor => visitor.VisitDefinitionListItem(definitionListItem)
+            );
+        }
+
+        [Fact]
+        public void CreatingDefinitionListTitleElementWithNullContentThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentNullException>("content", () => DocumentationElement.DefinitionListTitle(null));
+
+            Assert.Equal(new ArgumentNullException("content").Message, exception.Message);
+        }
+
+        [Fact]
+        public void CreatingDefinitionListTitleWithContentContainingNullThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentException>("content", () => DocumentationElement.DefinitionListTitle(new InlineDocumentationElement[] { null }));
+
+            Assert.Equal(new ArgumentException("Cannot contain 'null' elements.", "content").Message, exception.Message);
+        }
+
+        [Fact]
+        public void DefinitionListTitleElementCallsVisitorMethod()
+        {
+            var visitorMock = new Mock<IDocumentationVisitor>();
+            var definitionListTitle = DocumentationElement.DefinitionListTitle(Enumerable.Empty<InlineDocumentationElement>());
+
+            visitorMock.VerifyAcceptMethods(
+                definitionListTitle,
+                visitor => visitor.VisitDefinitionListTitle(definitionListTitle)
             );
         }
 
@@ -332,20 +388,6 @@ namespace CodeMap.Tests.DocumentationElements
             var exception = Assert.Throws<ArgumentException>("items", () => DocumentationElement.DefinitionList(new DefinitionListItemDocumentationElement[] { null }));
 
             Assert.Equal(new ArgumentException("Cannot contain 'null' items.", "items").Message, exception.Message);
-        }
-
-        [Fact]
-        public void CreatingDefinitionListElementWithTitleContainingNullValuesThrowsException()
-        {
-            var exception = Assert.Throws<ArgumentException>(
-                "inlineElements",
-                () => DocumentationElement.DefinitionList(
-                    DocumentationElement.InlineDescription(new InlineDocumentationElement[] { null }),
-                    Enumerable.Empty<DefinitionListItemDocumentationElement>()
-                )
-            );
-
-            Assert.Equal(new ArgumentException("Cannot contain 'null' elements.", "inlineElements").Message, exception.Message);
         }
 
         [Fact]

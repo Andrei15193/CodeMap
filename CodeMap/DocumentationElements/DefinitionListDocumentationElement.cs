@@ -7,11 +7,9 @@ namespace CodeMap.DocumentationElements
     /// <summary>Represents a definition list element corresponding to the <c>list</c> XML element.</summary>
     public sealed class DefinitionListDocumentationElement : BlockDocumentationElement
     {
-        internal DefinitionListDocumentationElement(InlineDescriptionDocumentationElement listTitle, IEnumerable<DefinitionListItemDocumentationElement> items, IReadOnlyDictionary<string, string> xmlAttributes)
+        internal DefinitionListDocumentationElement(DefinitionListTitleDocumentationElement listTitle, IEnumerable<DefinitionListItemDocumentationElement> items, IReadOnlyDictionary<string, string> xmlAttributes)
         {
-            ListTitle = listTitle ?? InlineDescription();
-            if (ListTitle.Contains(null))
-                throw new ArgumentException("Cannot contain 'null' elements.", nameof(listTitle));
+            ListTitle = listTitle;
 
             Items = items as IReadOnlyList<DefinitionListItemDocumentationElement>
                 ?? items?.ToList()
@@ -30,7 +28,7 @@ namespace CodeMap.DocumentationElements
         }
 
         /// <summary>The list title of the definition list.</summary>
-        public InlineDescriptionDocumentationElement ListTitle { get; }
+        public DefinitionListTitleDocumentationElement ListTitle { get; }
 
         /// <summary>The items that form the definition list.</summary>
         public IReadOnlyList<DefinitionListItemDocumentationElement> Items { get; }

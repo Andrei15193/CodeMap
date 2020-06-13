@@ -349,11 +349,11 @@ namespace CodeMap.DocumentationElements
                         var termElement = itemXmlElement.Element("term");
                         var descriptionElement = itemXmlElement.Element("description");
                         return DocumentationElement.DefinitionListItem(
-                            DocumentationElement.InlineDescription(
+                            DocumentationElement.DefinitionListItemTerm(
                                 _ReadContent(termElement?.Nodes() ?? Enumerable.Empty<XNode>()),
                                 termElement != null ? _ReadXmlAttributes(termElement) : null
                             ),
-                            DocumentationElement.InlineDescription(
+                            DocumentationElement.DefinitionListItemDescription(
                                 _ReadContent(itemXmlElement.Element("description")?.Nodes() ?? Enumerable.Empty<XNode>()),
                                 descriptionElement != null ? _ReadXmlAttributes(descriptionElement) : null
                             ),
@@ -364,7 +364,7 @@ namespace CodeMap.DocumentationElements
 
             var listTitleXmlElement = xmlElement.Element("listheader");
             var listTitleNodes = (listTitleXmlElement?.Element("term") ?? listTitleXmlElement)?.Nodes();
-            var listTile = listTitleNodes == null ? null : DocumentationElement.InlineDescription(_ReadContent(listTitleNodes), _ReadXmlAttributes(listTitleXmlElement));
+            var listTile = listTitleNodes == null ? null : DocumentationElement.DefinitionListTitle(_ReadContent(listTitleNodes), _ReadXmlAttributes(listTitleXmlElement));
             return DocumentationElement.DefinitionList(
                 listTile,
                 definitionListItems,

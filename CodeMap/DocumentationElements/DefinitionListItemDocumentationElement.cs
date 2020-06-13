@@ -7,7 +7,7 @@ namespace CodeMap.DocumentationElements
     /// <summary>Represents a definition list item corresponding to the <c>item</c> XML element containing both a <c>term</c> and a <c>description</c> XML element.</summary>
     public sealed class DefinitionListItemDocumentationElement : DocumentationElement
     {
-        internal DefinitionListItemDocumentationElement(InlineDescriptionDocumentationElement term, InlineDescriptionDocumentationElement description, IReadOnlyDictionary<string, string> xmlAttributes)
+        internal DefinitionListItemDocumentationElement(DefinitionListItemTermDocumentationElement term, DefinitionListItemDescriptionDocumentationElement description, IReadOnlyDictionary<string, string> xmlAttributes)
         {
             Term = term ?? throw new ArgumentNullException(nameof(term));
             Description = description ?? throw new ArgumentNullException(nameof(description));
@@ -18,10 +18,10 @@ namespace CodeMap.DocumentationElements
         }
 
         /// <summary>The defined term.</summary>
-        public InlineDescriptionDocumentationElement Term { get; }
+        public DefinitionListItemTermDocumentationElement Term { get; }
 
         /// <summary>The term description or definition.</summary>
-        public InlineDescriptionDocumentationElement Description { get; }
+        public DefinitionListItemDescriptionDocumentationElement Description { get; }
 
         /// <summary>The additional XML attributes on the definition list item element.</summary>
         public IReadOnlyDictionary<string, string> XmlAttributes { get; }

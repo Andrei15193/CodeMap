@@ -118,16 +118,16 @@ namespace CodeMap.Tests.DocumentationElements
                         _richInlineElements
                     ),
                     DocumentationElement.DefinitionList(
-                        DocumentationElement.InlineDescription(
+                        DocumentationElement.DefinitionListTitle(
                             _richInlineElements
                         ),
                         DocumentationElement.DefinitionListItem(
-                            _richInlineElements,
-                            _richInlineElements
+                            DocumentationElement.DefinitionListItemTerm(_richInlineElements),
+                            DocumentationElement.DefinitionListItemDescription(_richInlineElements)
                         ),
                         DocumentationElement.DefinitionListItem(
-                            Enumerable.Empty<InlineDocumentationElement>(),
-                            Enumerable.Empty<InlineDocumentationElement>()
+                            DocumentationElement.DefinitionListItemTerm(Enumerable.Empty<InlineDocumentationElement>()),
+                            DocumentationElement.DefinitionListItemDescription(Enumerable.Empty<InlineDocumentationElement>())
                         )
                     )
             }
@@ -884,24 +884,24 @@ fourth line
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 1") },
-                            DocumentationElement.Text("The first item")
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 1")),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The first item"))
                         ),
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 2") },
-                            DocumentationElement.Text("The second item")
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 2")),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The second item"))
                         ),
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 3") },
-                            DocumentationElement.Text("The third item")
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 3")),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The third item"))
                         ),
                         DocumentationElement.DefinitionListItem(
-                            Enumerable.Empty<InlineDocumentationElement>(),
-                            DocumentationElement.Text("The fourth item")
+                            DocumentationElement.DefinitionListItemTerm(),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The fourth item"))
                         ),
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 5") },
-                            Enumerable.Empty<InlineDocumentationElement>()
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 5")),
+                            DocumentationElement.DefinitionListItemDescription()
                         )
                     )
                 ),
@@ -943,12 +943,12 @@ fourth line
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 1") },
-                            DocumentationElement.Text("The first item")
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 1")),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The first item"))
                         ),
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 2") },
-                            DocumentationElement.Text("The second item")
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 2")),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The second item"))
                         )
                     )
                 ),
@@ -990,12 +990,12 @@ fourth line
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 1") },
-                            DocumentationElement.Text("The first item")
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 1")),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The first item"))
                         ),
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 2") },
-                            DocumentationElement.Text("The second item")
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 2")),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The second item"))
                         )
                     )
                 ),
@@ -1039,16 +1039,16 @@ fourth line
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
-                        DocumentationElement.InlineDescription(
+                        DocumentationElement.DefinitionListTitle(
                             DocumentationElement.Text("this is a title")
                         ),
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 1") },
-                            DocumentationElement.Text("The first item")
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 1")),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The first item"))
                         ),
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 2") },
-                            DocumentationElement.Text("The second item")
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 2")),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The second item"))
                         )
                     )
                 ),
@@ -1092,16 +1092,16 @@ fourth line
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
-                        DocumentationElement.InlineDescription(
+                        DocumentationElement.DefinitionListTitle(
                             DocumentationElement.Text("this is a title")
                         ),
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 1") },
-                            DocumentationElement.Text("The first item")
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 1")),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The first item"))
                         ),
                         DocumentationElement.DefinitionListItem(
-                            new[] { DocumentationElement.Text("term 2") },
-                            DocumentationElement.Text("The second item")
+                            DocumentationElement.DefinitionListItemTerm(DocumentationElement.Text("term 2")),
+                            DocumentationElement.DefinitionListItemDescription(DocumentationElement.Text("The second item"))
                         )
                     )
                 ),
@@ -1137,7 +1137,7 @@ fourth line
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
-                        DocumentationElement.InlineDescription(
+                        DocumentationElement.DefinitionListTitle(
                             DocumentationElement.Text("this is a title")
                         )
                     )
@@ -1173,7 +1173,7 @@ fourth line
             _AssertAreEqual(
                 DocumentationElement.Summary(
                     DocumentationElement.DefinitionList(
-                        DocumentationElement.InlineDescription()
+                        DocumentationElement.DefinitionListTitle()
                     )
                 ),
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Summary
@@ -1867,7 +1867,7 @@ fourth line
             if (expected.ListTitle == null)
                 Assert.Null(actual.ListTitle);
             else
-                _AssertAreEqual(expected.ListTitle, actual.ListTitle);
+                _AssertAreEqual(expected.ListTitle.Content, actual.ListTitle.Content);
 
             Assert.Equal(expected.Items.Count, actual.Items.Count);
             foreach (var (expectedListItem, actualListItem) in expected.Items.Zip(actual.Items, (expectedListItem, actualListItem) => (expectedListItem, actualListItem)))
@@ -1876,8 +1876,8 @@ fourth line
 
         private static void _AssertAreEqual(DefinitionListItemDocumentationElement expected, DefinitionListItemDocumentationElement actual)
         {
-            _AssertAreEqual(expected.Term, actual.Term);
-            _AssertAreEqual(expected.Description, actual.Description);
+            _AssertAreEqual(expected.Term.Content, actual.Term.Content);
+            _AssertAreEqual(expected.Description.Content, actual.Description.Content);
         }
 
         private static void _AssertAreEqual(TableDocumentationElement expected, TableDocumentationElement actual)
@@ -2139,18 +2139,18 @@ fourth line
                 Assert.Equal("item", item.XmlAttributes["test"]);
                 Assert.Equal("old description", item.XmlAttributes["test2"]);
 
-                if (item.Term.Any())
+                if (item.Term.Content.Any())
                 {
                     Assert.Single(item.Term.XmlAttributes);
                     Assert.Equal("term", item.Term.XmlAttributes["test"]);
-                    _AssertInlineElementsXmlAttributes(item.Term);
+                    _AssertInlineElementsXmlAttributes(item.Term.Content);
                 }
 
-                if (item.Description.Any())
+                if (item.Description.Content.Any())
                 {
                     Assert.Single(item.Description.XmlAttributes);
                     Assert.Equal("description", item.Description.XmlAttributes["test2"]);
-                    _AssertInlineElementsXmlAttributes(item.Description);
+                    _AssertInlineElementsXmlAttributes(item.Description.Content);
                 }
             }
         }

@@ -50,9 +50,21 @@ namespace CodeMap.DocumentationElements
         /// <param name="definitionList">The <see cref="DefinitionListDocumentationElement"/> to visit.</param>
         protected internal abstract void VisitDefinitionList(DefinitionListDocumentationElement definitionList);
 
-        /// <summary>Visits a definition list title.</summary>
+        /// <summary>Visits a definition list title element.</summary>
+        /// <param name="definitionListTitle">The <see cref="DefinitionListTitleDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitDefinitionListTitle(DefinitionListTitleDocumentationElement definitionListTitle);
+
+        /// <summary>Visits a definition list item.</summary>
         /// <param name="definitionListItem">The <see cref="DefinitionListItemDocumentationElement"/> to visit.</param>
         protected internal abstract void VisitDefinitionListItem(DefinitionListItemDocumentationElement definitionListItem);
+
+        /// <summary>Visits a definition list item term.</summary>
+        /// <param name="definitionListItemTerm">The <see cref="DefinitionListItemTermDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitDefinitionListItemTerm(DefinitionListItemTermDocumentationElement definitionListItemTerm);
+
+        /// <summary>Visits a definition list item description.</summary>
+        /// <param name="definitionListItemDescription">The <see cref="DefinitionListItemDescriptionDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitDefinitionListItemDescription(DefinitionListItemDescriptionDocumentationElement definitionListItemDescription);
 
         /// <summary>Visits a table.</summary>
         /// <param name="table">The <see cref="TableDocumentationElement"/> to visit.</param>

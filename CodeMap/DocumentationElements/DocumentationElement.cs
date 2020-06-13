@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace CodeMap.DocumentationElements
@@ -280,7 +279,7 @@ namespace CodeMap.DocumentationElements
         /// <returns>Returns a <see cref="DefinitionListDocumentationElement"/> with the provided <paramref name="items"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="items"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="listTitle"/> or <paramref name="items"/> contain <c>null</c> elements.</exception>
-        public static DefinitionListDocumentationElement DefinitionList(InlineDescriptionDocumentationElement listTitle, IEnumerable<DefinitionListItemDocumentationElement> items)
+        public static DefinitionListDocumentationElement DefinitionList(DefinitionListTitleDocumentationElement listTitle, IEnumerable<DefinitionListItemDocumentationElement> items)
             => new DefinitionListDocumentationElement(listTitle, items, null);
 
         /// <summary>Creates a <see cref="DefinitionListDocumentationElement"/> with the provided <paramref name="items"/>.</summary>
@@ -289,7 +288,7 @@ namespace CodeMap.DocumentationElements
         /// <returns>Returns a <see cref="DefinitionListDocumentationElement"/> with the provided <paramref name="items"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="items"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="listTitle"/> or <paramref name="items"/> contain <c>null</c> elements.</exception>
-        public static DefinitionListDocumentationElement DefinitionList(InlineDescriptionDocumentationElement listTitle, params DefinitionListItemDocumentationElement[] items)
+        public static DefinitionListDocumentationElement DefinitionList(DefinitionListTitleDocumentationElement listTitle, params DefinitionListItemDocumentationElement[] items)
             => new DefinitionListDocumentationElement(listTitle, items, null);
 
         /// <summary>Creates a <see cref="DefinitionListDocumentationElement"/> with the provided <paramref name="items"/>.</summary>
@@ -299,38 +298,33 @@ namespace CodeMap.DocumentationElements
         /// <returns>Returns a <see cref="DefinitionListDocumentationElement"/> with the provided <paramref name="items"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="items"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="listTitle"/>, <paramref name="items"/> or <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
-        public static DefinitionListDocumentationElement DefinitionList(InlineDescriptionDocumentationElement listTitle, IEnumerable<DefinitionListItemDocumentationElement> items, IReadOnlyDictionary<string, string> xmlAttributes)
+        public static DefinitionListDocumentationElement DefinitionList(DefinitionListTitleDocumentationElement listTitle, IEnumerable<DefinitionListItemDocumentationElement> items, IReadOnlyDictionary<string, string> xmlAttributes)
             => new DefinitionListDocumentationElement(listTitle, items, xmlAttributes);
 
-        /// <summary>Creates a <see cref="DefinitionListItemDocumentationElement"/> with the provided <paramref name="term"/> and <paramref name="description"/>.</summary>
-        /// <param name="term">The content inside the <c>term</c> XML element of an <c>item</c> XML element.</param>
-        /// <param name="description">The content inside the <c>description</c> XML element of an <c>item</c> XML element.</param>
-        /// <returns>Returns a <see cref="DefinitionListItemDocumentationElement"/> with the provided <paramref name="term"/> and <paramref name="description"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="term"/> or <paramref name="description"/> are <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="term"/> or <paramref name="description"/> contain <c>null</c> elements.</exception>
-        public static DefinitionListItemDocumentationElement DefinitionListItem(IEnumerable<InlineDocumentationElement> term, IEnumerable<InlineDocumentationElement> description)
-        {
-            if (term == null)
-                throw new ArgumentNullException(nameof(term));
-            if (term.Contains(null))
-                throw new ArgumentException("Cannot contain 'null' elements.", nameof(term));
+        /// <summary>Creates a <see cref="DefinitionListTitleDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
+        /// <param name="content">The content of the <c>itemheader</c> XML element.</param>
+        /// <returns>Returns a <see cref="DefinitionListTitleDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="content"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> contains <c>null</c> elements.</exception>
+        public static DefinitionListTitleDocumentationElement DefinitionListTitle(IEnumerable<InlineDocumentationElement> content)
+            => new DefinitionListTitleDocumentationElement(content, null);
 
-            if (description == null)
-                throw new ArgumentNullException(nameof(description));
-            if (description.Contains(null))
-                throw new ArgumentException("Cannot contain 'null' elements.", nameof(description));
+        /// <summary>Creates a <see cref="DefinitionListTitleDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
+        /// <param name="content">The content of the <c>itemheader</c> XML element.</param>
+        /// <returns>Returns a <see cref="DefinitionListTitleDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="content"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> contains <c>null</c> elements.</exception>
+        public static DefinitionListTitleDocumentationElement DefinitionListTitle(params InlineDocumentationElement[] content)
+            => new DefinitionListTitleDocumentationElement(content, null);
 
-            return new DefinitionListItemDocumentationElement(InlineDescription(term), InlineDescription(description), null);
-        }
-
-        /// <summary>Creates a <see cref="DefinitionListItemDocumentationElement"/> with the provided <paramref name="term"/> and <paramref name="description"/>.</summary>
-        /// <param name="term">The content inside the <c>term</c> XML element of an <c>item</c> XML element.</param>
-        /// <param name="description">The content inside the <c>description</c> XML element of an <c>item</c> XML element.</param>
-        /// <returns>Returns a <see cref="DefinitionListItemDocumentationElement"/> with the provided <paramref name="term"/> and <paramref name="description"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="term"/> or <paramref name="description"/> are <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="term"/> or <paramref name="description"/> contain <c>null</c> elements.</exception>
-        public static DefinitionListItemDocumentationElement DefinitionListItem(IEnumerable<InlineDocumentationElement> term, params InlineDocumentationElement[] description)
-            => DefinitionListItem(term, description.AsEnumerable());
+        /// <summary>Creates a <see cref="DefinitionListItemTermDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
+        /// <param name="content">The content of the <c>itemheader</c> XML element.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the paragraph element.</param>
+        /// <returns>Returns a <see cref="DefinitionListItemTermDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="content"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> or <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
+        public static DefinitionListTitleDocumentationElement DefinitionListTitle(IEnumerable<InlineDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
+            => new DefinitionListTitleDocumentationElement(content, xmlAttributes);
 
         /// <summary>Creates a <see cref="DefinitionListItemDocumentationElement"/> with the provided <paramref name="term"/> and <paramref name="description"/>.</summary>
         /// <param name="term">The content inside the <c>term</c> XML element of an <c>item</c> XML element.</param>
@@ -338,7 +332,7 @@ namespace CodeMap.DocumentationElements
         /// <returns>Returns a <see cref="DefinitionListItemDocumentationElement"/> with the provided <paramref name="term"/> and <paramref name="description"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="term"/> or <paramref name="description"/> are <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="term"/> or <paramref name="description"/> contain <c>null</c> elements.</exception>
-        public static DefinitionListItemDocumentationElement DefinitionListItem(InlineDescriptionDocumentationElement term, InlineDescriptionDocumentationElement description)
+        public static DefinitionListItemDocumentationElement DefinitionListItem(DefinitionListItemTermDocumentationElement term, DefinitionListItemDescriptionDocumentationElement description)
             => new DefinitionListItemDocumentationElement(term, description, null);
 
         /// <summary>Creates a <see cref="DefinitionListItemDocumentationElement"/> with the provided <paramref name="term"/> and <paramref name="description"/>.</summary>
@@ -348,8 +342,58 @@ namespace CodeMap.DocumentationElements
         /// <returns>Returns a <see cref="DefinitionListItemDocumentationElement"/> with the provided <paramref name="term"/> and <paramref name="description"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="term"/> or <paramref name="description"/> are <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="term"/>, <paramref name="description"/> or <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
-        public static DefinitionListItemDocumentationElement DefinitionListItem(InlineDescriptionDocumentationElement term, InlineDescriptionDocumentationElement description, IReadOnlyDictionary<string, string> xmlAttributes)
+        public static DefinitionListItemDocumentationElement DefinitionListItem(DefinitionListItemTermDocumentationElement term, DefinitionListItemDescriptionDocumentationElement description, IReadOnlyDictionary<string, string> xmlAttributes)
             => new DefinitionListItemDocumentationElement(term, description, xmlAttributes);
+
+        /// <summary>Creates a <see cref="DefinitionListItemTermDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
+        /// <param name="content">The content of the <c>term</c> XML element.</param>
+        /// <returns>Returns a <see cref="DefinitionListItemTermDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="content"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> contains <c>null</c> elements.</exception>
+        public static DefinitionListItemTermDocumentationElement DefinitionListItemTerm(IEnumerable<InlineDocumentationElement> content)
+            => new DefinitionListItemTermDocumentationElement(content, null);
+
+        /// <summary>Creates a <see cref="DefinitionListItemTermDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
+        /// <param name="content">The content of the <c>term</c> XML element.</param>
+        /// <returns>Returns a <see cref="DefinitionListItemTermDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="content"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> contains <c>null</c> elements.</exception>
+        public static DefinitionListItemTermDocumentationElement DefinitionListItemTerm(params InlineDocumentationElement[] content)
+            => new DefinitionListItemTermDocumentationElement(content, null);
+
+        /// <summary>Creates a <see cref="DefinitionListItemTermDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
+        /// <param name="content">The content of the <c>term</c> XML element.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the paragraph element.</param>
+        /// <returns>Returns a <see cref="DefinitionListItemTermDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="content"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> or <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
+        public static DefinitionListItemTermDocumentationElement DefinitionListItemTerm(IEnumerable<InlineDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
+            => new DefinitionListItemTermDocumentationElement(content, xmlAttributes);
+
+        /// <summary>Creates a <see cref="DefinitionListItemDescriptionDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
+        /// <param name="content">The content of the <c>description</c> XML element.</param>
+        /// <returns>Returns a <see cref="DefinitionListItemDescriptionDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="content"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> contains <c>null</c> elements.</exception>
+        public static DefinitionListItemDescriptionDocumentationElement DefinitionListItemDescription(IEnumerable<InlineDocumentationElement> content)
+            => new DefinitionListItemDescriptionDocumentationElement(content, null);
+
+        /// <summary>Creates a <see cref="DefinitionListItemDescriptionDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
+        /// <param name="content">The content of the <c>description</c> XML element.</param>
+        /// <returns>Returns a <see cref="DefinitionListItemDescriptionDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="content"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> contains <c>null</c> elements.</exception>
+        public static DefinitionListItemDescriptionDocumentationElement DefinitionListItemDescription(params InlineDocumentationElement[] content)
+            => new DefinitionListItemDescriptionDocumentationElement(content, null);
+
+        /// <summary>Creates a <see cref="DefinitionListItemDescriptionDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
+        /// <param name="content">The content of the <c>description</c> XML element.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the paragraph element.</param>
+        /// <returns>Returns a <see cref="DefinitionListItemDescriptionDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="content"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> or <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
+        public static DefinitionListItemDescriptionDocumentationElement DefinitionListItemDescription(IEnumerable<InlineDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
+            => new DefinitionListItemDescriptionDocumentationElement(content, xmlAttributes);
 
         /// <summary>Creates a <see cref="TableDocumentationElement"/> with the provided <paramref name="columns"/> and <paramref name="rows"/>.</summary>
         /// <param name="columns">The columns inside the <c>listheader</c> XML element of a <c>list</c> XML element.</param>
@@ -514,31 +558,6 @@ namespace CodeMap.DocumentationElements
         /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> or <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
         public static TableCellDocumentationElement TableCell(IEnumerable<InlineDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
             => new TableCellDocumentationElement(content, xmlAttributes);
-
-        /// <summary>Creates a <see cref="InlineDescriptionDocumentationElement"/> with the provided <paramref name="inlineElements"/>.</summary>
-        /// <param name="inlineElements">The <see cref="InlineDocumentationElement"/>s to wrap.</param>
-        /// <returns>Returns a <see cref="InlineDescriptionDocumentationElement"/> with the provided <paramref name="inlineElements"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="inlineElements"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="inlineElements"/> contain <c>null</c> values.</exception>
-        public static InlineDescriptionDocumentationElement InlineDescription(IEnumerable<InlineDocumentationElement> inlineElements)
-            => new InlineDescriptionDocumentationElement(inlineElements, null);
-
-        /// <summary>Creates a <see cref="InlineDescriptionDocumentationElement"/> with the provided <paramref name="inlineElements"/>.</summary>
-        /// <param name="inlineElements">The <see cref="InlineDocumentationElement"/>s to wrap.</param>
-        /// <returns>Returns a <see cref="InlineDescriptionDocumentationElement"/> with the provided <paramref name="inlineElements"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="inlineElements"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="inlineElements"/> contain <c>null</c> values.</exception>
-        public static InlineDescriptionDocumentationElement InlineDescription(params InlineDocumentationElement[] inlineElements)
-            => new InlineDescriptionDocumentationElement(inlineElements, null);
-
-        /// <summary>Creates a <see cref="InlineDescriptionDocumentationElement"/> with the provided <paramref name="inlineElements"/>.</summary>
-        /// <param name="inlineElements">The <see cref="InlineDocumentationElement"/>s to wrap.</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the container element.</param>
-        /// <returns>Returns a <see cref="InlineDescriptionDocumentationElement"/> with the provided <paramref name="inlineElements"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="inlineElements"/> or <paramref name="xmlAttributes"/> are <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="inlineElements"/> or <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
-        public static InlineDescriptionDocumentationElement InlineDescription(IEnumerable<InlineDocumentationElement> inlineElements, IReadOnlyDictionary<string, string> xmlAttributes)
-            => new InlineDescriptionDocumentationElement(inlineElements, xmlAttributes);
 
         /// <summary>Creates a <see cref="TableDocumentationElement"/> with the provided <paramref name="text"/>.</summary>
         /// <param name="text">Plain text inside XML elements.</param>
