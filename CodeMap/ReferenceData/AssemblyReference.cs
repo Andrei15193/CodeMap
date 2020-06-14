@@ -2,8 +2,6 @@
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 using System;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CodeMap.ReferenceData
 {

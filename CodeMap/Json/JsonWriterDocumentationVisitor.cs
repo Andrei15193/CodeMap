@@ -367,6 +367,24 @@ namespace CodeMap.Json
             _jsonWriter.WriteEndObject();
         }
 
+        /// <summary>Visits a hyperlink.</summary>
+        /// <param name="hyperlink">The <see cref="HyperlinkDocumentationElement"/> to visit.</param>
+        protected internal override void VisitHyperlink(HyperlinkDocumentationElement hyperlink)
+        {
+            _jsonWriter.WriteStartObject();
+
+            _jsonWriter.WritePropertyName("kind");
+            _jsonWriter.WriteValue("hyperlink");
+
+            _jsonWriter.WritePropertyName("destination");
+            _jsonWriter.WriteValue(hyperlink.Destination);
+
+            _jsonWriter.WritePropertyName("content");
+            _jsonWriter.WriteValue(hyperlink.Text);
+
+            _jsonWriter.WriteEndObject();
+        }
+
         /// <summary>Visits an unresolved inline member reference.</summary>
         /// <param name="memberNameReference">The <see cref="MemberNameReferenceDocumentationElement"/> to visit.</param>
         protected internal override void VisitInlineReference(MemberNameReferenceDocumentationElement memberNameReference)

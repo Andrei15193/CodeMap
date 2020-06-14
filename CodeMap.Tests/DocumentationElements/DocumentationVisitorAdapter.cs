@@ -36,6 +36,9 @@ namespace CodeMap.Tests.DocumentationElements
         protected override void VisitInlineCode(InlineCodeDocumentationElement inlineCode)
             => _documentationVisitor.VisitInlineCode(inlineCode);
 
+        protected override void VisitInlineReference(MemberNameReferenceDocumentationElement memberNameReference)
+            => _documentationVisitor.VisitInlineReference(memberNameReference);
+
         protected override void VisitInlineReference(MemberInfoReferenceDocumentationElement memberInfoReference)
             => _documentationVisitor.VisitInlineReference(memberInfoReference);
 
@@ -71,6 +74,9 @@ namespace CodeMap.Tests.DocumentationElements
 
         protected override void VisitText(TextDocumentationElement text)
             => _documentationVisitor.VisitText(text);
+
+        protected override void VisitHyperlink(HyperlinkDocumentationElement hyperlink)
+            => _documentationVisitor.VisitHyperlink(hyperlink);
 
         protected override void VisitUnorderedList(UnorderedListDocumentationElement unorderedList)
             => _documentationVisitor.VisitUnorderedList(unorderedList);

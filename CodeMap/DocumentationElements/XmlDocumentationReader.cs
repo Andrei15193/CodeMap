@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -27,7 +26,7 @@ namespace CodeMap.DocumentationElements
 
         /// <summary>Reads the XML documentation into <see cref="MemberDocumentation"/> items.</summary>
         /// <param name="input">The <see cref="TextReader"/> from which to load <see cref="MemberDocumentation"/> items.</param>
-        /// <returns>Returns a collection of <see cref="MemberDocumentation"/> loaded from the provided <paramref name="input"/> wrapped in a <see cref="Task{TResult}"/>.</returns>
+        /// <returns>Returns a collection of <see cref="MemberDocumentation"/> loaded from the provided <paramref name="input"/>.</returns>
         public MemberDocumentationCollection Read(TextReader input)
         {
             XDocument documentation;
