@@ -605,6 +605,9 @@ namespace CodeMap.Documentation
                                 new NamespaceDocumentationAddition
                                 {
                                     Summary = DocumentationElement.Summary(
+                                        DocumentationElement.Paragraph(
+                                            DocumentationElement.Text("This is a test")
+                                        )
                                     )
                                 }
                             }

@@ -26,34 +26,6 @@ namespace CodeMap.Documentation
                 return trimmedValue;
         }
 
-        public static string HtmlEncode(this string value)
-            => Regex.Replace(
-                value,
-                "[&<>\"']",
-                match =>
-                {
-                    switch (match.Value)
-                    {
-                        case "&":
-                            return "&amp;";
-
-                        case "<":
-                            return "&lt;";
-
-                        case ">":
-                            return "&gt;";
-
-                        case "\"":
-                            return "&quot;";
-
-                        case "'":
-                            return "&#39;";
-
-                        default:
-                            return match.Value;
-                    }
-                });
-
         public static string GetMemberFullName(this MemberInfo member)
         {
             var memberFullNameBuilder = new StringBuilder();
