@@ -2908,9 +2908,9 @@
                 "content": " "
               },
               {
-                "kind": "unresolvedReference",
+                "kind": "reference",
                 "xmlAttributes": { "test": "see" },
-                "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
               },
               {
                 "kind": "text",
@@ -2956,9 +2956,9 @@
                     "content": " "
                   },
                   {
-                    "kind": "unresolvedReference",
+                    "kind": "reference",
                     "xmlAttributes": { "test": "see" },
-                    "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                    "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
                   },
                   {
                     "kind": "text",
@@ -3012,9 +3012,9 @@
                         "content": " "
                       },
                       {
-                        "kind": "unresolvedReference",
+                        "kind": "reference",
                         "xmlAttributes": { "test": "see" },
-                        "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                        "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
                       },
                       {
                         "kind": "text",
@@ -3053,9 +3053,9 @@
                         "content": " "
                       },
                       {
-                        "kind": "unresolvedReference",
+                        "kind": "reference",
                         "xmlAttributes": { "test": "see" },
-                        "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                        "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
                       },
                       {
                         "kind": "text",
@@ -3127,9 +3127,9 @@
                     "content": " "
                   },
                   {
-                    "kind": "unresolvedReference",
+                    "kind": "reference",
                     "xmlAttributes": { "test": "see" },
-                    "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                    "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
                   },
                   {
                     "kind": "text",
@@ -3172,9 +3172,9 @@
                     "content": " "
                   },
                   {
-                    "kind": "unresolvedReference",
+                    "kind": "reference",
                     "xmlAttributes": { "test": "see" },
-                    "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                    "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
                   },
                   {
                     "kind": "text",
@@ -3231,9 +3231,9 @@
                     "content": " "
                   },
                   {
-                    "kind": "unresolvedReference",
+                    "kind": "reference",
                     "xmlAttributes": { "test": "see" },
-                    "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                    "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
                   },
                   {
                     "kind": "text",
@@ -3276,9 +3276,9 @@
                     "content": " "
                   },
                   {
-                    "kind": "unresolvedReference",
+                    "kind": "reference",
                     "xmlAttributes": { "test": "see" },
-                    "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                    "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
                   },
                   {
                     "kind": "text",
@@ -3328,9 +3328,9 @@
                 "content": " "
               },
               {
-                "kind": "unresolvedReference",
+                "kind": "reference",
                 "xmlAttributes": { "test": "see" },
-                "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
               },
               {
                 "kind": "text",
@@ -3372,9 +3372,9 @@
                   "content": " "
                 },
                 {
-                  "kind": "unresolvedReference",
+                  "kind": "reference",
                   "xmlAttributes": { "test": "see" },
-                  "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                  "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
                 },
                 {
                   "kind": "text",
@@ -3419,9 +3419,9 @@
                       "content": " "
                     },
                     {
-                      "kind": "unresolvedReference",
+                      "kind": "reference",
                       "xmlAttributes": { "test": "see" },
-                      "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                      "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
                     },
                     {
                       "kind": "text",
@@ -3460,9 +3460,9 @@
                       "content": " "
                     },
                     {
-                      "kind": "unresolvedReference",
+                      "kind": "reference",
                       "xmlAttributes": { "test": "see" },
-                      "canonicalName": "P:CodeMap.Tests.Data.ITestDocumentation.Member"
+                      "id": "CodeMap.Tests.Data.ITestDocumentation.Member"
                     },
                     {
                       "kind": "text",

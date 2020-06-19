@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -189,85 +191,34 @@ namespace CodeMap.Documentation
 
         public static string GetMicrosoftDocsLink(this MemberInfo member)
         {
-            var microsoftDocsLinkBuilder = new StringBuilder((member.DeclaringType != null ? GetMemberFullName(member.DeclaringType) : GetMemberFullName(member)).ToLowerInvariant())
-                .Append("?view=netcore-3.1#");
+            var microsoftDocsLinkBuilder = new StringBuilder("https://docs.microsoft.com/dotnet/api/");
 
-            switch (member)
+            if (member is Type)
+                AppendTypePath(member as Type);
+            else
+                AppendTypePath(member.DeclaringType)
+                    .Append('.')
+                    .Append(member.Name.ToLowerInvariant());
+            microsoftDocsLinkBuilder.Append("?view=netcore-3.1");
+
+            return microsoftDocsLinkBuilder.ToString();
+
+            StringBuilder AppendTypePath(Type type)
             {
-                case FieldInfo _:
-                case EventInfo _:
-                    microsoftDocsLinkBuilder.Append(GetMemberFullName(member.DeclaringType)).Replace(".", "_").Replace("`", "__").Append('_').Append(member.Name);
-                    break;
+                var typeStack = new Stack<Type>();
 
-                case PropertyInfo property:
-                    microsoftDocsLinkBuilder.Append(GetMemberFullName(property.DeclaringType).Replace(".", "_").Replace("`", "__")).Append('_').Append(property.Name);
-                    var indexParameters = property.GetIndexParameters();
-                    if (indexParameters.Length > 0)
-                    {
-                        var isFirst = true;
-                        microsoftDocsLinkBuilder.Append('_');
-                        foreach (var indexParameter in indexParameters)
-                        {
-                            if (isFirst)
-                                isFirst = false;
-                            else
-                                microsoftDocsLinkBuilder.Append('_');
-                            microsoftDocsLinkBuilder.Append(GetMemberFullName(indexParameter.ParameterType));
-                        }
-                        microsoftDocsLinkBuilder.Append('_');
-                    }
-                    break;
+                while (type != null)
+                {
+                    typeStack.Push(type);
+                    type = type.DeclaringType;
+                }
 
-                case MethodInfo method:
-                    microsoftDocsLinkBuilder.Append(GetMemberFullName(method.DeclaringType).Replace(".", "_").Replace("`", "__")).Append('_').Append(method.Name);
-                    var methodParameters = method.GetParameters();
-                    if (methodParameters.Length > 0)
-                    {
-                        var isFirst = true;
-                        microsoftDocsLinkBuilder.Append('_');
-                        foreach (var methodParameter in methodParameters)
-                        {
-                            if (isFirst)
-                                isFirst = false;
-                            else
-                                microsoftDocsLinkBuilder.Append('_');
-                            microsoftDocsLinkBuilder.Append(GetMemberFullName(methodParameter.ParameterType));
-                        }
-                        microsoftDocsLinkBuilder.Append('_');
-                    }
-                    break;
+                microsoftDocsLinkBuilder.Append(typeStack.Peek().Namespace);
+                while (typeStack.Any())
+                    microsoftDocsLinkBuilder.Append('.').Append(typeStack.Pop().Name.Replace('`', '-'));
 
-                case ConstructorInfo constructor:
-                    microsoftDocsLinkBuilder.Append(GetMemberFullName(constructor.DeclaringType).Replace(".", "_").Replace("`", "__")).Append('_').Append("ctor");
-                    var constructorParameters = constructor.GetParameters();
-                    if (constructorParameters.Length > 0)
-                    {
-                        var isFirst = true;
-                        microsoftDocsLinkBuilder.Append('_');
-                        foreach (var constructorParameter in constructorParameters)
-                        {
-                            if (isFirst)
-                                isFirst = false;
-                            else
-                                microsoftDocsLinkBuilder.Append('_');
-                            microsoftDocsLinkBuilder.Append(GetMemberFullName(constructorParameter.ParameterType));
-                        }
-                        microsoftDocsLinkBuilder.Append('_');
-                    }
-                    break;
-
-                case Type type:
-                    microsoftDocsLinkBuilder.Append(type.Name);
-                    while (type.DeclaringType != null)
-                    {
-                        microsoftDocsLinkBuilder.Insert(0, '_').Insert(0, type.DeclaringType.Name);
-                        type = type.DeclaringType;
-                    }
-                    if (!string.IsNullOrWhiteSpace(type.Namespace))
-                        microsoftDocsLinkBuilder.Insert(0, '_').Insert(0, type.Namespace);
-                    break;
+                return microsoftDocsLinkBuilder;
             }
-            return microsoftDocsLinkBuilder.Insert(0, "https://docs.microsoft.com/dotnet/api/").ToString();
         }
     }
 }

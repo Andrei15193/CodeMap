@@ -22,11 +22,13 @@ namespace CodeMap.DeclarationNodes
             var xmlDocumentationFileInfo = new FileInfo(Path.ChangeExtension(assembly.Location, ".xml"));
             if (xmlDocumentationFileInfo.Exists)
             {
+                var canonicalNameResolver = new CanonicalNameResolver(new[] { assembly }.Concat(assembly.GetReferencedAssemblies().Select(Assembly.Load)));
+
                 MemberDocumentationCollection membersDocumentation;
                 using (var xmlDocumentationReader = xmlDocumentationFileInfo.OpenText())
-                    membersDocumentation = new XmlDocumentationReader().Read(xmlDocumentationReader);
+                    membersDocumentation = new XmlDocumentationReader(canonicalNameResolver).Read(xmlDocumentationReader);
 
-                return Create(assembly, membersDocumentation);
+                return new DeclarationNodeFactory(canonicalNameResolver, membersDocumentation).Create(assembly);
             }
             else
                 return Create(assembly, new MemberDocumentationCollection(Enumerable.Empty<MemberDocumentation>()));

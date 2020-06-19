@@ -19,12 +19,14 @@ namespace CodeMap.Documentation
         protected override void VisitAssembly(AssemblyDeclaration assembly)
         {
             _WriteAssets();
-            _WriteHtml("Index.html", new[] { (assembly.Name, "Index.html") }, assembly, contentElement =>
+            _WriteHtml("Index.html", new[] { (assembly.Name, "Index.html") }, assembly, pageContentElement =>
             {
-                assembly.Summary.Accept(new HtmlWriterDocumentationVisitor(contentElement, assembly));
-
-                contentElement
+                pageContentElement
                     .AddChild("h2")
+                        .AppendText(assembly.Name)
+                        .ParentNode
+                    .Apply(contentElement => assembly.Summary.Accept(new HtmlWriterDocumentationVisitor(contentElement, assembly)))
+                    .AddChild("h3")
                         .AppendText("Namespaces")
                         .ParentNode
                     .AddChild("table").SetClass("table table-hover")
@@ -52,14 +54,62 @@ namespace CodeMap.Documentation
                                             .ParentNode
                                         .AddChild("td")
                                             .Apply(tableData => @namespace.Summary.Accept(new HtmlWriterDocumentationVisitor(tableData, assembly)))
-                            );
-
-                assembly.Remarks.Accept(new HtmlWriterDocumentationVisitor(contentElement, assembly));
+                            )
+                            .ParentNode
+                        .ParentNode
+                    .Apply(contentElement => assembly.Remarks.Accept(new HtmlWriterDocumentationVisitor(contentElement, assembly)));
             });
+
+            foreach (var @namespace in assembly.Namespaces)
+                if (@namespace.DeclaredTypes.Any(declaredType => declaredType.AccessModifier == AccessModifier.Public))
+                    @namespace.Accept(this);
 
             _UpdateVersions(assembly);
             _CopyLatestToSpecificVersion(assembly);
         }
+
+        protected override void VisitNamespace(NamespaceDeclaration @namespace)
+            => _WriteHtml($"{@namespace.Name}.html", new[] { (@namespace.Assembly.Name, "Index.html"), (@namespace.Name, $"{@namespace.Name}.html") }, @namespace.Assembly, pageContentElement =>
+                pageContentElement
+                    .AddChild("h2")
+                        .AppendText($"{@namespace.Name} Namespace")
+                        .ParentNode
+                    .Apply(contentElement => @namespace.Summary.Accept(new HtmlWriterDocumentationVisitor(contentElement, @namespace.Assembly)))
+                    .Apply(contentElement =>
+                    {
+                        if (@namespace.Classes.Any())
+                            contentElement
+                                .AddChild("h3")
+                                    .AppendText("Classes")
+                                    .ParentNode
+                                .AddChild("table").SetClass("table table-hover")
+                                    .AddChild("thead")
+                                        .AddChild("tr")
+                                            .AddChild("th")
+                                                .AppendText("Name")
+                                                .ParentNode
+                                            .AddChild("th")
+                                                .AppendText("Summary")
+                                                .ParentNode
+                                            .ParentNode
+                                        .ParentNode
+                                    .AddChild("tbody")
+                                        .Aggregate(
+                                            from @class in @namespace.Classes
+                                            where @class.AccessModifier == AccessModifier.Public
+                                            orderby @class.Name
+                                            select @class,
+                                            (@class, parent) => parent
+                                                .AddChild("tr")
+                                                    .AddChild("td")
+                                                        .AddChild("a").SetAttribute("href", $"{@class.Name}.html")
+                                                        .AppendText(@class.Name)
+                                                        .ParentNode
+                                                    .AddChild("td")
+                                                        .Apply(tableData => @class.Summary.Accept(new HtmlWriterDocumentationVisitor(tableData, @class.Assembly)))
+                                        );
+                    })
+                    .Apply(contentElement => @namespace.Remarks.Accept(new HtmlWriterDocumentationVisitor(contentElement, @namespace.Assembly))));
 
         protected override void VisitClass(ClassDeclaration @class)
         {
@@ -102,11 +152,6 @@ namespace CodeMap.Documentation
         }
 
         protected override void VisitMethod(MethodDeclaration method)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void VisitNamespace(NamespaceDeclaration @namespace)
         {
             throw new NotImplementedException();
         }
@@ -225,10 +270,10 @@ namespace CodeMap.Documentation
                                 .AppendText(_GetVersion(assembly.Version))
                                 .ParentNode
                             .ParentNode
-                        .AddChild("a").SetClass("btn btn-link").SetAttribute("href", "https://github.com/Andrei15193/CodeMap")
+                        .AddChild("a").SetClass("btn btn-link").SetAttribute("href", $"https://github.com/Andrei15193/{assembly.Name}")
                             .AppendText("View on GitHub")
                             .ParentNode
-                        .AddChild("a").SetClass("btn btn-link").SetAttribute("href", $"https://www.nuget.org/packages/CodeMap/{_GetVersion(assembly.Version)}")
+                        .AddChild("a").SetClass("btn btn-link").SetAttribute("href", $"https://www.nuget.org/packages/{assembly.Name}/{_GetVersion(assembly.Version)}")
                             .AppendText("View on NuGet")
                             .ParentNode
                         .AddChild("div").SetAttribute("id", "otherVersions")
@@ -259,15 +304,15 @@ namespace CodeMap.Documentation
                         .ParentNode
                     .AddChild("div").SetClass("d-flex flex-column container px-2")
                         .AddChild("p").SetClass("footer")
-                            .AddChild("a").SetAttribute("href", $"https://github.com/Andrei15193/CodeMap/releases/tag/{_GetVersion(assembly.Version)}")
+                            .AddChild("a").SetAttribute("href", $"https://github.com/Andrei15193/{assembly.Name}/releases/tag/{_GetVersion(assembly.Version)}")
                                 .AppendText($"{assembly.Name} {_GetVersion(assembly.Version)}")
                                 .ParentNode
                             .AppendText(" - ")
-                            .AddChild("a").SetAttribute("href", "https://github.com/Andrei15193/CodeMap")
+                            .AddChild("a").SetAttribute("href", "https://github.com/Andrei15193/{assembly.Name}")
                                 .AppendText("View on GitHub")
                                 .ParentNode
                             .AppendText(" - ")
-                            .AddChild("a").SetAttribute("href", $"https://www.nuget.org/packages/CodeMap/{_GetVersion(assembly.Version)}")
+                            .AddChild("a").SetAttribute("href", $"https://www.nuget.org/packages/{assembly.Name}/{_GetVersion(assembly.Version)}")
                                 .AppendText("View on NuGet")
                                 .ParentNode
                             .ParentNode

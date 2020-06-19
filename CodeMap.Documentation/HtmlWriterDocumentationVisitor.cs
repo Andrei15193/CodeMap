@@ -29,7 +29,7 @@ namespace CodeMap.Documentation
         {
             if (remarks.Content.Any())
             {
-                _htmlNodes.Peek().AddChild("h2").AppendText("Remarks");
+                _htmlNodes.Peek().AddChild("h3").AppendText("Remarks");
                 foreach (var element in remarks.Content)
                     element.Accept(this);
             }
@@ -48,11 +48,11 @@ namespace CodeMap.Documentation
         protected override void VisitParagraph(ParagraphDocumentationElement paragraph)
         {
             if (paragraph.XmlAttributes.TryGetValue("section", out var section))
-                _htmlNodes.Peek().AddChild("h3").AppendText(section);
+                _htmlNodes.Peek().AddChild("h4").AppendText(section);
             else if (paragraph.XmlAttributes.TryGetValue("subsection", out var subsection))
-                _htmlNodes.Peek().AddChild("h4").AppendText(subsection);
+                _htmlNodes.Peek().AddChild("h5").AppendText(subsection);
             else if (paragraph.XmlAttributes.TryGetValue("subsection-example", out var subsectionExample))
-                _htmlNodes.Peek().AddChild("h5").AppendText(subsectionExample);
+                _htmlNodes.Peek().AddChild("h6").AppendText(subsectionExample);
 
             _htmlNodes.Push(_htmlNodes.Peek().AddChild("p"));
             foreach (var element in paragraph.Content)

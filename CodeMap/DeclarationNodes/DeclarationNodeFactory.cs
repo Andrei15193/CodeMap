@@ -17,10 +17,7 @@ namespace CodeMap.DeclarationNodes
         private readonly MemberDocumentationCollection _membersDocumentation;
 
         public DeclarationNodeFactory(CanonicalNameResolver canonicalNameResolver, MemberDocumentationCollection membersDocumentation)
-        {
-            _canonicalNameResolver = canonicalNameResolver;
-            _membersDocumentation = membersDocumentation;
-        }
+            => (_canonicalNameResolver, _membersDocumentation) = (canonicalNameResolver, membersDocumentation);
 
         public AssemblyDeclaration Create(Assembly assembly)
         {

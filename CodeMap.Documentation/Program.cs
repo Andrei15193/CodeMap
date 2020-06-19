@@ -428,7 +428,7 @@ namespace CodeMap.Documentation
                             DocumentationElement.Paragraph(
                                 DocumentationElement.Text("Same definition list, we can wrap the title in a "),
                                 DocumentationElement.InlineCode("term"),
-                                DocumentationElement.Text("element to conform with the documentation:")
+                                DocumentationElement.Text(" element to conform with the documentation:")
                             ),
                             DocumentationElement.CodeBlock(@"
                                 <list>
