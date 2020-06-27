@@ -1162,26 +1162,32 @@ namespace CodeMap.Tests
 
         public static TInstance AssertAssembly<TInstance>(this TInstance instance, Func<AssemblyDeclaration> selector, Assembly assembly)
         {
-            var assemblyDocumentationElement = selector();
+            var assemblyDeclaration = selector();
             var coreAssembly = typeof(object).Assembly;
 
-            Assert.True(assemblyDocumentationElement == assembly);
-            Assert.True(assembly == assemblyDocumentationElement);
-            Assert.False(assemblyDocumentationElement != assembly);
-            Assert.False(assembly != assemblyDocumentationElement);
+            Assert.True(assemblyDeclaration == assembly);
+            Assert.True(assembly == assemblyDeclaration);
+            Assert.False(assemblyDeclaration != assembly);
+            Assert.False(assembly != assemblyDeclaration);
 
-            Assert.True(assemblyDocumentationElement != coreAssembly);
-            Assert.True(coreAssembly != assemblyDocumentationElement);
+            Assert.True(assemblyDeclaration != coreAssembly);
+            Assert.True(coreAssembly != assemblyDeclaration);
 
             var assemblyName = assembly.GetName();
             var coreAssemblyName = coreAssembly.GetName();
-            Assert.True(assemblyDocumentationElement == assemblyName);
-            Assert.True(assemblyName == assemblyDocumentationElement);
-            Assert.False(assemblyDocumentationElement != assemblyName);
-            Assert.False(assemblyName != assemblyDocumentationElement);
+            Assert.True(assemblyDeclaration == assemblyName);
+            Assert.True(assemblyName == assemblyDeclaration);
+            Assert.False(assemblyDeclaration != assemblyName);
+            Assert.False(assemblyName != assemblyDeclaration);
 
-            Assert.True(assemblyDocumentationElement != coreAssemblyName);
-            Assert.True(coreAssemblyName != assemblyDocumentationElement);
+            Assert.True(assemblyDeclaration != coreAssemblyName);
+            Assert.True(coreAssemblyName != assemblyDeclaration);
+
+            var assemblyReference = new MemberReferenceFactory().Create(assembly);
+            Assert.True(assemblyDeclaration == assemblyReference);
+            Assert.True(assemblyReference == assemblyDeclaration);
+            Assert.False(assemblyDeclaration != assemblyReference);
+            Assert.False(assemblyReference != assemblyDeclaration);
 
             return instance;
         }

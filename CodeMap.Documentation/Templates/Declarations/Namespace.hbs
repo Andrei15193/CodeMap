@@ -1,0 +1,13 @@
+﻿{{#with declarationNode}}
+<h2>{{name}} Namespace</h2>
+
+{{DocumentationContent summary}}
+
+{{MemberDefinitionsList 'Enums' enums}}
+{{MemberDefinitionsList 'Delegates' delegates}}
+{{MemberDefinitionsList 'Interfaces' interfaces}}
+{{MemberDefinitionsList 'Classes' classes}}
+{{MemberDefinitionsList 'Structs' structs}}
+
+{{DocumentationContent remarks}}
+{{/with}}

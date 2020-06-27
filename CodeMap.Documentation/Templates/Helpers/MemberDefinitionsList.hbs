@@ -1,0 +1,21 @@
+﻿{{#if (HasPublicDefinitions definitions)}}
+<h3>{{title}}</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each definitions}}
+        {{#if (IsPublicDefinition this)}}
+        <tr>
+            <td>{{MemberLink this}}</td>
+            <td>{{DocumentationContent summary}}</td>
+        </tr>
+        {{/if}}
+        {{/#each}}
+    </tbody>
+</table>
+{{/if}}

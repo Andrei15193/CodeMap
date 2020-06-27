@@ -8,13 +8,60 @@
 
   <ItemGroup>
     <None Remove="Assets\Style.css" />
+    <None Remove="Templates\Assembly.hbs" />
+    <None Remove="Templates\Code.hbs" />
+    <None Remove="Templates\CodeBlock.hbs" />
+    <None Remove="Templates\Declarations\Class.hbs" />
+    <None Remove="Templates\Declarations\Enum.hbs" />
+    <None Remove="Templates\Declarations\Namespace.hbs" />
+    <None Remove="Templates\GenericParameterReference.hbs" />
+    <None Remove="Templates\Helpers\MemberDefinitionsList.hbs" />
+    <None Remove="Templates\Helpers\MemberLink.hbs" />
+    <None Remove="Templates\Hyperlink.hbs" />
+    <None Remove="Templates\ListItem.hbs" />
+    <None Remove="Templates\OrderedList.hbs" />
+    <None Remove="Templates\Page.hbs" />
+    <None Remove="Templates\Paragraph.hbs" />
+    <None Remove="Templates\ParameterReference.hbs" />
+    <None Remove="Templates\Remarks.hbs" />
+    <None Remove="Templates\Summary.hbs" />
+    <None Remove="Templates\Table.hbs" />
+    <None Remove="Templates\TableCell.hbs" />
+    <None Remove="Templates\TableColumn.hbs" />
+    <None Remove="Templates\TableRow.hbs" />
+    <None Remove="Templates\Text.hbs" />
+    <None Remove="Templates\UnorderedList.hbs" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\Style.css" />
+    <EmbeddedResource Include="Templates\Declarations\Class.hbs" />
+    <EmbeddedResource Include="Templates\Declarations\Enum.hbs" />
+    <EmbeddedResource Include="Templates\Declarations\Namespace.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\Hyperlink.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\Code.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\GenericParameterReference.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\ParameterReference.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\Text.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\TableCell.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\TableRow.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\TableColumn.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\Table.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\ListItem.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\Paragraph.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\CodeBlock.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\Remarks.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\OrderedList.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\UnorderedList.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\Summary.hbs" />
+    <EmbeddedResource Include="Templates\Declarations\Assembly.hbs" />
+    <EmbeddedResource Include="Templates\Helpers\MemberDefinitionsList.hbs" />
+    <EmbeddedResource Include="Templates\Helpers\MemberLink.hbs" />
+    <EmbeddedResource Include="Templates\Page.hbs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Handlebars.Net" Version="1.10.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.24" />
     <PackageReference Include="PygmentSharp.Core" Version="0.2.1" />
   </ItemGroup>

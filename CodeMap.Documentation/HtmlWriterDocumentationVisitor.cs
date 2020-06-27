@@ -1,38 +1,25 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.DocumentationElements;
-using HtmlAgilityPack;
-using PygmentSharp.Core;
-using PygmentSharp.Core.Formatting;
-using PygmentSharp.Core.Lexing;
+﻿using CodeMap.DocumentationElements;
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace CodeMap.Documentation
 {
     public class HtmlWriterDocumentationVisitor : DocumentationVisitor
     {
-        private readonly Stack<HtmlNode> _htmlNodes;
-        private readonly AssemblyDeclaration _library;
+        private readonly TextWriter _writer;
+        private readonly PageContext _context;
 
-        public HtmlWriterDocumentationVisitor(HtmlNode htmlNode, AssemblyDeclaration library)
-            => (_htmlNodes, _library) = (new Stack<HtmlNode>(new[] { htmlNode }), library);
+        public HtmlWriterDocumentationVisitor(TextWriter writer, PageContext context)
+            => (_writer, _context) = (writer, context);
 
         protected override void VisitSummary(SummaryDocumentationElement summary)
-        {
-            foreach (var element in summary.Content)
-                element.Accept(this);
-        }
+            => _writer.WriteTemplate("Summary", new TemplateContext<SummaryDocumentationElement>(_context, summary));
 
         protected override void VisitRemarks(RemarksDocumentationElement remarks)
         {
             if (remarks.Content.Any())
-            {
-                _htmlNodes.Peek().AddChild("h3").AppendText("Remarks");
-                foreach (var element in remarks.Content)
-                    element.Accept(this);
-            }
+                _writer.WriteTemplate("Remarks", new TemplateContext<RemarksDocumentationElement>(_context, remarks));
         }
 
         protected override void VisitExample(ExampleDocumentationElement example)
@@ -46,63 +33,19 @@ namespace CodeMap.Documentation
         }
 
         protected override void VisitParagraph(ParagraphDocumentationElement paragraph)
-        {
-            if (paragraph.XmlAttributes.TryGetValue("section", out var section))
-                _htmlNodes.Peek().AddChild("h4").AppendText(section);
-            else if (paragraph.XmlAttributes.TryGetValue("subsection", out var subsection))
-                _htmlNodes.Peek().AddChild("h5").AppendText(subsection);
-            else if (paragraph.XmlAttributes.TryGetValue("subsection-example", out var subsectionExample))
-                _htmlNodes.Peek().AddChild("h6").AppendText(subsectionExample);
-
-            _htmlNodes.Push(_htmlNodes.Peek().AddChild("p"));
-            foreach (var element in paragraph.Content)
-                element.Accept(this);
-            _htmlNodes.Pop();
-        }
+            => _writer.WriteTemplate("Paragraph", new TemplateContext<ParagraphDocumentationElement>(_context, paragraph));
 
         protected override void VisitCodeBlock(CodeBlockDocumentationElement codeBlock)
-        {
-            Lexer lexer = null;
-            if (codeBlock.XmlAttributes.TryGetValue("language", out var language))
-                switch (language.ToLowerInvariant())
-                {
-                    case "c#":
-                        lexer = new CSharpLexer();
-                        break;
-
-                    case "xml":
-                        lexer = new HtmlLexer();
-                        break;
-                }
-            if (lexer != null)
-                _htmlNodes.Peek().AppendChild(_htmlNodes.Peek().OwnerDocument.CreateComment(Pygmentize.Content(codeBlock.Code).WithLexer(lexer).WithFormatter(new HtmlFormatter(new HtmlFormatterOptions())).AsString()));
-            else
-                _htmlNodes.Peek().AddChild("pre").AddChild("code").AppendText(codeBlock.Code);
-        }
+            => _writer.WriteTemplate("CodeBlock", new TemplateContext<CodeBlockDocumentationElement>(_context, codeBlock));
 
         protected override void VisitUnorderedList(UnorderedListDocumentationElement unorderedList)
-        {
-            _htmlNodes.Push(_htmlNodes.Peek().AddChild("ul"));
-            foreach (var item in unorderedList.Items)
-                item.Accept(this);
-            _htmlNodes.Pop();
-        }
+            => _writer.WriteTemplate("UnorderedList", new TemplateContext<UnorderedListDocumentationElement>(_context, unorderedList));
 
         protected override void VisitOrderedList(OrderedListDocumentationElement orderedList)
-        {
-            _htmlNodes.Push(_htmlNodes.Peek().AddChild("ol"));
-            foreach (var item in orderedList.Items)
-                item.Accept(this);
-            _htmlNodes.Pop();
-        }
+            => _writer.WriteTemplate("OrderedList", new TemplateContext<OrderedListDocumentationElement>(_context, orderedList));
 
         protected override void VisitListItem(ListItemDocumentationElement listItem)
-        {
-            _htmlNodes.Push(_htmlNodes.Peek().AddChild("li"));
-            foreach (var element in listItem.Content)
-                element.Accept(this);
-            _htmlNodes.Pop();
-        }
+            => _writer.WriteTemplate("ListItem", new TemplateContext<ListItemDocumentationElement>(_context, listItem));
 
         protected override void VisitDefinitionList(DefinitionListDocumentationElement definitionList)
         {
@@ -130,65 +73,33 @@ namespace CodeMap.Documentation
         }
 
         protected override void VisitTable(TableDocumentationElement table)
-        {
-            _htmlNodes.Push(_htmlNodes.Peek().AddChild("table").SetClass("table table-hover"));
-
-            _htmlNodes.Push(_htmlNodes.Peek().AddChild("thead").AddChild("tr"));
-            foreach (var column in table.Columns)
-                column.Accept(this);
-            _htmlNodes.Pop();
-
-            _htmlNodes.Push(_htmlNodes.Peek().AddChild("tbody"));
-            foreach (var rows in table.Rows)
-                rows.Accept(this);
-            _htmlNodes.Pop();
-
-            _htmlNodes.Pop();
-        }
+            => _writer.WriteTemplate("Table", new TemplateContext<TableDocumentationElement>(_context, table));
 
         protected override void VisitTableColumn(TableColumnDocumentationElement tableColumn)
-        {
-            _htmlNodes.Push(_htmlNodes.Peek().AddChild("th"));
-            foreach (var element in tableColumn.Name)
-                element.Accept(this);
-            _htmlNodes.Pop();
-        }
+            => _writer.WriteTemplate("TableColumn", new TemplateContext<TableColumnDocumentationElement>(_context, tableColumn));
 
         protected override void VisitTableRow(TableRowDocumentationElement tableRow)
-        {
-            _htmlNodes.Push(_htmlNodes.Peek().AddChild("tr"));
-            foreach (var cell in tableRow.Cells)
-                cell.Accept(this);
-            _htmlNodes.Pop();
-        }
+            => _writer.WriteTemplate("TableRow", new TemplateContext<TableRowDocumentationElement>(_context, tableRow));
 
         protected override void VisitTableCell(TableCellDocumentationElement tableCell)
-        {
-            _htmlNodes.Push(_htmlNodes.Peek().AddChild("td"));
-            foreach (var element in tableCell.Content)
-                element.Accept(this);
-            _htmlNodes.Pop();
-        }
+            => _writer.WriteTemplate("TableCell", new TemplateContext<TableCellDocumentationElement>(_context, tableCell));
 
         protected override void VisitText(TextDocumentationElement text)
-            => _htmlNodes.Peek().AppendText(text.Text);
+            => _writer.WriteTemplate("Text", new TemplateContext<TextDocumentationElement>(_context, text));
 
         protected override void VisitHyperlink(HyperlinkDocumentationElement hyperlink)
-            => _htmlNodes.Peek().AddChild("a").SetAttribute("href", hyperlink.Destination).AppendText(hyperlink.Text);
+            => _writer.WriteTemplate("Hyperlink", new TemplateContext<HyperlinkDocumentationElement>(_context, hyperlink));
 
         protected override void VisitInlineReference(MemberInfoReferenceDocumentationElement memberInfoReference)
-            => _htmlNodes.Peek().AddChild("a").SetAttribute("href", _GetMemberLink(memberInfoReference.ReferredMember)).AppendText(memberInfoReference.ReferredMember.GetMemberName());
-
-        private string _GetMemberLink(MemberInfo memberInfo)
-            => _library == memberInfo.Module.Assembly ? memberInfo.GetMemberFullName() + ".html" : memberInfo.GetMicrosoftDocsLink();
+            => VisitHyperlink(DocumentationElement.Hyperlink(memberInfoReference.GetMemberUrl(_context.Assembly), memberInfoReference.ReferredMember.GetMemberName()));
 
         protected override void VisitInlineCode(InlineCodeDocumentationElement inlineCode)
-            => _htmlNodes.Peek().AddChild("code").AppendText(inlineCode.Code);
+            => _writer.WriteTemplate("Code", new TemplateContext<InlineCodeDocumentationElement>(_context, inlineCode));
 
         protected override void VisitParameterReference(ParameterReferenceDocumentationElement parameterReference)
-            => _htmlNodes.Peek().AddChild("em").AppendText(parameterReference.ParameterName);
+            => _writer.WriteTemplate("ParameterReference", new TemplateContext<ParameterReferenceDocumentationElement>(_context, parameterReference));
 
         protected override void VisitGenericParameterReference(GenericParameterReferenceDocumentationElement genericParameterReference)
-            => _htmlNodes.Peek().AddChild("em").AppendText(genericParameterReference.GenericParameterName);
+            => _writer.WriteTemplate("GenericParameterReference", new TemplateContext<GenericParameterReferenceDocumentationElement>(_context, genericParameterReference));
     }
 }

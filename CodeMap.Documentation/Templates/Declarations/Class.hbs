@@ -1,0 +1,30 @@
+﻿{{#with declarationNode}}
+<h2>{{name}} Class</h2>
+
+{{DocumentationContent summary}}
+
+<p>
+    Base type: {{MemberLink baseClass}}.
+    {{#if (HasAny implementedInterfaces)}}
+    <br />
+    Implemented interfaces: {{Join ', ' implementedInterfaces}}{{MemberLink this}}{{/Join}}.
+    {{/if}}
+</p>
+
+{{#if isStatic}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/static">static</a> class.</p>
+{{else if isSealed}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a> class.</p>
+{{else if isAbstract}}
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> class.</p>
+{{/if}}
+
+{{MemberDefinitionsList 'Constants' constants}}
+{{MemberDefinitionsList 'Fields' fields}}
+{{MemberDefinitionsList 'Constructors' constructors}}
+{{MemberDefinitionsList 'Events' events}}
+{{MemberDefinitionsList 'Properties' properties}}
+{{MemberDefinitionsList 'Methods' methods}}
+
+{{DocumentationContent remarks}}
+{{/with}}

@@ -1,0 +1,27 @@
+﻿{{#with declarationNode}}
+<h2>{{name}}</h2>
+
+{{DocumentationContent summary}}
+
+<h3>Namespaces</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each namespaces}}
+        {{#if (HasPublicDefinitions declaredTypes)}}
+        <tr>
+            <td>{{MemberLink this}}</td>
+            <td>{{DocumentationContent summary}}</td>
+        </tr>
+        {{/if}}
+        {{/#each}}
+    </tbody>
+</table>
+
+{{DocumentationContent remarks}}
+{{/with}}

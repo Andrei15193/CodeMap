@@ -9,7 +9,7 @@ using System.Reflection;
 namespace CodeMap.DeclarationNodes
 {
     /// <summary>Represents a documented assembly.</summary>
-    public class AssemblyDeclaration : DeclarationNode, IEquatable<Assembly>, IEquatable<AssemblyName>
+    public class AssemblyDeclaration : DeclarationNode, IEquatable<Assembly>, IEquatable<AssemblyName>, IEquatable<AssemblyReference>
     {
         /// <summary>Determines whether the provided <paramref name="assemblyDocumentationElement"/> and <paramref name="assembly"/> are equal.</summary>
         /// <param name="assemblyDocumentationElement">The <see cref="AssemblyDeclaration"/> to compare.</param>
@@ -67,6 +67,34 @@ namespace CodeMap.DeclarationNodes
         public static bool operator !=(AssemblyName assemblyName, AssemblyDeclaration assemblyDocumentationElement)
             => !Equals(assemblyDocumentationElement, assemblyName);
 
+        /// <summary>Determines whether the provided <paramref name="assemblyDocumentationElement"/> and <paramref name="assemblyReference"/> are equal.</summary>
+        /// <param name="assemblyDocumentationElement">The <see cref="AssemblyDeclaration"/> to compare.</param>
+        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
+        public static bool operator ==(AssemblyDeclaration assemblyDocumentationElement, AssemblyReference assemblyReference)
+            => Equals(assemblyDocumentationElement, assemblyReference);
+
+        /// <summary>Determines whether the provided <paramref name="assemblyDocumentationElement"/> and <paramref name="assemblyReference"/> are not equal.</summary>
+        /// <param name="assemblyDocumentationElement">The <see cref="AssemblyDeclaration"/> to compare.</param>
+        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
+        public static bool operator !=(AssemblyDeclaration assemblyDocumentationElement, AssemblyReference assemblyReference)
+            => !Equals(assemblyDocumentationElement, assemblyReference);
+
+        /// <summary>Determines whether the provided <paramref name="assemblyDocumentationElement"/> and <paramref name="assemblyReference"/> are equal.</summary>
+        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
+        /// <param name="assemblyDocumentationElement">The <see cref="AssemblyDeclaration"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
+        public static bool operator ==(AssemblyReference assemblyReference, AssemblyDeclaration assemblyDocumentationElement)
+            => Equals(assemblyDocumentationElement, assemblyReference);
+
+        /// <summary>Determines whether the provided <paramref name="assemblyDocumentationElement"/> and <paramref name="assemblyReference"/> are equal.</summary>
+        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
+        /// <param name="assemblyDocumentationElement">The <see cref="AssemblyDeclaration"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
+        public static bool operator !=(AssemblyReference assemblyReference, AssemblyDeclaration assemblyDocumentationElement)
+            => !Equals(assemblyDocumentationElement, assemblyReference);
+
         internal AssemblyDeclaration()
         {
         }
@@ -109,15 +137,15 @@ namespace CodeMap.DeclarationNodes
         public override void Accept(DeclarationNodeVisitor visitor)
             => visitor.VisitAssembly(this);
 
-        /// <summary>Determines whether the current <see cref="AssemblyReference"/> is equal to the provided <paramref name="assembly"/>.</summary>
+        /// <summary>Determines whether the current <see cref="AssemblyDeclaration"/> is equal to the provided <paramref name="assembly"/>.</summary>
         /// <param name="assembly">The <see cref="Assembly"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="AssemblyReference"/> references the provided <paramref name="assembly"/>; <c>false</c> otherwise.</returns>
+        /// <returns>Returns <c>true</c> if the current <see cref="AssemblyDeclaration"/> references the provided <paramref name="assembly"/>; <c>false</c> otherwise.</returns>
         public bool Equals(Assembly assembly)
             => Equals(assembly?.GetName());
 
-        /// <summary>Determines whether the current <see cref="AssemblyReference"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
+        /// <summary>Determines whether the current <see cref="AssemblyDeclaration"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
         /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="AssemblyReference"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
+        /// <returns>Returns <c>true</c> if the current <see cref="AssemblyDeclaration"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
         public bool Equals(AssemblyName assemblyName)
         {
             if (assemblyName == null)
@@ -130,13 +158,29 @@ namespace CodeMap.DeclarationNodes
                 && string.Equals(PublicKeyToken, assemblyName.GetPublicKeyToken().ToBase16String(), StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>Determines whether the current <see cref="AssemblyDeclaration"/> is equal to the provided <paramref name="assemblyReference"/>.</summary>
+        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="AssemblyDeclaration"/> references the provided <paramref name="assemblyReference"/>; <c>false</c> otherwise.</returns>
+        public bool Equals(AssemblyReference assemblyReference)
+        {
+            if (assemblyReference == null)
+                return false;
+
+            return
+                string.Equals(Name, assemblyReference.Name, StringComparison.OrdinalIgnoreCase)
+                && Version == assemblyReference.Version
+                && string.Equals(Culture, assemblyReference.Culture, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(PublicKeyToken, assemblyReference.PublicKeyToken, StringComparison.OrdinalIgnoreCase);
+        }
+
         /// <summary>Determines whether the current <see cref="AssemblyDeclaration"/> is equal to the provided <paramref name="obj"/>.</summary>
         /// <param name="obj">The <see cref="object"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="AssemblyDeclaration"/> references the provided <paramref name="obj"/>; <c>false</c> otherwise.</returns>
         /// <remarks>
-        /// If the provided <paramref name="obj"/> is an <see cref="Assembly"/> or <see cref="AssemblyName"/> instance then the comparison is done by
-        /// comparing members and determining whether the current instance actually maps to the provided <see cref="Assembly"/> or
-        /// <see cref="AssemblyName"/>. Otherwise the equality is determined by comparing references.
+        /// If the provided <paramref name="obj"/> is an <see cref="Assembly"/>, <see cref="AssemblyName"/>, <see cref="AssemblyReference"/>
+        /// instance then the comparison is done by comparing members and determining whether the current instance actually maps to the provided
+        /// <see cref="Assembly"/>, <see cref="AssemblyName"/> or <see cref="AssemblyReference"/>. Otherwise the equality is determined by comparing
+        /// references.
         /// </remarks>
         public override bool Equals(object obj)
         {
@@ -144,6 +188,8 @@ namespace CodeMap.DeclarationNodes
                 return Equals(assembly);
             else if (obj is AssemblyName assemblyName)
                 return Equals(assemblyName);
+            else if (obj is AssemblyReference assemblyReference)
+                return Equals(assemblyReference);
             else
                 return base.Equals(obj);
         }

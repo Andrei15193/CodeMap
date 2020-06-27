@@ -1,4 +1,8 @@
-﻿using System;
+﻿using CodeMap.DeclarationNodes;
+using CodeMap.Documentation.Visitors;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +13,28 @@ namespace CodeMap.Documentation
 {
     internal static class Extensions
     {
+        public static string ToSemver(this Version version)
+        {
+            var prerelease = string.Empty;
+            if (version.Build > 0)
+                switch (version.Build / 1000)
+                {
+                    case 1:
+                        prerelease = "-alpha" + version.Build % 1000;
+                        break;
+
+                    case 2:
+                        prerelease = "-beta" + version.Build % 1000;
+                        break;
+
+                    case 3:
+                        prerelease = "-rc" + version.Build % 1000;
+                        break;
+                }
+
+            return $"{version.Major}.{version.Minor}.{version.Revision}{prerelease}";
+        }
+
         public static string CollapseIndentation(this string value)
         {
             var trimmedValue = value.Trim('\r', '\n');
@@ -26,6 +52,77 @@ namespace CodeMap.Documentation
             }
             else
                 return trimmedValue;
+        }
+
+        public static string GetMemberName(this TypeDeclaration typeDeclaration)
+        {
+            var visitor = new MemberDeclarationNameVisitor();
+            typeDeclaration.Accept(visitor);
+            return visitor.Result;
+        }
+
+        public static string GetMemberName(this MemberDeclaration memberDeclaration)
+        {
+            var visitor = new MemberDeclarationNameVisitor();
+            memberDeclaration.Accept(visitor);
+            return visitor.Result;
+        }
+
+        public static string GetMemberName(this MemberReference memberReference)
+        {
+            if (memberReference == typeof(object))
+                return "object";
+            if (memberReference == typeof(byte))
+                return "byte";
+            if (memberReference == typeof(sbyte))
+                return "sbyte";
+            if (memberReference == typeof(short))
+                return "short";
+            if (memberReference == typeof(ushort))
+                return "ushort";
+            if (memberReference == typeof(int))
+                return "int";
+            if (memberReference == typeof(uint))
+                return "uint";
+            if (memberReference == typeof(long))
+                return "long";
+            if (memberReference == typeof(float))
+                return "float";
+            if (memberReference == typeof(double))
+                return "double";
+            if (memberReference == typeof(decimal))
+                return "decimal";
+            if (memberReference == typeof(char))
+                return "char";
+            if (memberReference == typeof(string))
+                return "string";
+            if (memberReference is DynamicTypeReference)
+                return "dynamic";
+
+            var visitor = new MemberReferenceNameVisitor();
+            memberReference.Accept(visitor);
+            return visitor.Result;
+        }
+
+        public static string GetMemberFullName(this TypeDeclaration typeDeclaration)
+        {
+            var visitor = new MemberDeclarationFullNameVisitor();
+            typeDeclaration.Accept(visitor);
+            return visitor.Result;
+        }
+
+        public static string GetMemberFullName(this MemberDeclaration memberDeclaration)
+        {
+            var visitor = new MemberDeclarationFullNameVisitor();
+            memberDeclaration.Accept(visitor);
+            return visitor.Result;
+        }
+
+        public static string GetMemberFullName(this MemberReference memberReference)
+        {
+            var visitor = new MemberReferenceFullNameVisitor();
+            memberReference.Accept(visitor);
+            return visitor.Result;
         }
 
         public static string GetMemberFullName(this MemberInfo member)
@@ -187,6 +284,16 @@ namespace CodeMap.Documentation
                     break;
             }
             return memberNameBuilder.ToString();
+        }
+
+        public static string GetMemberUrl(this MemberInfoReferenceDocumentationElement memberInfoReference, AssemblyDeclaration library)
+            => library == memberInfoReference.ReferredMember.Module.Assembly ? memberInfoReference.ReferredMember.GetMemberFullName() + ".html" : memberInfoReference.ReferredMember.GetMicrosoftDocsLink();
+
+        public static string GetMicrosoftDocsLink(this MemberReference memberReference)
+        {
+            var visitor = new MemberReferenceMicrosoftLinkVisitor();
+            memberReference.Accept(visitor);
+            return visitor.Result;
         }
 
         public static string GetMicrosoftDocsLink(this MemberInfo member)
