@@ -20,6 +20,7 @@ namespace CodeMap.Documentation
             .RegisterHelper(new MemberName())
             .RegisterHelper(new MemberUrl())
             .RegisterHelper(new MemberLink())
+            .RegisterHelper(new TypeReferenceLink())
             .RegisterHelper(new Format())
             .RegisterHelper(new Pygments())
             .RegisterHelper(new HasPublicDefinitions())

@@ -4,10 +4,10 @@
 {{DocumentationContent summary}}
 
 <p>
-    Base type: {{MemberLink baseClass}}.
+    Base type: {{TypeReferenceLink baseClass}}.
     {{#if (HasAny implementedInterfaces)}}
     <br />
-    Implemented interfaces: {{Join ', ' implementedInterfaces}}{{MemberLink this}}{{/Join}}.
+    Implemented interfaces: {{Join ', ' implementedInterfaces}}{{TypeReferenceLink this}}{{/Join}}.
     {{/if}}
 </p>
 
@@ -25,6 +25,12 @@
 {{MemberDefinitionsList 'Events' events}}
 {{MemberDefinitionsList 'Properties' properties}}
 {{MemberDefinitionsList 'Methods' methods}}
+
+{{MemberDefinitionsList 'Nested Enums' nestedEnums}}
+{{MemberDefinitionsList 'Nested Delegates' nestedDelegates}}
+{{MemberDefinitionsList 'Nested Interfaces' nestedInterfaces}}
+{{MemberDefinitionsList 'Nested Classes' nestedClasses}}
+{{MemberDefinitionsList 'Nested Structs' nestedStructs}}
 
 {{DocumentationContent remarks}}
 {{/with}}
