@@ -1,6 +1,6 @@
-﻿using CodeMap.ReferenceData;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.Visitors
 {

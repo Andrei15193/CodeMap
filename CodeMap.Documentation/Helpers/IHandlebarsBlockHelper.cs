@@ -1,5 +1,5 @@
-﻿using HandlebarsDotNet;
-using System.IO;
+﻿using System.IO;
+using HandlebarsDotNet;
 
 namespace CodeMap.Documentation.Helpers
 {

@@ -4,22 +4,17 @@ using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class IsPublicDefinition : IHandlebarsHelper
+    public class IsWriteOnlyProperty : IHandlebarsHelper
     {
         public string Name
-            => nameof(IsPublicDefinition);
+            => nameof(IsWriteOnlyProperty);
 
         public void Apply(TextWriter writer, dynamic context, params object[] parameters)
         {
             switch (parameters[0])
             {
-                case MemberDeclaration memberDeclaration:
-                    if (memberDeclaration.AccessModifier >= AccessModifier.Family)
-                        writer.Write(true);
-                    break;
-
-                case TypeDeclaration typeDeclaration:
-                    if (typeDeclaration.AccessModifier >= AccessModifier.Family)
+                case PropertyDeclaration propertyDeclaration:
+                    if ((propertyDeclaration.Getter?.AccessModifier ?? AccessModifier.Private) < AccessModifier.Family && propertyDeclaration.Setter?.AccessModifier >= AccessModifier.Family)
                         writer.Write(true);
                     break;
 

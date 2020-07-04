@@ -1,6 +1,6 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using HtmlAgilityPack;
 
 namespace CodeMap.Documentation
 {

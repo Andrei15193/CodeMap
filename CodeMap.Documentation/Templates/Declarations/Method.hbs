@@ -1,0 +1,54 @@
+﻿{{#with declarationNode}}
+<h2>{{MemberName this}} Method</h2>
+
+{{DocumentationContent summary}}
+
+{{#if isStatic}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/static">static</a> method.</p>
+{{else if isSealed}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a> method.</p>
+{{else if isAbstract}}
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> method.</p>
+{{else if isVirtual}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/virtual">virtual</a> method.</p>
+{{else if isOverride}}
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/override">overriding</a> method.</p>
+{{else if isShadowing}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/new-modifier">shadowing</a> method.</p>
+{{/if}}
+
+<p>This is a <code>{{MemberAccessModifier this}}</code> method.</p>
+
+{{#if (HasAny parameters)}}
+<h3>Parameters</h3>
+<ul>
+    {{#each parameters}}
+    <li>
+        <h5>{{this.name}}: {{TypeReferenceLink type}}</h5>
+        {{DocumentationContent description @root}}
+    </li>
+    {{/#each}}
+</ul>
+{{/if}}
+
+{{#if (HasAny exceptions)}}
+<h3>Exceptions</h3>
+<ul>
+    {{#each exceptions}}
+    <li>
+        <h5>{{TypeReferenceLink type}}</h5>
+        {{DocumentationContent description @root}}
+    </li>
+    {{/each}}
+</ul>
+{{/if}}
+
+{{#if (HasAny return.description.content)}}
+<h3>Returns: {{TypeReferenceLink return.type}}</h3>
+{{DocumentationContent return.description}}
+{{/if}}
+
+{{DocumentationContent remarks}}
+{{DocumentationContent examples}}
+{{RelatedMembersList relatedMembers}}
+{{/with}}

@@ -1,7 +1,7 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.ReferenceData;
-using System;
+﻿using System;
 using System.IO;
+using CodeMap.DeclarationNodes;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.Helpers
 {

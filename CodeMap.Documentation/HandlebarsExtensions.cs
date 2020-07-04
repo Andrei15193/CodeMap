@@ -1,13 +1,13 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.Documentation.Helpers;
-using CodeMap.DocumentationElements;
-using HandlebarsDotNet;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using CodeMap.DeclarationNodes;
+using CodeMap.Documentation.Helpers;
+using CodeMap.DocumentationElements;
+using HandlebarsDotNet;
 
 namespace CodeMap.Documentation
 {
@@ -16,15 +16,21 @@ namespace CodeMap.Documentation
         private readonly static IHandlebars _handlebars = Handlebars
             .Create()
             .RegisterHelper(new HasAny())
-            .RegisterHelper(new Join())
             .RegisterHelper(new MemberName())
-            .RegisterHelper(new MemberUrl())
+            .RegisterHelper(new SimpleMemberName())
+            .RegisterHelper(new MemberUrl(MemberFileNameProvider.Instance))
             .RegisterHelper(new MemberLink())
+            .RegisterHelper(new MemberAccessModifier())
             .RegisterHelper(new TypeReferenceLink())
+            .RegisterHelper(new ArrayRank())
+            .RegisterHelper(new RelatedMembersList())
             .RegisterHelper(new Format())
             .RegisterHelper(new Pygments())
             .RegisterHelper(new HasPublicDefinitions())
             .RegisterHelper(new IsPublicDefinition())
+            .RegisterHelper(new IsReadOnlyProperty())
+            .RegisterHelper(new IsReadWriteProperty())
+            .RegisterHelper(new IsWriteOnlyProperty())
             .RegisterHelper(new DocumentationContent())
             .RegisterHelper(new PageContent())
             .RegisterHelper(new MemberDefinitionsList());
@@ -61,7 +67,7 @@ namespace CodeMap.Documentation
         {
             using var fileStream = new FileStream(Path.Combine(directoryInfo.FullName, page), FileMode.Create, FileAccess.Write);
             using var streamWriter = new StreamWriter(fileStream, Encoding.UTF8);
-            _templates["Page"](streamWriter, new PageContext<TDeclarationNode>(declarationNode));
+            _templates["Page"](streamWriter, new PageContext<TDeclarationNode>(MemberFileNameProvider.Instance, declarationNode));
         }
 
         public static void WriteTemplate(this TextWriter textWriter, string template, PageContext context)

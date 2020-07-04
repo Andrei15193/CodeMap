@@ -4,10 +4,24 @@
     <thead>
         <tr>
             <th>Name</th>
+            {{#if includeAccessor}}
+            <th>Access Modifier</th>
+            {{/if}}
             <th class="w-75">Summary</th>
         </tr>
     </thead>
     <tbody>
+        {{#if includeAccessor}}
+        {{#each definitions}}
+        {{#if (IsPublicDefinition this)}}
+        <tr>
+            <td>{{MemberLink this}}</td>
+            <td class="text-left text-nowrap"><code>{{MemberAccessModifier this}}</code></td>
+            <td>{{DocumentationContent summary}}</td>
+        </tr>
+        {{/if}}
+        {{/#each}}
+        {{else}}
         {{#each definitions}}
         {{#if (IsPublicDefinition this)}}
         <tr>
@@ -16,6 +30,7 @@
         </tr>
         {{/if}}
         {{/#each}}
+        {{/if}}
     </tbody>
 </table>
 {{/if}}

@@ -1,6 +1,7 @@
-﻿using CodeMap.DocumentationElements;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
@@ -34,5 +35,12 @@ namespace CodeMap.DeclarationNodes
         public override bool Equals(Type type)
             => base.Equals(type)
             && GenericParameters.Count == (type.GetGenericArguments().Length - (type.DeclaringType?.GetGenericArguments().Length ?? 0));
+
+        /// <summary>Determines whether the current <see cref="DelegateDeclaration"/> is equal to the provided <paramref name="typeReference"/>.</summary>
+        /// <param name="typeReference">The <see cref="TypeReference"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="DelegateDeclaration"/> references the provided <paramref name="typeReference"/>; <c>false</c> otherwise.</returns>
+        public override bool Equals(TypeReference typeReference)
+            => base.Equals(typeReference)
+            && GenericParameters.Count == typeReference.GenericArguments.Count;
     }
 }

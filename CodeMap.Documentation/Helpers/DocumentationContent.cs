@@ -1,8 +1,8 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.DocumentationElements;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using CodeMap.DeclarationNodes;
+using CodeMap.DocumentationElements;
 
 namespace CodeMap.Documentation.Helpers
 {
@@ -16,8 +16,8 @@ namespace CodeMap.Documentation.Helpers
             var pageContext = context is TemplateContext templateContext
                 ? templateContext.PageContext
                 : context is DeclarationNode declarationNode
-                ? new PageContext(declarationNode)
-                : (PageContext)context;
+                ? new PageContext(MemberFileNameProvider.Instance, declarationNode)
+                : (context as PageContext ?? (PageContext)parameters[1]);
             var visitor = new HtmlWriterDocumentationVisitor(writer, pageContext);
             switch (parameters[0])
             {

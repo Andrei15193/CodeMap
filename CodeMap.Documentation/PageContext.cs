@@ -1,15 +1,18 @@
-﻿using CodeMap.DeclarationNodes;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Documentation
 {
     public class PageContext
     {
-        public PageContext(DeclarationNode declarationNode)
-            => DeclarationNode = declarationNode;
+        public PageContext(MemberFileNameProvider memberFileNameProvider, DeclarationNode declarationNode)
+            => (MemberFileNameProvider, DeclarationNode) = (memberFileNameProvider, declarationNode);
 
         public DeclarationNode DeclarationNode { get; }
+
+        public MemberFileNameProvider MemberFileNameProvider { get; }
 
         public string Title => DeclarationNode switch
         {
@@ -39,6 +42,7 @@ namespace CodeMap.Documentation
                 AssemblyDeclaration assembly => _GetBreadcrumbs(assembly),
                 NamespaceDeclaration @namespace => _GetBreadcrumbs(@namespace),
                 TypeDeclaration type => _GetBreadcrumbs(type),
+                MemberDeclaration memberDeclaration => _GetBreadcrumbs(memberDeclaration),
                 _ => throw new ArgumentException($"DeclarationNode type not handled: '{DeclarationNode.GetType().Name}'.")
             };
 
@@ -56,7 +60,27 @@ namespace CodeMap.Documentation
         private IEnumerable<PageBreadcrumb> _GetBreadcrumbs(TypeDeclaration typeDeclaration)
         {
             var typeDeclarations = new Stack<TypeDeclaration>();
-            while (typeDeclaration != null)
+            while (!(typeDeclaration is null))
+            {
+                typeDeclarations.Push(typeDeclaration);
+                typeDeclaration = typeDeclaration.DeclaringType;
+            }
+
+            yield return new PageBreadcrumb(typeDeclarations.Peek().Assembly.Name, "Index.html");
+            yield return new PageBreadcrumb(typeDeclarations.Peek().Namespace.Name, $"{MemberFileNameProvider.GetFileName(typeDeclarations.Peek().Namespace)}.html");
+            while (typeDeclarations.Count > 1)
+            {
+                var currentTypeDeclaration = typeDeclarations.Pop();
+                yield return new PageBreadcrumb(currentTypeDeclaration.Name, $"{MemberFileNameProvider.GetFileName(currentTypeDeclaration)}.html");
+            }
+            yield return new PageBreadcrumb(typeDeclarations.Peek().Name);
+        }
+
+        private IEnumerable<PageBreadcrumb> _GetBreadcrumbs(MemberDeclaration memberDeclaration)
+        {
+            var typeDeclarations = new Stack<TypeDeclaration>();
+            var typeDeclaration = memberDeclaration.DeclaringType;
+            while (!(typeDeclaration is null))
             {
                 typeDeclarations.Push(typeDeclaration);
                 typeDeclaration = typeDeclaration.DeclaringType;
@@ -64,20 +88,20 @@ namespace CodeMap.Documentation
 
             yield return new PageBreadcrumb(typeDeclarations.Peek().Assembly.Name, "Index.html");
             yield return new PageBreadcrumb(typeDeclarations.Peek().Namespace.Name, $"{typeDeclarations.Peek().Namespace.Name}.html");
-            while (typeDeclarations.Count > 1)
+            while (typeDeclarations.Any())
             {
                 var currentTypeDeclaration = typeDeclarations.Pop();
-                yield return new PageBreadcrumb(currentTypeDeclaration.Name, $"{currentTypeDeclaration.GetMemberFullName()}.html");
+                yield return new PageBreadcrumb(currentTypeDeclaration.Name, $"{MemberFileNameProvider.GetFileName(currentTypeDeclaration)}.html");
             }
-            yield return new PageBreadcrumb(typeDeclarations.Peek().Name);
+            yield return new PageBreadcrumb(memberDeclaration.GetMemberName());
         }
     }
 
     public class PageContext<TDeclarationNode> : PageContext
         where TDeclarationNode : DeclarationNode
     {
-        public PageContext(TDeclarationNode declarationNode)
-            : base(declarationNode)
+        public PageContext(MemberFileNameProvider memberFileNameProvider, TDeclarationNode declarationNode)
+            : base(memberFileNameProvider, declarationNode)
         {
         }
 

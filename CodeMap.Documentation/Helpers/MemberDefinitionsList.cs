@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.IO;
+using System.Linq;
 
 namespace CodeMap.Documentation.Helpers
 {
@@ -15,7 +17,8 @@ namespace CodeMap.Documentation.Helpers
                 new
                 {
                     Title = (string)parameters[0],
-                    Definitions = (IEnumerable)parameters[1]
+                    Definitions = (IEnumerable)parameters[1],
+                    IncludeAccessor = parameters.Skip(2).OfType<string>().Contains("includeAccessor", StringComparer.OrdinalIgnoreCase)
                 }
             );
     }

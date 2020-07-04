@@ -1,12 +1,17 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.ReferenceData;
-using System;
+﻿using System;
 using System.IO;
+using CodeMap.DeclarationNodes;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.Helpers
 {
     public class MemberUrl : IHandlebarsHelper
     {
+        private readonly MemberFileNameProvider _memberFileNameProvider;
+
+        public MemberUrl(MemberFileNameProvider memberFileNameProvider)
+            => _memberFileNameProvider = memberFileNameProvider;
+
         public string Name
             => nameof(MemberUrl);
 
@@ -14,12 +19,12 @@ namespace CodeMap.Documentation.Helpers
         {
             if (parameters[0] is MemberDeclaration memberDeclaration)
             {
-                writer.Write(memberDeclaration.GetMemberFullName());
+                writer.Write(_memberFileNameProvider.GetFileName(memberDeclaration));
                 writer.Write(".html");
             }
             else if (parameters[0] is TypeDeclaration typeDeclaration)
             {
-                writer.Write(typeDeclaration.GetMemberFullName());
+                writer.Write(_memberFileNameProvider.GetFileName(typeDeclaration));
                 writer.Write(".html");
             }
             else if (parameters[0] is NamespaceDeclaration namespaceDeclaration)
@@ -33,12 +38,14 @@ namespace CodeMap.Documentation.Helpers
             {
                 if (typeReference.Assembly == typeof(DeclarationNode).Assembly.GetName())
                 {
-                    writer.Write(typeReference.GetMemberFullName());
+                    writer.Write(_memberFileNameProvider.GetFileName(typeReference));
                     writer.Write(".html");
                 }
                 else
                     writer.Write(typeReference.GetMicrosoftDocsLink());
             }
+            else if (parameters[0] is ArrayTypeReference arrayTypeReference)
+                Apply(writer, context, arrayTypeReference.ItemType);
             else
                 throw new ArgumentException($"Unhandled parameter type: '{parameters[0].GetType().Name}'");
         }

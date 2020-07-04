@@ -1,10 +1,10 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.Documentation.Additions;
-using CodeMap.DocumentationElements;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using CodeMap.DeclarationNodes;
+using CodeMap.Documentation.Additions;
+using CodeMap.DocumentationElements;
 
 namespace CodeMap.Documentation
 {
@@ -23,7 +23,7 @@ namespace CodeMap.Documentation
             var outputDirectory = new DirectoryInfo(arguments.OutputPath);
             outputDirectory.Create();
 
-            documentation.Accept(new HtmlWriterDeclarationNodeVisitor(outputDirectory));
+            documentation.Accept(new HtmlWriterDeclarationNodeVisitor(outputDirectory, MemberFileNameProvider.Instance));
         }
 
         private class Arguments

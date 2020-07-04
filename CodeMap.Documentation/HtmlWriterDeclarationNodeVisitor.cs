@@ -1,18 +1,19 @@
-﻿using CodeMap.DeclarationNodes;
-using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using CodeMap.DeclarationNodes;
+using HtmlAgilityPack;
 
 namespace CodeMap.Documentation
 {
     public class HtmlWriterDeclarationNodeVisitor : DeclarationNodeVisitor
     {
         private readonly DirectoryInfo _directoryInfo;
+        private readonly MemberFileNameProvider _memberFileNameProvider;
 
-        public HtmlWriterDeclarationNodeVisitor(DirectoryInfo directoryInfo)
-            => _directoryInfo = directoryInfo;
+        public HtmlWriterDeclarationNodeVisitor(DirectoryInfo directoryInfo, MemberFileNameProvider memberFileNameProvider)
+            => (_directoryInfo, _memberFileNameProvider) = (directoryInfo, memberFileNameProvider);
 
         protected override void VisitAssembly(AssemblyDeclaration assembly)
         {
@@ -30,14 +31,14 @@ namespace CodeMap.Documentation
 
         protected override void VisitNamespace(NamespaceDeclaration @namespace)
         {
-            _directoryInfo.WritePage($"{@namespace.Name}.html", @namespace);
+            _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(@namespace)}.html", @namespace);
 
             foreach (var type in @namespace.DeclaredTypes.Where(declaredType => declaredType.AccessModifier == AccessModifier.Public))
                 type.Accept(this);
         }
 
         protected override void VisitEnum(EnumDeclaration @enum)
-            => _directoryInfo.WritePage($"{@enum.GetMemberFullName()}.html", @enum);
+            => _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(@enum)}.html", @enum);
 
         protected override void VisitDelegate(DelegateDeclaration @delegate)
             => throw new NotImplementedException();
@@ -47,10 +48,10 @@ namespace CodeMap.Documentation
 
         protected override void VisitClass(ClassDeclaration @class)
         {
-            _directoryInfo.WritePage($"{@class.GetMemberFullName()}.html", @class);
+            _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(@class)}.html", @class);
 
-            //foreach (var member in @class.Members.Where(member => member.AccessModifier == AccessModifier.Public))
-            //    member.Accept(this);
+            foreach (var member in @class.Members.Where(member => member.AccessModifier == AccessModifier.Public))
+                member.Accept(this);
         }
 
         protected override void VisitStruct(StructDeclaration @struct)
@@ -67,9 +68,7 @@ namespace CodeMap.Documentation
         }
 
         protected override void VisitConstructor(ConstructorDeclaration constructor)
-        {
-            throw new NotImplementedException();
-        }
+            => _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(constructor)}.html", constructor);
 
         protected override void VisitEvent(EventDeclaration @event)
         {
@@ -77,14 +76,10 @@ namespace CodeMap.Documentation
         }
 
         protected override void VisitProperty(PropertyDeclaration property)
-        {
-            throw new NotImplementedException();
-        }
+            => _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(property)}.html", property);
 
         protected override void VisitMethod(MethodDeclaration method)
-        {
-            throw new NotImplementedException();
-        }
+            => _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(method)}.html", method);
 
         private void _WriteAssets()
         {

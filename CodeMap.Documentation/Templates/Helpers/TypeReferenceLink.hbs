@@ -1,1 +1,13 @@
-﻿<a href="{{MemberUrl this}}">{{name}}</a>{{#if (HasAny genericArguments)}}&lt;{{Join ', ' genericArguments}}{{TypeReferenceLink this}}{{/Join}}&gt;{{/if}}
+﻿<a href="{{MemberUrl this}}">{{SimpleMemberName this ~}}</a>
+{{~#each genericArguments ~}}
+{{#if @first}}
+&lt;
+{{~else ~}}
+,
+{{/if}}
+{{~TypeReferenceLink this}}
+{{~#if @last ~}}
+&gt;
+{{~/if}}
+{{/each}}
+{{~ArrayRank this}}

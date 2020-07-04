@@ -1,10 +1,8 @@
-﻿#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
-#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
@@ -147,31 +145,21 @@ namespace CodeMap.DeclarationNodes
         /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="AssemblyDeclaration"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
         public bool Equals(AssemblyName assemblyName)
-        {
-            if (assemblyName == null)
-                return false;
-
-            return
-                string.Equals(Name, assemblyName.Name, StringComparison.OrdinalIgnoreCase)
-                && Version == assemblyName.Version
-                && string.Equals(Culture, assemblyName.CultureName, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(PublicKeyToken, assemblyName.GetPublicKeyToken().ToBase16String(), StringComparison.OrdinalIgnoreCase);
-        }
+            => assemblyName != null
+            && string.Equals(Name, assemblyName.Name, StringComparison.OrdinalIgnoreCase)
+            && Version == assemblyName.Version
+            && string.Equals(Culture, assemblyName.CultureName, StringComparison.OrdinalIgnoreCase)
+            && string.Equals(PublicKeyToken, assemblyName.GetPublicKeyToken().ToBase16String(), StringComparison.OrdinalIgnoreCase);
 
         /// <summary>Determines whether the current <see cref="AssemblyDeclaration"/> is equal to the provided <paramref name="assemblyReference"/>.</summary>
         /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="AssemblyDeclaration"/> references the provided <paramref name="assemblyReference"/>; <c>false</c> otherwise.</returns>
         public bool Equals(AssemblyReference assemblyReference)
-        {
-            if (assemblyReference == null)
-                return false;
-
-            return
-                string.Equals(Name, assemblyReference.Name, StringComparison.OrdinalIgnoreCase)
-                && Version == assemblyReference.Version
-                && string.Equals(Culture, assemblyReference.Culture, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(PublicKeyToken, assemblyReference.PublicKeyToken, StringComparison.OrdinalIgnoreCase);
-        }
+            => assemblyReference != null
+            && string.Equals(Name, assemblyReference.Name, StringComparison.OrdinalIgnoreCase)
+            && Version == assemblyReference.Version
+            && string.Equals(Culture, assemblyReference.Culture, StringComparison.OrdinalIgnoreCase)
+            && string.Equals(PublicKeyToken, assemblyReference.PublicKeyToken, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>Determines whether the current <see cref="AssemblyDeclaration"/> is equal to the provided <paramref name="obj"/>.</summary>
         /// <param name="obj">The <see cref="object"/> to compare to.</param>
@@ -193,5 +181,16 @@ namespace CodeMap.DeclarationNodes
             else
                 return base.Equals(obj);
         }
+
+        /// <summary>Computes the hash code for the current instance.</summary>
+        /// <returns>A hash code for the current object.</returns>
+        public override int GetHashCode()
+            => new
+            {
+                Name = Name.ToLowerInvariant(),
+                Version = $"{Version.Major}.{Version.Minor}.{Version.Build}.{Version.Revision}",
+                Culture = Culture.ToLowerInvariant(),
+                PublicKeyToken = PublicKeyToken.ToLowerInvariant()
+            }.GetHashCode();
     }
 }

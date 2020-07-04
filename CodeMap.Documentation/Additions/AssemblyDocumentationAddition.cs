@@ -1,7 +1,7 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.DocumentationElements;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using CodeMap.DeclarationNodes;
+using CodeMap.DocumentationElements;
 
 namespace CodeMap.Documentation.Additions
 {

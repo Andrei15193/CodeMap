@@ -1,13 +1,13 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.Documentation.Visitors;
-using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using CodeMap.DeclarationNodes;
+using CodeMap.Documentation.Visitors;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation
 {

@@ -1,5 +1,5 @@
 ﻿{{#with declarationNode}}
-<h2>{{name}} Enum</h2>
+<h2>{{MemberName this}} Enum</h2>
 
 {{DocumentationContent summary}}
 
@@ -16,7 +16,7 @@
         {{#each members}}
         <tr>
             <td>{{name}}</td>
-            <td>{{Format value 'D'}}</td>
+            <td><code>{{Format value 'D'}}</code></td>
             <td>{{DocumentationContent summary}}</td>
         </tr>
         {{/each}}
@@ -24,4 +24,6 @@
 </table>
 
 {{DocumentationContent remarks}}
+{{DocumentationContent examples}}
+{{RelatedMembersList relatedMembers}}
 {{/with}}

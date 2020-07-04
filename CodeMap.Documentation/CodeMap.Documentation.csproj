@@ -12,11 +12,17 @@
     <None Remove="Templates\Code.hbs" />
     <None Remove="Templates\CodeBlock.hbs" />
     <None Remove="Templates\Declarations\Class.hbs" />
+    <None Remove="Templates\Declarations\Constructor.hbs" />
     <None Remove="Templates\Declarations\Enum.hbs" />
+    <None Remove="Templates\Declarations\Method.hbs" />
     <None Remove="Templates\Declarations\Namespace.hbs" />
+    <None Remove="Templates\Declarations\Property.hbs" />
+    <None Remove="Templates\Documentation\Example.hbs" />
+    <None Remove="Templates\Documentation\Value.hbs" />
     <None Remove="Templates\GenericParameterReference.hbs" />
     <None Remove="Templates\Helpers\MemberDefinitionsList.hbs" />
     <None Remove="Templates\Helpers\MemberLink.hbs" />
+    <None Remove="Templates\Helpers\RelatedMembersList.hbs" />
     <None Remove="Templates\Helpers\TypeReferenceLink.hbs" />
     <None Remove="Templates\Hyperlink.hbs" />
     <None Remove="Templates\ListItem.hbs" />
@@ -37,12 +43,17 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\Style.css" />
     <EmbeddedResource Include="Templates\Declarations\Class.hbs" />
+    <EmbeddedResource Include="Templates\Declarations\Constructor.hbs" />
+    <EmbeddedResource Include="Templates\Declarations\Method.hbs" />
+    <EmbeddedResource Include="Templates\Declarations\Property.hbs" />
     <EmbeddedResource Include="Templates\Declarations\Enum.hbs" />
     <EmbeddedResource Include="Templates\Declarations\Namespace.hbs" />
     <EmbeddedResource Include="Templates\Documentation\Hyperlink.hbs" />
     <EmbeddedResource Include="Templates\Documentation\Code.hbs" />
     <EmbeddedResource Include="Templates\Documentation\GenericParameterReference.hbs" />
     <EmbeddedResource Include="Templates\Documentation\ParameterReference.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\Example.hbs" />
+    <EmbeddedResource Include="Templates\Documentation\Value.hbs" />
     <EmbeddedResource Include="Templates\Documentation\Text.hbs" />
     <EmbeddedResource Include="Templates\Documentation\TableCell.hbs" />
     <EmbeddedResource Include="Templates\Documentation\TableRow.hbs" />
@@ -56,6 +67,7 @@
     <EmbeddedResource Include="Templates\Documentation\UnorderedList.hbs" />
     <EmbeddedResource Include="Templates\Documentation\Summary.hbs" />
     <EmbeddedResource Include="Templates\Declarations\Assembly.hbs" />
+    <EmbeddedResource Include="Templates\Helpers\RelatedMembersList.hbs" />
     <EmbeddedResource Include="Templates\Helpers\MemberDefinitionsList.hbs" />
     <EmbeddedResource Include="Templates\Helpers\TypeReferenceLink.hbs" />
     <EmbeddedResource Include="Templates\Helpers\MemberLink.hbs" />

@@ -1,0 +1,6 @@
+﻿{{#unless documentationElement.xmlAttributes.title}}
+<h3>Example</h3>
+{{else}}
+<h3>Example: {{documentationElement.xmlAttributes.title}}</h3>
+{{/unless}}
+{{DocumentationContent documentationElement.content}}

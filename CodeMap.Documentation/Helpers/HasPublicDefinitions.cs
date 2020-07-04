@@ -1,8 +1,8 @@
-﻿using CodeMap.DeclarationNodes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Documentation.Helpers
 {
@@ -16,12 +16,12 @@ namespace CodeMap.Documentation.Helpers
             switch (parameters[0])
             {
                 case IEnumerable<MemberDeclaration> memberDeclarations:
-                    if (memberDeclarations.Any(memberDeclaration => memberDeclaration.AccessModifier == AccessModifier.Public))
+                    if (memberDeclarations.Any(memberDeclaration => memberDeclaration.AccessModifier >= AccessModifier.Family))
                         writer.Write(true);
                     break;
 
                 case IEnumerable<TypeDeclaration> typeDeclarations:
-                    if (typeDeclarations.Any(typeDeclaration => typeDeclaration.AccessModifier == AccessModifier.Public))
+                    if (typeDeclarations.Any(typeDeclaration => typeDeclaration.AccessModifier >= AccessModifier.Family))
                         writer.Write(true);
                     break;
 

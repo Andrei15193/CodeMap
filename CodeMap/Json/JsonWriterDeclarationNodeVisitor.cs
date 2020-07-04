@@ -1,11 +1,11 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CodeMap.DeclarationNodes;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
+using Newtonsoft.Json;
 
 namespace CodeMap.Json
 {
@@ -616,7 +616,7 @@ namespace CodeMap.Json
         private void _WriteDeclaringTypeReference(TypeDeclaration declaringType)
         {
             _jsonWriter.WritePropertyName("declaringType");
-            if (declaringType != null)
+            if (!(declaringType is null))
                 _jsonWriter.WriteValue(_GetIdFor(declaringType));
             else
                 _jsonWriter.WriteNull();
@@ -1134,7 +1134,7 @@ namespace CodeMap.Json
                 idBuilder.Append(type.Namespace.Name);
             var nestingChain = new Stack<TypeDeclaration>();
             nestingChain.Push(type);
-            while (type.DeclaringType != null)
+            while (!(type.DeclaringType is null))
             {
                 nestingChain.Push(type.DeclaringType);
                 type = type.DeclaringType;

@@ -1,8 +1,8 @@
-﻿using HandlebarsDotNet;
+﻿using System.IO;
+using HandlebarsDotNet;
 using PygmentSharp.Core;
 using PygmentSharp.Core.Formatting;
 using PygmentSharp.Core.Lexing;
-using System.IO;
 
 namespace CodeMap.Documentation.Helpers
 {

@@ -1,6 +1,6 @@
-﻿using CodeMap.DeclarationNodes;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
+using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Documentation.Visitors
 {
@@ -49,10 +49,8 @@ namespace CodeMap.Documentation.Visitors
         {
             _VisitTypeDeclaration(constructor.DeclaringType);
             _fullNameBuilder.Append('.').Append(constructor.DeclaringType.Name);
-            _fullNameBuilder
-                .Append('(')
-                .Append(string.Join(",", constructor.Parameters.Select(parameter => parameter.Type.GetMemberFullName())))
-                .Append(')');
+            if (constructor.Parameters.Any())
+                _fullNameBuilder.Append('-').Append(constructor.Parameters.Count);
         }
 
         protected override void VisitEvent(EventDeclaration @event)
@@ -66,10 +64,7 @@ namespace CodeMap.Documentation.Visitors
             _VisitTypeDeclaration(property.DeclaringType);
             _fullNameBuilder.Append('.').Append(property.Name);
             if (property.Parameters.Any())
-                _fullNameBuilder
-                    .Append('[')
-                    .Append(string.Join(",", property.Parameters.Select(parameter => parameter.Type.GetMemberFullName())))
-                    .Append(']');
+                _fullNameBuilder.Append('-').Append(property.Parameters.Count);
         }
 
         protected override void VisitMethod(MethodDeclaration method)
@@ -79,15 +74,13 @@ namespace CodeMap.Documentation.Visitors
             if (method.GenericParameters.Any())
                 _fullNameBuilder.Append('`').Append(method.GenericParameters.Count);
 
-            _fullNameBuilder
-                .Append('(')
-                .Append(string.Join(",", method.Parameters.Select(parameter => parameter.Type.GetMemberFullName())))
-                .Append(')');
+            if (method.Parameters.Any())
+                _fullNameBuilder.Append('-').Append(method.Parameters.Count);
         }
 
         private void _VisitTypeDeclaration(TypeDeclaration typeDeclaration)
         {
-            if (typeDeclaration.DeclaringType != null)
+            if (!(typeDeclaration.DeclaringType is null))
             {
                 typeDeclaration.DeclaringType.Accept(this);
                 _fullNameBuilder.Append('.');

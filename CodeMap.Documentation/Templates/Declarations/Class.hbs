@@ -1,13 +1,18 @@
 ﻿{{#with declarationNode}}
-<h2>{{name}} Class</h2>
+<h2>{{MemberName this}} Class</h2>
 
 {{DocumentationContent summary}}
 
 <p>
     Base type: {{TypeReferenceLink baseClass}}.
     {{#if (HasAny implementedInterfaces)}}
-    <br />
-    Implemented interfaces: {{Join ', ' implementedInterfaces}}{{TypeReferenceLink this}}{{/Join}}.
+    {{#each implementedInterfaces}}
+    {{~#if @first}}<br />Implemented interfaces:
+    {{else ~}}
+    ,
+    {{/if}}
+    {{TypeReferenceLink this ~}}
+    {{/each}}
     {{/if}}
 </p>
 
@@ -19,18 +24,20 @@
 <p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> class.</p>
 {{/if}}
 
-{{MemberDefinitionsList 'Constants' constants}}
-{{MemberDefinitionsList 'Fields' fields}}
-{{MemberDefinitionsList 'Constructors' constructors}}
-{{MemberDefinitionsList 'Events' events}}
-{{MemberDefinitionsList 'Properties' properties}}
-{{MemberDefinitionsList 'Methods' methods}}
+{{MemberDefinitionsList 'Constants' constants 'includeAccessor'}}
+{{MemberDefinitionsList 'Fields' fields 'includeAccessor'}}
+{{MemberDefinitionsList 'Constructors' constructors 'includeAccessor'}}
+{{MemberDefinitionsList 'Events' events 'includeAccessor'}}
+{{MemberDefinitionsList 'Properties' properties 'includeAccessor'}}
+{{MemberDefinitionsList 'Methods' methods 'includeAccessor'}}
 
-{{MemberDefinitionsList 'Nested Enums' nestedEnums}}
-{{MemberDefinitionsList 'Nested Delegates' nestedDelegates}}
-{{MemberDefinitionsList 'Nested Interfaces' nestedInterfaces}}
-{{MemberDefinitionsList 'Nested Classes' nestedClasses}}
-{{MemberDefinitionsList 'Nested Structs' nestedStructs}}
+{{MemberDefinitionsList 'Nested Enums' nestedEnums 'includeAccessor'}}
+{{MemberDefinitionsList 'Nested Delegates' nestedDelegates 'includeAccessor'}}
+{{MemberDefinitionsList 'Nested Interfaces' nestedInterfaces 'includeAccessor'}}
+{{MemberDefinitionsList 'Nested Classes' nestedClasses 'includeAccessor'}}
+{{MemberDefinitionsList 'Nested Structs' nestedStructs 'includeAccessor'}}
 
 {{DocumentationContent remarks}}
+{{DocumentationContent examples}}
+{{RelatedMembersList relatedMembers}}
 {{/with}}

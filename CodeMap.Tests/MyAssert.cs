@@ -1,14 +1,14 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
-using CodeMap.Tests.Data;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using CodeMap.DeclarationNodes;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
+using CodeMap.Tests.Data;
 using Xunit;
 
 namespace CodeMap.Tests
@@ -541,14 +541,27 @@ namespace CodeMap.Tests
         public static TTypeDocumentationElement AssertType<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Type type)
             where TTypeDocumentationElement : TypeDeclaration
         {
+            var memberReferenceFactory = new MemberReferenceFactory();
+
             Assert.True(typeDocumentationElement == type);
             Assert.True(type == typeDocumentationElement);
             Assert.False(typeDocumentationElement != type);
             Assert.False(type != typeDocumentationElement);
 
+            var typeReferennce = (TypeReference)memberReferenceFactory.Create(type);
+            Assert.True(typeDocumentationElement == typeReferennce);
+            Assert.True(typeReferennce == typeDocumentationElement);
+            Assert.False(typeDocumentationElement != typeReferennce);
+            Assert.False(typeReferennce != typeDocumentationElement);
+
             var otherType = type == typeof(object) ? typeof(string) : typeof(object);
             Assert.True(typeDocumentationElement != otherType);
             Assert.True(otherType != typeDocumentationElement);
+
+            var otherTypeReference = (TypeReference)memberReferenceFactory.Create(otherType);
+            Assert.True(typeDocumentationElement != otherTypeReference);
+            Assert.True(otherTypeReference != typeDocumentationElement);
+
             return typeDocumentationElement;
         }
 

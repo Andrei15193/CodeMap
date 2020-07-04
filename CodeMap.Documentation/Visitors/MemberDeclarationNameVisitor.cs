@@ -1,6 +1,6 @@
-﻿using CodeMap.DeclarationNodes;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
+using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Documentation.Visitors
 {

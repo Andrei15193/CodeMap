@@ -1,7 +1,7 @@
-﻿using CodeMap.DocumentationElements;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
+using CodeMap.DocumentationElements;
 
 namespace CodeMap.Documentation
 {
@@ -24,12 +24,14 @@ namespace CodeMap.Documentation
 
         protected override void VisitExample(ExampleDocumentationElement example)
         {
-            throw new NotImplementedException();
+            if (example.Content.Any())
+                _writer.WriteTemplate("Example", new TemplateContext<ExampleDocumentationElement>(_context, example));
         }
 
         protected override void VisitValue(ValueDocumentationElement value)
         {
-            throw new NotImplementedException();
+            if (value.Content.Any())
+                _writer.WriteTemplate("Value", new TemplateContext<ValueDocumentationElement>(_context, value));
         }
 
         protected override void VisitParagraph(ParagraphDocumentationElement paragraph)
