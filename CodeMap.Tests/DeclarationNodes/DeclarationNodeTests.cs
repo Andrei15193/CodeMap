@@ -1,10 +1,4 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
-using CodeMap.Tests.Data;
-using CodeMap.Tests.DocumentationElements;
-using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,6 +6,12 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
+using CodeMap.DeclarationNodes;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
+using CodeMap.Tests.Data;
+using CodeMap.Tests.DocumentationElements;
+using Moq;
 using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes

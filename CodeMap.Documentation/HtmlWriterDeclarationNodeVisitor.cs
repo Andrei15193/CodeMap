@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using CodeMap.DeclarationNodes;
 using HtmlAgilityPack;
 
@@ -17,28 +19,34 @@ namespace CodeMap.Documentation
 
         protected override void VisitAssembly(AssemblyDeclaration assembly)
         {
-            _WriteAssets();
+            _ClearFolders(assembly);
 
-            _directoryInfo.WritePage("Index.html", new PageContext(_memberFileNameProvider, assembly));
+            _WriteAssets(assembly);
+            _directoryInfo
+                .CreateSubdirectory(assembly.Version.ToSemver())
+                .WritePage("Index.html", new PageContext(_memberFileNameProvider, assembly));
 
             foreach (var @namespace in assembly.Namespaces)
                 if (@namespace.DeclaredTypes.Any(declaredType => declaredType.AccessModifier >= AccessModifier.Family))
                     @namespace.Accept(this);
 
-            _UpdateVersions(assembly);
-            _CopyLatestToSpecificVersion(assembly);
+            _UpdateFiles(assembly);
         }
 
         protected override void VisitNamespace(NamespaceDeclaration @namespace)
         {
-            _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(@namespace)}.html", new PageContext(_memberFileNameProvider, @namespace));
+            _directoryInfo
+                .CreateSubdirectory(@namespace.Assembly.Version.ToSemver())
+                .WritePage($"{_memberFileNameProvider.GetFileName(@namespace)}.html", new PageContext(_memberFileNameProvider, @namespace));
 
             foreach (var type in @namespace.DeclaredTypes.Where(declaredType => declaredType.AccessModifier >= AccessModifier.Family))
                 type.Accept(this);
         }
 
         protected override void VisitEnum(EnumDeclaration @enum)
-            => _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(@enum)}.html", new PageContext(_memberFileNameProvider, @enum));
+            => _directoryInfo
+                .CreateSubdirectory(@enum.Assembly.Version.ToSemver())
+                .WritePage($"{_memberFileNameProvider.GetFileName(@enum)}.html", new PageContext(_memberFileNameProvider, @enum));
 
         protected override void VisitDelegate(DelegateDeclaration @delegate)
             => throw new NotImplementedException();
@@ -48,7 +56,9 @@ namespace CodeMap.Documentation
 
         protected override void VisitClass(ClassDeclaration @class)
         {
-            _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(@class)}.html", new PageContext(_memberFileNameProvider, @class));
+            _directoryInfo
+                .CreateSubdirectory(@class.Assembly.Version.ToSemver())
+                .WritePage($"{_memberFileNameProvider.GetFileName(@class)}.html", new PageContext(_memberFileNameProvider, @class));
 
             foreach (var member in @class.Members.Where(member => member.AccessModifier >= AccessModifier.Family))
                 member.Accept(this);
@@ -68,7 +78,9 @@ namespace CodeMap.Documentation
         }
 
         protected override void VisitConstructor(ConstructorDeclaration constructor)
-            => _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(constructor)}.html", new PageContext(_memberFileNameProvider, constructor));
+            => _directoryInfo
+                .CreateSubdirectory(constructor.DeclaringType.Assembly.Version.ToSemver())
+                .WritePage($"{_memberFileNameProvider.GetFileName(constructor)}.html", new PageContext(_memberFileNameProvider, constructor));
 
         protected override void VisitEvent(EventDeclaration @event)
         {
@@ -76,57 +88,119 @@ namespace CodeMap.Documentation
         }
 
         protected override void VisitProperty(PropertyDeclaration property)
-            => _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(property)}.html", new PageContext(_memberFileNameProvider, property));
+            => _directoryInfo
+                .CreateSubdirectory(property.DeclaringType.Assembly.Version.ToSemver())
+                .WritePage($"{_memberFileNameProvider.GetFileName(property)}.html", new PageContext(_memberFileNameProvider, property));
 
         protected override void VisitMethod(MethodDeclaration method)
-            => _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(method)}.html", new PageContext(_memberFileNameProvider, method));
+            => _directoryInfo
+                .CreateSubdirectory(method.DeclaringType.Assembly.Version.ToSemver())
+                .WritePage($"{_memberFileNameProvider.GetFileName(method)}.html", new PageContext(_memberFileNameProvider, method));
 
-        private void _WriteAssets()
+        private void _ClearFolders(AssemblyDeclaration assembly)
+        {
+            if (_directoryInfo.Exists)
+            {
+                foreach (var file in _directoryInfo.GetFiles())
+                    file.Delete();
+
+                var versionSubdirectory = _directoryInfo.CreateSubdirectory(assembly.Version.ToSemver());
+                versionSubdirectory.Delete(true);
+                versionSubdirectory.Create();
+            }
+        }
+
+        private void _WriteAssets(AssemblyDeclaration assembly)
         {
             foreach (var resource in typeof(Program).Assembly.GetManifestResourceNames())
             {
                 var match = Regex.Match(resource, @"Assets\.(?<fileName>\w+\.\w+)$", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
-                    using var fileStream = new FileStream(Path.Combine(_directoryInfo.FullName, match.Groups["fileName"].Value), FileMode.Create, FileAccess.Write);
+                    using var fileStream = new FileStream(Path.Combine(_directoryInfo.FullName, assembly.Version.ToSemver(), match.Groups["fileName"].Value), FileMode.Create, FileAccess.Write);
                     using var assetStream = typeof(Program).Assembly.GetManifestResourceStream(resource);
                     assetStream.CopyTo(fileStream);
                 }
             }
         }
 
-        private void _CopyLatestToSpecificVersion(AssemblyDeclaration assembly)
+        private static int _VersionComparison(string left, string right)
         {
-            var currentVersionDirectory = _directoryInfo.CreateSubdirectory(assembly.Version.ToSemver());
-            foreach (var currentVersionFile in _directoryInfo.GetFiles())
-                currentVersionFile.CopyTo(Path.Combine(currentVersionDirectory.FullName, currentVersionFile.Name), true);
+            var leftBaseVersion = left.Split(new[] { '-' }, 2).First();
+            var rightBaseVersion = right.Split(new[] { '-' }, 2).First();
+            var baseComparation = string.Compare(leftBaseVersion, rightBaseVersion, StringComparison.OrdinalIgnoreCase);
+
+            if (baseComparation == 0)
+                if (left == leftBaseVersion)
+                    return 1;
+                else if (right == rightBaseVersion)
+                    return -1;
+                else
+                    return string.Compare(left, right, StringComparison.OrdinalIgnoreCase);
+            else
+                return baseComparation;
         }
 
-        private void _UpdateVersions(AssemblyDeclaration assembly)
+        private void _UpdateFiles(AssemblyDeclaration assembly)
         {
-            foreach (var htmlFile in _directoryInfo.GetFiles("*.html", SearchOption.AllDirectories))
-            {
-                var htmlDocument = new HtmlDocument();
-                htmlDocument.Load(htmlFile.FullName);
-                var otherVersionsHtmlNode = htmlDocument.GetElementbyId("otherVersions");
-                otherVersionsHtmlNode.ChildNodes.Clear();
+            var directories = _directoryInfo.GetDirectories().OrderByDescending(directory => directory.Name, Comparer<string>.Create(_VersionComparison)).ToList();
 
-                var otherVersions = _directoryInfo.GetDirectories().Where(subdirectory => subdirectory.Name != assembly.Version.ToSemver());
-                if (otherVersions.Any())
-                    otherVersionsHtmlNode
-                        .SetClass("btn-group")
-                        .SetAttribute("role", "group")
-                        .AddChild("button").SetAttribute("id", "otherVersionsButtonGroup").SetAttribute("type", "button").SetClass("btn btn-link dropdown-toggle").SetAttribute("data-toggle", "dropdown").SetAttribute("aria-haspopup", "true").SetAttribute("aria-expanded", "false").AppendText("Other Versions")
-                            .ParentNode
-                        .AddChild("div").SetClass("dropdown-menu").SetAttribute("aria-labelledby", "otherVersionsButtonGroup")
-                            .Aggregate(
-                                otherVersions,
-                                (otherVersionsElement, otherVersion) => otherVersionsElement
-                                    .AddChild("a").SetClass("dropdown-item").SetAttribute("href", otherVersion.Name)
-                                        .AppendText(otherVersion.Name)
-                            );
-                htmlDocument.Save(htmlFile.FullName);
-            }
+            Parallel.ForEach(
+                directories.First().EnumerateFiles(),
+                latestVersionFile => latestVersionFile.CopyTo(Path.Combine(_directoryInfo.FullName, latestVersionFile.Name), true)
+            );
+
+            var versions = directories.Select(directory => directory.Name).ToList();
+            Parallel.ForEach(
+                _directoryInfo.EnumerateFiles("*.html", SearchOption.AllDirectories),
+                htmlFile =>
+                {
+                    var htmlDocument = new HtmlDocument();
+                    htmlDocument.Load(htmlFile.FullName);
+                    var otherVersionsHtmlNode = htmlDocument.GetElementbyId("otherVersions");
+                    otherVersionsHtmlNode.ChildNodes.Clear();
+                    otherVersionsHtmlNode.Attributes.RemoveAll();
+
+                    if (versions.Count > 1)
+                        otherVersionsHtmlNode.SetClass("btn-group").SetAttribute("role", "group")
+                            .AddChild("button").SetAttribute("id", "otherVersionsButtonGroup").SetAttribute("type", "button").SetClass("btn btn-link dropdown-toggle").SetAttribute("data-toggle", "dropdown").SetAttribute("aria-haspopup", "true").SetAttribute("aria-expanded", "false").AppendText("Other Versions")
+                                .ParentNode
+                            .AddChild("div").SetClass("dropdown-menu").SetAttribute("aria-labelledby", "otherVersionsButtonGroup")
+                                .AddChild("a").SetClass($"dropdown-item{(IsLatest(htmlFile) ? " active" : "")}").SetAttribute("href", IsLatest(htmlFile) ? "Index.html" : $"../Index.html")
+                                    .AppendText("Latest")
+                                    .ParentNode
+                                .AddChild("div").SetClass("dropdown-divider")
+                                    .ParentNode
+                                .AddChild("h6").SetClass("dropdown-header")
+                                    .AppendText("Specific Versions")
+                                    .ParentNode
+                                .Aggregate(
+                                    versions,
+                                    (otherVersionsElement, version) => otherVersionsElement
+                                        .AddChild("a").SetClass($"dropdown-item{(IsSelectedVersion(htmlFile, version) ? " active" : "")}").SetAttribute("href", IsLatest(htmlFile) ? $"{version}/Index.html" : $"../{version}/Index.html")
+                                            .AppendText(version)
+                                );
+
+                    var deprecationNoticeHtmlNode = htmlDocument.GetElementbyId("deprecationNotice");
+                    deprecationNoticeHtmlNode.ChildNodes.Clear();
+                    deprecationNoticeHtmlNode.Attributes.RemoveAll();
+                    if (!IsLatest(htmlFile) && !IsSelectedVersion(htmlFile, versions.First()))
+                        deprecationNoticeHtmlNode.SetClass("alert alert-warning").SetAttribute("role", "alert")
+                            .AppendText("You are viewing an older version of the library. Checkout the latest version ")
+                            .AddChild("a").SetClass("alert-link").SetAttribute("href", "../Index.html")
+                                .AppendText("here")
+                                .ParentNode
+                            .AppendText("!");
+
+                    htmlDocument.Save(htmlFile.FullName);
+                }
+            );
+
+            bool IsLatest(FileInfo htmlFile)
+                => string.Equals(htmlFile.DirectoryName, _directoryInfo.FullName, StringComparison.OrdinalIgnoreCase);
+
+            bool IsSelectedVersion(FileInfo htmlFile, string version)
+                => string.Equals(version, htmlFile.Directory.Name, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
