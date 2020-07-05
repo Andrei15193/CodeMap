@@ -1,6 +1,8 @@
 ﻿{{#with data}}
-{{#if (HasAny @root content)}}
+{{#each content}}
+{{#if @first}}
 <h3>Value</h3>
-{{DocumentationContent @root content}}
 {{/if}}
+{{DocumentationContent @root this}}
+{{/each}}
 {{/with}}

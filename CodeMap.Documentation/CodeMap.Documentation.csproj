@@ -20,7 +20,7 @@
     <None Remove="Templates\Documentation\Example.hbs" />
     <None Remove="Templates\Documentation\Value.hbs" />
     <None Remove="Templates\GenericParameterReference.hbs" />
-    <None Remove="Templates\Helpers\MemberDefinitionsList.hbs" />
+    <None Remove="Templates\Helpers\MemberDeclarationsList.hbs" />
     <None Remove="Templates\Helpers\MemberLink.hbs" />
     <None Remove="Templates\Helpers\RelatedMembersList.hbs" />
     <None Remove="Templates\Helpers\TypeReferenceLink.hbs" />
@@ -68,7 +68,7 @@
     <EmbeddedResource Include="Templates\Documentation\Summary.hbs" />
     <EmbeddedResource Include="Templates\Declarations\Assembly.hbs" />
     <EmbeddedResource Include="Templates\Helpers\RelatedMembersList.hbs" />
-    <EmbeddedResource Include="Templates\Helpers\MemberDefinitionsList.hbs" />
+    <EmbeddedResource Include="Templates\Helpers\MemberDeclarationsList.hbs" />
     <EmbeddedResource Include="Templates\Helpers\TypeReferenceLink.hbs" />
     <EmbeddedResource Include="Templates\Helpers\MemberLink.hbs" />
     <EmbeddedResource Include="Templates\Page.hbs" />

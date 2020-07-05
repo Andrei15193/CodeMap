@@ -13,7 +13,7 @@
     </thead>
     <tbody>
         {{#each namespaces}}
-        {{#if (HasPublicDefinitions @root declaredTypes)}}
+        {{#if (HasExposedDefinitions @root declaredTypes)}}
         <tr>
             <td>{{MemberLink @root this}}</td>
             <td>{{DocumentationContent @root summary}}</td>

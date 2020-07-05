@@ -22,7 +22,7 @@ namespace CodeMap.Documentation
             _directoryInfo.WritePage("Index.html", new PageContext(_memberFileNameProvider, assembly));
 
             foreach (var @namespace in assembly.Namespaces)
-                if (@namespace.DeclaredTypes.Any(declaredType => declaredType.AccessModifier == AccessModifier.Public))
+                if (@namespace.DeclaredTypes.Any(declaredType => declaredType.AccessModifier >= AccessModifier.Family))
                     @namespace.Accept(this);
 
             _UpdateVersions(assembly);
@@ -33,7 +33,7 @@ namespace CodeMap.Documentation
         {
             _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(@namespace)}.html", new PageContext(_memberFileNameProvider, @namespace));
 
-            foreach (var type in @namespace.DeclaredTypes.Where(declaredType => declaredType.AccessModifier == AccessModifier.Public))
+            foreach (var type in @namespace.DeclaredTypes.Where(declaredType => declaredType.AccessModifier >= AccessModifier.Family))
                 type.Accept(this);
         }
 
@@ -50,7 +50,7 @@ namespace CodeMap.Documentation
         {
             _directoryInfo.WritePage($"{_memberFileNameProvider.GetFileName(@class)}.html", new PageContext(_memberFileNameProvider, @class));
 
-            foreach (var member in @class.Members.Where(member => member.AccessModifier == AccessModifier.Public))
+            foreach (var member in @class.Members.Where(member => member.AccessModifier >= AccessModifier.Family))
                 member.Accept(this);
         }
 

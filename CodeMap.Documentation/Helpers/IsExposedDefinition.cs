@@ -3,10 +3,10 @@ using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class IsPublicDefinition : HandlebarsBooleanHelper<DeclarationNode>
+    public class IsExposedDefinition : HandlebarsBooleanHelper<DeclarationNode>
     {
         public override string Name
-            => nameof(IsPublicDefinition);
+            => nameof(IsExposedDefinition);
 
         public override bool Apply(PageContext context, DeclarationNode parameter)
             => parameter switch

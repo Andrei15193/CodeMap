@@ -5,15 +5,10 @@
 
 <p>
     Base type: {{TypeReferenceLink @root baseClass}}.
-    {{#if (HasAny @root implementedInterfaces)}}
     {{#each implementedInterfaces}}
-    {{~#if @first}}<br />Implemented interfaces:
-    {{else ~}}
-    ,
-    {{/if}}
+    {{~#if @first}}<br />Implemented interfaces:{{else}},{{/if}}
     {{TypeReferenceLink @root this ~}}
     {{/each}}
-    {{/if}}
 </p>
 
 {{#if isStatic}}
@@ -24,18 +19,18 @@
 <p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> class.</p>
 {{/if}}
 
-{{MemberDefinitionsList @root 'Constants' constants 'includeAccessor'}}
-{{MemberDefinitionsList @root 'Fields' fields 'includeAccessor'}}
-{{MemberDefinitionsList @root 'Constructors' constructors 'includeAccessor'}}
-{{MemberDefinitionsList @root 'Events' events 'includeAccessor'}}
-{{MemberDefinitionsList @root 'Properties' properties 'includeAccessor'}}
-{{MemberDefinitionsList @root 'Methods' methods 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Constants' constants 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Fields' fields 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Constructors' constructors 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Events' events 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Properties' properties 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Methods' methods 'includeAccessor'}}
 
-{{MemberDefinitionsList @root 'Nested Enums' nestedEnums 'includeAccessor'}}
-{{MemberDefinitionsList @root 'Nested Delegates' nestedDelegates 'includeAccessor'}}
-{{MemberDefinitionsList @root 'Nested Interfaces' nestedInterfaces 'includeAccessor'}}
-{{MemberDefinitionsList @root 'Nested Classes' nestedClasses 'includeAccessor'}}
-{{MemberDefinitionsList @root 'Nested Structs' nestedStructs 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Nested Enums' nestedEnums 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Nested Delegates' nestedDelegates 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Nested Interfaces' nestedInterfaces 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Nested Classes' nestedClasses 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Nested Structs' nestedStructs 'includeAccessor'}}
 
 {{DocumentationContent @root remarks}}
 {{DocumentationContent @root examples}}

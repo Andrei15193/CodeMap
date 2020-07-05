@@ -72,6 +72,8 @@ namespace CodeMap.Documentation
         {
             if (memberReference == typeof(object))
                 return "object";
+            if (memberReference == typeof(bool))
+                return "bool";
             if (memberReference == typeof(byte))
                 return "byte";
             if (memberReference == typeof(sbyte))

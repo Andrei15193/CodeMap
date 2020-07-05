@@ -28,29 +28,33 @@
 
 {{DocumentationContent @root value}}
 
-{{#if (HasAny @root parameters)}}
+{{#each parameters}}
+{{#if @first}}
 <h3>Parameters</h3>
 <ul>
-    {{#each parameters}}
+    {{/if}}
     <li>
         <h5>{{this.name}}: {{TypeReferenceLink @root type}}</h5>
         {{DocumentationContent @root description}}
     </li>
-    {{/#each}}
+    {{#if @last}}
 </ul>
 {{/if}}
+{{/#each}}
 
-{{#if (HasAny @root exceptions)}}
+{{#each exceptions}}
+{{#if @first}}
 <h3>Exceptions</h3>
 <ul>
-    {{#each exceptions}}
+    {{/if}}
     <li>
         <h5>{{TypeReferenceLink @root type}}</h5>
         {{DocumentationContent @root description}}
     </li>
-    {{/each}}
+    {{#if @last}}
 </ul>
 {{/if}}
+{{/each}}
 
 {{DocumentationContent @root remarks}}
 {{DocumentationContent @root examples}}

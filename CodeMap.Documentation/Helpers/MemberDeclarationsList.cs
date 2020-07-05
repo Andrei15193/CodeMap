@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class MemberDefinitionsList : HandlebarsContextualHelper<string, IEnumerable, string>
+    public class MemberDeclarationsList : HandlebarsContextualHelper<string, IEnumerable<DeclarationNode>, string>
     {
         public override string Name
-            => nameof(MemberDefinitionsList);
+            => nameof(MemberDeclarationsList);
 
-        public override void Apply(TextWriter writer, PageContext context, string title, IEnumerable definitions, string includeAccessor)
+        public override void Apply(TextWriter writer, PageContext context, string title, IEnumerable<DeclarationNode> declarations, string includeAccessor)
             => HandlebarsExtensions.WriteTemplate(
                 writer,
                 Name,
@@ -17,7 +18,7 @@ namespace CodeMap.Documentation.Helpers
                     new
                     {
                         Title = title,
-                        Definitions = definitions,
+                        Definitions = declarations,
                         IncludeAccessor = string.Equals(includeAccessor, "includeAccessor", StringComparison.OrdinalIgnoreCase)
                     }
                 )

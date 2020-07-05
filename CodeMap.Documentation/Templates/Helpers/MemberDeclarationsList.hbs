@@ -1,5 +1,5 @@
 ﻿{{#with data}}
-{{#if (HasPublicDefinitions @root definitions)}}
+{{#if (HasExposedDefinitions @root definitions)}}
 <h3>{{title}}</h3>
 <table class="table table-hover">
     <thead>
@@ -14,7 +14,7 @@
     <tbody>
         {{#if includeAccessor}}
         {{#each definitions}}
-        {{#if (IsPublicDefinition @root this)}}
+        {{#if (IsExposedDefinition @root this)}}
         <tr>
             <td>{{MemberLink @root this}}</td>
             <td class="text-left text-nowrap"><code>{{MemberAccessModifier @root this}}</code></td>
@@ -24,7 +24,7 @@
         {{/#each}}
         {{else}}
         {{#each definitions}}
-        {{#if (IsPublicDefinition @root this)}}
+        {{#if (IsExposedDefinition @root this)}}
         <tr>
             <td>{{MemberLink  @root this}}</td>
             <td>{{DocumentationContent  @root summary}}</td>

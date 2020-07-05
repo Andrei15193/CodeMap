@@ -1,6 +1,10 @@
-﻿{{#with data}}
-{{#if (HasAny @root this)}}
+﻿{{#each data}}
+{{#if @first}}
 <h3>Related Members</h3>
-<ul>{{#each this}}<li>{{DocumentationContent @root this}}</li>{{/each}}</ul>
+<ul>
+    {{/if}}
+    <li>{{DocumentationContent @root this}}</li>
+    {{#if @last}}
+</ul>
 {{/if}}
-{{/with}}
+{{/each}}

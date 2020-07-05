@@ -15,6 +15,8 @@ namespace CodeMap.Documentation.Helpers
                 writer.Write("void");
             if (typeReference == typeof(object))
                 writer.Write("object");
+            if (typeReference == typeof(bool))
+                writer.Write("bool");
             else if (typeReference == typeof(byte))
                 writer.Write("byte");
             else if (typeReference == typeof(sbyte))

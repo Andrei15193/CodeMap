@@ -13,7 +13,6 @@ namespace CodeMap.Documentation
     {
         private readonly static IHandlebars _handlebars = Handlebars
             .Create()
-            .RegisterHelper(new HasAny())
             .RegisterHelper(new MemberName())
             .RegisterHelper(new SimpleMemberName())
             .RegisterHelper(new MemberUrl())
@@ -24,14 +23,14 @@ namespace CodeMap.Documentation
             .RegisterHelper(new RelatedMembersList())
             .RegisterHelper(new Format())
             .RegisterHelper(new Pygments())
-            .RegisterHelper(new HasPublicDefinitions())
-            .RegisterHelper(new IsPublicDefinition())
+            .RegisterHelper(new HasExposedDefinitions())
+            .RegisterHelper(new IsExposedDefinition())
             .RegisterHelper(new IsReadOnlyProperty())
             .RegisterHelper(new IsReadWriteProperty())
             .RegisterHelper(new IsWriteOnlyProperty())
             .RegisterHelper(new DocumentationContent())
             .RegisterHelper(new PageContent())
-            .RegisterHelper(new MemberDefinitionsList());
+            .RegisterHelper(new MemberDeclarationsList());
         private readonly static IReadOnlyDictionary<string, Action<TextWriter, object>> _templates = typeof(Program)
             .Assembly
             .GetManifestResourceNames()

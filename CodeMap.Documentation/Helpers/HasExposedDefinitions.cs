@@ -5,10 +5,10 @@ using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class HasPublicDefinitions : HandlebarsBooleanHelper<IEnumerable<DeclarationNode>>
+    public class HasExposedDefinitions : HandlebarsBooleanHelper<IEnumerable<DeclarationNode>>
     {
         public override string Name
-            => nameof(HasPublicDefinitions);
+            => nameof(HasExposedDefinitions);
 
         public override bool Apply(PageContext context, IEnumerable<DeclarationNode> parameter)
             => parameter switch
