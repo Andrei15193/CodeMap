@@ -23,7 +23,7 @@ namespace CodeMap.Documentation
             var outputDirectory = new DirectoryInfo(arguments.OutputPath);
             outputDirectory.Create();
 
-            documentation.Accept(new HtmlWriterDeclarationNodeVisitor(outputDirectory, MemberFileNameProvider.Instance));
+            documentation.Accept(new HtmlWriterDeclarationNodeVisitor(outputDirectory, new MemberFileNameProvider()));
         }
 
         private class Arguments

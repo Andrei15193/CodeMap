@@ -10,6 +10,9 @@ namespace CodeMap.Documentation
         public PageContext(MemberFileNameProvider memberFileNameProvider, DeclarationNode declarationNode)
             => (MemberFileNameProvider, DeclarationNode) = (memberFileNameProvider, declarationNode);
 
+        protected PageContext(PageContext pageContext)
+            => (MemberFileNameProvider, DeclarationNode) = (pageContext.MemberFileNameProvider, pageContext.DeclarationNode);
+
         public DeclarationNode DeclarationNode { get; }
 
         public MemberFileNameProvider MemberFileNameProvider { get; }
@@ -45,6 +48,9 @@ namespace CodeMap.Documentation
                 MemberDeclaration memberDeclaration => _GetBreadcrumbs(memberDeclaration),
                 _ => throw new ArgumentException($"DeclarationNode type not handled: '{DeclarationNode.GetType().Name}'.")
             };
+
+        public PageContextWithData<TData> WithData<TData>(TData data)
+            => new PageContextWithData<TData>(this, data);
 
         private IEnumerable<PageBreadcrumb> _GetBreadcrumbs(AssemblyDeclaration assembly)
         {
@@ -95,17 +101,5 @@ namespace CodeMap.Documentation
             }
             yield return new PageBreadcrumb(memberDeclaration.GetMemberName());
         }
-    }
-
-    public class PageContext<TDeclarationNode> : PageContext
-        where TDeclarationNode : DeclarationNode
-    {
-        public PageContext(MemberFileNameProvider memberFileNameProvider, TDeclarationNode declarationNode)
-            : base(memberFileNameProvider, declarationNode)
-        {
-        }
-
-        public new TDeclarationNode DeclarationNode
-            => (TDeclarationNode)base.DeclarationNode;
     }
 }

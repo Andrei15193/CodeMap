@@ -1,35 +1,35 @@
 ﻿{{#with declarationNode}}
-<h2>{{MemberName this}} Constructor</h2>
+<h2>{{MemberName @root this}} Constructor</h2>
 
-{{DocumentationContent summary}}
+{{DocumentationContent @root summary}}
 
-<p>This is a <code>{{MemberAccessModifier this}}</code> constructor.</p>
+<p>This is a <code>{{MemberAccessModifier @root this}}</code> constructor.</p>
 
-{{#if (HasAny parameters)}}
+{{#if (HasAny @root parameters)}}
 <h3>Parameters</h3>
 <ul>
     {{#each parameters}}
     <li>
-        <h5>{{this.name}}: {{TypeReferenceLink type}}</h5>
-        {{DocumentationContent description @root}}
+        <h5>{{this.name}}: {{TypeReferenceLink @root type}}</h5>
+        {{DocumentationContent @root description}}
     </li>
     {{/#each}}
 </ul>
 {{/if}}
 
-{{#if (HasAny exceptions)}}
+{{#if (HasAny @root exceptions)}}
 <h3>Exceptions</h3>
 <ul>
     {{#each exceptions}}
     <li>
-        <h5>{{TypeReferenceLink type}}</h5>
-        {{DocumentationContent description @root}}
+        <h5>{{TypeReferenceLink @root type}}</h5>
+        {{DocumentationContent @root description}}
     </li>
     {{/each}}
 </ul>
 {{/if}}
 
-{{DocumentationContent remarks}}
-{{DocumentationContent examples}}
-{{RelatedMembersList relatedMembers}}
+{{DocumentationContent @root remarks}}
+{{DocumentationContent @root examples}}
+{{RelatedMembersList @root relatedMembers}}
 {{/with}}

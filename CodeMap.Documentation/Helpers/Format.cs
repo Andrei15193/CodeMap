@@ -4,16 +4,12 @@ using System.IO;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class Format : IHandlebarsHelper
+    public class Format : HandlebarsContextualHelper<IFormattable, string>
     {
-        public string Name
+        public override string Name
             => nameof(Format);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
-        {
-            var formattable = (IFormattable)parameters[0];
-            var format = (string)parameters[1];
-            writer.Write(formattable.ToString(format, CultureInfo.InvariantCulture));
-        }
+        public override void Apply(TextWriter writer, PageContext context, IFormattable formattable, string format)
+            => writer.Write(formattable.ToString(format, CultureInfo.InvariantCulture));
     }
 }

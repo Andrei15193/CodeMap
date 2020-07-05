@@ -1,1 +1,3 @@
-﻿<ul>{{DocumentationContent documentationElement.items}}</ul>
+﻿{{#with data}}
+<ul>{{DocumentationContent @root items}}</ul>
+{{/with}}

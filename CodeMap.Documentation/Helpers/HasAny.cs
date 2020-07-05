@@ -1,22 +1,13 @@
 ﻿using System.Collections;
-using System.IO;
-using HandlebarsDotNet;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class HasAny : IHandlebarsHelper
+    public class HasAny : HandlebarsBooleanHelper<IEnumerable>
     {
-        public string Name
+        public override string Name
             => nameof(HasAny);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
-        {
-            if (!HandlebarsUtils.IsUndefinedBindingResult(parameters[0]))
-            {
-                var enumerator = ((IEnumerable)parameters[0]).GetEnumerator();
-                if (enumerator.MoveNext())
-                    writer.Write(true);
-            }
-        }
+        public override bool Apply(PageContext context, IEnumerable enumerable)
+            => enumerable != null && enumerable.GetEnumerator().MoveNext();
     }
 }

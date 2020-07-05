@@ -3,16 +3,15 @@ using System.Text.RegularExpressions;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class PageContent : IHandlebarsHelper
+    public class PageContent : HandlebarsContextualHelper
     {
-        public string Name
+        public override string Name
             => nameof(PageContent);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
+        public override void Apply(TextWriter writer, PageContext context)
         {
-            var pageContext = (PageContext)context;
-            var declarationNodeType = Regex.Match(pageContext.DeclarationNode.GetType().Name, @"^[A-Z][a-z]+").Value;
-            writer.WriteTemplate(declarationNodeType, pageContext);
+            var declarationNodeType = Regex.Match(context.DeclarationNode.GetType().Name, @"^[A-Z][a-z]+").Value;
+            writer.WriteTemplate(declarationNodeType, context);
         }
     }
 }

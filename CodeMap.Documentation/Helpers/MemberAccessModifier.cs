@@ -4,21 +4,46 @@ using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class MemberAccessModifier : IHandlebarsHelper
+    public class MemberAccessModifier : HandlebarsContextualHelper<DeclarationNode>
     {
-        public string Name
+        public override string Name
             => nameof(MemberAccessModifier);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
+        public override void Apply(TextWriter writer, PageContext context, DeclarationNode parameter)
         {
-            switch (parameters[0])
+            switch (parameter)
             {
                 case PropertyDeclaration propertyDeclaration:
-                    writer.Write(_GetAccessModifierLabel(propertyDeclaration.Getter.AccessModifier));
-                    writer.Write(" get");
-                    if (propertyDeclaration.Setter?.AccessModifier >= AccessModifier.Family)
+                    if (propertyDeclaration.Getter != null && propertyDeclaration.Setter != null)
+                        if (propertyDeclaration.Getter.AccessModifier == propertyDeclaration.Setter.AccessModifier)
+                        {
+                            writer.Write(_GetAccessModifierLabel(propertyDeclaration.AccessModifier));
+                            writer.Write(" get, set");
+                        }
+                        else if (propertyDeclaration.Getter.AccessModifier >= AccessModifier.Family && propertyDeclaration.Setter.AccessModifier >= AccessModifier.Family)
+                        {
+                            writer.Write(_GetAccessModifierLabel(propertyDeclaration.Getter.AccessModifier));
+                            writer.Write(" get; ");
+                            writer.Write(_GetAccessModifierLabel(propertyDeclaration.Setter.AccessModifier));
+                            writer.Write(" set");
+                        }
+                        else if (propertyDeclaration.Getter.AccessModifier >= AccessModifier.Family)
+                        {
+                            writer.Write(_GetAccessModifierLabel(propertyDeclaration.Getter.AccessModifier));
+                            writer.Write(" get");
+                        }
+                        else
+                        {
+                            writer.Write(_GetAccessModifierLabel(propertyDeclaration.Setter.AccessModifier));
+                            writer.Write(" set");
+                        }
+                    else if (propertyDeclaration.Getter != null)
                     {
-                        writer.Write("; ");
+                        writer.Write(_GetAccessModifierLabel(propertyDeclaration.Getter.AccessModifier));
+                        writer.Write(" get");
+                    }
+                    else
+                    {
                         writer.Write(_GetAccessModifierLabel(propertyDeclaration.Setter.AccessModifier));
                         writer.Write(" set");
                     }
@@ -33,7 +58,7 @@ namespace CodeMap.Documentation.Helpers
                     break;
 
                 default:
-                    throw new ArgumentException($"Unhandled parameter type: '{parameters[0].GetType().Name}'");
+                    throw new ArgumentException($"Unhandled parameter type: '{parameter.GetType().Name}'");
             }
         }
 

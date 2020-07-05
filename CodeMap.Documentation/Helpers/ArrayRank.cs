@@ -3,14 +3,14 @@ using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class ArrayRank : IHandlebarsHelper
+    public class ArrayRank : HandlebarsContextualHelper<object>
     {
-        public string Name
+        public override string Name
             => nameof(ArrayRank);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
+        public override void Apply(TextWriter writer, PageContext context, object parameter)
         {
-            if (parameters[0] is ArrayTypeReference arrayTypeReference)
+            if (parameter is ArrayTypeReference arrayTypeReference)
             {
                 writer.Write('[');
                 writer.Write(new string(',', arrayTypeReference.Rank - 1));

@@ -6,16 +6,13 @@ using PygmentSharp.Core.Lexing;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class Pygments : IHandlebarsHelper
+    public class Pygments : HandlebarsContextualHelper<string, string>
     {
-        public string Name
+        public override string Name
             => nameof(Pygments);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
+        public override void Apply(TextWriter writer, PageContext context, string code, string language)
         {
-            var code = (string)parameters[0];
-            var language = HandlebarsUtils.IsUndefinedBindingResult(parameters[1]) ? null : (string)parameters[1];
-
             Lexer lexer = null;
             switch (language?.ToLowerInvariant())
             {

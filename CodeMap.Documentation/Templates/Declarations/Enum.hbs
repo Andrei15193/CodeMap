@@ -1,7 +1,7 @@
 ﻿{{#with declarationNode}}
-<h2>{{MemberName this}} Enum</h2>
+<h2>{{MemberName @root this}} Enum</h2>
 
-{{DocumentationContent summary}}
+{{DocumentationContent @root summary}}
 
 <h3>Members</h3>
 <table class="table table-hover">
@@ -16,14 +16,14 @@
         {{#each members}}
         <tr>
             <td>{{name}}</td>
-            <td><code>{{Format value 'D'}}</code></td>
-            <td>{{DocumentationContent summary}}</td>
+            <td><code>{{Format @root value 'D'}}</code></td>
+            <td>{{DocumentationContent @root summary}}</td>
         </tr>
         {{/each}}
     </tbody>
 </table>
 
-{{DocumentationContent remarks}}
-{{DocumentationContent examples}}
-{{RelatedMembersList relatedMembers}}
+{{DocumentationContent @root remarks}}
+{{DocumentationContent @root examples}}
+{{RelatedMembersList @root relatedMembers}}
 {{/with}}

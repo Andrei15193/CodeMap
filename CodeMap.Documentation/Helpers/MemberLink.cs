@@ -2,12 +2,12 @@
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class MemberLink : IHandlebarsHelper
+    public class MemberLink : HandlebarsContextualHelper<object>
     {
-        public string Name
+        public override string Name
             => nameof(MemberLink);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
-            => HandlebarsExtensions.WriteTemplate(writer, Name, parameters[0]);
+        public override void Apply(TextWriter writer, PageContext context, object parameter)
+            => HandlebarsExtensions.WriteTemplate(writer, Name, context.WithData(parameter));
     }
 }

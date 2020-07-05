@@ -1,10 +1,12 @@
-﻿<table class="table table-hover">
+﻿{{#with data}}
+<table class="table table-hover">
     <thead>
         <tr>
-            {{DocumentationContent documentationElement.columns}}
+            {{DocumentationContent @root columns}}
         </tr>
     </thead>
     <tbody>
-        {{DocumentationContent documentationElement.rows}}
+        {{DocumentationContent @root rows}}
     </tbody>
 </table>
+{{/with}}

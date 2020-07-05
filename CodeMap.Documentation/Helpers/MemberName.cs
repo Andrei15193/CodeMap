@@ -5,23 +5,34 @@ using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class MemberName : IHandlebarsHelper
+    public class MemberName : HandlebarsContextualHelper<object>
     {
-        public string Name
+        public override string Name
             => nameof(MemberName);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
+        public override void Apply(TextWriter writer, PageContext context, object parameter)
         {
-            if (parameters[0] is TypeDeclaration typeDeclaration)
-                writer.Write(typeDeclaration.GetMemberName());
-            else if (parameters[0] is MemberDeclaration memberDeclaration)
-                writer.Write(memberDeclaration.GetMemberName());
-            else if (parameters[0] is MemberReference memberReference)
-                writer.Write(memberReference.GetMemberName());
-            else if (parameters[0] is NamespaceDeclaration @namespace)
-                writer.Write(@namespace.Name);
-            else
-                throw new ArgumentException($"Unhandled parameter type: '{parameters[0].GetType().Name}'");
+            switch (parameter)
+            {
+                case TypeDeclaration typeDeclaration:
+                    writer.Write(typeDeclaration.GetMemberName());
+                    break;
+
+                case MemberDeclaration memberDeclaration:
+                    writer.Write(memberDeclaration.GetMemberName());
+                    break;
+
+                case MemberReference memberReference:
+                    writer.Write(memberReference.GetMemberName());
+                    break;
+
+                case NamespaceDeclaration @namespace:
+                    writer.Write(@namespace.Name);
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unhandled parameter type: '{parameter.GetType().Name}'");
+            }
         }
     }
 }

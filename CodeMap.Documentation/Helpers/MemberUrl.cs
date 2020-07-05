@@ -5,49 +5,51 @@ using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class MemberUrl : IHandlebarsHelper
+    public class MemberUrl : HandlebarsContextualHelper<object>
     {
-        private readonly MemberFileNameProvider _memberFileNameProvider;
-
-        public MemberUrl(MemberFileNameProvider memberFileNameProvider)
-            => _memberFileNameProvider = memberFileNameProvider;
-
-        public string Name
+        public override string Name
             => nameof(MemberUrl);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
+        public override void Apply(TextWriter writer, PageContext context, object parameter)
         {
-            if (parameters[0] is MemberDeclaration memberDeclaration)
+            switch (parameter)
             {
-                writer.Write(_memberFileNameProvider.GetFileName(memberDeclaration));
-                writer.Write(".html");
-            }
-            else if (parameters[0] is TypeDeclaration typeDeclaration)
-            {
-                writer.Write(_memberFileNameProvider.GetFileName(typeDeclaration));
-                writer.Write(".html");
-            }
-            else if (parameters[0] is NamespaceDeclaration namespaceDeclaration)
-            {
-                writer.Write(namespaceDeclaration.Name);
-                writer.Write(".html");
-            }
-            else if (parameters[0] is AssemblyDeclaration _)
-                writer.Write("Index.html");
-            else if (parameters[0] is TypeReference typeReference)
-            {
-                if (typeReference.Assembly == typeof(DeclarationNode).Assembly.GetName())
-                {
-                    writer.Write(_memberFileNameProvider.GetFileName(typeReference));
+                case MemberDeclaration memberDeclaration:
+                    writer.Write(context.MemberFileNameProvider.GetFileName(memberDeclaration));
                     writer.Write(".html");
-                }
-                else
-                    writer.Write(typeReference.GetMicrosoftDocsLink());
+                    break;
+
+                case TypeDeclaration typeDeclaration:
+                    writer.Write(context.MemberFileNameProvider.GetFileName(typeDeclaration));
+                    writer.Write(".html");
+                    break;
+
+                case NamespaceDeclaration namespaceDeclaration:
+                    writer.Write(namespaceDeclaration.Name);
+                    writer.Write(".html");
+                    break;
+
+                case AssemblyDeclaration _:
+                    writer.Write("Index.html");
+                    break;
+
+                case TypeReference typeReference:
+                    if (typeReference.Assembly == typeof(DeclarationNode).Assembly.GetName())
+                    {
+                        writer.Write(context.MemberFileNameProvider.GetFileName(typeReference));
+                        writer.Write(".html");
+                    }
+                    else
+                        writer.Write(typeReference.GetMicrosoftDocsLink());
+                    break;
+
+                case ArrayTypeReference arrayTypeReference:
+                    Apply(writer, context, arrayTypeReference.ItemType);
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unhandled parameter type: '{parameter.GetType().Name}'");
             }
-            else if (parameters[0] is ArrayTypeReference arrayTypeReference)
-                Apply(writer, context, arrayTypeReference.ItemType);
-            else
-                throw new ArgumentException($"Unhandled parameter type: '{parameters[0].GetType().Name}'");
         }
     }
 }

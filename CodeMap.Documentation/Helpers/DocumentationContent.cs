@@ -1,25 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class DocumentationContent : IHandlebarsHelper
+    public class DocumentationContent : HandlebarsContextualHelper<object>
     {
-        public string Name
+        public override string Name
             => nameof(DocumentationContent);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
+        public override void Apply(TextWriter writer, PageContext context, object parameter)
         {
-            var pageContext = context is TemplateContext templateContext
-                ? templateContext.PageContext
-                : context is DeclarationNode declarationNode
-                ? new PageContext(MemberFileNameProvider.Instance, declarationNode)
-                : (context as PageContext ?? (PageContext)parameters[1]);
-            var visitor = new HtmlWriterDocumentationVisitor(writer, pageContext);
-            switch (parameters[0])
+            var visitor = new HtmlWriterDocumentationVisitor(writer, context);
+            switch (parameter)
             {
                 case DocumentationElement documentationElement:
                     documentationElement.Accept(visitor);
@@ -31,7 +25,7 @@ namespace CodeMap.Documentation.Helpers
                     break;
 
                 default:
-                    throw new ArgumentException($"Unhandled parameter type: '{parameters[0].GetType().Name}'");
+                    throw new ArgumentException($"Unhandled parameter type: '{parameter.GetType().Name}'");
             }
         }
     }

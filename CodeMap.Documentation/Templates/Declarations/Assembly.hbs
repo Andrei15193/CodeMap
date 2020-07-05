@@ -1,7 +1,7 @@
 ﻿{{#with declarationNode}}
 <h2>{{name}}</h2>
 
-{{DocumentationContent summary}}
+{{DocumentationContent @root summary}}
 
 <h3>Namespaces</h3>
 <table class="table table-hover">
@@ -13,17 +13,17 @@
     </thead>
     <tbody>
         {{#each namespaces}}
-        {{#if (HasPublicDefinitions declaredTypes)}}
+        {{#if (HasPublicDefinitions @root declaredTypes)}}
         <tr>
-            <td>{{MemberLink this}}</td>
-            <td>{{DocumentationContent summary}}</td>
+            <td>{{MemberLink @root this}}</td>
+            <td>{{DocumentationContent @root summary}}</td>
         </tr>
         {{/if}}
         {{/#each}}
     </tbody>
 </table>
 
-{{DocumentationContent remarks}}
-{{DocumentationContent examples}}
-{{RelatedMembersList relatedMembers}}
+{{DocumentationContent @root remarks}}
+{{DocumentationContent @root examples}}
+{{RelatedMembersList @root relatedMembers}}
 {{/with}}

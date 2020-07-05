@@ -3,14 +3,16 @@ using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class SimpleMemberName : IHandlebarsHelper
+    public class SimpleMemberName : HandlebarsContextualHelper<BaseTypeReference>
     {
-        public string Name
+        public override string Name
             => nameof(SimpleMemberName);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
+        public override void Apply(TextWriter writer, PageContext context, BaseTypeReference baseTypeReference)
         {
-            var typeReference = (TypeReference)(parameters[0] is TypeReference ? parameters[0] : ((ArrayTypeReference)parameters[0]).ItemType);
+            var typeReference = (TypeReference)(baseTypeReference is TypeReference ? baseTypeReference : ((ArrayTypeReference)baseTypeReference).ItemType);
+            if (typeReference == typeof(void))
+                writer.Write("void");
             if (typeReference == typeof(object))
                 writer.Write("object");
             else if (typeReference == typeof(byte))

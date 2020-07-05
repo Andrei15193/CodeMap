@@ -1,4 +1,5 @@
-﻿{{#with documentationElement.xmlAttributes}}
+﻿{{#with data}}
+{{#with xmlAttributes}}
 {{#unless section}}
 {{else}}
 <h4>{{section}}</h4>
@@ -15,4 +16,5 @@
 {{/unless}}
 {{/with}}
 
-<p>{{DocumentationContent documentationElement.content}}</p>
+<p>{{DocumentationContent @root content}}</p>
+{{/with}}

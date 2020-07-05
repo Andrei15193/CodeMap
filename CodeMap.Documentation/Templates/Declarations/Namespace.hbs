@@ -1,15 +1,15 @@
 ﻿{{#with declarationNode}}
-<h2>{{MemberName this}} Namespace</h2>
+<h2>{{MemberName @root this}} Namespace</h2>
 
-{{DocumentationContent summary}}
+{{DocumentationContent @root summary}}
 
-{{MemberDefinitionsList 'Enums' enums}}
-{{MemberDefinitionsList 'Delegates' delegates}}
-{{MemberDefinitionsList 'Interfaces' interfaces}}
-{{MemberDefinitionsList 'Classes' classes}}
-{{MemberDefinitionsList 'Structs' structs}}
+{{MemberDefinitionsList @root 'Enums' enums}}
+{{MemberDefinitionsList @root 'Delegates' delegates}}
+{{MemberDefinitionsList @root 'Interfaces' interfaces}}
+{{MemberDefinitionsList @root 'Classes' classes}}
+{{MemberDefinitionsList @root 'Structs' structs}}
 
-{{DocumentationContent remarks}}
-{{DocumentationContent examples}}
-{{RelatedMembersList relatedMembers}}
+{{DocumentationContent @root remarks}}
+{{DocumentationContent @root examples}}
+{{RelatedMembersList @root relatedMembers}}
 {{/with}}

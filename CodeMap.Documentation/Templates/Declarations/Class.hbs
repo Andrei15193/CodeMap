@@ -1,17 +1,17 @@
 ﻿{{#with declarationNode}}
-<h2>{{MemberName this}} Class</h2>
+<h2>{{MemberName @root this}} Class</h2>
 
-{{DocumentationContent summary}}
+{{DocumentationContent @root summary}}
 
 <p>
-    Base type: {{TypeReferenceLink baseClass}}.
-    {{#if (HasAny implementedInterfaces)}}
+    Base type: {{TypeReferenceLink @root baseClass}}.
+    {{#if (HasAny @root implementedInterfaces)}}
     {{#each implementedInterfaces}}
     {{~#if @first}}<br />Implemented interfaces:
     {{else ~}}
     ,
     {{/if}}
-    {{TypeReferenceLink this ~}}
+    {{TypeReferenceLink @root this ~}}
     {{/each}}
     {{/if}}
 </p>
@@ -24,20 +24,20 @@
 <p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> class.</p>
 {{/if}}
 
-{{MemberDefinitionsList 'Constants' constants 'includeAccessor'}}
-{{MemberDefinitionsList 'Fields' fields 'includeAccessor'}}
-{{MemberDefinitionsList 'Constructors' constructors 'includeAccessor'}}
-{{MemberDefinitionsList 'Events' events 'includeAccessor'}}
-{{MemberDefinitionsList 'Properties' properties 'includeAccessor'}}
-{{MemberDefinitionsList 'Methods' methods 'includeAccessor'}}
+{{MemberDefinitionsList @root 'Constants' constants 'includeAccessor'}}
+{{MemberDefinitionsList @root 'Fields' fields 'includeAccessor'}}
+{{MemberDefinitionsList @root 'Constructors' constructors 'includeAccessor'}}
+{{MemberDefinitionsList @root 'Events' events 'includeAccessor'}}
+{{MemberDefinitionsList @root 'Properties' properties 'includeAccessor'}}
+{{MemberDefinitionsList @root 'Methods' methods 'includeAccessor'}}
 
-{{MemberDefinitionsList 'Nested Enums' nestedEnums 'includeAccessor'}}
-{{MemberDefinitionsList 'Nested Delegates' nestedDelegates 'includeAccessor'}}
-{{MemberDefinitionsList 'Nested Interfaces' nestedInterfaces 'includeAccessor'}}
-{{MemberDefinitionsList 'Nested Classes' nestedClasses 'includeAccessor'}}
-{{MemberDefinitionsList 'Nested Structs' nestedStructs 'includeAccessor'}}
+{{MemberDefinitionsList @root 'Nested Enums' nestedEnums 'includeAccessor'}}
+{{MemberDefinitionsList @root 'Nested Delegates' nestedDelegates 'includeAccessor'}}
+{{MemberDefinitionsList @root 'Nested Interfaces' nestedInterfaces 'includeAccessor'}}
+{{MemberDefinitionsList @root 'Nested Classes' nestedClasses 'includeAccessor'}}
+{{MemberDefinitionsList @root 'Nested Structs' nestedStructs 'includeAccessor'}}
 
-{{DocumentationContent remarks}}
-{{DocumentationContent examples}}
-{{RelatedMembersList relatedMembers}}
+{{DocumentationContent @root remarks}}
+{{DocumentationContent @root examples}}
+{{RelatedMembersList @root relatedMembers}}
 {{/with}}

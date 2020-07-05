@@ -1,33 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class HasPublicDefinitions : IHandlebarsHelper
+    public class HasPublicDefinitions : HandlebarsBooleanHelper<IEnumerable<DeclarationNode>>
     {
-        public string Name
+        public override string Name
             => nameof(HasPublicDefinitions);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
-        {
-            switch (parameters[0])
+        public override bool Apply(PageContext context, IEnumerable<DeclarationNode> parameter)
+            => parameter switch
             {
-                case IEnumerable<MemberDeclaration> memberDeclarations:
-                    if (memberDeclarations.Any(memberDeclaration => memberDeclaration.AccessModifier >= AccessModifier.Family))
-                        writer.Write(true);
-                    break;
-
-                case IEnumerable<TypeDeclaration> typeDeclarations:
-                    if (typeDeclarations.Any(typeDeclaration => typeDeclaration.AccessModifier >= AccessModifier.Family))
-                        writer.Write(true);
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unhandled parameter type: '{parameters[0].GetType().Name}'");
-            }
-        }
+                IEnumerable<MemberDeclaration> memberDeclarations => memberDeclarations.Any(memberDeclaration => memberDeclaration.AccessModifier >= AccessModifier.Family),
+                IEnumerable<TypeDeclaration> typeDeclarations => typeDeclarations.Any(typeDeclaration => typeDeclaration.AccessModifier >= AccessModifier.Family),
+                _ => throw new ArgumentException($"Unhandled parameter type: '{parameter.GetType().Name}'")
+            };
     }
 }

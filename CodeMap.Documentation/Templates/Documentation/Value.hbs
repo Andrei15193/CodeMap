@@ -1,2 +1,6 @@
-﻿<h3>Value</h3>
-{{DocumentationContent documentationElement.content}}
+﻿{{#with data}}
+{{#if (HasAny @root content)}}
+<h3>Value</h3>
+{{DocumentationContent @root content}}
+{{/if}}
+{{/with}}

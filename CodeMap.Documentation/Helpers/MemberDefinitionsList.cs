@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
-using System.Linq;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class MemberDefinitionsList : IHandlebarsHelper
+    public class MemberDefinitionsList : HandlebarsContextualHelper<string, IEnumerable, string>
     {
-        public string Name
+        public override string Name
             => nameof(MemberDefinitionsList);
 
-        public void Apply(TextWriter writer, dynamic context, params object[] parameters)
+        public override void Apply(TextWriter writer, PageContext context, string title, IEnumerable definitions, string includeAccessor)
             => HandlebarsExtensions.WriteTemplate(
                 writer,
                 Name,
-                new
-                {
-                    Title = (string)parameters[0],
-                    Definitions = (IEnumerable)parameters[1],
-                    IncludeAccessor = parameters.Skip(2).OfType<string>().Contains("includeAccessor", StringComparer.OrdinalIgnoreCase)
-                }
+                context.WithData(
+                    new
+                    {
+                        Title = title,
+                        Definitions = definitions,
+                        IncludeAccessor = string.Equals(includeAccessor, "includeAccessor", StringComparison.OrdinalIgnoreCase)
+                    }
+                )
             );
     }
 }

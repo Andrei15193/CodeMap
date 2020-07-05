@@ -9,13 +9,7 @@ namespace CodeMap.Documentation
 {
     public class MemberFileNameProvider
     {
-        public static MemberFileNameProvider Instance { get; } = new MemberFileNameProvider();
-
-        private Dictionary<object, string> _cache = new Dictionary<object, string>(new DeclarationNodeEqualityComparer());
-
-        public MemberFileNameProvider()
-        {
-        }
+        private readonly Dictionary<object, string> _cache = new Dictionary<object, string>(new DeclarationNodeEqualityComparer());
 
         public string GetFileName(AssemblyDeclaration _)
             => "Index";

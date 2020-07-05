@@ -1,1 +1,3 @@
-﻿<a href="{{MemberUrl this}}">{{MemberName this}}</a>
+﻿{{#with data}}
+<a href="{{MemberUrl @root this}}">{{MemberName  @root this}}</a>
+{{/with}}

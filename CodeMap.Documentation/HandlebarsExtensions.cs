@@ -4,9 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using CodeMap.DeclarationNodes;
 using CodeMap.Documentation.Helpers;
-using CodeMap.DocumentationElements;
 using HandlebarsDotNet;
 
 namespace CodeMap.Documentation
@@ -18,7 +16,7 @@ namespace CodeMap.Documentation
             .RegisterHelper(new HasAny())
             .RegisterHelper(new MemberName())
             .RegisterHelper(new SimpleMemberName())
-            .RegisterHelper(new MemberUrl(MemberFileNameProvider.Instance))
+            .RegisterHelper(new MemberUrl())
             .RegisterHelper(new MemberLink())
             .RegisterHelper(new MemberAccessModifier())
             .RegisterHelper(new TypeReferenceLink())
@@ -62,19 +60,14 @@ namespace CodeMap.Documentation
             return handlebars;
         }
 
-        public static void WritePage<TDeclarationNode>(this DirectoryInfo directoryInfo, string page, TDeclarationNode declarationNode)
-                where TDeclarationNode : DeclarationNode
+        public static void WritePage(this DirectoryInfo directoryInfo, string page, PageContext pageContext)
         {
             using var fileStream = new FileStream(Path.Combine(directoryInfo.FullName, page), FileMode.Create, FileAccess.Write);
             using var streamWriter = new StreamWriter(fileStream, Encoding.UTF8);
-            _templates["Page"](streamWriter, new PageContext<TDeclarationNode>(MemberFileNameProvider.Instance, declarationNode));
+            _templates["Page"](streamWriter, pageContext);
         }
 
         public static void WriteTemplate(this TextWriter textWriter, string template, PageContext context)
-            => _templates[template](textWriter, context);
-
-        public static void WriteTemplate<TDocumentationElement>(this TextWriter textWriter, string template, TemplateContext<TDocumentationElement> context)
-                where TDocumentationElement : DocumentationElement
             => _templates[template](textWriter, context);
 
         public static void WriteTemplate(TextWriter textWriter, string template, dynamic context)
