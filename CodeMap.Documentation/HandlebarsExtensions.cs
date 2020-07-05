@@ -66,10 +66,17 @@ namespace CodeMap.Documentation
             _templates["Page"](streamWriter, pageContext);
         }
 
-        public static void WriteTemplate(this TextWriter textWriter, string template, PageContext context)
-            => _templates[template](textWriter, context);
+        public static void WriteTemplate(this TextWriter textWriter, string templateName, PageContext context)
+            => _templates[templateName](textWriter, context);
 
-        public static void WriteTemplate(TextWriter textWriter, string template, dynamic context)
-            => _templates[template](textWriter, context);
+        public static void WriteTemplate(TextWriter textWriter, string templateName, dynamic context)
+            => _templates[templateName](textWriter, context);
+
+        public static string ApplyTemplate(string templateName, dynamic context)
+        {
+            using var stringWriter = new StringWriter();
+            _templates[templateName](stringWriter, context);
+            return stringWriter.ToString();
+        }
     }
 }

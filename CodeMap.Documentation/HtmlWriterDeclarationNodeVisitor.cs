@@ -143,54 +143,56 @@ namespace CodeMap.Documentation
 
         private void _UpdateFiles(AssemblyDeclaration assembly)
         {
-            var directories = _directoryInfo.GetDirectories().OrderByDescending(directory => directory.Name, Comparer<string>.Create(_VersionComparison)).ToList();
+            var directories = _directoryInfo.GetDirectories().OrderBy(directory => directory.Name, Comparer<string>.Create(_VersionComparison)).ToList();
 
             Parallel.ForEach(
-                directories.First().EnumerateFiles(),
+                directories.Last().EnumerateFiles(),
                 latestVersionFile => latestVersionFile.CopyTo(Path.Combine(_directoryInfo.FullName, latestVersionFile.Name), true)
             );
 
-            var versions = directories.Select(directory => directory.Name).ToList();
+            var versions = directories.Select(directory => directory.Name);
             Parallel.ForEach(
                 _directoryInfo.EnumerateFiles("*.html", SearchOption.AllDirectories),
                 htmlFile =>
                 {
                     var htmlDocument = new HtmlDocument();
                     htmlDocument.Load(htmlFile.FullName);
-                    var otherVersionsHtmlNode = htmlDocument.GetElementbyId("otherVersions");
-                    otherVersionsHtmlNode.ChildNodes.Clear();
-                    otherVersionsHtmlNode.Attributes.RemoveAll();
 
-                    if (versions.Count > 1)
-                        otherVersionsHtmlNode.SetClass("btn-group").SetAttribute("role", "group")
-                            .AddChild("button").SetAttribute("id", "otherVersionsButtonGroup").SetAttribute("type", "button").SetClass("btn btn-link dropdown-toggle").SetAttribute("data-toggle", "dropdown").SetAttribute("aria-haspopup", "true").SetAttribute("aria-expanded", "false").AppendText("Other Versions")
-                                .ParentNode
-                            .AddChild("div").SetClass("dropdown-menu").SetAttribute("aria-labelledby", "otherVersionsButtonGroup")
-                                .AddChild("a").SetClass($"dropdown-item{(IsLatest(htmlFile) ? " active" : "")}").SetAttribute("href", IsLatest(htmlFile) ? "Index.html" : $"../Index.html")
-                                    .AppendText("Latest")
-                                    .ParentNode
-                                .AddChild("div").SetClass("dropdown-divider")
-                                    .ParentNode
-                                .AddChild("h6").SetClass("dropdown-header")
-                                    .AppendText("Specific Versions")
-                                    .ParentNode
-                                .Aggregate(
-                                    versions,
-                                    (otherVersionsElement, version) => otherVersionsElement
-                                        .AddChild("a").SetClass($"dropdown-item{(IsSelectedVersion(htmlFile, version) ? " active" : "")}").SetAttribute("href", IsLatest(htmlFile) ? $"{version}/Index.html" : $"../{version}/Index.html")
-                                            .AppendText(version)
-                                );
+                    var otherVersionsHtmlNode = htmlDocument.GetElementbyId("otherVersions");
+                    otherVersionsHtmlNode.ParentNode.ReplaceChild(
+                        htmlDocument.CreateTextNode(
+                            HandlebarsExtensions.ApplyTemplate(
+                                "OtherVersions",
+                                new
+                                {
+                                    IsLatestSelected = IsLatest(htmlFile),
+                                    PathToLatest = IsLatest(htmlFile) ? "Index.html" : "../Index.html",
+                                    HasOtherVersions = versions.Skip(1).Any(),
+                                    Versions = from version in versions.AsEnumerable().Reverse()
+                                               select new
+                                               {
+                                                   IsSelected = IsSelectedVersion(htmlFile, version),
+                                                   Label = version,
+                                                   Path = IsLatest(htmlFile) ? $"{version}/Index.Html" : $"../{version}/Index.Html"
+                                               }
+                                })
+                        ),
+                        otherVersionsHtmlNode
+                    );
 
                     var deprecationNoticeHtmlNode = htmlDocument.GetElementbyId("deprecationNotice");
-                    deprecationNoticeHtmlNode.ChildNodes.Clear();
-                    deprecationNoticeHtmlNode.Attributes.RemoveAll();
-                    if (!IsLatest(htmlFile) && !IsSelectedVersion(htmlFile, versions.First()))
-                        deprecationNoticeHtmlNode.SetClass("alert alert-warning").SetAttribute("role", "alert")
-                            .AppendText("You are viewing an older version of the library. Checkout the latest version ")
-                            .AddChild("a").SetClass("alert-link").SetAttribute("href", "../Index.html")
-                                .AppendText("here")
-                                .ParentNode
-                            .AppendText("!");
+                    deprecationNoticeHtmlNode.ParentNode.ReplaceChild(
+                        htmlDocument.CreateTextNode(
+                            HandlebarsExtensions.ApplyTemplate(
+                                "DeprecationNotice",
+                                new
+                                {
+                                    IsLatest = IsLatest(htmlFile) || IsSelectedVersion(htmlFile, versions.Last()),
+                                    PathToLatest = "../Index.html"
+                                })
+                        ),
+                        deprecationNoticeHtmlNode
+                    );
 
                     htmlDocument.Save(htmlFile.FullName);
                 }

@@ -17,6 +17,7 @@
     <None Remove="Templates\Declarations\Method.hbs" />
     <None Remove="Templates\Declarations\Namespace.hbs" />
     <None Remove="Templates\Declarations\Property.hbs" />
+    <None Remove="Templates\DeprecationNotice.hbs" />
     <None Remove="Templates\Documentation\Example.hbs" />
     <None Remove="Templates\Documentation\Value.hbs" />
     <None Remove="Templates\GenericParameterReference.hbs" />
@@ -27,6 +28,7 @@
     <None Remove="Templates\Hyperlink.hbs" />
     <None Remove="Templates\ListItem.hbs" />
     <None Remove="Templates\OrderedList.hbs" />
+    <None Remove="Templates\OtherVersions.hbs" />
     <None Remove="Templates\Page.hbs" />
     <None Remove="Templates\Paragraph.hbs" />
     <None Remove="Templates\ParameterReference.hbs" />
@@ -71,6 +73,8 @@
     <EmbeddedResource Include="Templates\Helpers\MemberDeclarationsList.hbs" />
     <EmbeddedResource Include="Templates\Helpers\TypeReferenceLink.hbs" />
     <EmbeddedResource Include="Templates\Helpers\MemberLink.hbs" />
+    <EmbeddedResource Include="Templates\DeprecationNotice.hbs" />
+    <EmbeddedResource Include="Templates\OtherVersions.hbs" />
     <EmbeddedResource Include="Templates\Page.hbs" />
   </ItemGroup>
 
