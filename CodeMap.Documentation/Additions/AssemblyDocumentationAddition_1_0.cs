@@ -525,7 +525,29 @@ namespace CodeMap.Documentation.Additions
                     {
                         Summary = DocumentationElement.Summary(
                             DocumentationElement.Paragraph(
-                                DocumentationElement.Text("This is a test")
+                                DocumentationElement.Text("Contains the declaration node definitions corresponding to declarations of assembly members (classes, properties, methods and so on). This is the entry point for generating documentation.")
+                            )
+                        )
+                    }
+                },
+                {
+                    "CodeMap.DocumentationElements",
+                    new NamespaceDocumentationAddition
+                    {
+                        Summary = DocumentationElement.Summary(
+                            DocumentationElement.Paragraph(
+                                DocumentationElement.Text("Contains the documentation element definitions corresponding to XML elements that are extracted from a documentation XML file associated to an assembly.")
+                            )
+                        )
+                    }
+                },
+                {
+                    "CodeMap.ReferenceData",
+                    new NamespaceDocumentationAddition
+                    {
+                        Summary = DocumentationElement.Summary(
+                            DocumentationElement.Paragraph(
+                                DocumentationElement.Text("Contains member reference definitions that can be used to create hyperlinks to referred members defined both in the documented library and dependent assemblies.")
                             )
                         )
                     }
