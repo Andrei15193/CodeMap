@@ -106,27 +106,6 @@ namespace CodeMap.Documentation
             return visitor.Result;
         }
 
-        public static string GetMemberFullName(this TypeDeclaration typeDeclaration)
-        {
-            var visitor = new MemberDeclarationFullNameVisitor();
-            typeDeclaration.Accept(visitor);
-            return visitor.Result;
-        }
-
-        public static string GetMemberFullName(this MemberDeclaration memberDeclaration)
-        {
-            var visitor = new MemberDeclarationFullNameVisitor();
-            memberDeclaration.Accept(visitor);
-            return visitor.Result;
-        }
-
-        public static string GetMemberFullName(this MemberReference memberReference)
-        {
-            var visitor = new MemberReferenceFullNameVisitor();
-            memberReference.Accept(visitor);
-            return visitor.Result;
-        }
-
         public static string GetMemberFullName(this MemberInfo member)
         {
             var memberFullNameBuilder = new StringBuilder();
@@ -290,13 +269,6 @@ namespace CodeMap.Documentation
 
         public static string GetMemberUrl(this MemberInfoReferenceDocumentationElement memberInfoReference, AssemblyDeclaration library)
             => library == memberInfoReference.ReferredMember.Module.Assembly ? memberInfoReference.ReferredMember.GetMemberFullName() + ".html" : memberInfoReference.ReferredMember.GetMicrosoftDocsLink();
-
-        public static string GetMicrosoftDocsLink(this MemberReference memberReference)
-        {
-            var visitor = new MemberReferenceMicrosoftLinkVisitor();
-            memberReference.Accept(visitor);
-            return visitor.Result;
-        }
 
         public static string GetMicrosoftDocsLink(this MemberInfo member)
         {

@@ -1,6 +1,6 @@
-﻿using CodeMap.ReferenceData;
+﻿using System.Collections.Generic;
+using CodeMap.ReferenceData;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace CodeMap.Json
 {
@@ -24,7 +24,7 @@ namespace CodeMap.Json
         public static void WriteProperty(this JsonWriter jsonWriter, string propertyName, MemberReferenceVisitor visitor, AssemblyReference assemblyReference)
         {
             jsonWriter.WritePropertyName(propertyName);
-            if (assemblyReference != null)
+            if (!(assemblyReference is null))
                 assemblyReference.Accept(visitor);
             else
                 jsonWriter.WriteNull();

@@ -7,15 +7,15 @@ namespace CodeMap.Documentation
 {
     public class PageContext
     {
-        public PageContext(MemberFileNameProvider memberFileNameProvider, DeclarationNode declarationNode)
-            => (MemberFileNameProvider, DeclarationNode) = (memberFileNameProvider, declarationNode);
+        public PageContext(MemberFileNameResolver memberFileNameResolver, DeclarationNode declarationNode)
+            => (MemberFileNameResolver, DeclarationNode) = (memberFileNameResolver, declarationNode);
 
         protected PageContext(PageContext pageContext)
-            => (MemberFileNameProvider, DeclarationNode) = (pageContext.MemberFileNameProvider, pageContext.DeclarationNode);
+            => (MemberFileNameResolver, DeclarationNode) = (pageContext.MemberFileNameResolver, pageContext.DeclarationNode);
 
         public DeclarationNode DeclarationNode { get; }
 
-        public MemberFileNameProvider MemberFileNameProvider { get; }
+        public MemberFileNameResolver MemberFileNameResolver { get; }
 
         public string Title => DeclarationNode switch
         {
@@ -59,7 +59,7 @@ namespace CodeMap.Documentation
 
         private IEnumerable<PageBreadcrumb> _GetBreadcrumbs(NamespaceDeclaration @namespace)
         {
-            yield return new PageBreadcrumb(@namespace.Assembly.Name, "Index.html");
+            yield return new PageBreadcrumb(@namespace.Assembly.Name, MemberFileNameResolver.GetFileName(@namespace.Assembly));
             yield return new PageBreadcrumb(@namespace.Name);
         }
 
@@ -72,12 +72,12 @@ namespace CodeMap.Documentation
                 typeDeclaration = typeDeclaration.DeclaringType;
             }
 
-            yield return new PageBreadcrumb(typeDeclarations.Peek().Assembly.Name, "Index.html");
-            yield return new PageBreadcrumb(typeDeclarations.Peek().Namespace.Name, $"{MemberFileNameProvider.GetFileName(typeDeclarations.Peek().Namespace)}.html");
+            yield return new PageBreadcrumb(typeDeclarations.Peek().Assembly.Name, MemberFileNameResolver.GetFileName(typeDeclarations.Peek().Assembly));
+            yield return new PageBreadcrumb(typeDeclarations.Peek().Namespace.Name, MemberFileNameResolver.GetFileName(typeDeclarations.Peek().Namespace));
             while (typeDeclarations.Count > 1)
             {
                 var currentTypeDeclaration = typeDeclarations.Pop();
-                yield return new PageBreadcrumb(currentTypeDeclaration.Name, $"{MemberFileNameProvider.GetFileName(currentTypeDeclaration)}.html");
+                yield return new PageBreadcrumb(currentTypeDeclaration.Name, MemberFileNameResolver.GetFileName(currentTypeDeclaration));
             }
             yield return new PageBreadcrumb(typeDeclarations.Peek().Name);
         }
@@ -92,12 +92,12 @@ namespace CodeMap.Documentation
                 typeDeclaration = typeDeclaration.DeclaringType;
             }
 
-            yield return new PageBreadcrumb(typeDeclarations.Peek().Assembly.Name, "Index.html");
-            yield return new PageBreadcrumb(typeDeclarations.Peek().Namespace.Name, $"{typeDeclarations.Peek().Namespace.Name}.html");
+            yield return new PageBreadcrumb(typeDeclarations.Peek().Assembly.Name, MemberFileNameResolver.GetFileName(typeDeclarations.Peek().Assembly));
+            yield return new PageBreadcrumb(typeDeclarations.Peek().Namespace.Name, MemberFileNameResolver.GetFileName(typeDeclarations.Peek().Namespace));
             while (typeDeclarations.Any())
             {
                 var currentTypeDeclaration = typeDeclarations.Pop();
-                yield return new PageBreadcrumb(currentTypeDeclaration.Name, $"{MemberFileNameProvider.GetFileName(currentTypeDeclaration)}.html");
+                yield return new PageBreadcrumb(currentTypeDeclaration.Name, MemberFileNameResolver.GetFileName(currentTypeDeclaration));
             }
             yield return new PageBreadcrumb(memberDeclaration.GetMemberName());
         }

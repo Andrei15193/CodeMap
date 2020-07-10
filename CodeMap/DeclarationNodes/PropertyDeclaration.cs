@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using CodeMap.DocumentationElements;
 using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
     /// <summary>Represents a documented property declared by a type.</summary>
-    public sealed class PropertyDeclaration : MemberDeclaration, IEquatable<PropertyReference>
+    public sealed class PropertyDeclaration : MemberDeclaration
     {
         internal PropertyDeclaration()
         {
@@ -53,21 +51,5 @@ namespace CodeMap.DeclarationNodes
         /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DeclarationNodeVisitor visitor)
             => visitor.VisitProperty(this);
-
-        /// <summary>Determines whether the current <see cref="PropertyDeclaration"/> is equal to the provided <paramref name="memberReference"/>.</summary>
-        /// <param name="memberReference">The <see cref="MemberReference"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="PropertyDeclaration"/> references the provided <paramref name="memberReference"/>; <c>false</c> otherwise.</returns>
-        public override bool Equals(MemberReference memberReference)
-            => memberReference is PropertyReference propertyReference
-            && Equals(propertyReference);
-
-        /// <summary>Determines whether the current <see cref="PropertyDeclaration"/> is equal to the provided <paramref name="propertyReference"/>.</summary>
-        /// <param name="propertyReference">The <see cref="PropertyReference"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="PropertyDeclaration"/> references the provided <paramref name="propertyReference"/>; <c>false</c> otherwise.</returns>
-        public bool Equals(PropertyReference propertyReference)
-            => propertyReference != null
-            && string.Equals(Name, propertyReference.Name, StringComparison.OrdinalIgnoreCase)
-            && DeclaringType == propertyReference.DeclaringType
-            && Parameters.Select(parameter => parameter.Type).SequenceEqual(propertyReference.ParameterTypes);
     }
 }

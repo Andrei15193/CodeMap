@@ -14,37 +14,16 @@ namespace CodeMap.Documentation.Helpers
         {
             switch (parameter)
             {
-                case MemberDeclaration memberDeclaration:
-                    writer.Write(context.MemberFileNameProvider.GetFileName(memberDeclaration));
-                    writer.Write(".html");
-                    break;
-
-                case TypeDeclaration typeDeclaration:
-                    writer.Write(context.MemberFileNameProvider.GetFileName(typeDeclaration));
-                    writer.Write(".html");
-                    break;
-
-                case NamespaceDeclaration namespaceDeclaration:
-                    writer.Write(namespaceDeclaration.Name);
-                    writer.Write(".html");
-                    break;
-
-                case AssemblyDeclaration _:
-                    writer.Write("Index.html");
-                    break;
-
-                case TypeReference typeReference:
-                    if (typeReference.Assembly == typeof(DeclarationNode).Assembly.GetName())
-                    {
-                        writer.Write(context.MemberFileNameProvider.GetFileName(typeReference));
-                        writer.Write(".html");
-                    }
-                    else
-                        writer.Write(typeReference.GetMicrosoftDocsLink());
+                case DeclarationNode declarationNode:
+                    writer.Write(context.MemberFileNameResolver.GetFileName(declarationNode));
                     break;
 
                 case ArrayTypeReference arrayTypeReference:
                     Apply(writer, context, arrayTypeReference.ItemType);
+                    break;
+
+                case MemberReference memberReference:
+                    writer.Write(context.MemberFileNameResolver.GetFileName(memberReference));
                     break;
 
                 default:

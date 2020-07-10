@@ -13,9 +13,9 @@ namespace CodeMap.Documentation.Helpers
             var typeReference = (TypeReference)(baseTypeReference is TypeReference ? baseTypeReference : ((ArrayTypeReference)baseTypeReference).ItemType);
             if (typeReference == typeof(void))
                 writer.Write("void");
-            if (typeReference == typeof(object))
+            else if (typeReference == typeof(object))
                 writer.Write("object");
-            if (typeReference == typeof(bool))
+            else if (typeReference == typeof(bool))
                 writer.Write("bool");
             else if (typeReference == typeof(byte))
                 writer.Write("byte");

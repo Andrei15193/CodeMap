@@ -16,14 +16,15 @@ namespace CodeMap.Documentation
             if (arguments.OutputPath == null)
                 throw new ArgumentException("Expected -OutputPath", nameof(args));
 
+            var library = typeof(DocumentationElement).Assembly;
             var documentation = DeclarationNode
-                .Create(typeof(DocumentationElement).Assembly)
+                .Create(library)
                 .Apply(new AssemblyDocumentationAddition_1_0());
 
             var outputDirectory = new DirectoryInfo(arguments.OutputPath);
             outputDirectory.Create();
 
-            documentation.Accept(new HtmlWriterDeclarationNodeVisitor(outputDirectory, new MemberFileNameProvider()));
+            documentation.Accept(new HtmlWriterDeclarationNodeVisitor(outputDirectory, new MemberFileNameResolver(library)));
         }
 
         private class Arguments

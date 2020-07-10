@@ -12,10 +12,10 @@ namespace CodeMap.Documentation
     public class HtmlWriterDeclarationNodeVisitor : DeclarationNodeVisitor
     {
         private readonly DirectoryInfo _directoryInfo;
-        private readonly MemberFileNameProvider _memberFileNameProvider;
+        private readonly MemberFileNameResolver _memberFileNameResolver;
 
-        public HtmlWriterDeclarationNodeVisitor(DirectoryInfo directoryInfo, MemberFileNameProvider memberFileNameProvider)
-            => (_directoryInfo, _memberFileNameProvider) = (directoryInfo, memberFileNameProvider);
+        public HtmlWriterDeclarationNodeVisitor(DirectoryInfo directoryInfo, MemberFileNameResolver memberFileNameResolver)
+            => (_directoryInfo, _memberFileNameResolver) = (directoryInfo, memberFileNameResolver);
 
         protected override void VisitAssembly(AssemblyDeclaration assembly)
         {
@@ -24,7 +24,7 @@ namespace CodeMap.Documentation
             _WriteAssets(assembly);
             _directoryInfo
                 .CreateSubdirectory(assembly.Version.ToSemver())
-                .WritePage("Index.html", new PageContext(_memberFileNameProvider, assembly));
+                .WritePage("Index.html", new PageContext(_memberFileNameResolver, assembly));
 
             foreach (var @namespace in assembly.Namespaces)
                 if (@namespace.DeclaredTypes.Any(declaredType => declaredType.AccessModifier >= AccessModifier.Family))
@@ -37,7 +37,7 @@ namespace CodeMap.Documentation
         {
             _directoryInfo
                 .CreateSubdirectory(@namespace.Assembly.Version.ToSemver())
-                .WritePage($"{_memberFileNameProvider.GetFileName(@namespace)}.html", new PageContext(_memberFileNameProvider, @namespace));
+                .WritePage(_memberFileNameResolver.GetFileName(@namespace), new PageContext(_memberFileNameResolver, @namespace));
 
             foreach (var type in @namespace.DeclaredTypes.Where(declaredType => declaredType.AccessModifier >= AccessModifier.Family))
                 type.Accept(this);
@@ -46,7 +46,7 @@ namespace CodeMap.Documentation
         protected override void VisitEnum(EnumDeclaration @enum)
             => _directoryInfo
                 .CreateSubdirectory(@enum.Assembly.Version.ToSemver())
-                .WritePage($"{_memberFileNameProvider.GetFileName(@enum)}.html", new PageContext(_memberFileNameProvider, @enum));
+                .WritePage(_memberFileNameResolver.GetFileName(@enum), new PageContext(_memberFileNameResolver, @enum));
 
         protected override void VisitDelegate(DelegateDeclaration @delegate)
             => throw new NotImplementedException();
@@ -58,7 +58,7 @@ namespace CodeMap.Documentation
         {
             _directoryInfo
                 .CreateSubdirectory(@class.Assembly.Version.ToSemver())
-                .WritePage($"{_memberFileNameProvider.GetFileName(@class)}.html", new PageContext(_memberFileNameProvider, @class));
+                .WritePage(_memberFileNameResolver.GetFileName(@class), new PageContext(_memberFileNameResolver, @class));
 
             foreach (var member in @class.Members.Where(member => member.AccessModifier >= AccessModifier.Family))
                 member.Accept(this);
@@ -80,7 +80,7 @@ namespace CodeMap.Documentation
         protected override void VisitConstructor(ConstructorDeclaration constructor)
             => _directoryInfo
                 .CreateSubdirectory(constructor.DeclaringType.Assembly.Version.ToSemver())
-                .WritePage($"{_memberFileNameProvider.GetFileName(constructor)}.html", new PageContext(_memberFileNameProvider, constructor));
+                .WritePage(_memberFileNameResolver.GetFileName(constructor), new PageContext(_memberFileNameResolver, constructor));
 
         protected override void VisitEvent(EventDeclaration @event)
         {
@@ -90,12 +90,12 @@ namespace CodeMap.Documentation
         protected override void VisitProperty(PropertyDeclaration property)
             => _directoryInfo
                 .CreateSubdirectory(property.DeclaringType.Assembly.Version.ToSemver())
-                .WritePage($"{_memberFileNameProvider.GetFileName(property)}.html", new PageContext(_memberFileNameProvider, property));
+                .WritePage(_memberFileNameResolver.GetFileName(property), new PageContext(_memberFileNameResolver, property));
 
         protected override void VisitMethod(MethodDeclaration method)
             => _directoryInfo
                 .CreateSubdirectory(method.DeclaringType.Assembly.Version.ToSemver())
-                .WritePage($"{_memberFileNameProvider.GetFileName(method)}.html", new PageContext(_memberFileNameProvider, method));
+                .WritePage(_memberFileNameResolver.GetFileName(method), new PageContext(_memberFileNameResolver, method));
 
         private void _ClearFolders(AssemblyDeclaration assembly)
         {

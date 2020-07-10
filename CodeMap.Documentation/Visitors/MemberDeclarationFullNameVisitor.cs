@@ -1,12 +1,17 @@
 ﻿using System.Linq;
 using System.Text;
 using CodeMap.DeclarationNodes;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.Visitors
 {
     internal class MemberDeclarationFullNameVisitor : DeclarationNodeVisitor
     {
         private readonly StringBuilder _fullNameBuilder = new StringBuilder();
+        private readonly bool _excludeParameters;
+
+        public MemberDeclarationFullNameVisitor(bool excluseParameters)
+            => _excludeParameters = excluseParameters;
 
         public string Result
             => _fullNameBuilder.ToString();
@@ -49,8 +54,12 @@ namespace CodeMap.Documentation.Visitors
         {
             _VisitTypeDeclaration(constructor.DeclaringType);
             _fullNameBuilder.Append('.').Append(constructor.DeclaringType.Name);
-            if (constructor.Parameters.Any())
-                _fullNameBuilder.Append('-').Append(constructor.Parameters.Count);
+            if (!_excludeParameters && constructor.Parameters.Any())
+            {
+                _fullNameBuilder.Append('(');
+                _fullNameBuilder.Append(string.Join(',', from parameter in constructor.Parameters select _GetMemberFullName(parameter.Type)));
+                _fullNameBuilder.Append(')');
+            }
         }
 
         protected override void VisitEvent(EventDeclaration @event)
@@ -63,8 +72,12 @@ namespace CodeMap.Documentation.Visitors
         {
             _VisitTypeDeclaration(property.DeclaringType);
             _fullNameBuilder.Append('.').Append(property.Name);
-            if (property.Parameters.Any())
-                _fullNameBuilder.Append('-').Append(property.Parameters.Count);
+            if (!_excludeParameters && property.Parameters.Any())
+            {
+                _fullNameBuilder.Append('[');
+                _fullNameBuilder.Append(string.Join(',', from parameter in property.Parameters select _GetMemberFullName(parameter.Type)));
+                _fullNameBuilder.Append(']');
+            }
         }
 
         protected override void VisitMethod(MethodDeclaration method)
@@ -74,8 +87,12 @@ namespace CodeMap.Documentation.Visitors
             if (method.GenericParameters.Any())
                 _fullNameBuilder.Append('`').Append(method.GenericParameters.Count);
 
-            if (method.Parameters.Any())
-                _fullNameBuilder.Append('-').Append(method.Parameters.Count);
+            if (!_excludeParameters && method.Parameters.Any())
+            {
+                _fullNameBuilder.Append('(');
+                _fullNameBuilder.Append(string.Join(',', from parameter in method.Parameters select _GetMemberFullName(parameter.Type)));
+                _fullNameBuilder.Append(')');
+            }
         }
 
         private void _VisitTypeDeclaration(TypeDeclaration typeDeclaration)
@@ -92,6 +109,13 @@ namespace CodeMap.Documentation.Visitors
             }
 
             _fullNameBuilder.Append(typeDeclaration.Name);
+        }
+
+        private static string _GetMemberFullName(MemberReference memberReference)
+        {
+            var visitor = new MemberReferenceFullNameVisitor(false);
+            memberReference.Accept(visitor);
+            return visitor.Result;
         }
     }
 }

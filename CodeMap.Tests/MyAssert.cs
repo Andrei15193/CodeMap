@@ -541,26 +541,14 @@ namespace CodeMap.Tests
         public static TTypeDocumentationElement AssertType<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Type type)
             where TTypeDocumentationElement : TypeDeclaration
         {
-            var memberReferenceFactory = new MemberReferenceFactory();
-
             Assert.True(typeDocumentationElement == type);
             Assert.True(type == typeDocumentationElement);
             Assert.False(typeDocumentationElement != type);
             Assert.False(type != typeDocumentationElement);
 
-            var typeReferennce = (TypeReference)memberReferenceFactory.Create(type);
-            Assert.True(typeDocumentationElement == typeReferennce);
-            Assert.True(typeReferennce == typeDocumentationElement);
-            Assert.False(typeDocumentationElement != typeReferennce);
-            Assert.False(typeReferennce != typeDocumentationElement);
-
             var otherType = type == typeof(object) ? typeof(string) : typeof(object);
             Assert.True(typeDocumentationElement != otherType);
             Assert.True(otherType != typeDocumentationElement);
-
-            var otherTypeReference = (TypeReference)memberReferenceFactory.Create(otherType);
-            Assert.True(typeDocumentationElement != otherTypeReference);
-            Assert.True(otherTypeReference != typeDocumentationElement);
 
             return typeDocumentationElement;
         }
@@ -1195,12 +1183,6 @@ namespace CodeMap.Tests
 
             Assert.True(assemblyDeclaration != coreAssemblyName);
             Assert.True(coreAssemblyName != assemblyDeclaration);
-
-            var assemblyReference = new MemberReferenceFactory().Create(assembly);
-            Assert.True(assemblyDeclaration == assemblyReference);
-            Assert.True(assemblyReference == assemblyDeclaration);
-            Assert.False(assemblyDeclaration != assemblyReference);
-            Assert.False(assemblyReference != assemblyDeclaration);
 
             return instance;
         }

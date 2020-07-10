@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CodeMap.DocumentationElements;
 using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
     /// <summary>Represents a documented event declared by a type.</summary>
-    public sealed class EventDeclaration : MemberDeclaration, IEquatable<EventReference>
+    public sealed class EventDeclaration : MemberDeclaration
     {
         internal EventDeclaration()
         {
@@ -46,20 +45,5 @@ namespace CodeMap.DeclarationNodes
         /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DeclarationNodeVisitor visitor)
             => visitor.VisitEvent(this);
-
-        /// <summary>Determines whether the current <see cref="EventDeclaration"/> is equal to the provided <paramref name="memberReference"/>.</summary>
-        /// <param name="memberReference">The <see cref="MemberReference"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="EventDeclaration"/> references the provided <paramref name="memberReference"/>; <c>false</c> otherwise.</returns>
-        public override bool Equals(MemberReference memberReference)
-            => memberReference is EventReference eventReference
-            && Equals(eventReference);
-
-        /// <summary>Determines whether the current <see cref="EventDeclaration"/> is equal to the provided <paramref name="eventReference"/>.</summary>
-        /// <param name="eventReference">The <see cref="EventReference"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="EventDeclaration"/> references the provided <paramref name="eventReference"/>; <c>false</c> otherwise.</returns>
-        public bool Equals(EventReference eventReference)
-            => eventReference != null
-            && string.Equals(Name, eventReference.Name, StringComparison.OrdinalIgnoreCase)
-            && DeclaringType == eventReference.DeclaringType;
     }
 }

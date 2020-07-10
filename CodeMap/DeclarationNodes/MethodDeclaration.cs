@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
     /// <summary>Represents a documented method declared by a type.</summary>
-    public class MethodDeclaration : MemberDeclaration, IEquatable<MethodReference>
+    public class MethodDeclaration : MemberDeclaration
     {
         internal MethodDeclaration()
         {
@@ -47,21 +44,5 @@ namespace CodeMap.DeclarationNodes
         /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DeclarationNodeVisitor visitor)
             => visitor.VisitMethod(this);
-
-        /// <summary>Determines whether the current <see cref="MethodDeclaration"/> is equal to the provided <paramref name="memberReference"/>.</summary>
-        /// <param name="memberReference">The <see cref="MemberReference"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="MethodDeclaration"/> references the provided <paramref name="memberReference"/>; <c>false</c> otherwise.</returns>
-        public override bool Equals(MemberReference memberReference)
-            => memberReference is MethodReference methodReference
-            && Equals(methodReference);
-
-        /// <summary>Determines whether the current <see cref="MethodDeclaration"/> is equal to the provided <paramref name="methodReference"/>.</summary>
-        /// <param name="methodReference">The <see cref="MethodReference"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="MethodDeclaration"/> references the provided <paramref name="methodReference"/>; <c>false</c> otherwise.</returns>
-        public bool Equals(MethodReference methodReference)
-            => methodReference != null
-            && string.Equals(Name, methodReference.Name, StringComparison.OrdinalIgnoreCase)
-            && DeclaringType == methodReference.DeclaringType
-            && Parameters.Select(parameter => parameter.Type).SequenceEqual(methodReference.ParameterTypes);
     }
 }

@@ -7,6 +7,10 @@ namespace CodeMap.Documentation.Visitors
     internal class MemberReferenceFullNameVisitor : MemberReferenceVisitor
     {
         private readonly StringBuilder _fullNameBuilder = new StringBuilder();
+        private readonly bool _excludeParameters;
+
+        public MemberReferenceFullNameVisitor(bool excluseParameters)
+            => _excludeParameters = excluseParameters;
 
         public string Result
             => _fullNameBuilder.ToString();
@@ -55,7 +59,7 @@ namespace CodeMap.Documentation.Visitors
         {
             constructor.DeclaringType.Accept(this);
             _fullNameBuilder.Append('.').Append(constructor.DeclaringType.Name);
-            if (constructor.ParameterTypes.Any())
+            if (!_excludeParameters && constructor.ParameterTypes.Any())
             {
                 _fullNameBuilder.Append('(');
                 var isFirst = true;
@@ -77,17 +81,17 @@ namespace CodeMap.Documentation.Visitors
             _fullNameBuilder.Append('.').Append(@event.Name);
         }
 
-        protected override void VisitGenericMethodParameter(GenericMethodParameterReference genericMethodParameter)
-            => _fullNameBuilder.Append(genericMethodParameter.Name);
-
         protected override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
             => _fullNameBuilder.Append(genericTypeParameter.Name);
+
+        protected override void VisitGenericMethodParameter(GenericMethodParameterReference genericMethodParameter)
+            => _fullNameBuilder.Append(genericMethodParameter.Name);
 
         protected override void VisitProperty(PropertyReference property)
         {
             property.DeclaringType.Accept(this);
             _fullNameBuilder.Append('.').Append(property.Name);
-            if (property.ParameterTypes.Any())
+            if (!_excludeParameters && property.ParameterTypes.Any())
             {
                 _fullNameBuilder.Append('[');
                 var isFirst = true;
@@ -109,7 +113,7 @@ namespace CodeMap.Documentation.Visitors
             _fullNameBuilder.Append('.').Append(method.Name);
             if (method.GenericArguments.Any())
                 _fullNameBuilder.Append('`').Append(method.GenericArguments.Count);
-            if (method.ParameterTypes.Any())
+            if (!_excludeParameters && method.ParameterTypes.Any())
             {
                 _fullNameBuilder.Append('(');
                 var isFirst = true;
