@@ -1,19 +1,33 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 
-namespace CodeMap.Documentation.Additions
+namespace CodeMap.Documentation.Additions._1_0
 {
-    public class AssemblyDocumentationAddition_1_0 : AssemblyDocumentationAddition
+    public class AssemblyDocumentationAddition : Additions.AssemblyDocumentationAddition
     {
-        public AssemblyDocumentationAddition_1_0()
-        {
-            CanApply = assemblyDeclaration => assemblyDeclaration.Version.Major == 1 && assemblyDeclaration.Version.Minor == 0;
-            Summary = DocumentationElement.Summary(
+        public override bool CanApply(AssemblyDeclaration assemblyDeclaration)
+            => assemblyDeclaration.Version.Major == 1 && assemblyDeclaration.Version.Minor == 0;
+
+        public override SummaryDocumentationElement GetSummary(AssemblyDeclaration assemblyDeclaration)
+            => DocumentationElement.Summary(
                 DocumentationElement.Paragraph(
-                    DocumentationElement.Text("An extensible tool for generating documentation for your .NET libraries. Generate HTML, Markdown or in any other format, customise the documentation at your discretion.")
+                    DocumentationElement.Text(
+                        assemblyDeclaration
+                            .Attributes
+                            .Single(attribute => attribute.Type == typeof(AssemblyDescriptionAttribute))
+                            .PositionalParameters
+                            .Single()
+                            .Value
+                            .ToString()
+                    )
                 )
             );
-            Remarks = DocumentationElement.Remarks(
+
+        public override RemarksDocumentationElement GetRemarks(AssemblyDeclaration assemblyDeclaration)
+            => DocumentationElement.Remarks(
                 DocumentationElement.Paragraph(
                     DocumentationElement.Text("Visual Studio enables developers to write comprehensive documentation inside their code using XML in three slashed comments, see "),
                     DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments", "XML Documentation Comments (C# Programming Guide)"),
@@ -517,42 +531,12 @@ namespace CodeMap.Documentation.Additions
                     }
                 )
             );
-            NamespaceAdditions = new Dictionary<string, NamespaceDocumentationAddition>
-            {
-                {
-                    "CodeMap.DeclarationNodes",
-                    new NamespaceDocumentationAddition
-                    {
-                        Summary = DocumentationElement.Summary(
-                            DocumentationElement.Paragraph(
-                                DocumentationElement.Text("Contains the declaration node definitions corresponding to declarations of assembly members (classes, properties, methods and so on). This is the entry point for generating documentation.")
-                            )
-                        )
-                    }
-                },
-                {
-                    "CodeMap.DocumentationElements",
-                    new NamespaceDocumentationAddition
-                    {
-                        Summary = DocumentationElement.Summary(
-                            DocumentationElement.Paragraph(
-                                DocumentationElement.Text("Contains the documentation element definitions corresponding to XML elements that are extracted from a documentation XML file associated to an assembly.")
-                            )
-                        )
-                    }
-                },
-                {
-                    "CodeMap.ReferenceData",
-                    new NamespaceDocumentationAddition
-                    {
-                        Summary = DocumentationElement.Summary(
-                            DocumentationElement.Paragraph(
-                                DocumentationElement.Text("Contains member reference definitions that can be used to create hyperlinks to referred members defined both in the documented library and dependent assemblies.")
-                            )
-                        )
-                    }
-                }
-            };
+
+        public override IEnumerable<NamespaceDocumentationAddition> GetNamespaceAdditions(AssemblyDeclaration assembly)
+        {
+            yield return new DeclarationNodesNamespaceDocumentationAddition();
+            yield return new DocumentationElementsNamespaceDocumentationAddition();
+            yield return new ReferenceDataNamespaceDocumentationAddition();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace CodeMap.Documentation
         public string GetFileName(DeclarationNode declatationNode)
             => _GetEntry(_GetKey(declatationNode), _GetBaseName(declatationNode));
 
-        public string GetFileName(MemberReference memberReference)
+        public string GetUrl(MemberReference memberReference)
             => memberReference is TypeReference typeReference && typeReference.Assembly == _library
             ? _GetEntry(_GetKey(memberReference), _GetBaseName(memberReference))
             : _GetMicrosoftDocsLink(memberReference);

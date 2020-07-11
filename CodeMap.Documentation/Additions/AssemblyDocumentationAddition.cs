@@ -1,22 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 
 namespace CodeMap.Documentation.Additions
 {
-    public class AssemblyDocumentationAddition
+    public abstract class AssemblyDocumentationAddition
     {
-        public Func<AssemblyDeclaration, bool> CanApply { get; set; }
+        protected AssemblyDocumentationAddition()
+        {
+        }
 
-        public SummaryDocumentationElement Summary { get; set; }
+        public abstract bool CanApply(AssemblyDeclaration assembly);
 
-        public RemarksDocumentationElement Remarks { get; set; }
+        public virtual SummaryDocumentationElement GetSummary(AssemblyDeclaration assembly)
+            => null;
 
-        public IReadOnlyList<ExampleDocumentationElement> Examples { get; set; }
+        public virtual RemarksDocumentationElement GetRemarks(AssemblyDeclaration assembly)
+            => null;
 
-        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; set; }
+        public virtual IEnumerable<ExampleDocumentationElement> GetExamples(AssemblyDeclaration assembly)
+            => null;
 
-        public IReadOnlyDictionary<string, NamespaceDocumentationAddition> NamespaceAdditions { get; set; }
+        public virtual IEnumerable<MemberReferenceDocumentationElement> GetRelatedMembers(AssemblyDeclaration assembly)
+            => null;
+
+        public virtual IEnumerable<NamespaceDocumentationAddition> GetNamespaceAdditions(AssemblyDeclaration assemblyDeclaration)
+            => null;
     }
 }

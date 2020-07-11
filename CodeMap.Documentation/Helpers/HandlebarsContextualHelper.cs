@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using HandlebarsDotNet;
 
 namespace CodeMap.Documentation.Helpers
 {
@@ -24,7 +23,7 @@ namespace CodeMap.Documentation.Helpers
             => Apply(
                 writer,
                 (PageContext)parameters[0],
-                HandlebarsUtils.IsUndefinedBindingResult(parameters.ElementAtOrDefault(1)) ? default : (TParameter)parameters.ElementAtOrDefault(1));
+                MultiParameter.TryGet<TParameter>(parameters.ElementAtOrDefault(1)));
     }
 
     public abstract class HandlebarsContextualHelper<TParameter1, TParameter2> : IHandlebarsHelper
@@ -37,8 +36,8 @@ namespace CodeMap.Documentation.Helpers
             => Apply(
                 writer,
                 (PageContext)parameters[0],
-                HandlebarsUtils.IsUndefinedBindingResult(parameters.ElementAtOrDefault(1)) ? default : (TParameter1)parameters.ElementAtOrDefault(1),
-                HandlebarsUtils.IsUndefinedBindingResult(parameters.ElementAtOrDefault(2)) ? default : (TParameter2)parameters.ElementAtOrDefault(2));
+                MultiParameter.TryGet<TParameter1>(parameters.ElementAtOrDefault(1)),
+                MultiParameter.TryGet<TParameter2>(parameters.ElementAtOrDefault(2)));
     }
 
     public abstract class HandlebarsContextualHelper<TParameter1, TParameter2, TParameter3> : IHandlebarsHelper
@@ -51,8 +50,8 @@ namespace CodeMap.Documentation.Helpers
             => Apply(
                 writer,
                 (PageContext)parameters[0],
-                HandlebarsUtils.IsUndefinedBindingResult(parameters.ElementAtOrDefault(1)) ? default : (TParameter1)parameters.ElementAtOrDefault(1),
-                HandlebarsUtils.IsUndefinedBindingResult(parameters.ElementAtOrDefault(2)) ? default : (TParameter2)parameters.ElementAtOrDefault(2),
-                HandlebarsUtils.IsUndefinedBindingResult(parameters.ElementAtOrDefault(3)) ? default : (TParameter3)parameters.ElementAtOrDefault(3));
+                MultiParameter.TryGet<TParameter1>(parameters.ElementAtOrDefault(1)),
+                MultiParameter.TryGet<TParameter2>(parameters.ElementAtOrDefault(2)),
+                MultiParameter.TryGet<TParameter3>(parameters.ElementAtOrDefault(3)));
     }
 }

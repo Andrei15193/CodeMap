@@ -23,7 +23,7 @@ namespace CodeMap.Documentation.Helpers
                     break;
 
                 case MemberReference memberReference:
-                    writer.Write(context.MemberFileNameResolver.GetFileName(memberReference));
+                    writer.Write(context.MemberFileNameResolver.GetUrl(memberReference));
                     break;
 
                 default:

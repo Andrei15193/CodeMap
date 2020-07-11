@@ -14,33 +14,31 @@ namespace CodeMap.Documentation.Additions
             if (additions is null)
                 throw new ArgumentNullException(nameof(additions));
 
-            var addition = _GetMatchingAddition(assemblyDeclaration, additions);
+            var addition = additions.FirstOrDefault(addition => addition.CanApply(assemblyDeclaration));
             if (addition != null)
             {
-                assemblyDeclaration.Summary = addition.Summary ?? assemblyDeclaration.Summary;
-                assemblyDeclaration.Remarks = addition.Remarks ?? assemblyDeclaration.Remarks;
-                assemblyDeclaration.Examples = addition.Examples ?? assemblyDeclaration.Examples;
-                assemblyDeclaration.RelatedMembers = addition.RelatedMembers ?? assemblyDeclaration.RelatedMembers;
-                if (addition.NamespaceAdditions != null)
+                assemblyDeclaration.Summary = addition.GetSummary(assemblyDeclaration) ?? assemblyDeclaration.Summary;
+                assemblyDeclaration.Remarks = addition.GetRemarks(assemblyDeclaration) ?? assemblyDeclaration.Remarks;
+                assemblyDeclaration.Examples = addition.GetExamples(assemblyDeclaration)?.ToList() ?? assemblyDeclaration.Examples;
+                assemblyDeclaration.RelatedMembers = addition.GetRelatedMembers(assemblyDeclaration)?.ToList() ?? assemblyDeclaration.RelatedMembers;
+                var namespaceAdditions = (addition.GetNamespaceAdditions(assemblyDeclaration) ?? Enumerable.Empty<NamespaceDocumentationAddition>()).ToList();
+                if (namespaceAdditions.Any())
                     foreach (var @namespace in assemblyDeclaration.Namespaces)
-                        if (addition.NamespaceAdditions.TryGetValue(@namespace.Name, out var namespaceAddition))
+                    {
+                        var namespaceAddition = namespaceAdditions.FirstOrDefault(addition => addition.CanApply(@namespace));
+                        if (namespaceAddition != null)
                         {
-                            @namespace.Summary = namespaceAddition.Summary ?? @namespace.Summary;
-                            @namespace.Remarks = namespaceAddition.Remarks ?? @namespace.Remarks;
-                            @namespace.Examples = namespaceAddition.Examples ?? @namespace.Examples;
-                            @namespace.RelatedMembers = namespaceAddition.RelatedMembers ?? @namespace.RelatedMembers;
+                            @namespace.Summary = namespaceAddition.GetSummary(@namespace) ?? @namespace.Summary;
+                            @namespace.Remarks = namespaceAddition.GetRemarks(@namespace) ?? @namespace.Remarks;
+                            @namespace.Examples = namespaceAddition.GetExamples(@namespace)?.ToList() ?? @namespace.Examples;
+                            @namespace.RelatedMembers = namespaceAddition.GetRelatedMembers(@namespace)?.ToList() ?? @namespace.RelatedMembers;
                         }
+                    }
             }
             return assemblyDeclaration;
         }
 
         public static AssemblyDeclaration Apply(this AssemblyDeclaration assemblyDeclaration, params AssemblyDocumentationAddition[] additions)
             => assemblyDeclaration.Apply((IEnumerable<AssemblyDocumentationAddition>)additions);
-
-        private static AssemblyDocumentationAddition _GetMatchingAddition(AssemblyDeclaration assemblyDeclaration, IEnumerable<AssemblyDocumentationAddition> additions)
-            => additions
-                .Where(addition => addition.CanApply(assemblyDeclaration))
-                .Concat(additions.Where(addition => addition.CanApply is null))
-                .FirstOrDefault();
     }
 }

@@ -1,18 +1,27 @@
 ﻿using System.Collections.Generic;
+using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 
 namespace CodeMap.Documentation.Additions
 {
-    public class NamespaceDocumentationAddition
+    public abstract class NamespaceDocumentationAddition
     {
-        public SummaryDocumentationElement Summary { get; set; }
+        protected NamespaceDocumentationAddition()
+        {
+        }
 
-        public RemarksDocumentationElement Remarks { get; set; }
+        public abstract bool CanApply(NamespaceDeclaration @namespace);
 
-        public IReadOnlyList<ExampleDocumentationElement> Examples { get; set; }
+        public virtual SummaryDocumentationElement GetSummary(NamespaceDeclaration @namespace)
+            => null;
 
-        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; set; }
+        public virtual RemarksDocumentationElement GetRemarks(NamespaceDeclaration @namespace)
+            => null;
 
-        public IReadOnlyDictionary<string, NamespaceDocumentationAddition> NamespaceAdditions { get; set; }
+        public virtual IEnumerable<ExampleDocumentationElement> GetExamples(NamespaceDeclaration @namespace)
+            => null;
+
+        public virtual IEnumerable<MemberReferenceDocumentationElement> GetRelatedMembers(NamespaceDeclaration @namespace)
+            => null;
     }
 }

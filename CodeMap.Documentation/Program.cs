@@ -19,7 +19,7 @@ namespace CodeMap.Documentation
             var library = typeof(DocumentationElement).Assembly;
             var documentation = DeclarationNode
                 .Create(library)
-                .Apply(new AssemblyDocumentationAddition_1_0());
+                .Apply(new Additions._1_0.AssemblyDocumentationAddition());
 
             var outputDirectory = new DirectoryInfo(arguments.OutputPath);
             outputDirectory.Create();
