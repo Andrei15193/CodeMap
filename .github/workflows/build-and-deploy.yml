@@ -176,7 +176,7 @@ jobs:
         }
         else
         {
-          dotnet run --configuration Release --no-build -OutputPath '../project-site' -TargetSubdirectory 'dev'
+          dotnet run --configuration Release --no-build -OutputPath '../project-site' #-TargetSubdirectory 'dev'
         }
 
     - name: Publish Project Site
