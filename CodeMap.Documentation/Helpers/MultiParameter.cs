@@ -19,6 +19,7 @@ namespace CodeMap.Documentation.Helpers
                 return (TParameter)value;
         }
 
+        private bool _handled = false;
         private readonly object _parameter;
         private readonly IEnumerable<Type> _types;
 
@@ -39,10 +40,14 @@ namespace CodeMap.Documentation.Helpers
 
         public MultiParameter Handle<TParameter>(Action<TParameter> callback)
         {
-            if (_types.All(type => !type.IsAssignableFrom(typeof(TParameter))))
-                throw new ArgumentException($"Unknown parameter type: '{typeof(TParameter).Name}'");
-            else if (typeof(TParameter).IsAssignableFrom(_parameter.GetType()))
-                callback((TParameter)_parameter);
+            if (!_handled)
+                if (_types.All(type => !type.IsAssignableFrom(typeof(TParameter))))
+                    throw new ArgumentException($"Unknown parameter type: '{typeof(TParameter).Name}'");
+                else if (typeof(TParameter).IsAssignableFrom(_parameter.GetType()))
+                {
+                    callback((TParameter)_parameter);
+                    _handled = true;
+                }
 
             return this;
         }
