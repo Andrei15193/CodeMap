@@ -15,6 +15,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Copy Project Site for Updates
+      shell: pwsh
+      run: |
+        git fetch origin gh-pages
+        git checkout gh-pages
+        New-Item -ItemType directory -Name project-site | Out-Null
+        Get-ChildItem -Exclude @(".*", "project-site") |
+          Where-Object { ($_ -is [System.IO.DirectoryInfo] -and -not $_.Name.StartsWith("CodeMap")) -or $_ -is [System.IO.FileInfo] } |
+          Move-Item -Destination project-site
+        git checkout ($env:GITHUB_REF.Substring("refs/heads/".Length))
+
     - name: Generate Package Info
       id: package_info
       shell: pwsh
@@ -170,14 +181,6 @@ jobs:
       shell: pwsh
       working-directory: ./CodeMap.Documentation
       run: |
-        git fetch origin gh-pages
-        git checkout gh-pages
-        New-Item -ItemType directory -Name project-site
-        Get-ChildItem -Exclude @(".*", "project-site") |
-          Where-Object { ($_ -is [System.IO.DirectoryInfo] -and -not $_.Name.StartsWith("CodeMap")) -or $_ -is [System.IO.FileInfo] } |
-          Move-Item -Destination project-site
-        git checkout ($env:GITHUB_REF.Substring("refs/heads/".Length))
-
         if ($env:GITHUB_REF -match '^refs/heads/releases/\d+\.\d+(-(alpha|beta|rc))?$')
         {
           dotnet run --configuration Release --no-build -OutputPath '../project-site'
@@ -192,4 +195,3 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./project-site
-        keep_files: true
