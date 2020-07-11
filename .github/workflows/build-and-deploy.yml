@@ -137,6 +137,7 @@ jobs:
           -property:RepositoryCommit=$env:GITHUB_SHA `
           -property:SignAssembly=True `
           -property:AssemblyOriginatorKeyFile=../CodeMap.snk
+
     - name: Create Release
       uses: actions/create-release@v1
       if: startsWith(github.ref, 'refs/heads/releases/')

@@ -498,6 +498,12 @@ namespace CodeMap.Tests
                         .AssertTypeReference(() => namedParameter.Type, typeof(object))
                 );
 
+        public static AttributeData AssertIsReadOnlyAttribute(this AttributeData attributeData)
+            => attributeData
+                .AssertTypeReference(() => attributeData.Type, typeof(IsReadOnlyAttribute))
+                .AssertEmpty(() => attributeData.PositionalParameters)
+                .AssertEmpty(() => attributeData.NamedParameters);
+
         public static AttributeData AssertDefaultMemberAttribute(this AttributeData attributeData)
             => attributeData
                 .AssertTypeReference(() => attributeData.Type, typeof(DefaultMemberAttribute))
@@ -810,6 +816,49 @@ namespace CodeMap.Tests
                             .AssertCollectionMember(
                                 () => property.Getter.Attributes,
                                 attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} getter")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Getter.ReturnAttributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} getter return")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Setter.Attributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} setter")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Setter.ReturnAttributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} setter return")
+                            );
+                    }
+                );
+
+            return typeDocumentationElement;
+        }
+
+        public static TTypeDocumentationElement AssertReadOnlyTestProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDeclaration>> selector, string propertyName, string attributeValuePrefix)
+            where TTypeDocumentationElement : TypeDeclaration
+        {
+            typeDocumentationElement
+                .AssertCollectionMember(
+                    () => selector().Where(property => property.Name == propertyName),
+                    property =>
+                    {
+                        property
+                            .AssertTypeReference(() => property.Type, typeof(byte))
+                            .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
+                            .AssertEqual(() => property.Getter.AccessModifier, AccessModifier.Public)
+                            .AssertEqual(() => property.Setter.AccessModifier, AccessModifier.Public)
+                            .AssertSame(() => property.DeclaringType, typeDocumentationElement)
+                            .AssertFalse(() => property.IsStatic)
+                            .AssertFalse(() => property.IsVirtual)
+                            .AssertFalse(() => property.IsAbstract)
+                            .AssertFalse(() => property.IsOverride)
+                            .AssertFalse(() => property.IsSealed)
+                            .AssertFalse(() => property.IsShadowing)
+                            .AssertCollectionMember(
+                                () => property.Getter.Attributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} getter"),
+                                attribute => attribute.AssertIsReadOnlyAttribute()
                             )
                             .AssertCollectionMember(
                                 () => property.Getter.ReturnAttributes,

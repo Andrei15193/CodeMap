@@ -138,7 +138,7 @@
       "positionalParameters": [
         {
           "name": "frameworkName",
-          "value": ".NETCoreApp,Version=v2.2",
+          "value": ".NETCoreApp,Version=v3.1",
           "type": {
             "kind": "specific",
             "name": "String",
@@ -178,31 +178,31 @@
   "dependencies": [
     {
       "name": "System.Diagnostics.Debug",
-      "version": "4.1.1.0",
+      "version": "4.1.2.0",
       "culture": "",
       "publicKeyToken": "b03f5f7f11d50a3a"
     },
     {
       "name": "System.Linq.Expressions",
-      "version": "4.2.1.0",
+      "version": "4.2.2.0",
       "culture": "",
       "publicKeyToken": "b03f5f7f11d50a3a"
     },
     {
       "name": "System.Runtime",
-      "version": "4.2.1.0",
+      "version": "4.2.2.0",
       "culture": "",
       "publicKeyToken": "b03f5f7f11d50a3a"
     },
     {
       "name": "System.Runtime.Extensions",
-      "version": "4.2.1.0",
+      "version": "4.2.2.0",
       "culture": "",
       "publicKeyToken": "b03f5f7f11d50a3a"
     },
     {
       "name": "System.Threading",
-      "version": "4.1.1.0",
+      "version": "4.1.2.0",
       "culture": "",
       "publicKeyToken": "b03f5f7f11d50a3a"
     }
@@ -1839,7 +1839,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -1869,7 +1869,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -1921,7 +1921,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -4719,7 +4719,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -6880,7 +6880,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -6910,7 +6910,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -6962,7 +6962,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -10364,7 +10364,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -10394,7 +10394,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -10446,7 +10446,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -12284,7 +12284,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -14623,7 +14623,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -14653,7 +14653,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -14705,7 +14705,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -17692,7 +17692,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -17722,7 +17722,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -17774,7 +17774,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -19373,7 +19373,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -20038,6 +20038,23 @@
                 }
               }
             ]
+          },
+          {
+            "type": {
+              "kind": "specific",
+              "name": "IsReadOnlyAttribute",
+              "namespace": "System.Runtime.CompilerServices",
+              "declaringType": null,
+              "genericArguments": [],
+              "assembly": {
+                "name": "System.Private.CoreLib",
+                "version": "4.0.0.0",
+                "culture": "",
+                "publicKeyToken": "7cec85d7bea7798e"
+              }
+            },
+            "positionalParameters": [],
+            "namedParameters": []
           }
         ],
         "returnAttributes": [
@@ -21614,7 +21631,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -21644,7 +21661,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
@@ -21696,7 +21713,7 @@
                 "genericArguments": [],
                 "assembly": {
                   "name": "System.Linq.Expressions",
-                  "version": "4.2.1.0",
+                  "version": "4.2.2.0",
                   "culture": "",
                   "publicKeyToken": "b03f5f7f11d50a3a"
                 }
