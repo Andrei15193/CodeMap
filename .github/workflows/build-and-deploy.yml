@@ -171,11 +171,11 @@ jobs:
       run: |
         if ($env:GITHUB_REF -match '^refs/heads/releases/\d+\.\d+(-(alpha|beta|rc))?$')
         {
-          dotnet run --configuration Release --no-build -OutputPath '../project-site'
+          dotnet run --configuration Release --no-build -OutputPath '../project-site' 
         }
         else
         {
-          dotnet run --configuration Release --no-build -OutputPath '../project-site' -TargetSubdirectory 'dev'
+          dotnet run --configuration Release --no-build -OutputPath '../project-site' -TargetSubdirectory 'dev' 
         }
 
     - name: Publish Project Site
