@@ -48,7 +48,7 @@ namespace CodeMap.Documentation
         private string _GetBaseName(DeclarationNode declarationNode)
         {
             if (declarationNode is AssemblyDeclaration)
-                return "Index";
+                return "index";
 
             var memberDeclarationFullNameVisitor = new MemberDeclarationFullNameVisitor(true);
             declarationNode.Accept(memberDeclarationFullNameVisitor);
