@@ -167,14 +167,15 @@ jobs:
         asset_content_type: application/zip
 
     - name: Build Project Site
+      working-directory: ./CodeMap.Documentation
       run: |
-        if ($env:GITHUB_REF -match '^refs/heads/releases/\d+\.\d+(-(alpha|beta|rc))?')
+        if ($env:GITHUB_REF -match '^refs/heads/releases/\d+\.\d+(-(alpha|beta|rc))?$')
         {
-          dotnet run ./CodeMap.Documentation/bin/Release/netcoreapp3.1/CodeMap.Documentation.dll -OutputPath 'project-site'
+          dotnet run --configuration Release --no-build -OutputPath '../project-site'
         }
         else
         {
-          dotnet run ./CodeMap.Documentation/bin/Release/netcoreapp3.1/CodeMap.Documentation.dll -OutputPath 'project-site' -TargetSubdirectory 'dev'
+          dotnet run --configuration Release --no-build -OutputPath '../project-site' -TargetSubdirectory 'dev'
         }
 
     - name: Publish Project Site
