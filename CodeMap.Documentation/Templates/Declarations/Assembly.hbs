@@ -1,0 +1,29 @@
+﻿{{#with declarationNode}}
+<h2>{{name}}</h2>
+
+{{DocumentationContent @root summary}}
+
+<h3>Namespaces</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each namespaces}}
+        {{#if (HasExposedDefinitions @root declaredTypes)}}
+        <tr>
+            <td>{{MemberLink @root this}}</td>
+            <td>{{DocumentationContent @root summary}}</td>
+        </tr>
+        {{/if}}
+        {{/#each}}
+    </tbody>
+</table>
+
+{{DocumentationContent @root remarks}}
+{{DocumentationContent @root examples}}
+{{RelatedMembersList @root relatedMembers}}
+{{/with}}

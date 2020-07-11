@@ -35,16 +35,16 @@ namespace CodeMap.DeclarationNodes
         public IReadOnlyCollection<StructDeclaration> Structs { get; internal set; }
 
         /// <summary>The namespace summary.</summary>
-        public SummaryDocumentationElement Summary { get; internal set; }
+        public SummaryDocumentationElement Summary { get; set; }
 
         /// <summary>The namespace remarks.</summary>
-        public RemarksDocumentationElement Remarks { get; internal set; }
+        public RemarksDocumentationElement Remarks { get; set; }
 
         /// <summary>The namespace examples.</summary>
-        public IReadOnlyList<ExampleDocumentationElement> Examples { get; internal set; }
+        public IReadOnlyList<ExampleDocumentationElement> Examples { get; set; }
 
         /// <summary>The namespace related members.</summary>
-        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; internal set; }
+        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>

@@ -1,6 +1,6 @@
-﻿using CodeMap.DocumentationElements;
+﻿using System.Collections.Generic;
+using CodeMap.DocumentationElements;
 using CodeMap.ReferenceData;
-using System.Collections.Generic;
 
 namespace CodeMap.DeclarationNodes
 {

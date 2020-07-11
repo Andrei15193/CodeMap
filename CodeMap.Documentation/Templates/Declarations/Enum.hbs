@@ -1,0 +1,29 @@
+﻿{{#with declarationNode}}
+<h2>{{MemberName @root this}} Enum</h2>
+
+{{DocumentationContent @root summary}}
+
+<h3>Members</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each members}}
+        <tr>
+            <td>{{name}}</td>
+            <td><code>{{Format @root value 'D'}}</code></td>
+            <td>{{DocumentationContent @root summary}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+{{DocumentationContent @root remarks}}
+{{DocumentationContent @root examples}}
+{{RelatedMembersList @root relatedMembers}}
+{{/with}}

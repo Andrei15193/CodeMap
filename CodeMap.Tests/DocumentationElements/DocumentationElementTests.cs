@@ -30,6 +30,34 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
+        public void CreatingHyperlinkElementWithNullDestinationThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentNullException>("destination", () => DocumentationElement.Hyperlink(null, "text"));
+
+            Assert.Equal(new ArgumentNullException("destination").Message, exception.Message);
+        }
+
+        [Fact]
+        public void CreatingHyperlinkElementWithNullTextThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentNullException>("text", () => DocumentationElement.Hyperlink("destination", null));
+
+            Assert.Equal(new ArgumentNullException("text").Message, exception.Message);
+        }
+
+        [Fact]
+        public void HyperlinkElementCallsVisitorMethod()
+        {
+            var visitorMock = new Mock<IDocumentationVisitor>();
+            var hyperlinkElement = DocumentationElement.Hyperlink("destination", "text");
+
+            visitorMock.VerifyAcceptMethods(
+                hyperlinkElement,
+                visitor => visitor.VisitHyperlink(hyperlinkElement)
+            );
+        }
+
+        [Fact]
         public void CreatingInlineCodeElementWithNullContentThrowsException()
         {
             var exception = Assert.Throws<ArgumentNullException>("code", () => DocumentationElement.InlineCode(null));
@@ -56,7 +84,7 @@ namespace CodeMap.Tests.DocumentationElements
         [InlineData("\t")]
         [InlineData("\r")]
         [InlineData("\n")]
-        public void CreatingInlineReferenceElementWithNullValueThrowsException(string canonicalName)
+        public void CreatingInlineMemberNameReferenceElementWithNullValueThrowsException(string canonicalName)
         {
             var exception = Assert.Throws<ArgumentException>("canonicalName", () => DocumentationElement.MemberReference(canonicalName));
 
@@ -64,7 +92,27 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void InlineReferenceElementCallsVisitorMethod()
+        public void InlineMemberNameReferenceElementCallsVisitorMethod()
+        {
+            var visitorMock = new Mock<IDocumentationVisitor>();
+            var memberReference = DocumentationElement.MemberReference("cannonicalName");
+
+            visitorMock.VerifyAcceptMethods(
+                memberReference,
+                visitor => visitor.VisitInlineReference(memberReference)
+            );
+        }
+
+        [Fact]
+        public void CreatingInlineMemberInfoReferenceElementWithNullMemberInfoThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentNullException>("referredMember", () => DocumentationElement.MemberReference(referredMember: null));
+
+            Assert.Equal(new ArgumentNullException("referredMember").Message, exception.Message);
+        }
+
+        [Fact]
+        public void InlineMemberInfoReferenceElementCallsVisitorMethod()
         {
             var visitorMock = new Mock<IDocumentationVisitor>();
             var memberReference = DocumentationElement.MemberReference(GetType().GetMembers().First());

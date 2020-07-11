@@ -1,0 +1,62 @@
+﻿{{#with declarationNode}}
+<h2>{{MemberName @root this}} Property</h2>
+
+<p>Property type: {{TypeReferenceLink @root type}}.</p>
+{{DocumentationContent @root summary}}
+
+{{#if (IsReadOnlyProperty @root this)}}
+<p>This is a read only property (<code>{{MemberAccessModifier @root this}}</code>).</p>
+{{else if (IsWriteOnlyProperty @root this)}}
+<p>This is a write only property (<code>{{MemberAccessModifier @root this}}</code>).</p>
+{{else}}
+<p>This is a read and write property (<code>{{MemberAccessModifier @root this}}</code>).</p>
+{{/if}}
+
+{{#if isStatic}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/static">static</a> property.</p>
+{{else if isSealed}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a> property.</p>
+{{else if isAbstract}}
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> property.</p>
+{{else if isVirtual}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/virtual">virtual</a> property.</p>
+{{else if isOverride}}
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/override">overriding</a> property.</p>
+{{else if isShadowing}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/new-modifier">shadowing</a> property.</p>
+{{/if}}
+
+{{DocumentationContent @root value}}
+
+{{#each parameters}}
+{{#if @first}}
+<h3>Parameters</h3>
+<ul>
+    {{/if}}
+    <li>
+        <h5>{{this.name}}: {{TypeReferenceLink @root type}}</h5>
+        {{DocumentationContent @root description}}
+    </li>
+    {{#if @last}}
+</ul>
+{{/if}}
+{{/#each}}
+
+{{#each exceptions}}
+{{#if @first}}
+<h3>Exceptions</h3>
+<ul>
+    {{/if}}
+    <li>
+        <h5>{{TypeReferenceLink @root type}}</h5>
+        {{DocumentationContent @root description}}
+    </li>
+    {{#if @last}}
+</ul>
+{{/if}}
+{{/each}}
+
+{{DocumentationContent @root remarks}}
+{{DocumentationContent @root examples}}
+{{RelatedMembersList @root relatedMembers}}
+{{/with}}

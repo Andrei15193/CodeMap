@@ -1,0 +1,38 @@
+﻿{{#with declarationNode}}
+<h2>{{MemberName @root this}} Class</h2>
+
+{{DocumentationContent @root summary}}
+
+<p>
+    Base type: {{TypeReferenceLink @root baseClass}}.
+    {{#each implementedInterfaces}}
+    {{~#if @first}}<br />Implemented interfaces:{{else}},{{/if}}
+    {{TypeReferenceLink @root this ~}}
+    {{/each}}
+</p>
+
+{{#if isStatic}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/static">static</a> class.</p>
+{{else if isSealed}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a> class.</p>
+{{else if isAbstract}}
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> class.</p>
+{{/if}}
+
+{{MemberDeclarationsList @root 'Constants' constants 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Fields' fields 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Constructors' constructors 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Events' events 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Properties' properties 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Methods' methods 'includeAccessor'}}
+
+{{MemberDeclarationsList @root 'Nested Enums' nestedEnums 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Nested Delegates' nestedDelegates 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Nested Interfaces' nestedInterfaces 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Nested Classes' nestedClasses 'includeAccessor'}}
+{{MemberDeclarationsList @root 'Nested Structs' nestedStructs 'includeAccessor'}}
+
+{{DocumentationContent @root remarks}}
+{{DocumentationContent @root examples}}
+{{RelatedMembersList @root relatedMembers}}
+{{/with}}

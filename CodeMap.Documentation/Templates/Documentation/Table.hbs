@@ -1,0 +1,12 @@
+﻿{{#with data}}
+<table class="table table-hover">
+    <thead>
+        <tr>
+            {{DocumentationContent @root columns}}
+        </tr>
+    </thead>
+    <tbody>
+        {{DocumentationContent @root rows}}
+    </tbody>
+</table>
+{{/with}}

@@ -42,6 +42,8 @@ namespace CodeMap.Tests.DocumentationElements
 
         void VisitText(TextDocumentationElement text);
 
+        void VisitHyperlink(HyperlinkDocumentationElement hyperlink);
+
         void VisitInlineReference(MemberNameReferenceDocumentationElement memberNameReference);
 
         void VisitInlineReference(MemberInfoReferenceDocumentationElement memberInfoReference);

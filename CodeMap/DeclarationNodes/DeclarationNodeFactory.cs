@@ -1,5 +1,4 @@
 ﻿using CodeMap.DocumentationElements;
-using CodeMap.DeclarationNodes;
 using CodeMap.ReferenceData;
 using System;
 using System.Collections.Generic;
@@ -18,10 +17,7 @@ namespace CodeMap.DeclarationNodes
         private readonly MemberDocumentationCollection _membersDocumentation;
 
         public DeclarationNodeFactory(CanonicalNameResolver canonicalNameResolver, MemberDocumentationCollection membersDocumentation)
-        {
-            _canonicalNameResolver = canonicalNameResolver;
-            _membersDocumentation = membersDocumentation;
-        }
+            => (_canonicalNameResolver, _membersDocumentation) = (canonicalNameResolver, membersDocumentation);
 
         public AssemblyDeclaration Create(Assembly assembly)
         {
@@ -47,7 +43,7 @@ namespace CodeMap.DeclarationNodes
 
             assemblyDocumentationElement.Namespaces = assembly
                 .DefinedTypes
-                .Where(type => type.DeclaringType == null)
+                .Where(type => type.DeclaringType == null && !Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute)))
                 .OrderBy(type => type.Namespace, StringComparer.OrdinalIgnoreCase)
                 .GroupBy(type => type.Namespace, StringComparer.OrdinalIgnoreCase)
                 .Select(
@@ -395,7 +391,7 @@ namespace CodeMap.DeclarationNodes
                 .OrderBy(method => method.Name)
                 .ThenBy(method => method.GetParameters().Length)
                 .ThenBy(method => method.GetGenericArguments().Length)
-                .Where(method => !method.IsSpecialName)
+                .Where(method => !method.IsSpecialName && !Attribute.IsDefined(method, typeof(CompilerGeneratedAttribute)))
                 .Select(method => _GetMethod(method, declaringDocumentationElement))
                 .AsReadOnlyCollection();
 

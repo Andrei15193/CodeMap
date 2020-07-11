@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -19,15 +18,22 @@ namespace CodeMap.DocumentationElements
             XmlNodeType.Whitespace,
             XmlNodeType.SignificantWhitespace
         };
+        private readonly CanonicalNameResolver _canonicalNameResolver;
 
         /// <summary>Initializes a new instance of the <see cref="XmlDocumentationReader"/> class.</summary>
         public XmlDocumentationReader()
+            : this(null)
         {
         }
 
+        /// <summary>Initializes a new instance of the <see cref="XmlDocumentationReader"/> class.</summary>
+        /// <param name="canonicalNameResolver">The <see cref="CanonicalNameResolver"/> to use for resolving references.</param>
+        public XmlDocumentationReader(CanonicalNameResolver canonicalNameResolver)
+            => _canonicalNameResolver = canonicalNameResolver;
+
         /// <summary>Reads the XML documentation into <see cref="MemberDocumentation"/> items.</summary>
         /// <param name="input">The <see cref="TextReader"/> from which to load <see cref="MemberDocumentation"/> items.</param>
-        /// <returns>Returns a collection of <see cref="MemberDocumentation"/> loaded from the provided <paramref name="input"/> wrapped in a <see cref="Task{TResult}"/>.</returns>
+        /// <returns>Returns a collection of <see cref="MemberDocumentation"/> loaded from the provided <paramref name="input"/>.</returns>
         public MemberDocumentationCollection Read(TextReader input)
         {
             XDocument documentation;
@@ -171,7 +177,11 @@ namespace CodeMap.DocumentationElements
                 from relatedMemberXmlElement in memberDocumentationXmlElement.Elements("seealso")
                 let relatedMemberCrefAttribute = relatedMemberXmlElement.Attribute("cref")
                 where relatedMemberCrefAttribute != null
-                select DocumentationElement.MemberReference(relatedMemberCrefAttribute.Value, _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
+                let referencedMember = _canonicalNameResolver?.TryFindMemberInfoFor(relatedMemberCrefAttribute.Value)
+                select referencedMember != null
+                    ? DocumentationElement.MemberReference(referencedMember, _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
+                    : DocumentationElement.MemberReference(relatedMemberCrefAttribute.Value, _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
+                as MemberReferenceDocumentationElement
             )
             .ToList();
 
@@ -257,13 +267,13 @@ namespace CodeMap.DocumentationElements
             }
         }
 
-        private static ParagraphDocumentationElement _ReadParagraph(XElement xmlElement)
+        private ParagraphDocumentationElement _ReadParagraph(XElement xmlElement)
             => DocumentationElement.Paragraph(
                 _ReadContent(xmlElement.Nodes()),
                 _ReadXmlAttributes(xmlElement)
             );
 
-        private static CodeBlockDocumentationElement _ReadCodeBlock(XElement xmlElement)
+        private CodeBlockDocumentationElement _ReadCodeBlock(XElement xmlElement)
         {
             var codeBlockLines = _ReadCodeBlockLines(xmlElement.Value);
             if (codeBlockLines.Count == 1)
@@ -297,7 +307,7 @@ namespace CodeMap.DocumentationElements
             return DocumentationElement.CodeBlock(codeBlockBuilder.ToString(), _ReadXmlAttributes(xmlElement));
         }
 
-        private static BlockDocumentationElement _ReadListOrTable(XElement xmlElement)
+        private BlockDocumentationElement _ReadListOrTable(XElement xmlElement)
         {
             var listTypeAttribute = xmlElement.Attribute("type");
             if (listTypeAttribute != null)
@@ -318,19 +328,19 @@ namespace CodeMap.DocumentationElements
                 => xmlElement.Element("listheader") != null || xmlElement.Elements("item").Any(itemXmlElement => itemXmlElement.Element("term") != null);
         }
 
-        private static UnorderedListDocumentationElement _ReadUnorederedList(XElement xmlElement)
+        private UnorderedListDocumentationElement _ReadUnorederedList(XElement xmlElement)
             => DocumentationElement.UnorderedList(
                 xmlElement.Elements("item").Select(_ReadListItem),
                 _ReadXmlAttributesExcept(xmlElement, "type")
             );
 
-        private static OrderedListDocumentationElement _ReadOrederedList(XElement xmlElement)
+        private OrderedListDocumentationElement _ReadOrederedList(XElement xmlElement)
             => DocumentationElement.OrderedList(
                 xmlElement.Elements("item").Select(_ReadListItem),
                 _ReadXmlAttributesExcept(xmlElement, "type")
             );
 
-        private static ListItemDocumentationElement _ReadListItem(XElement xmlElement)
+        private ListItemDocumentationElement _ReadListItem(XElement xmlElement)
         {
             var descriptionElement = xmlElement.Element("description");
             return DocumentationElement.ListItem(
@@ -339,7 +349,7 @@ namespace CodeMap.DocumentationElements
             );
         }
 
-        private static DefinitionListDocumentationElement _ReadDefinitionList(XElement xmlElement)
+        private DefinitionListDocumentationElement _ReadDefinitionList(XElement xmlElement)
         {
             var definitionListItems = xmlElement
                 .Elements("item")
@@ -372,7 +382,7 @@ namespace CodeMap.DocumentationElements
             );
         }
 
-        private static TableDocumentationElement _ReadTable(XElement xmlElement)
+        private TableDocumentationElement _ReadTable(XElement xmlElement)
         {
             var rows = xmlElement
                 .Elements("item")
@@ -415,7 +425,7 @@ namespace CodeMap.DocumentationElements
                 return DocumentationElement.Table(rows, _ReadXmlAttributesExcept(xmlElement, "type"));
         }
 
-        private static IReadOnlyList<InlineDocumentationElement> _ReadContent(IEnumerable<XNode> xmlNodes)
+        private IReadOnlyList<InlineDocumentationElement> _ReadContent(IEnumerable<XNode> xmlNodes)
         {
             var inlineElements = new List<InlineDocumentationElement>();
             var textBuilder = new StringBuilder();
@@ -432,7 +442,12 @@ namespace CodeMap.DocumentationElements
                         if (memberReferenceCrefAttribute != null)
                         {
                             _AddTextElementIfExists();
-                            inlineElements.Add(DocumentationElement.MemberReference(memberReferenceCrefAttribute.Value, _ReadXmlAttributesExcept(xmlElement, "cref")));
+                            var referencedMember = _canonicalNameResolver?.TryFindMemberInfoFor(memberReferenceCrefAttribute.Value);
+                            inlineElements.Add(referencedMember != null
+                                ? DocumentationElement.MemberReference(referencedMember, _ReadXmlAttributesExcept(xmlElement, "cref"))
+                                : DocumentationElement.MemberReference(memberReferenceCrefAttribute.Value, _ReadXmlAttributesExcept(xmlElement, "cref"))
+                                as MemberReferenceDocumentationElement
+                            );
                         }
                         break;
 

@@ -1,12 +1,8 @@
-﻿#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
-#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
@@ -95,49 +91,44 @@ namespace CodeMap.DeclarationNodes
         public IReadOnlyCollection<NamespaceDeclaration> Namespaces { get; internal set; }
 
         /// <summary>The assembly summary.</summary>
-        public SummaryDocumentationElement Summary { get; internal set; }
+        public SummaryDocumentationElement Summary { get; set; }
 
         /// <summary>The assembly remarks.</summary>
-        public RemarksDocumentationElement Remarks { get; internal set; }
+        public RemarksDocumentationElement Remarks { get; set; }
 
         /// <summary>The assembly examples.</summary>
-        public IReadOnlyList<ExampleDocumentationElement> Examples { get; internal set; }
+        public IReadOnlyList<ExampleDocumentationElement> Examples { get; set; }
 
         /// <summary>The assembly related members.</summary>
-        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; internal set; }
+        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DeclarationNodeVisitor visitor)
             => visitor.VisitAssembly(this);
 
-        /// <summary>Determines whether the current <see cref="AssemblyReference"/> is equal to the provided <paramref name="assembly"/>.</summary>
+        /// <summary>Determines whether the current <see cref="AssemblyDeclaration"/> is equal to the provided <paramref name="assembly"/>.</summary>
         /// <param name="assembly">The <see cref="Assembly"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="AssemblyReference"/> references the provided <paramref name="assembly"/>; <c>false</c> otherwise.</returns>
+        /// <returns>Returns <c>true</c> if the current <see cref="AssemblyDeclaration"/> references the provided <paramref name="assembly"/>; <c>false</c> otherwise.</returns>
         public bool Equals(Assembly assembly)
             => Equals(assembly?.GetName());
 
-        /// <summary>Determines whether the current <see cref="AssemblyReference"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
+        /// <summary>Determines whether the current <see cref="AssemblyDeclaration"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
         /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="AssemblyReference"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
+        /// <returns>Returns <c>true</c> if the current <see cref="AssemblyDeclaration"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
         public bool Equals(AssemblyName assemblyName)
-        {
-            if (assemblyName == null)
-                return false;
-
-            return
-                string.Equals(Name, assemblyName.Name, StringComparison.OrdinalIgnoreCase)
-                && Version == assemblyName.Version
-                && string.Equals(Culture, assemblyName.CultureName, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(PublicKeyToken, assemblyName.GetPublicKeyToken().ToBase16String(), StringComparison.OrdinalIgnoreCase);
-        }
+            => !(assemblyName is null)
+            && string.Equals(Name, assemblyName.Name, StringComparison.OrdinalIgnoreCase)
+            && Version == assemblyName.Version
+            && string.Equals(Culture, assemblyName.CultureName, StringComparison.OrdinalIgnoreCase)
+            && string.Equals(PublicKeyToken, assemblyName.GetPublicKeyToken().ToBase16String(), StringComparison.OrdinalIgnoreCase);
 
         /// <summary>Determines whether the current <see cref="AssemblyDeclaration"/> is equal to the provided <paramref name="obj"/>.</summary>
         /// <param name="obj">The <see cref="object"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="AssemblyDeclaration"/> references the provided <paramref name="obj"/>; <c>false</c> otherwise.</returns>
         /// <remarks>
-        /// If the provided <paramref name="obj"/> is an <see cref="Assembly"/> or <see cref="AssemblyName"/> instance then the comparison is done by
-        /// comparing members and determining whether the current instance actually maps to the provided <see cref="Assembly"/> or
+        /// If the provided <paramref name="obj"/> is an <see cref="Assembly"/> or <see cref="AssemblyName"/> instance then the comparison is
+        /// done by comparing members and determining whether the current instance actually maps to the provided <see cref="Assembly"/> or
         /// <see cref="AssemblyName"/>. Otherwise the equality is determined by comparing references.
         /// </remarks>
         public override bool Equals(object obj)
@@ -149,5 +140,16 @@ namespace CodeMap.DeclarationNodes
             else
                 return base.Equals(obj);
         }
+
+        /// <summary>Computes the hash code for the current instance.</summary>
+        /// <returns>A hash code for the current object.</returns>
+        public override int GetHashCode()
+            => new
+            {
+                Name = Name.ToLowerInvariant(),
+                Version = $"{Version.Major}.{Version.Minor}.{Version.Build}.{Version.Revision}",
+                Culture = Culture.ToLowerInvariant(),
+                PublicKeyToken = PublicKeyToken.ToLowerInvariant()
+            }.GetHashCode();
     }
 }

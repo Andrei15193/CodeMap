@@ -559,12 +559,20 @@ namespace CodeMap.DocumentationElements
         public static TableCellDocumentationElement TableCell(IEnumerable<InlineDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
             => new TableCellDocumentationElement(content, xmlAttributes);
 
-        /// <summary>Creates a <see cref="TableDocumentationElement"/> with the provided <paramref name="text"/>.</summary>
+        /// <summary>Creates a <see cref="TextDocumentationElement"/> with the provided <paramref name="text"/>.</summary>
         /// <param name="text">Plain text inside XML elements.</param>
-        /// <returns>Returns a <see cref="TableDocumentationElement"/> with the provided <paramref name="text"/>.</returns>
+        /// <returns>Returns a <see cref="TextDocumentationElement"/> with the provided <paramref name="text"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="text"/> is <c>null</c>.</exception>
         public static TextDocumentationElement Text(string text)
             => new TextDocumentationElement(text);
+
+        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="text"/>.</summary>
+        /// <param name="destination">The hyperlink destination (URL).</param>
+        /// <param name="text">The hyperlink text.</param>
+        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="text"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="text"/> are <c>null</c>.</exception>
+        public static HyperlinkDocumentationElement Hyperlink(string destination, string text)
+            => new HyperlinkDocumentationElement(destination, text);
 
         /// <summary>Creates an <see cref="InlineCodeDocumentationElement"/> with the provided <paramref name="code"/>.</summary>
         /// <param name="code">The code inside a <c>c</c> XML element.</param>

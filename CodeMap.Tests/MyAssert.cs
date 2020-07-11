@@ -1,14 +1,14 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
-using CodeMap.Tests.Data;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using CodeMap.DeclarationNodes;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
+using CodeMap.Tests.Data;
 using Xunit;
 
 namespace CodeMap.Tests
@@ -498,6 +498,12 @@ namespace CodeMap.Tests
                         .AssertTypeReference(() => namedParameter.Type, typeof(object))
                 );
 
+        public static AttributeData AssertIsReadOnlyAttribute(this AttributeData attributeData)
+            => attributeData
+                .AssertTypeReference(() => attributeData.Type, typeof(IsReadOnlyAttribute))
+                .AssertEmpty(() => attributeData.PositionalParameters)
+                .AssertEmpty(() => attributeData.NamedParameters);
+
         public static AttributeData AssertDefaultMemberAttribute(this AttributeData attributeData)
             => attributeData
                 .AssertTypeReference(() => attributeData.Type, typeof(DefaultMemberAttribute))
@@ -549,6 +555,7 @@ namespace CodeMap.Tests
             var otherType = type == typeof(object) ? typeof(string) : typeof(object);
             Assert.True(typeDocumentationElement != otherType);
             Assert.True(otherType != typeDocumentationElement);
+
             return typeDocumentationElement;
         }
 
@@ -809,6 +816,49 @@ namespace CodeMap.Tests
                             .AssertCollectionMember(
                                 () => property.Getter.Attributes,
                                 attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} getter")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Getter.ReturnAttributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} getter return")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Setter.Attributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} setter")
+                            )
+                            .AssertCollectionMember(
+                                () => property.Setter.ReturnAttributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} setter return")
+                            );
+                    }
+                );
+
+            return typeDocumentationElement;
+        }
+
+        public static TTypeDocumentationElement AssertReadOnlyTestProperty<TTypeDocumentationElement>(this TTypeDocumentationElement typeDocumentationElement, Func<IEnumerable<PropertyDeclaration>> selector, string propertyName, string attributeValuePrefix)
+            where TTypeDocumentationElement : TypeDeclaration
+        {
+            typeDocumentationElement
+                .AssertCollectionMember(
+                    () => selector().Where(property => property.Name == propertyName),
+                    property =>
+                    {
+                        property
+                            .AssertTypeReference(() => property.Type, typeof(byte))
+                            .AssertEqual(() => property.AccessModifier, AccessModifier.Public)
+                            .AssertEqual(() => property.Getter.AccessModifier, AccessModifier.Public)
+                            .AssertEqual(() => property.Setter.AccessModifier, AccessModifier.Public)
+                            .AssertSame(() => property.DeclaringType, typeDocumentationElement)
+                            .AssertFalse(() => property.IsStatic)
+                            .AssertFalse(() => property.IsVirtual)
+                            .AssertFalse(() => property.IsAbstract)
+                            .AssertFalse(() => property.IsOverride)
+                            .AssertFalse(() => property.IsSealed)
+                            .AssertFalse(() => property.IsShadowing)
+                            .AssertCollectionMember(
+                                () => property.Getter.Attributes,
+                                attribute => attribute.AssertTestAttribute($"{attributeValuePrefix} getter"),
+                                attribute => attribute.AssertIsReadOnlyAttribute()
                             )
                             .AssertCollectionMember(
                                 () => property.Getter.ReturnAttributes,
@@ -1162,26 +1212,26 @@ namespace CodeMap.Tests
 
         public static TInstance AssertAssembly<TInstance>(this TInstance instance, Func<AssemblyDeclaration> selector, Assembly assembly)
         {
-            var assemblyDocumentationElement = selector();
+            var assemblyDeclaration = selector();
             var coreAssembly = typeof(object).Assembly;
 
-            Assert.True(assemblyDocumentationElement == assembly);
-            Assert.True(assembly == assemblyDocumentationElement);
-            Assert.False(assemblyDocumentationElement != assembly);
-            Assert.False(assembly != assemblyDocumentationElement);
+            Assert.True(assemblyDeclaration == assembly);
+            Assert.True(assembly == assemblyDeclaration);
+            Assert.False(assemblyDeclaration != assembly);
+            Assert.False(assembly != assemblyDeclaration);
 
-            Assert.True(assemblyDocumentationElement != coreAssembly);
-            Assert.True(coreAssembly != assemblyDocumentationElement);
+            Assert.True(assemblyDeclaration != coreAssembly);
+            Assert.True(coreAssembly != assemblyDeclaration);
 
             var assemblyName = assembly.GetName();
             var coreAssemblyName = coreAssembly.GetName();
-            Assert.True(assemblyDocumentationElement == assemblyName);
-            Assert.True(assemblyName == assemblyDocumentationElement);
-            Assert.False(assemblyDocumentationElement != assemblyName);
-            Assert.False(assemblyName != assemblyDocumentationElement);
+            Assert.True(assemblyDeclaration == assemblyName);
+            Assert.True(assemblyName == assemblyDeclaration);
+            Assert.False(assemblyDeclaration != assemblyName);
+            Assert.False(assemblyName != assemblyDeclaration);
 
-            Assert.True(assemblyDocumentationElement != coreAssemblyName);
-            Assert.True(coreAssemblyName != assemblyDocumentationElement);
+            Assert.True(assemblyDeclaration != coreAssemblyName);
+            Assert.True(coreAssemblyName != assemblyDeclaration);
 
             return instance;
         }

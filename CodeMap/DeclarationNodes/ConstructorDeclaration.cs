@@ -1,5 +1,5 @@
-﻿using CodeMap.DocumentationElements;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CodeMap.DocumentationElements;
 
 namespace CodeMap.DeclarationNodes
 {

@@ -1,10 +1,4 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
-using CodeMap.Tests.Data;
-using CodeMap.Tests.DocumentationElements;
-using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,6 +6,12 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
+using CodeMap.DeclarationNodes;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
+using CodeMap.Tests.Data;
+using CodeMap.Tests.DocumentationElements;
+using Moq;
 using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes
@@ -632,7 +632,7 @@ namespace CodeMap.Tests.DeclarationNodes
 
                         .AssertStaticEvent(() => structDocumentationElement.Events, "StaticTestEvent")
 
-                        .AssertTestProperty(() => structDocumentationElement.Properties, "TestProperty", "struct property")
+                        .AssertReadOnlyTestProperty(() => structDocumentationElement.Properties, "TestProperty", "struct property")
                         .AssertIndexProperty(() => structDocumentationElement.Properties, typeGenericParameter, "struct indexer")
 
                         .AssertTestMethod(() => structDocumentationElement.Methods, "TestMethod", typeGenericParameter, methodGenericParameter, "struct method")

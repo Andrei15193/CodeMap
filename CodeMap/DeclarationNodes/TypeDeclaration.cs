@@ -1,8 +1,8 @@
 ﻿#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-using CodeMap.DocumentationElements;
 using System;
 using System.Collections.Generic;
+using CodeMap.DocumentationElements;
 
 namespace CodeMap.DeclarationNodes
 {
@@ -86,6 +86,7 @@ namespace CodeMap.DeclarationNodes
                     ? string.IsNullOrWhiteSpace(type.Namespace)
                     : string.Equals(Namespace.Name, type.Namespace, StringComparison.OrdinalIgnoreCase)
                 && string.Equals(Name, (backTickIndex >= 0 ? type.Name.Substring(0, backTickIndex) : type.Name), StringComparison.OrdinalIgnoreCase)
+                && DeclaringType == type.DeclaringType
                 && Assembly == type.Assembly;
         }
 
@@ -98,11 +99,6 @@ namespace CodeMap.DeclarationNodes
         /// by comparing references.
         /// </remarks>
         public override bool Equals(object obj)
-        {
-            if (obj is Type type)
-                return Equals(type);
-            else
-                return base.Equals(obj);
-        }
+            => obj is Type type ? Equals(type) : base.Equals(obj);
     }
 }

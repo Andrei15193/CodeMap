@@ -1,13 +1,13 @@
-﻿using CodeMap.Json;
-using CodeMap.ReferenceData;
-using CodeMap.Tests.Data;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using CodeMap.Json;
+using CodeMap.ReferenceData;
+using CodeMap.Tests.Data;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace CodeMap.Tests.Json
@@ -380,7 +380,7 @@ namespace CodeMap.Tests.Json
         ""genericArguments"": [],
         ""assembly"": {
             ""name"": ""System.ObjectModel"",
-            ""version"": ""4.1.1.0"",
+            ""version"": ""4.1.2.0"",
             ""culture"": """",
             ""publicKeyToken"": ""b03f5f7f11d50a3a""
         }

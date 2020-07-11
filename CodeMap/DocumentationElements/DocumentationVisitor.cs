@@ -86,6 +86,10 @@ namespace CodeMap.DocumentationElements
         /// <param name="text">The <see cref="TextDocumentationElement"/> to visit.</param>
         protected internal abstract void VisitText(TextDocumentationElement text);
 
+        /// <summary>Visits a hyperlink.</summary>
+        /// <param name="hyperlink">The <see cref="HyperlinkDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitHyperlink(HyperlinkDocumentationElement hyperlink);
+
         /// <summary>Visits an unresolved inline member reference.</summary>
         /// <param name="memberNameReference">The <see cref="MemberNameReferenceDocumentationElement"/> to visit.</param>
         protected internal virtual void VisitInlineReference(MemberNameReferenceDocumentationElement memberNameReference)
