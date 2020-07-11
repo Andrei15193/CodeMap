@@ -12,31 +12,31 @@ namespace CodeMap.Documentation
     public class HtmlWriterDeclarationNodeVisitor : DeclarationNodeVisitor
     {
         private readonly DirectoryInfo _directoryInfo;
+        private readonly string _targetFolder;
         private readonly MemberFileNameResolver _memberFileNameResolver;
 
-        public HtmlWriterDeclarationNodeVisitor(DirectoryInfo directoryInfo, MemberFileNameResolver memberFileNameResolver)
-            => (_directoryInfo, _memberFileNameResolver) = (directoryInfo, memberFileNameResolver);
+        public HtmlWriterDeclarationNodeVisitor(DirectoryInfo directoryInfo, string targetFolder, MemberFileNameResolver memberFileNameResolver)
+            => (_directoryInfo, _targetFolder, _memberFileNameResolver) = (directoryInfo, targetFolder, memberFileNameResolver);
 
         protected override void VisitAssembly(AssemblyDeclaration assembly)
         {
             _ClearFolders(assembly);
 
             _WriteAssets(assembly);
-            _directoryInfo
-                .CreateSubdirectory(assembly.Version.ToSemver())
+            _GetTargetSubdirectory(assembly)
                 .WritePage("Index.html", new PageContext(_memberFileNameResolver, assembly));
 
             foreach (var @namespace in assembly.Namespaces)
                 if (@namespace.DeclaredTypes.Any(declaredType => declaredType.AccessModifier >= AccessModifier.Family))
                     @namespace.Accept(this);
 
-            _UpdateFiles(assembly);
+            if (string.IsNullOrWhiteSpace(_targetFolder))
+                _UpdateFiles();
         }
 
         protected override void VisitNamespace(NamespaceDeclaration @namespace)
         {
-            _directoryInfo
-                .CreateSubdirectory(@namespace.Assembly.Version.ToSemver())
+            _GetTargetSubdirectory(@namespace.Assembly)
                 .WritePage(_memberFileNameResolver.GetFileName(@namespace), new PageContext(_memberFileNameResolver, @namespace));
 
             foreach (var type in @namespace.DeclaredTypes.Where(declaredType => declaredType.AccessModifier >= AccessModifier.Family))
@@ -44,8 +44,7 @@ namespace CodeMap.Documentation
         }
 
         protected override void VisitEnum(EnumDeclaration @enum)
-            => _directoryInfo
-                .CreateSubdirectory(@enum.Assembly.Version.ToSemver())
+            => _GetTargetSubdirectory(@enum.Assembly)
                 .WritePage(_memberFileNameResolver.GetFileName(@enum), new PageContext(_memberFileNameResolver, @enum));
 
         protected override void VisitDelegate(DelegateDeclaration @delegate)
@@ -56,8 +55,7 @@ namespace CodeMap.Documentation
 
         protected override void VisitClass(ClassDeclaration @class)
         {
-            _directoryInfo
-                .CreateSubdirectory(@class.Assembly.Version.ToSemver())
+            _GetTargetSubdirectory(@class.Assembly)
                 .WritePage(_memberFileNameResolver.GetFileName(@class), new PageContext(_memberFileNameResolver, @class));
 
             foreach (var member in @class.Members.Where(member => member.AccessModifier >= AccessModifier.Family))
@@ -78,8 +76,7 @@ namespace CodeMap.Documentation
         }
 
         protected override void VisitConstructor(ConstructorDeclaration constructor)
-            => _directoryInfo
-                .CreateSubdirectory(constructor.DeclaringType.Assembly.Version.ToSemver())
+            => _GetTargetSubdirectory(constructor.DeclaringType.Assembly)
                 .WritePage(_memberFileNameResolver.GetFileName(constructor), new PageContext(_memberFileNameResolver, constructor));
 
         protected override void VisitEvent(EventDeclaration @event)
@@ -88,27 +85,29 @@ namespace CodeMap.Documentation
         }
 
         protected override void VisitProperty(PropertyDeclaration property)
-            => _directoryInfo
-                .CreateSubdirectory(property.DeclaringType.Assembly.Version.ToSemver())
+            => _GetTargetSubdirectory(property.DeclaringType.Assembly)
                 .WritePage(_memberFileNameResolver.GetFileName(property), new PageContext(_memberFileNameResolver, property));
 
         protected override void VisitMethod(MethodDeclaration method)
-            => _directoryInfo
-                .CreateSubdirectory(method.DeclaringType.Assembly.Version.ToSemver())
+            => _GetTargetSubdirectory(method.DeclaringType.Assembly)
                 .WritePage(_memberFileNameResolver.GetFileName(method), new PageContext(_memberFileNameResolver, method));
 
         private void _ClearFolders(AssemblyDeclaration assembly)
         {
             if (_directoryInfo.Exists)
             {
-                foreach (var file in _directoryInfo.GetFiles())
-                    file.Delete();
+                if (string.IsNullOrWhiteSpace(_targetFolder))
+                    foreach (var file in _directoryInfo.GetFiles())
+                        file.Delete();
 
-                var versionSubdirectory = _directoryInfo.CreateSubdirectory(assembly.Version.ToSemver());
-                versionSubdirectory.Delete(true);
-                versionSubdirectory.Create();
+                var targetSubdirectory = _GetTargetSubdirectory(assembly);
+                targetSubdirectory.Delete(true);
+                targetSubdirectory.Create();
             }
         }
+
+        private DirectoryInfo _GetTargetSubdirectory(AssemblyDeclaration assembly)
+            => _directoryInfo.CreateSubdirectory(string.IsNullOrWhiteSpace(_targetFolder) ? assembly.Version.ToSemver() : _targetFolder);
 
         private void _WriteAssets(AssemblyDeclaration assembly)
         {
@@ -117,7 +116,7 @@ namespace CodeMap.Documentation
                 var match = Regex.Match(resource, @"Assets\.(?<fileName>\w+\.\w+)$", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
-                    using var fileStream = new FileStream(Path.Combine(_directoryInfo.FullName, assembly.Version.ToSemver(), match.Groups["fileName"].Value), FileMode.Create, FileAccess.Write);
+                    using var fileStream = new FileStream(Path.Combine(_GetTargetSubdirectory(assembly).FullName, match.Groups["fileName"].Value), FileMode.Create, FileAccess.Write);
                     using var assetStream = typeof(Program).Assembly.GetManifestResourceStream(resource);
                     assetStream.CopyTo(fileStream);
                 }
@@ -141,9 +140,13 @@ namespace CodeMap.Documentation
                 return baseComparation;
         }
 
-        private void _UpdateFiles(AssemblyDeclaration assembly)
+        private void _UpdateFiles()
         {
-            var directories = _directoryInfo.GetDirectories().OrderBy(directory => directory.Name, Comparer<string>.Create(_VersionComparison)).ToList();
+            var directories = _directoryInfo
+                .GetDirectories()
+                .Where(directory => Regex.IsMatch(directory.Name, @"^\d+\.\d+\.\d+(-(alpha|beta|rc)\d+)?$", RegexOptions.IgnoreCase))
+                .OrderBy(directory => directory.Name, Comparer<string>.Create(_VersionComparison))
+                .ToList();
 
             Parallel.ForEach(
                 directories.Last().EnumerateFiles(),
@@ -152,7 +155,10 @@ namespace CodeMap.Documentation
 
             var versions = directories.Select(directory => directory.Name);
             Parallel.ForEach(
-                _directoryInfo.EnumerateFiles("*.html", SearchOption.AllDirectories),
+                Enumerable
+                    .Repeat(_directoryInfo, 1)
+                    .Concat(directories)
+                    .SelectMany(direcotry => direcotry.EnumerateFiles("*.html", SearchOption.TopDirectoryOnly)),
                 htmlFile =>
                 {
                     var htmlDocument = new HtmlDocument();

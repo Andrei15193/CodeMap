@@ -24,7 +24,7 @@ namespace CodeMap.Documentation
             var outputDirectory = new DirectoryInfo(arguments.OutputPath);
             outputDirectory.Create();
 
-            documentation.Accept(new HtmlWriterDeclarationNodeVisitor(outputDirectory, new MemberFileNameResolver(library)));
+            documentation.Accept(new HtmlWriterDeclarationNodeVisitor(outputDirectory, arguments.TargetSubdirectory, new MemberFileNameResolver(library)));
         }
 
         private class Arguments
@@ -48,6 +48,8 @@ namespace CodeMap.Documentation
             }
 
             public string OutputPath { get; set; }
+
+            public string TargetSubdirectory { get; set; }
         }
     }
 }
