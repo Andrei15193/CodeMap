@@ -24,7 +24,7 @@ namespace CodeMap.Documentation
 
             _WriteAssets(assembly);
             _GetTargetSubdirectory(assembly)
-                .WritePage("Index.html", new PageContext(_memberFileNameResolver, assembly));
+                .WritePage("index.html", new PageContext(_memberFileNameResolver, assembly));
 
             foreach (var @namespace in assembly.Namespaces)
                 if (@namespace.DeclaredTypes.Any(declaredType => declaredType.AccessModifier >= AccessModifier.Family))
@@ -172,14 +172,14 @@ namespace CodeMap.Documentation
                                 new
                                 {
                                     IsLatestSelected = IsLatest(htmlFile),
-                                    PathToLatest = IsLatest(htmlFile) ? "Index.html" : "../Index.html",
+                                    PathToLatest = IsLatest(htmlFile) ? "index.html" : "../index.html",
                                     HasOtherVersions = versions.Skip(1).Any(),
                                     Versions = from version in versions.AsEnumerable().Reverse()
                                                select new
                                                {
                                                    IsSelected = IsSelectedVersion(htmlFile, version),
                                                    Label = version,
-                                                   Path = IsLatest(htmlFile) ? $"{version}/Index.Html" : $"../{version}/Index.Html"
+                                                   Path = IsLatest(htmlFile) ? $"{version}/index.Html" : $"../{version}/index.Html"
                                                }
                                 })
                         ),
@@ -194,7 +194,7 @@ namespace CodeMap.Documentation
                                 new
                                 {
                                     IsLatest = IsLatest(htmlFile) || IsSelectedVersion(htmlFile, versions.Last()),
-                                    PathToLatest = "../Index.html"
+                                    PathToLatest = "../index.html"
                                 })
                         ),
                         deprecationNoticeHtmlNode
