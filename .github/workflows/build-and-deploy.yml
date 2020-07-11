@@ -181,7 +181,7 @@ jobs:
       shell: pwsh
       working-directory: ./CodeMap.Documentation
       run: |
-        ls project-site
+        ls ../project-site
         if ($env:GITHUB_REF -match '^refs/heads/releases/\d+\.\d+(-(alpha|beta|rc))?$')
         {
           dotnet run --configuration Release --no-build -OutputPath '../project-site'
