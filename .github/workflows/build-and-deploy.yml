@@ -170,6 +170,7 @@ jobs:
       shell: pwsh
       working-directory: ./CodeMap.Documentation
       run: |
+        git fetch gh-pages
         git checkout gh-pages
         New-Item -ItemType directory -Name project-site
         Get-ChildItem -Exclude @(".*", "project-site") |
