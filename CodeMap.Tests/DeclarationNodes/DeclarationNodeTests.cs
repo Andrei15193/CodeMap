@@ -1048,6 +1048,47 @@ namespace CodeMap.Tests.DeclarationNodes
         }
 
         [Fact]
+        public void ApplyDocumentationAddition()
+        {
+            var assemblyDocumentationElement = DeclarationNode.Create(_TestDataAssembly);
+            var summary = DocumentationElement.Summary();
+            var remakrs = DocumentationElement.Remarks();
+            var examples = new List<ExampleDocumentationElement>();
+            var relatedMembers = new List<MemberReferenceDocumentationElement>();
+
+            assemblyDocumentationElement.Apply(
+                new AssemblyDocumentationAdditionMock
+                {
+                    Summary = summary,
+                    Remarks = remakrs,
+                    Examples = examples,
+                    RelatedMembers = relatedMembers,
+                    NamespaceAdditions = new[]
+                    {
+                        new NamespaceDocumentationAdditionMock
+                        {
+                            Summary = summary,
+                            Remarks = remakrs,
+                            Examples = examples,
+                            RelatedMembers = relatedMembers
+                        }
+                    }
+                });
+
+            Assert.Same(summary, assemblyDocumentationElement.Summary);
+            Assert.Same(remakrs, assemblyDocumentationElement.Remarks);
+            Assert.Same(examples, assemblyDocumentationElement.Examples);
+            Assert.Same(relatedMembers, assemblyDocumentationElement.RelatedMembers);
+            foreach (var namespaceDeclaration in assemblyDocumentationElement.Namespaces)
+            {
+                Assert.Same(summary, namespaceDeclaration.Summary);
+                Assert.Same(remakrs, namespaceDeclaration.Remarks);
+                Assert.Same(examples, namespaceDeclaration.Examples);
+                Assert.Same(relatedMembers, namespaceDeclaration.RelatedMembers);
+            }
+        }
+
+        [Fact]
         public void AssertTypeReferenceToNestedGenericType()
         {
             var classDocumentationElement = (ClassDeclaration)DeclarationNode.Create(typeof(TestClass<>));

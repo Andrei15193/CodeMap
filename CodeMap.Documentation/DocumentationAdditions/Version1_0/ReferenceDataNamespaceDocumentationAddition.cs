@@ -2,7 +2,7 @@
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 
-namespace CodeMap.Documentation.Additions._1_0
+namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
 {
     public class ReferenceDataNamespaceDocumentationAddition : NamespaceDocumentationAddition
     {

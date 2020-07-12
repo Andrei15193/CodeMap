@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using CodeMap.DocumentationElements;
 using CodeMap.ReferenceData;
@@ -91,16 +92,67 @@ namespace CodeMap.DeclarationNodes
         public IReadOnlyCollection<NamespaceDeclaration> Namespaces { get; internal set; }
 
         /// <summary>The assembly summary.</summary>
-        public SummaryDocumentationElement Summary { get; set; }
+        public SummaryDocumentationElement Summary { get; internal set; }
 
         /// <summary>The assembly remarks.</summary>
-        public RemarksDocumentationElement Remarks { get; set; }
+        public RemarksDocumentationElement Remarks { get; internal set; }
 
         /// <summary>The assembly examples.</summary>
-        public IReadOnlyList<ExampleDocumentationElement> Examples { get; set; }
+        public IReadOnlyList<ExampleDocumentationElement> Examples { get; internal set; }
 
         /// <summary>The assembly related members.</summary>
-        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; set; }
+        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; internal set; }
+
+        /// <summary>Applies the first applicable <see cref="AssemblyDocumentationAddition"/> from the provided <paramref name="additions"/>.</summary>
+        /// <param name="additions">The <see cref="AssemblyDocumentationAddition"/>s to look through.</param>
+        /// <returns>Returns the current <see cref="AssemblyDeclaration"/> instance.</returns>
+        /// <remarks>
+        /// It is possible to have multiple <see cref="AssemblyDocumentationAddition"/>s when working with large libraries. There may
+        /// be one <see cref="AssemblyDocumentationAddition"/> for each major version. By providing them as a list it is easier to
+        /// maintain because each <see cref="AssemblyDocumentationAddition"/> has its own predicate which in turn will determine which
+        /// addition should be used specifically for the current <see cref="AssemblyDeclaration"/>.
+        /// </remarks>
+        public AssemblyDeclaration Apply(IEnumerable<AssemblyDocumentationAddition> additions)
+        {
+            if (additions is null)
+                throw new ArgumentNullException(nameof(additions));
+
+            var addition = additions.FirstOrDefault(addition => addition.CanApply(this));
+            if (addition != null)
+            {
+                Summary = addition.GetSummary(this) ?? Summary;
+                Remarks = addition.GetRemarks(this) ?? Remarks;
+                Examples = addition.GetExamples(this).ToReadOnlyList() ?? Examples;
+                RelatedMembers = addition.GetRelatedMembers(this).ToReadOnlyList() ?? RelatedMembers;
+                var namespaceAdditions = (addition.GetNamespaceAdditions(this) ?? Enumerable.Empty<NamespaceDocumentationAddition>()).ToReadOnlyList();
+                if (namespaceAdditions.Any())
+                    foreach (var @namespace in Namespaces)
+                    {
+                        var namespaceAddition = namespaceAdditions.FirstOrDefault(addition => addition.CanApply(@namespace));
+                        if (namespaceAddition != null)
+                        {
+                            @namespace.Summary = namespaceAddition.GetSummary(@namespace) ?? @namespace.Summary;
+                            @namespace.Remarks = namespaceAddition.GetRemarks(@namespace) ?? @namespace.Remarks;
+                            @namespace.Examples = namespaceAddition.GetExamples(@namespace).ToReadOnlyList() ?? @namespace.Examples;
+                            @namespace.RelatedMembers = namespaceAddition.GetRelatedMembers(@namespace).ToReadOnlyList() ?? @namespace.RelatedMembers;
+                        }
+                    }
+            }
+
+            return this;
+        }
+
+        /// <summary>Applies the first applicable <see cref="AssemblyDocumentationAddition"/> from the provided <paramref name="additions"/>.</summary>
+        /// <param name="additions">The <see cref="AssemblyDocumentationAddition"/>s to look through.</param>
+        /// <returns>Returns the current <see cref="AssemblyDeclaration"/> instance.</returns>
+        /// <remarks>
+        /// It is possible to have multiple <see cref="AssemblyDocumentationAddition"/>s when working with large libraries. There may
+        /// be one <see cref="AssemblyDocumentationAddition"/> for each major version. By providing them as a list it is easier to
+        /// maintain because each <see cref="AssemblyDocumentationAddition"/> has its own predicate which in turn will determine which
+        /// addition should be used specifically for the current <see cref="AssemblyDeclaration"/>.
+        /// </remarks>
+        public AssemblyDeclaration Apply(params AssemblyDocumentationAddition[] additions)
+            => Apply((IEnumerable<AssemblyDocumentationAddition>)additions);
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>

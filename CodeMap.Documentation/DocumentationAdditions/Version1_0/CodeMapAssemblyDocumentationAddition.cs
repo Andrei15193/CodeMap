@@ -4,9 +4,9 @@ using System.Reflection;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 
-namespace CodeMap.Documentation.Additions._1_0
+namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
 {
-    public class AssemblyDocumentationAddition : Additions.AssemblyDocumentationAddition
+    public class CodeMapAssemblyDocumentationAddition : AssemblyDocumentationAddition
     {
         public override bool CanApply(AssemblyDeclaration assemblyDeclaration)
             => assemblyDeclaration.Version.Major == 1 && assemblyDeclaration.Version.Minor == 0;

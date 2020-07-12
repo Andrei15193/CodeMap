@@ -1,5 +1,5 @@
-﻿using CodeMap.DocumentationElements;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CodeMap.DocumentationElements;
 
 namespace CodeMap.DeclarationNodes
 {
@@ -35,16 +35,16 @@ namespace CodeMap.DeclarationNodes
         public IReadOnlyCollection<StructDeclaration> Structs { get; internal set; }
 
         /// <summary>The namespace summary.</summary>
-        public SummaryDocumentationElement Summary { get; set; }
+        public SummaryDocumentationElement Summary { get; internal set; }
 
         /// <summary>The namespace remarks.</summary>
-        public RemarksDocumentationElement Remarks { get; set; }
+        public RemarksDocumentationElement Remarks { get; internal set; }
 
         /// <summary>The namespace examples.</summary>
-        public IReadOnlyList<ExampleDocumentationElement> Examples { get; set; }
+        public IReadOnlyList<ExampleDocumentationElement> Examples { get; internal set; }
 
         /// <summary>The namespace related members.</summary>
-        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; set; }
+        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>

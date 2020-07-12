@@ -1,10 +1,10 @@
 ﻿{{#with data}}
-{{each content}}
+{{#each content}}
 {{#if @first}}
-{{#unless xmlAttributes.title}}
+{{#unless @root.data.xmlAttributes.title}}
 <h3>Example</h3>
 {{else}}
-<h3>Example: {{xmlAttributes.title}}</h3>
+<h3>Example: {{@root.data.xmlAttributes.title}}</h3>
 {{/unless}}
 {{/if}}
 {{DocumentationContent @root this}}

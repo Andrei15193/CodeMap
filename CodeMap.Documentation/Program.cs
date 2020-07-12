@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using CodeMap.DeclarationNodes;
-using CodeMap.Documentation.Additions;
 using CodeMap.DocumentationElements;
 
 namespace CodeMap.Documentation
@@ -19,7 +18,7 @@ namespace CodeMap.Documentation
             var library = typeof(DocumentationElement).Assembly;
             var documentation = DeclarationNode
                 .Create(library)
-                .Apply(new Additions._1_0.AssemblyDocumentationAddition());
+                .Apply(new DocumentationAdditions.Version1_0.CodeMapAssemblyDocumentationAddition());
 
             var outputDirectory = new DirectoryInfo(arguments.OutputPath);
             outputDirectory.Create();

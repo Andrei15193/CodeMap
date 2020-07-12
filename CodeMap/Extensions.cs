@@ -26,9 +26,9 @@ namespace CodeMap
 
         public static IReadOnlyList<TItem> ToReadOnlyList<TItem>(this IEnumerable<TItem> items)
         {
-            IReadOnlyList<TItem> result = null;
+            var result = items as IReadOnlyList<TItem>;
 
-            if (items != null)
+            if (result == null && items != null)
                 using (var item = items.GetEnumerator())
                     if (item.MoveNext())
                     {
