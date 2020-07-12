@@ -11,7 +11,7 @@ namespace CodeMap.DocumentationElements
         {
             ParameterName = parameterName ?? throw new ArgumentNullException(nameof(parameterName));
 
-            XmlAttributes = xmlAttributes ?? new Dictionary<string, string>();
+            XmlAttributes = xmlAttributes ?? Extensions.EmptyDictionary<string, string>();
             if (XmlAttributes.Any(pair => pair.Value == null))
                 throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
         }

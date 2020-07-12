@@ -9,13 +9,11 @@ namespace CodeMap.DocumentationElements
     {
         internal OrderedListDocumentationElement(IEnumerable<ListItemDocumentationElement> items, IReadOnlyDictionary<string, string> xmlAttributes)
         {
-            Items = items as IReadOnlyList<ListItemDocumentationElement>
-                ?? items?.ToList()
-                ?? throw new ArgumentNullException(nameof(items));
+            Items = items.ToReadOnlyList() ?? throw new ArgumentNullException(nameof(items));
             if (Items.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' items.", nameof(items));
 
-            XmlAttributes = xmlAttributes ?? new Dictionary<string, string>();
+            XmlAttributes = xmlAttributes ?? Extensions.EmptyDictionary<string, string>();
             if (XmlAttributes.Any(pair => pair.Value == null))
                 throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
         }

@@ -19,8 +19,8 @@ namespace CodeMap.Documentation.Additions
             {
                 assemblyDeclaration.Summary = addition.GetSummary(assemblyDeclaration) ?? assemblyDeclaration.Summary;
                 assemblyDeclaration.Remarks = addition.GetRemarks(assemblyDeclaration) ?? assemblyDeclaration.Remarks;
-                assemblyDeclaration.Examples = addition.GetExamples(assemblyDeclaration)?.ToList() ?? assemblyDeclaration.Examples;
-                assemblyDeclaration.RelatedMembers = addition.GetRelatedMembers(assemblyDeclaration)?.ToList() ?? assemblyDeclaration.RelatedMembers;
+                assemblyDeclaration.Examples = addition.GetExamples(assemblyDeclaration).ToList() ?? assemblyDeclaration.Examples;
+                assemblyDeclaration.RelatedMembers = addition.GetRelatedMembers(assemblyDeclaration).ToList() ?? assemblyDeclaration.RelatedMembers;
                 var namespaceAdditions = (addition.GetNamespaceAdditions(assemblyDeclaration) ?? Enumerable.Empty<NamespaceDocumentationAddition>()).ToList();
                 if (namespaceAdditions.Any())
                     foreach (var @namespace in assemblyDeclaration.Namespaces)
@@ -30,8 +30,8 @@ namespace CodeMap.Documentation.Additions
                         {
                             @namespace.Summary = namespaceAddition.GetSummary(@namespace) ?? @namespace.Summary;
                             @namespace.Remarks = namespaceAddition.GetRemarks(@namespace) ?? @namespace.Remarks;
-                            @namespace.Examples = namespaceAddition.GetExamples(@namespace)?.ToList() ?? @namespace.Examples;
-                            @namespace.RelatedMembers = namespaceAddition.GetRelatedMembers(@namespace)?.ToList() ?? @namespace.RelatedMembers;
+                            @namespace.Examples = namespaceAddition.GetExamples(@namespace).ToList() ?? @namespace.Examples;
+                            @namespace.RelatedMembers = namespaceAddition.GetRelatedMembers(@namespace).ToList() ?? @namespace.RelatedMembers;
                         }
                     }
             }

@@ -52,7 +52,7 @@ namespace CodeMap.ReferenceData
 
             void CompareGenericArguments(Type type)
             {
-                var genericArguments = type.GetGenericArguments().Skip(type.DeclaringType?.GetGenericArguments().Length ?? 0).AsReadOnlyList();
+                var genericArguments = type.GetGenericArguments().Skip(type.DeclaringType?.GetGenericArguments().Length ?? 0).ToReadOnlyList();
                 if (typeReference.GenericArguments.Count != genericArguments.Count)
                     _SetNotEqual();
 

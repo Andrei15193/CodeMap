@@ -41,14 +41,14 @@ namespace CodeMap.DocumentationElements
         {
             CanonicalName = canonicalName ?? throw new ArgumentNullException(nameof(canonicalName));
             Summary = summary ?? DocumentationElement.Summary(Enumerable.Empty<BlockDocumentationElement>());
-            GenericParameters = genericParameters.OrEmpty();
-            Parameters = parameters.OrEmpty();
+            GenericParameters = genericParameters ?? Extensions.EmptyDictionary<string, BlockDescriptionDocumentationElement>();
+            Parameters = parameters ?? Extensions.EmptyDictionary<string, BlockDescriptionDocumentationElement>();
             Returns = returns ?? DocumentationElement.BlockDescription(Enumerable.Empty<BlockDocumentationElement>());
-            Exceptions = exceptions.OrEmpty();
+            Exceptions = exceptions ?? Extensions.EmptyDictionary<string, BlockDescriptionDocumentationElement>();
             Remarks = remarks ?? DocumentationElement.Remarks(Enumerable.Empty<BlockDocumentationElement>());
-            Examples = examples.AsReadOnlyListOrEmpty();
+            Examples = examples.ToReadOnlyList() ?? Enumerable.Empty<ExampleDocumentationElement>().ToReadOnlyList();
             Value = value ?? DocumentationElement.Value(Enumerable.Empty<BlockDocumentationElement>());
-            RelatedMembers = relatedMembers.AsReadOnlyListOrEmpty();
+            RelatedMembers = relatedMembers.ToReadOnlyList() ?? Enumerable.Empty<MemberReferenceDocumentationElement>().ToReadOnlyList();
         }
 
         /// <summary>The canonical name of the documented member.</summary>

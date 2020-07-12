@@ -1,10 +1,10 @@
-﻿using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
@@ -30,15 +30,15 @@ namespace CodeMap.DeclarationNodes
                 PublicKeyToken = assemblyName.GetPublicKeyToken().ToBase16String(),
                 Dependencies = assembly
                     .GetReferencedAssemblies()
-                    .OrderBy(dependency => dependency.Name)
+                    .OrderBy(dependency => dependency.Name, StringComparer.OrdinalIgnoreCase)
                     .ThenBy(dependency => dependency.Version)
                     .Select(dependency => _memberReferenceFactory.Create(dependency))
-                    .AsReadOnlyCollection(),
+                    .ToReadOnlyList(),
                 Attributes = _MapAttributesDataFrom(assembly.CustomAttributes),
                 Summary = DocumentationElement.Summary(),
                 Remarks = DocumentationElement.Remarks(),
-                Examples = Enumerable.Empty<ExampleDocumentationElement>().AsReadOnlyList(),
-                RelatedMembers = Enumerable.Empty<MemberReferenceDocumentationElement>().AsReadOnlyList()
+                Examples = Extensions.EmptyReadOnlyList<ExampleDocumentationElement>(),
+                RelatedMembers = Extensions.EmptyReadOnlyList<MemberReferenceDocumentationElement>()
             };
 
             assemblyDocumentationElement.Namespaces = assembly
@@ -61,22 +61,22 @@ namespace CodeMap.DeclarationNodes
                         @namespace.Assembly = assemblyDocumentationElement;
                         @namespace.Summary = DocumentationElement.Summary();
                         @namespace.Remarks = DocumentationElement.Remarks();
-                        @namespace.Examples = Enumerable.Empty<ExampleDocumentationElement>().AsReadOnlyList();
-                        @namespace.RelatedMembers = Enumerable.Empty<MemberReferenceDocumentationElement>().AsReadOnlyList();
+                        @namespace.Examples = Extensions.EmptyReadOnlyList<ExampleDocumentationElement>();
+                        @namespace.RelatedMembers = Extensions.EmptyReadOnlyList<MemberReferenceDocumentationElement>();
 
                         var declaredTypes = _GetTypes(typesByNamespace, @namespace, null);
                         @namespace.DeclaredTypes = declaredTypes;
 
-                        @namespace.Enums = declaredTypes.OfType<EnumDeclaration>().AsReadOnlyCollection();
-                        @namespace.Delegates = declaredTypes.OfType<DelegateDeclaration>().AsReadOnlyCollection();
-                        @namespace.Interfaces = declaredTypes.OfType<InterfaceDeclaration>().AsReadOnlyCollection();
-                        @namespace.Classes = declaredTypes.OfType<ClassDeclaration>().AsReadOnlyCollection();
-                        @namespace.Structs = declaredTypes.OfType<StructDeclaration>().AsReadOnlyCollection();
+                        @namespace.Enums = declaredTypes.OfType<EnumDeclaration>().ToReadOnlyList();
+                        @namespace.Delegates = declaredTypes.OfType<DelegateDeclaration>().ToReadOnlyList();
+                        @namespace.Interfaces = declaredTypes.OfType<InterfaceDeclaration>().ToReadOnlyList();
+                        @namespace.Classes = declaredTypes.OfType<ClassDeclaration>().ToReadOnlyList();
+                        @namespace.Structs = declaredTypes.OfType<StructDeclaration>().ToReadOnlyList();
 
                         return @namespace;
                     }
                 )
-                .AsReadOnlyCollection();
+                .ToReadOnlyList();
 
             return assemblyDocumentationElement;
         }
@@ -104,11 +104,11 @@ namespace CodeMap.DeclarationNodes
 
         private IReadOnlyCollection<TypeDeclaration> _GetTypes(IEnumerable<Type> types, NamespaceDeclaration @namespace, TypeDeclaration declaringType)
         {
-            return (
-                from type in types
-                orderby _GetTypeKindSortOrder(type), type.Name, type.GetGenericArguments().Length
-                select _GetType(type, @namespace, declaringType)
-            ).AsReadOnlyCollection();
+            return types
+                .OrderBy(_GetTypeKindSortOrder)
+                .ThenBy(typeDeclaration => typeDeclaration.Name, StringComparer.OrdinalIgnoreCase)
+                .Select(type => _GetType(type, @namespace, declaringType))
+                .ToReadOnlyList();
 
             int _GetTypeKindSortOrder(Type type)
             {
@@ -120,8 +120,10 @@ namespace CodeMap.DeclarationNodes
                     return 2;
                 else if (type.IsClass)
                     return 3;
-                else
+                else if (type.IsValueType)
                     return 4;
+                else
+                    return 5;
             }
         }
 
@@ -141,9 +143,9 @@ namespace CodeMap.DeclarationNodes
             };
             enumDocumentationElement.Members = enumType
                 .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField | BindingFlags.DeclaredOnly)
+                .OrderBy(constant => constant.GetValue(null))
                 .Select(constant => _GetConstant(constant, enumDocumentationElement))
-                .OrderBy(constant => constant.Value)
-                .AsReadOnlyList();
+                .ToReadOnlyList();
 
             return enumDocumentationElement;
         }
@@ -160,7 +162,7 @@ namespace CodeMap.DeclarationNodes
                 Parameters = invokeMethodInfo
                     .GetParameters()
                     .Select(parameter => _GetParameter(parameter, memberDocumentation))
-                    .AsReadOnlyList(),
+                    .ToReadOnlyList(),
                 Return = new MethodReturnData
                 {
                     Type = invokeMethodInfo.ReturnType == typeof(object) && invokeMethodInfo.ReturnParameter.GetCustomAttribute<DynamicAttribute>() != null
@@ -195,11 +197,10 @@ namespace CodeMap.DeclarationNodes
                         .GetInterfaces()
                         .SelectMany(baseInterface => baseInterface.GetInterfaces())
                     )
-                    .OrderBy(baseInterface => baseInterface.Namespace)
-                    .ThenBy(baseInterface => baseInterface.Name)
-                    .ThenBy(baseInterface => baseInterface.GetGenericArguments().Length)
+                    .OrderBy(baseInterface => baseInterface.Namespace, StringComparer.OrdinalIgnoreCase)
+                    .ThenBy(baseInterface => baseInterface.Name, StringComparer.OrdinalIgnoreCase)
                     .Select(baseInterface => (TypeReference)_memberReferenceFactory.Create(baseInterface))
-                    .AsReadOnlyCollection(),
+                    .ToReadOnlyList(),
                 Summary = memberDocumentation.Summary,
                 Remarks = memberDocumentation.Remarks,
                 Examples = memberDocumentation.Examples,
@@ -215,7 +216,7 @@ namespace CodeMap.DeclarationNodes
                 .AsEnumerable<MemberDeclaration>()
                 .Concat(interfaceDocumentationElement.Properties)
                 .Concat(interfaceDocumentationElement.Methods)
-                .AsReadOnlyCollection();
+                .ToReadOnlyList();
 
             return interfaceDocumentationElement;
         }
@@ -248,7 +249,7 @@ namespace CodeMap.DeclarationNodes
                     .ThenBy(implementedInterface => implementedInterface.Name)
                     .ThenBy(implementedInterface => implementedInterface.GetGenericArguments().Length)
                     .Select(implementedInterface => (TypeReference)_memberReferenceFactory.Create(implementedInterface))
-                    .AsReadOnlyCollection(),
+                    .ToReadOnlyList(),
                 Summary = memberDocumentation.Summary,
                 Remarks = memberDocumentation.Remarks,
                 Examples = memberDocumentation.Examples,
@@ -270,16 +271,16 @@ namespace CodeMap.DeclarationNodes
                 .Concat(classDocumentationElement.Events)
                 .Concat(classDocumentationElement.Properties)
                 .Concat(classDocumentationElement.Methods)
-                .AsReadOnlyCollection();
+                .ToReadOnlyList();
 
             var nestedTypes = _GetTypes(classType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic), @namespace, classDocumentationElement);
             classDocumentationElement.NestedTypes = nestedTypes;
 
-            classDocumentationElement.NestedEnums = nestedTypes.OfType<EnumDeclaration>().AsReadOnlyCollection();
-            classDocumentationElement.NestedDelegates = nestedTypes.OfType<DelegateDeclaration>().AsReadOnlyCollection();
-            classDocumentationElement.NestedInterfaces = nestedTypes.OfType<InterfaceDeclaration>().AsReadOnlyCollection();
-            classDocumentationElement.NestedClasses = nestedTypes.OfType<ClassDeclaration>().AsReadOnlyCollection();
-            classDocumentationElement.NestedStructs = nestedTypes.OfType<StructDeclaration>().AsReadOnlyCollection();
+            classDocumentationElement.NestedEnums = nestedTypes.OfType<EnumDeclaration>().ToReadOnlyList();
+            classDocumentationElement.NestedDelegates = nestedTypes.OfType<DelegateDeclaration>().ToReadOnlyList();
+            classDocumentationElement.NestedInterfaces = nestedTypes.OfType<InterfaceDeclaration>().ToReadOnlyList();
+            classDocumentationElement.NestedClasses = nestedTypes.OfType<ClassDeclaration>().ToReadOnlyList();
+            classDocumentationElement.NestedStructs = nestedTypes.OfType<StructDeclaration>().ToReadOnlyList();
 
             return classDocumentationElement;
         }
@@ -308,7 +309,7 @@ namespace CodeMap.DeclarationNodes
                     .ThenBy(implementedInterface => implementedInterface.Name)
                     .ThenBy(implementedInterface => implementedInterface.GetGenericArguments().Length)
                     .Select(implementedInterface => (TypeReference)_memberReferenceFactory.Create(implementedInterface))
-                    .AsReadOnlyCollection(),
+                    .ToReadOnlyList(),
                 Summary = memberDocumentation.Summary,
                 Remarks = memberDocumentation.Remarks,
                 Examples = memberDocumentation.Examples,
@@ -319,9 +320,10 @@ namespace CodeMap.DeclarationNodes
             structDocumentationElement.Constants = _GetConstants(structType, structDocumentationElement);
             structDocumentationElement.Fields = _GetFields(structType, structDocumentationElement);
             structDocumentationElement.Constructors =
-                new[] { _GetDefaultConstructor(structType, structDocumentationElement) }
-                .Concat(_GetConstructors(structType, structDocumentationElement))
-                .AsReadOnlyCollection();
+                Enumerable
+                    .Repeat(_GetDefaultConstructor(structType, structDocumentationElement), 1)
+                    .Concat(_GetConstructors(structType, structDocumentationElement))
+                    .ToReadOnlyList();
             structDocumentationElement.Events = _GetEvents(structType, structDocumentationElement);
             structDocumentationElement.Properties = _GetProperties(structType, structDocumentationElement);
             structDocumentationElement.Methods = _GetMethods(structType, structDocumentationElement);
@@ -333,16 +335,16 @@ namespace CodeMap.DeclarationNodes
                 .Concat(structDocumentationElement.Events)
                 .Concat(structDocumentationElement.Properties)
                 .Concat(structDocumentationElement.Methods)
-                .AsReadOnlyCollection();
+                .ToReadOnlyList();
 
             var nestedTypes = _GetTypes(structType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic), @namespace, structDocumentationElement);
             structDocumentationElement.NestedTypes = nestedTypes;
 
-            structDocumentationElement.NestedEnums = structDocumentationElement.NestedTypes.OfType<EnumDeclaration>().AsReadOnlyCollection();
-            structDocumentationElement.NestedDelegates = nestedTypes.OfType<DelegateDeclaration>().AsReadOnlyCollection();
-            structDocumentationElement.NestedInterfaces = nestedTypes.OfType<InterfaceDeclaration>().AsReadOnlyCollection();
-            structDocumentationElement.NestedClasses = nestedTypes.OfType<ClassDeclaration>().AsReadOnlyCollection();
-            structDocumentationElement.NestedStructs = nestedTypes.OfType<StructDeclaration>().AsReadOnlyCollection();
+            structDocumentationElement.NestedEnums = structDocumentationElement.NestedTypes.OfType<EnumDeclaration>().ToReadOnlyList();
+            structDocumentationElement.NestedDelegates = nestedTypes.OfType<DelegateDeclaration>().ToReadOnlyList();
+            structDocumentationElement.NestedInterfaces = nestedTypes.OfType<InterfaceDeclaration>().ToReadOnlyList();
+            structDocumentationElement.NestedClasses = nestedTypes.OfType<ClassDeclaration>().ToReadOnlyList();
+            structDocumentationElement.NestedStructs = nestedTypes.OfType<StructDeclaration>().ToReadOnlyList();
 
             return structDocumentationElement;
         }
@@ -351,49 +353,48 @@ namespace CodeMap.DeclarationNodes
             => declaringType
                 .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetField | BindingFlags.DeclaredOnly)
                 .Where(field => !field.IsSpecialName && field.IsLiteral)
-                .OrderBy(constant => constant.Name)
+                .OrderBy(constant => constant.Name, StringComparer.OrdinalIgnoreCase)
                 .Select(constant => _GetConstant(constant, declaringDocumentationElement))
-                .AsReadOnlyCollection();
+                .ToReadOnlyList();
 
         private IReadOnlyCollection<FieldDeclaration> _GetFields(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
                 .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.GetField | BindingFlags.DeclaredOnly)
                 .Where(field => !field.IsLiteral && field.GetCustomAttribute<CompilerGeneratedAttribute>() == null)
-                .OrderBy(field => field.Name)
+                .OrderBy(field => field.Name, StringComparer.OrdinalIgnoreCase)
                 .Select(field => _GetField(field, declaringDocumentationElement))
-                .AsReadOnlyCollection();
+                .ToReadOnlyList();
 
         private IReadOnlyCollection<ConstructorDeclaration> _GetConstructors(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
                 .GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .OrderBy(constructor => constructor.GetParameters().Length)
                 .Select(constructor => _GetConstructor(constructor, declaringDocumentationElement))
-                .AsReadOnlyCollection();
+                .ToReadOnlyList();
 
         private IReadOnlyCollection<EventDeclaration> _GetEvents(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
                 .GetEvents(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                .OrderBy(@event => @event.Name)
+                .OrderBy(@event => @event.Name, StringComparer.OrdinalIgnoreCase)
                 .Select(@event => _GetEvent(@event, declaringDocumentationElement))
-                .AsReadOnlyCollection();
+                .ToReadOnlyList();
 
         private IReadOnlyCollection<PropertyDeclaration> _GetProperties(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
                 .GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                .OrderBy(property => property.Name)
+                .OrderBy(property => property.Name, StringComparer.OrdinalIgnoreCase)
                 .ThenBy(property => property.GetIndexParameters().Length)
                 .Select(property => _GetProperty(property, declaringDocumentationElement))
-                .AsReadOnlyCollection();
+                .ToReadOnlyList();
 
         private IReadOnlyCollection<MethodDeclaration> _GetMethods(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
                 .GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                .OrderBy(method => method.Name)
-                .ThenBy(method => method.GetParameters().Length)
-                .ThenBy(method => method.GetGenericArguments().Length)
                 .Where(method => !method.IsSpecialName && !Attribute.IsDefined(method, typeof(CompilerGeneratedAttribute)))
+                .OrderBy(method => method.Name, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(method => method.GetParameters().Length)
                 .Select(method => _GetMethod(method, declaringDocumentationElement))
-                .AsReadOnlyCollection();
+                .ToReadOnlyList();
 
         private ConstantDeclaration _GetConstant(FieldInfo field, TypeDeclaration declaringType)
         {
@@ -450,7 +451,7 @@ namespace CodeMap.DeclarationNodes
                 Parameters = constructor
                     .GetParameters()
                     .Select(parameter => _GetParameter(parameter, memberDocumentation))
-                    .AsReadOnlyList(),
+                    .ToReadOnlyList(),
                 Summary = memberDocumentation.Summary,
                 Exceptions = _MapExceptions(memberDocumentation.Exceptions),
                 Remarks = memberDocumentation.Remarks,
@@ -467,11 +468,9 @@ namespace CodeMap.DeclarationNodes
             {
                 Name = declaringType.Name,
                 AccessModifier = AccessModifier.Public,
-                Attributes = Enumerable.Empty<AttributeData>().AsReadOnlyCollection(),
+                Attributes = Extensions.EmptyReadOnlyList<AttributeData>(),
                 DeclaringType = declaringType,
-                Parameters = Enumerable
-                    .Empty<ParameterData>()
-                    .AsReadOnlyList(),
+                Parameters = Extensions.EmptyReadOnlyList<ParameterData>(),
                 Summary = memberDocumentation.Summary,
                 Exceptions = _MapExceptions(memberDocumentation.Exceptions),
                 Remarks = memberDocumentation.Remarks,
@@ -532,7 +531,7 @@ namespace CodeMap.DeclarationNodes
                 Parameters = property
                     .GetIndexParameters()
                     .Select(parameter => _GetParameter(parameter, memberDocumentation))
-                    .AsReadOnlyList(),
+                    .ToReadOnlyList(),
                 DeclaringType = declaringType,
                 IsStatic = methodInfo.IsStatic,
                 IsAbstract = methodInfo.IsAbstract && !property.DeclaringType.IsInterface,
@@ -583,7 +582,7 @@ namespace CodeMap.DeclarationNodes
                 Parameters = method
                     .GetParameters()
                     .Select(parameter => _GetParameter(parameter, memberDocumentation))
-                    .AsReadOnlyList(),
+                    .ToReadOnlyList(),
                 Return = new MethodReturnData
                 {
                     Type = method.ReturnType == typeof(object) && method.ReturnParameter.GetCustomAttribute<DynamicAttribute>() != null
@@ -602,7 +601,7 @@ namespace CodeMap.DeclarationNodes
             methodDocumentationElement.GenericParameters = method
                 .GetGenericArguments()
                 .Select(typeGenericParameter => _GetMethodGenericParameter(typeGenericParameter, methodDocumentationElement, memberDocumentation))
-                .AsReadOnlyList();
+                .ToReadOnlyList();
 
             return methodDocumentationElement;
         }
@@ -717,7 +716,7 @@ namespace CodeMap.DeclarationNodes
                     .Length ?? 0
                 )
                 .Select(typeGenericParameter => _GetTypeGenericParameter(typeGenericParameter, declaringDocumentationElement, memberDocumentation))
-                .AsReadOnlyList();
+                .ToReadOnlyList();
 
         private GenericTypeParameterData _GetTypeGenericParameter(Type type, TypeDeclaration declaringType, MemberDocumentation memberDocumentation)
         {
@@ -767,10 +766,10 @@ namespace CodeMap.DeclarationNodes
                 type
                     .GetGenericParameterConstraints()
                     .Where(genericParameterTypeConstraint => genericParameterTypeConstraint != typeof(ValueType))
-                    .OrderBy(genericParameterTypeConstraint => genericParameterTypeConstraint.Namespace)
-                    .ThenBy(genericParameterTypeConstraint => genericParameterTypeConstraint.Name)
+                    .OrderBy(genericParameterTypeConstraint => genericParameterTypeConstraint.Namespace, StringComparer.OrdinalIgnoreCase)
+                    .ThenBy(genericParameterTypeConstraint => genericParameterTypeConstraint.Name, StringComparer.OrdinalIgnoreCase)
                     .Select(genericParameterTypeConstaint => _memberReferenceFactory.Create(genericParameterTypeConstaint))
-                    .AsReadOnlyList();
+                    .ToReadOnlyList();
 
             var memberDocumentation = _GetMemberDocumentationFor(type.DeclaringType);
             memberDocumentation.GenericParameters.TryGetValue(genericParameter.Name, out var description);
@@ -826,10 +825,10 @@ namespace CodeMap.DeclarationNodes
                                     Value = _GetAttributeValue(parameter.ParameterType, argument)
                                 }
                         )
-                        .ToList(),
+                        .ToReadOnlyList(),
                     customAttribute
                         .NamedArguments
-                        .OrderBy(argument => argument.MemberName)
+                        .OrderBy(argument => argument.MemberName, StringComparer.OrdinalIgnoreCase)
                         .Select(
                             namedArgument =>
                             {
@@ -844,10 +843,10 @@ namespace CodeMap.DeclarationNodes
                                 };
                             }
                         )
-                        .ToList()
+                        .ToReadOnlyList()
             )
         )
-        .ToList();
+        .ToReadOnlyList();
 
         private object _GetAttributeValue(Type type, CustomAttributeTypedArgument argument)
         {
@@ -865,7 +864,7 @@ namespace CodeMap.DeclarationNodes
 
         private object _GetAttributeValues(Type attributeParameterType, IEnumerable<CustomAttributeTypedArgument> values)
         {
-            var valuesCollection = values.AsReadOnlyList();
+            var valuesCollection = values.ToReadOnlyList();
             var result = Array.CreateInstance(
                 attributeParameterType.IsArray ? attributeParameterType.GetElementType() : attributeParameterType,
                 valuesCollection.Count
@@ -888,7 +887,7 @@ namespace CodeMap.DeclarationNodes
                     Type = (TypeReference)_memberReferenceFactory.Create(exceptionType),
                     Description = exception.Value
                 }
-        ).ToList();
+        ).ToReadOnlyList();
 
         private MemberDocumentation _GetMemberDocumentationFor(MemberInfo memberInfo)
             => _membersDocumentation.TryFind(_canonicalNameResolver.GetCanonicalNameFrom(memberInfo), out var memberDocumentation) ? memberDocumentation : _emptyMemberDocumentation;

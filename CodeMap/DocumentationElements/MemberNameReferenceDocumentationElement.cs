@@ -13,7 +13,7 @@ namespace CodeMap.DocumentationElements
                 throw new ArgumentException("Cannot be 'null', empty or white space.", nameof(canonicalName));
             CanonicalName = canonicalName;
 
-            XmlAttributes = xmlAttributes ?? new Dictionary<string, string>();
+            XmlAttributes = xmlAttributes ?? Extensions.EmptyDictionary<string, string>();
             if (XmlAttributes.Any(pair => pair.Value == null))
                 throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
         }

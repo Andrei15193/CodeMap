@@ -2839,7 +2839,7 @@ namespace CodeMap.Tests
         public static TInstance AssertCollectionMember<TInstance, TItem>(this TInstance instance, Func<IEnumerable<TItem>> selector, params Action<TItem>[] callbacks)
         {
             var items = selector();
-            var itemsList = items as IReadOnlyCollection<TItem> ?? items.ToList();
+            var itemsList = items.ToList();
             Assert.Equal(callbacks.Length, itemsList.Count);
             foreach (var (callback, item) in callbacks.Zip(itemsList, (callback, item) => (callback, item)))
                 callback(item);

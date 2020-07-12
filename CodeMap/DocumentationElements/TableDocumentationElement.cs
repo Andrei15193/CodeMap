@@ -15,19 +15,15 @@ namespace CodeMap.DocumentationElements
     {
         internal TableDocumentationElement(IEnumerable<TableColumnDocumentationElement> columns, IEnumerable<TableRowDocumentationElement> rows, IReadOnlyDictionary<string, string> xmlAttributes)
         {
-            var columnsList = columns as IReadOnlyList<TableColumnDocumentationElement>
-                ?? columns?.ToList()
-                ?? throw new ArgumentNullException(nameof(columns));
+            var columnsList = columns.ToReadOnlyList() ?? throw new ArgumentNullException(nameof(columns));
             if (columnsList.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' columns.", nameof(columns));
 
-            var rowsList = rows as IReadOnlyList<TableRowDocumentationElement>
-                ?? rows?.ToList()
-                ?? throw new ArgumentNullException(nameof(rows));
+            var rowsList = rows.ToReadOnlyList() ?? throw new ArgumentNullException(nameof(rows));
             if (rowsList.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' rows.", nameof(rows));
 
-            XmlAttributes = xmlAttributes ?? new Dictionary<string, string>();
+            XmlAttributes = xmlAttributes ?? Extensions.EmptyDictionary<string, string>();
             if (XmlAttributes.Any(pair => pair.Value == null))
                 throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
 
@@ -42,25 +38,22 @@ namespace CodeMap.DocumentationElements
                             actualColumnCount - columnsList.Count
                         )
                     )
-                    .ToList();
+                    .ToReadOnlyList();
             Rows = _EnsureRowCellsCount(rowsList, actualColumnCount);
         }
 
         internal TableDocumentationElement(IEnumerable<TableRowDocumentationElement> rows, IReadOnlyDictionary<string, string> xmlAttributes)
         {
-            var rowsList = rows as IReadOnlyList<TableRowDocumentationElement>
-                ?? rows?.ToList()
-                ?? throw new ArgumentNullException(nameof(rows));
+            var rowsList = rows.ToReadOnlyList() ?? throw new ArgumentNullException(nameof(rows));
             if (rowsList.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' rows.", nameof(rows));
 
-            XmlAttributes = xmlAttributes ?? new Dictionary<string, string>();
+            XmlAttributes = xmlAttributes ?? Extensions.EmptyDictionary<string, string>();
             if (XmlAttributes.Any(pair => pair.Value == null))
                 throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
 
             var actualColumnCount = rowsList.Max(row => (int?)row.Cells.Count) ?? 0;
-            Columns = Enumerable.Empty<TableColumnDocumentationElement>() as IReadOnlyList<TableColumnDocumentationElement>
-                ?? new List<TableColumnDocumentationElement>();
+            Columns = Extensions.EmptyReadOnlyList<TableColumnDocumentationElement>();
             Rows = _EnsureRowCellsCount(rowsList, actualColumnCount);
         }
 
@@ -76,7 +69,7 @@ namespace CodeMap.DocumentationElements
                             row.XmlAttributes
                         )
                 )
-                .ToList();
+                .ToReadOnlyList();
         }
 
         /// <summary>The columns of the table.</summary>

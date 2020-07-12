@@ -161,7 +161,7 @@ namespace CodeMap.DocumentationElements
             => memberDocumentationXmlElement
                 .Elements("example")
                 .Select(exampleXmlElement => DocumentationElement.Example(_ReadBlocks(exampleXmlElement), _ReadXmlAttributes(exampleXmlElement)))
-                .ToList();
+                .ToReadOnlyList();
 
         private ValueDocumentationElement _ReadValue(XElement memberDocumentationXmlElement)
         {
@@ -183,7 +183,7 @@ namespace CodeMap.DocumentationElements
                     : DocumentationElement.MemberReference(relatedMemberCrefAttribute.Value, _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
                 as MemberReferenceDocumentationElement
             )
-            .ToList();
+            .ToReadOnlyList();
 
         private static IReadOnlyDictionary<string, string> _ReadXmlAttributes(XElement xmlElement)
             => xmlElement
@@ -399,7 +399,7 @@ namespace CodeMap.DocumentationElements
                         _ReadXmlAttributes(rowXmlElement)
                     )
                 )
-                .ToList();
+                .ToReadOnlyList();
 
             var tableHeaderXmlElement = xmlElement.Element("listheader");
             if (tableHeaderXmlElement != null)

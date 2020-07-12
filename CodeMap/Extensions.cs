@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +8,42 @@ namespace CodeMap
 {
     internal static class Extensions
     {
+        private static class Cache<TItem>
+        {
+            public static readonly IReadOnlyList<TItem> Empty = Enumerable.Empty<TItem>() as IReadOnlyList<TItem> ?? Enumerable.Empty<TItem>().ToList();
+        }
+
+        private static class Cache<TKey, TValue>
+        {
+            public static readonly IReadOnlyDictionary<TKey, TValue> Empty = new Dictionary<TKey, TValue>();
+        }
+
+        public static IReadOnlyList<TItem> EmptyReadOnlyList<TItem>()
+            => Cache<TItem>.Empty;
+
+        public static IReadOnlyDictionary<TKey, TValue> EmptyDictionary<TKey, TValue>()
+            => Cache<TKey, TValue>.Empty;
+
+        public static IReadOnlyList<TItem> ToReadOnlyList<TItem>(this IEnumerable<TItem> items)
+        {
+            IReadOnlyList<TItem> result = null;
+
+            if (items != null)
+                using (var item = items.GetEnumerator())
+                    if (item.MoveNext())
+                    {
+                        var itemsList = new List<TItem>();
+                        do
+                            itemsList.Add(item.Current);
+                        while (item.MoveNext());
+                        result = itemsList;
+                    }
+                    else
+                        result = Cache<TItem>.Empty;
+
+            return result;
+        }
+
         public static string ToBase16String(this IEnumerable<byte> bytes)
         {
             if (bytes == null)
@@ -21,45 +56,6 @@ namespace CodeMap
                 result.Append(@byte.ToString("x2"));
             return result.ToString();
         }
-
-        public static IReadOnlyCollection<T> AsReadOnlyCollection<T>(this IEnumerable<T> collection)
-        {
-            if (collection == null)
-                return null;
-
-            if (collection is IReadOnlyCollection<T> readOnlyCollection)
-                return readOnlyCollection;
-
-            if (collection is ICollection<T> actualCollection)
-                return new ReadOnlyCollection<T>(actualCollection);
-
-            return collection.ToList();
-        }
-
-        public static IReadOnlyCollection<T> AsReadOnlyCollectionOrEmpty<T>(this IEnumerable<T> collection)
-            => collection.AsReadOnlyCollection()
-            ?? Enumerable.Empty<T>().AsReadOnlyCollection();
-
-        public static IReadOnlyList<T> AsReadOnlyList<T>(this IEnumerable<T> collection)
-        {
-            if (collection == null)
-                return null;
-
-            if (collection is IReadOnlyList<T> readOnlyList)
-                return readOnlyList;
-
-            if (collection is IList<T> list)
-                return new System.Collections.ObjectModel.ReadOnlyCollection<T>(list);
-
-            return collection.ToList();
-        }
-
-        public static IReadOnlyList<T> AsReadOnlyListOrEmpty<T>(this IEnumerable<T> collection)
-            => collection.AsReadOnlyList()
-            ?? Enumerable.Empty<T>().AsReadOnlyList();
-
-        public static IReadOnlyDictionary<TKey, TElement> OrEmpty<TKey, TElement>(this IReadOnlyDictionary<TKey, TElement> collection)
-            => collection ?? new Dictionary<TKey, TElement>();
 
         public static StringBuilder Join<T>(this StringBuilder stringBuilder, char separator, IEnumerable<T> values, Action<T> callback)
         {
@@ -110,37 +106,6 @@ namespace CodeMap
                     toVisit.Enqueue(nestedType);
                 yield return type;
             }
-        }
-
-        public static IEnumerable<Type> GetAllDefinedAndForwardedTypes(this Assembly assembly)
-        {
-            var toVisit = new Stack<Type>(assembly.GetForwardedTypes().Reverse().Concat(assembly.DefinedTypes.Reverse()));
-            while (toVisit.Count > 0)
-            {
-                var type = toVisit.Pop();
-                foreach (var nestedType in type.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Public))
-                    toVisit.Push(nestedType);
-                yield return type;
-            }
-        }
-
-        private sealed class ReadOnlyCollection<T> : IReadOnlyCollection<T>
-        {
-            private readonly ICollection<T> _collection;
-
-            public ReadOnlyCollection(ICollection<T> collection)
-            {
-                _collection = collection;
-            }
-
-            public int Count
-                => _collection.Count;
-
-            public IEnumerator<T> GetEnumerator()
-                => _collection.GetEnumerator();
-
-            IEnumerator IEnumerable.GetEnumerator()
-                => ((IEnumerable)_collection).GetEnumerator();
         }
     }
 }

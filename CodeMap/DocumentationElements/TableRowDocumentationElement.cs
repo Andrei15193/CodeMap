@@ -9,13 +9,11 @@ namespace CodeMap.DocumentationElements
     {
         internal TableRowDocumentationElement(IEnumerable<TableCellDocumentationElement> cells, IReadOnlyDictionary<string, string> xmlAttributes)
         {
-            Cells = cells as IReadOnlyList<TableCellDocumentationElement>
-                ?? cells?.ToList()
-                ?? throw new ArgumentNullException(nameof(cells));
+            Cells = cells.ToReadOnlyList() ?? throw new ArgumentNullException(nameof(cells));
             if (Cells.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' cells.", nameof(cells));
 
-            XmlAttributes = xmlAttributes ?? new Dictionary<string, string>();
+            XmlAttributes = xmlAttributes ?? Extensions.EmptyDictionary<string, string>();
             if (XmlAttributes.Any(pair => pair.Value == null))
                 throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
         }

@@ -12,13 +12,11 @@ namespace CodeMap.DocumentationElements
 
         internal BlockDescriptionDocumentationElement(IEnumerable<BlockDocumentationElement> blockElements, IReadOnlyDictionary<string, string> xmlAttributes)
         {
-            _blockElements = blockElements
-                .AsReadOnlyList()
-                ?? throw new ArgumentNullException(nameof(blockElements));
+            _blockElements = blockElements.ToReadOnlyList() ?? throw new ArgumentNullException(nameof(blockElements));
             if (_blockElements.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' elements.", nameof(blockElements));
 
-            XmlAttributes = xmlAttributes ?? new Dictionary<string, string>();
+            XmlAttributes = xmlAttributes ?? Extensions.EmptyDictionary<string, string>();
             if (XmlAttributes.Any(pair => pair.Value == null))
                 throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
         }

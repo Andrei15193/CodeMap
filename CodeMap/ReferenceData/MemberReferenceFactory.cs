@@ -59,9 +59,7 @@ namespace CodeMap.ReferenceData
             {
                 _dynamicTypeReference = new DynamicTypeReference
                 {
-                    GenericArguments = Enumerable
-                        .Empty<GenericTypeParameterReference>()
-                        .AsReadOnlyList()
+                    GenericArguments = CodeMap.Extensions.EmptyReadOnlyList<GenericTypeParameterReference>()
                 };
                 _InitializeTypeReference(typeof(object), _dynamicTypeReference);
             }
@@ -160,7 +158,7 @@ namespace CodeMap.ReferenceData
                         .GetCurrentGenericArguments()
                         .Select(Create)
                         .Cast<BaseTypeReference>()
-                        .AsReadOnlyList();
+                        .ToReadOnlyList();
                 }
             );
         }
@@ -264,7 +262,7 @@ namespace CodeMap.ReferenceData
                         .GetParameters()
                         .Select(parameter => Create(parameter.ParameterType))
                         .Cast<BaseTypeReference>()
-                        .AsReadOnlyList();
+                        .ToReadOnlyList();
                 }
             );
         }
@@ -296,7 +294,7 @@ namespace CodeMap.ReferenceData
                         .GetIndexParameters()
                         .Select(parameter => Create(parameter.ParameterType))
                         .Cast<BaseTypeReference>()
-                        .AsReadOnlyList();
+                        .ToReadOnlyList();
                 }
             );
         }
@@ -315,13 +313,13 @@ namespace CodeMap.ReferenceData
                         .GetGenericArguments()
                         .Select(Create)
                         .Cast<BaseTypeReference>()
-                        .AsReadOnlyList();
+                        .ToReadOnlyList();
                     methodReference.DeclaringType = (TypeReference)Create(methodInfo.DeclaringType);
                     methodReference.ParameterTypes = methodInfo
                         .GetParameters()
                         .Select(parameter => Create(parameter.ParameterType))
                         .Cast<BaseTypeReference>()
-                        .AsReadOnlyList();
+                        .ToReadOnlyList();
                 }
             );
         }

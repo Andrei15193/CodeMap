@@ -25,8 +25,7 @@ namespace CodeMap.DocumentationElements
         /// <exception cref="ArgumentException">Thrown when <paramref name="searchAssemblies"/> contains <c>null</c>.</exception>
         public CanonicalNameResolver(IEnumerable<Assembly> searchAssemblies)
         {
-            _searchAssemblies = searchAssemblies.AsReadOnlyCollection()
-                ?? throw new ArgumentNullException(nameof(searchAssemblies));
+            _searchAssemblies = searchAssemblies.ToReadOnlyList() ?? throw new ArgumentNullException(nameof(searchAssemblies));
             if (_searchAssemblies.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' assemblies.", nameof(searchAssemblies));
         }
@@ -85,7 +84,7 @@ namespace CodeMap.DocumentationElements
             {
                 case 't':
                 case 'T':
-                    return _TryFindType(memberFullName, Enumerable.Empty<Type>().AsReadOnlyList());
+                    return _TryFindType(memberFullName, Enumerable.Empty<Type>().ToReadOnlyList());
 
                 case 'f':
                 case 'F':
@@ -468,7 +467,7 @@ namespace CodeMap.DocumentationElements
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, Enumerable.Empty<Type>().AsReadOnlyList());
+            var declaringType = _TryFindType(declaringTypeFullName, Extensions.EmptyReadOnlyList<Type>());
             if (declaringType == null)
                 return null;
 
@@ -487,7 +486,7 @@ namespace CodeMap.DocumentationElements
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, Enumerable.Empty<Type>().AsReadOnlyList());
+            var declaringType = _TryFindType(declaringTypeFullName, Extensions.EmptyReadOnlyList<Type>());
             if (declaringType == null)
                 return null;
 
@@ -516,7 +515,7 @@ namespace CodeMap.DocumentationElements
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, Enumerable.Empty<Type>().AsReadOnlyList());
+            var declaringType = _TryFindType(declaringTypeFullName, Extensions.EmptyReadOnlyList<Type>());
             if (declaringType == null)
                 return null;
 
@@ -553,7 +552,7 @@ namespace CodeMap.DocumentationElements
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, Enumerable.Empty<Type>().AsReadOnlyList());
+            var declaringType = _TryFindType(declaringTypeFullName, Extensions.EmptyReadOnlyList<Type>());
             if (declaringType == null)
                 return null;
 
@@ -589,8 +588,7 @@ namespace CodeMap.DocumentationElements
             public TypeConstructionInfo(string typeDefinitionFullName, IEnumerable<string> genericArgumentsFullNames)
             {
                 TypeDefinitionFullName = typeDefinitionFullName;
-                GenericArgumentsFullNames = genericArgumentsFullNames
-                    .AsReadOnlyCollection();
+                GenericArgumentsFullNames = genericArgumentsFullNames.ToReadOnlyList();
             }
 
             public string TypeDefinitionFullName { get; }

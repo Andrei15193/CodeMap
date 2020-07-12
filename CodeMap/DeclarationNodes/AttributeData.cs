@@ -1,7 +1,7 @@
-﻿using CodeMap.ReferenceData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
@@ -16,13 +16,11 @@ namespace CodeMap.DeclarationNodes
         {
             Type = type;
 
-            PositionalParameters = positionalParameters.AsReadOnlyList()
-                ?? throw new ArgumentNullException(nameof(positionalParameters));
+            PositionalParameters = positionalParameters.ToReadOnlyList() ?? throw new ArgumentNullException(nameof(positionalParameters));
             if (PositionalParameters.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' parameters.", nameof(positionalParameters));
 
-            NamedParameters = namedParameters.AsReadOnlyList()
-                ?? throw new ArgumentNullException(nameof(namedParameters));
+            NamedParameters = namedParameters.ToReadOnlyList() ?? throw new ArgumentNullException(nameof(namedParameters));
             if (NamedParameters.Contains(null))
                 throw new ArgumentException("Cannot contain 'null' parameters.", nameof(namedParameters));
         }
