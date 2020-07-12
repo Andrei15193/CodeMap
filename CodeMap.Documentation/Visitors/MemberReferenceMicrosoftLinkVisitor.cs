@@ -9,7 +9,7 @@ namespace CodeMap.Documentation.Visitors
         private readonly StringBuilder _linkBuilder = new StringBuilder("https://docs.microsoft.com/dotnet/api/");
 
         public string Result
-            => _linkBuilder.Append("?view=netcore-3.1").ToString();
+            => _linkBuilder.Append("?view=netstandard-2.1").ToString();
 
         protected override void VisitArray(ArrayTypeReference array)
             => array.ItemType.Accept(this);
