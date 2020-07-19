@@ -6,6 +6,8 @@ namespace CodeMap.Tests.DeclarationNodes.Mocks
 {
     public class NamespaceDocumentationAdditionMock : NamespaceDocumentationAddition
     {
+        public bool Skip { get; set; }
+
         public SummaryDocumentationElement Summary { get; set; }
 
         public RemarksDocumentationElement Remarks { get; set; }
@@ -15,7 +17,7 @@ namespace CodeMap.Tests.DeclarationNodes.Mocks
         public IEnumerable<MemberReferenceDocumentationElement> RelatedMembers { get; set; }
 
         public override bool CanApply(NamespaceDeclaration namespaceDeclaration)
-            => true;
+            => !Skip;
 
         public override SummaryDocumentationElement GetSummary(NamespaceDeclaration namespaceDeclaration)
             => Summary;

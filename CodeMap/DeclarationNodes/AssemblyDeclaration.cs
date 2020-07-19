@@ -125,19 +125,10 @@ namespace CodeMap.DeclarationNodes
                 Remarks = addition.GetRemarks(this) ?? Remarks;
                 Examples = addition.GetExamples(this).ToReadOnlyList() ?? Examples;
                 RelatedMembers = addition.GetRelatedMembers(this).ToReadOnlyList() ?? RelatedMembers;
-                var namespaceAdditions = (addition.GetNamespaceAdditions(this) ?? Enumerable.Empty<NamespaceDocumentationAddition>()).ToReadOnlyList();
-                if (namespaceAdditions.Any())
+                var namespaceAdditions = addition.GetNamespaceAdditions(this).ToReadOnlyList();
+                if (namespaceAdditions != null && namespaceAdditions.Count > 0)
                     foreach (var @namespace in Namespaces)
-                    {
-                        var namespaceAddition = namespaceAdditions.FirstOrDefault(addition => addition.CanApply(@namespace));
-                        if (namespaceAddition != null)
-                        {
-                            @namespace.Summary = namespaceAddition.GetSummary(@namespace) ?? @namespace.Summary;
-                            @namespace.Remarks = namespaceAddition.GetRemarks(@namespace) ?? @namespace.Remarks;
-                            @namespace.Examples = namespaceAddition.GetExamples(@namespace).ToReadOnlyList() ?? @namespace.Examples;
-                            @namespace.RelatedMembers = namespaceAddition.GetRelatedMembers(@namespace).ToReadOnlyList() ?? @namespace.RelatedMembers;
-                        }
-                    }
+                        @namespace.Apply(namespaceAdditions);
             }
 
             return this;

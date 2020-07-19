@@ -11,7 +11,7 @@ using static System.Diagnostics.DebuggableAttribute;
 
 namespace CodeMap.Tests.DeclarationNodes
 {
-    public class AssemblyDeclarationNodeTests : DeclarationNodeTests<AssemblyDeclaration>
+    public class AssemblyDeclarationTests : DeclarationNodeTests<AssemblyDeclaration>
     {
         protected override bool DeclarationNodePredicate(AssemblyDeclaration assemblyDeclaration)
             => true;
@@ -185,7 +185,7 @@ namespace CodeMap.Tests.DeclarationNodes
             => Assert.Throws<ArgumentNullException>("additions", () => DeclarationNode.Apply(null));
 
         [Fact]
-        public void ApplySummaryAddition()
+        public void ApplySummaryDocumentationAddition()
         {
             var summary = DocumentationElement.Summary();
 
@@ -195,10 +195,13 @@ namespace CodeMap.Tests.DeclarationNodes
             );
 
             Assert.Same(summary, DeclarationNode.Summary);
+            Assert.Empty(DeclarationNode.Remarks.Content);
+            Assert.Empty(DeclarationNode.Examples);
+            Assert.Empty(DeclarationNode.RelatedMembers);
         }
 
         [Fact]
-        public void ApplyRemarksAddition()
+        public void ApplyRemarksDocumentationAddition()
         {
             var remarks = DocumentationElement.Remarks();
 
@@ -208,10 +211,13 @@ namespace CodeMap.Tests.DeclarationNodes
             );
 
             Assert.Same(remarks, DeclarationNode.Remarks);
+            Assert.Empty(DeclarationNode.Summary.Content);
+            Assert.Empty(DeclarationNode.Examples);
+            Assert.Empty(DeclarationNode.RelatedMembers);
         }
 
         [Fact]
-        public void ApplyExamplesAddition()
+        public void ApplyExamplesDocumentationAddition()
         {
             var examples = new[] { DocumentationElement.Example() };
 
@@ -221,10 +227,13 @@ namespace CodeMap.Tests.DeclarationNodes
             );
 
             Assert.Same(examples, DeclarationNode.Examples);
+            Assert.Empty(DeclarationNode.Summary.Content);
+            Assert.Empty(DeclarationNode.Remarks.Content);
+            Assert.Empty(DeclarationNode.RelatedMembers);
         }
 
         [Fact]
-        public void ApplyRelatedMembersAddition()
+        public void ApplyRelatedMembersDocumenationAddition()
         {
             var relatedMembers = new[] { DocumentationElement.MemberReference(typeof(object)) };
 
@@ -234,6 +243,47 @@ namespace CodeMap.Tests.DeclarationNodes
             );
 
             Assert.Same(relatedMembers, DeclarationNode.RelatedMembers);
+            Assert.Empty(DeclarationNode.Summary.Content);
+            Assert.Empty(DeclarationNode.Remarks.Content);
+            Assert.Empty(DeclarationNode.Examples);
+        }
+
+        [Fact]
+        public void ApplyNamespaceDocumentationAddition()
+        {
+            var summary = DocumentationElement.Summary();
+
+            DeclarationNode.Apply(
+                new AssemblyDocumentationAdditionMock
+                {
+                    Skip = true,
+                    NamespaceAdditions = new[]
+                    {
+                        new NamespaceDocumentationAdditionMock
+                        {
+                            Summary = DocumentationElement.Summary()
+                        }
+                    }
+                },
+                new AssemblyDocumentationAdditionMock
+                {
+                    NamespaceAdditions = new[]
+                    {
+                        new NamespaceDocumentationAdditionMock
+                        {
+                            Skip = true,
+                            Summary = DocumentationElement.Summary()
+                        },
+                        new NamespaceDocumentationAdditionMock
+                        {
+                            Summary = summary
+                        }
+                    }
+                }
+            );
+
+            foreach (var @namespace in DeclarationNode.Namespaces)
+                Assert.Same(summary, @namespace.Summary);
         }
 
         [Fact]

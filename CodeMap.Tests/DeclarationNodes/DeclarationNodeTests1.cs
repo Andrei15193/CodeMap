@@ -11,6 +11,7 @@ namespace CodeMap.Tests.DeclarationNodes
         where TDeclarationNode : DeclarationNode
     {
         private readonly Lazy<Assembly> _testDataAssembly;
+        private readonly Lazy<AssemblyDeclaration> _testDataAssemblyDeclaration;
         private readonly Lazy<TDeclarationNode> _declarationNode;
 
         protected DeclarationNodeTests()
@@ -24,18 +25,28 @@ namespace CodeMap.Tests.DeclarationNodes
                         .Select(Assembly.Load)
                 )
             );
-            _declarationNode = new Lazy<TDeclarationNode>(() => Assert.Single(_GetDeclarationNodes(TestDataAssembly).OfType<TDeclarationNode>(), DeclarationNodePredicate));
+            _testDataAssemblyDeclaration = new Lazy<AssemblyDeclaration>(() => CodeMap.DeclarationNodes.DeclarationNode.Create(TestDataAssembly));
+            _declarationNode = new Lazy<TDeclarationNode>(() => Assert.Single(_GetDeclarationNodes().OfType<TDeclarationNode>(), DeclarationNodePredicate));
         }
 
-        private static IEnumerable<DeclarationNode> _GetDeclarationNodes(Assembly assembly)
+        private IEnumerable<DeclarationNode> _GetDeclarationNodes()
         {
-            var assemblyDeclarationNode = CodeMap.DeclarationNodes.DeclarationNode.Create(assembly);
+            return _GetAssemblyDeclarations()
+                .AsEnumerable<DeclarationNode>()
+                .Concat(_GetNamespaceDeclarations());
 
-            yield return assemblyDeclarationNode;
+            IEnumerable<AssemblyDeclaration> _GetAssemblyDeclarations()
+                => Enumerable.Repeat(TestDataAssemblyDeclaration, 1);
+
+            IEnumerable<NamespaceDeclaration> _GetNamespaceDeclarations()
+                => _GetAssemblyDeclarations().SelectMany(assemblyDeclaration => assemblyDeclaration.Namespaces);
         }
 
         protected Assembly TestDataAssembly
             => _testDataAssembly.Value;
+
+        protected AssemblyDeclaration TestDataAssemblyDeclaration
+            => _testDataAssemblyDeclaration.Value;
 
         protected TDeclarationNode DeclarationNode
             => _declarationNode.Value;
