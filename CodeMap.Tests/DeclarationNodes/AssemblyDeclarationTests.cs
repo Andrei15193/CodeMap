@@ -55,9 +55,15 @@ namespace CodeMap.Tests.DeclarationNodes
         public void HasCultureSetToEmptyString()
             => Assert.Empty(DeclarationNode.Culture);
 
+#if DEBUG
         [Fact]
         public void HasPublicKeyTokenSetToEmptyString()
-            => Assert.NotNull(DeclarationNode.PublicKeyToken);
+            => Assert.Empty(DeclarationNode.PublicKeyToken);
+#else
+        [Fact]
+        public void HasPublicKeyTokenSet()
+            => Assert.Equal("4919ac5af74d53e8", DeclarationNode.PublicKeyToken);
+#endif
 
         [Fact]
         public void HasVersionSet()

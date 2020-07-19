@@ -130,7 +130,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore -property:SignAssembly=True -property:AssemblyOriginatorKeyFile=../CodeMap.snk
 
     - name: Test
       run: dotnet test --configuration Release --no-restore --verbosity normal
