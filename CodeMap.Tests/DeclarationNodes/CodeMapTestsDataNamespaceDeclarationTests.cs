@@ -2,19 +2,20 @@
 using System.Linq;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
+using CodeMap.Tests.Data;
 using CodeMap.Tests.DeclarationNodes.Mocks;
 using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes
 {
-    public class GlobalNamespaceDeclarationTests : DeclarationNodeTests<GlobalNamespaceDeclaration>
+    public class CodeMapTestsDataNamespaceDeclarationTests : DeclarationNodeTests<NamespaceDeclaration>
     {
-        protected override bool DeclarationNodePredicate(GlobalNamespaceDeclaration globalNamespaceDeclaration)
-            => true;
+        protected override bool DeclarationNodePredicate(NamespaceDeclaration namespaceDeclaration)
+            => !(namespaceDeclaration is GlobalNamespaceDeclaration);
 
         [Fact]
         public void HasNameSet()
-            => Assert.Empty(DeclarationNode.Name);
+            => Assert.Equal("CodeMap.Tests.Data", DeclarationNode.Name);
 
         [Fact]
         public void HasAssemblySet()
@@ -29,27 +30,87 @@ namespace CodeMap.Tests.DeclarationNodes
 
         [Fact]
         public void HasEnumsSet()
-            => Assert.Empty(DeclarationNode.Enums);
+            => Assert.Single(DeclarationNode.Enums);
+
+        [Fact]
+        public void HasTestEnum()
+            => Assert.Single(DeclarationNode.Enums, @enum => @enum == typeof(TestEnum));
 
         [Fact]
         public void HasDelegatesSet()
-            => Assert.Empty(DeclarationNode.Delegates);
+            => Assert.Single(DeclarationNode.Delegates);
+
+        [Fact]
+        public void HasTestDelegate()
+            => Assert.Single(DeclarationNode.Delegates, @delegate => @delegate == typeof(TestDelegate<>));
 
         [Fact]
         public void HasInterfacesSet()
-            => Assert.Empty(DeclarationNode.Interfaces);
+            => Assert.Equal(6, DeclarationNode.Interfaces.Count);
+
+        [Fact]
+        public void HasITestBaseInterface()
+            => Assert.Single(DeclarationNode.Interfaces, @interface => @interface == typeof(ITestBaseInterface));
+
+        [Fact]
+        public void HasITestDocumentation()
+            => Assert.Single(DeclarationNode.Interfaces, @interface => @interface == typeof(ITestDocumentation));
+
+        [Fact]
+        public void HasITestExplicitInterface()
+            => Assert.Single(DeclarationNode.Interfaces, @interface => @interface == typeof(ITestExplicitInterface));
+
+        [Fact]
+        public void HasITestExtendedBaseInterface()
+            => Assert.Single(DeclarationNode.Interfaces, @interface => @interface == typeof(ITestExtendedBaseInterface));
+
+        [Fact]
+        public void HasITestGenericParameterInterface()
+            => Assert.Single(DeclarationNode.Interfaces, @interface => @interface == typeof(ITestGenericParameter<,,,,,>));
+
+        [Fact]
+        public void HasITestInterface()
+            => Assert.Single(DeclarationNode.Interfaces, @interface => @interface == typeof(ITestInterface<>));
 
         [Fact]
         public void HasClassesSet()
-            => Assert.Single(DeclarationNode.Classes);
+            => Assert.Equal(7, DeclarationNode.Classes.Count);
 
         [Fact]
-        public void HasGlobalTestClass()
-            => Assert.Single(DeclarationNode.Classes, @class => @class == typeof(GlobalTestClass));
+        public void HasTestAbstractClass()
+            => Assert.Single(DeclarationNode.Classes, @class => @class == typeof(TestAbstractClass));
+
+        [Fact]
+        public void HasTestAttributeClass()
+            => Assert.Single(DeclarationNode.Classes, @class => @class == typeof(TestAttribute));
+
+        [Fact]
+        public void HasTestBaseClass()
+            => Assert.Single(DeclarationNode.Classes, @class => @class == typeof(TestBaseClass));
+
+        [Fact]
+        public void HasTestClass()
+            => Assert.Single(DeclarationNode.Classes, @class => @class == typeof(TestClass<>));
+
+        [Fact]
+        public void HasTestExplicitClass()
+            => Assert.Single(DeclarationNode.Classes, @class => @class == typeof(TestExplicitClass));
+
+        [Fact]
+        public void HasTestSealedClass()
+            => Assert.Single(DeclarationNode.Classes, @class => @class == typeof(TestSealedClass));
+
+        [Fact]
+        public void HasTestStaticClass()
+            => Assert.Single(DeclarationNode.Classes, @class => @class == typeof(TestStaticClass));
 
         [Fact]
         public void HasStructsSet()
-            => Assert.Empty(DeclarationNode.Structs);
+            => Assert.Single(DeclarationNode.Structs);
+
+        [Fact]
+        public void HasTestStruct()
+            => Assert.Single(DeclarationNode.Structs, @struct => @struct == typeof(TestStruct<>));
 
         [Fact]
         public void HasEmptySummary()
