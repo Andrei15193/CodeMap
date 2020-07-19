@@ -1,12 +1,12 @@
-﻿using CodeMap.ReferenceData;
-using CodeMap.Tests.Data;
-using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using CodeMap.ReferenceData;
+using CodeMap.Tests.Data;
+using Moq;
 using Xunit;
 
 namespace CodeMap.Tests.ReferenceData
@@ -406,7 +406,11 @@ namespace CodeMap.Tests.ReferenceData
             Assert.Equal("CodeMap.Tests.Data", assemblyReference.Name);
             Assert.Equal(new Version(1, 2, 3, 4), assemblyReference.Version);
             Assert.Empty(assemblyReference.Culture);
+#if DEBUG
             Assert.Empty(assemblyReference.PublicKeyToken);
+#else
+            Assert.Equal("4919ac5af74d53e8", assemblyReference.PublicKeyToken);
+#endif
         }
 
         [Fact]
@@ -423,7 +427,11 @@ namespace CodeMap.Tests.ReferenceData
             Assert.Equal("CodeMap.Tests.Data", assemblyReference.Name);
             Assert.Equal(new Version(1, 2, 3, 4), assemblyReference.Version);
             Assert.Empty(assemblyReference.Culture);
+#if DEBUG
             Assert.Empty(assemblyReference.PublicKeyToken);
+#else
+            Assert.Equal("4919ac5af74d53e8", assemblyReference.PublicKeyToken);
+#endif
         }
 
         [Fact]
