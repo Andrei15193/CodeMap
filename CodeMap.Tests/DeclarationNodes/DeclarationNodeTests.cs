@@ -935,7 +935,7 @@ namespace CodeMap.Tests.DeclarationNodes
                 .AssertEqual(() => assemblyDocumentationElement.Culture, string.Empty)
                 .AssertEqual(
                     () => assemblyDocumentationElement.PublicKeyToken,
-                    string.Join(string.Empty, _TestDataAssembly.GetName().GetPublicKeyToken().Select(@byte => @byte.ToString("X2")))
+                    string.Join(string.Empty, _TestDataAssembly.GetName().GetPublicKeyToken().Select(@byte => @byte.ToString("x2")))
                 )
                 .AssertCollectionMember(
                     () => assemblyDocumentationElement.Dependencies,
