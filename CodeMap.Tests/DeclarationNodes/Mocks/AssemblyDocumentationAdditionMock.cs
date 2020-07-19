@@ -2,10 +2,12 @@
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 
-namespace CodeMap.Tests.DeclarationNodes
+namespace CodeMap.Tests.DeclarationNodes.Mocks
 {
     public class AssemblyDocumentationAdditionMock : AssemblyDocumentationAddition
     {
+        public bool Skip { get; set; }
+
         public SummaryDocumentationElement Summary { get; set; }
 
         public RemarksDocumentationElement Remarks { get; set; }
@@ -17,7 +19,7 @@ namespace CodeMap.Tests.DeclarationNodes
         public IEnumerable<NamespaceDocumentationAddition> NamespaceAdditions { get; set; }
 
         public override bool CanApply(AssemblyDeclaration assemblyDeclaration)
-            => true;
+            => !Skip;
 
         public override SummaryDocumentationElement GetSummary(AssemblyDeclaration assemblyDeclaration)
             => Summary;

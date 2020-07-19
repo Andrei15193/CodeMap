@@ -106,6 +106,7 @@ namespace CodeMap.DeclarationNodes
         /// <summary>Applies the first applicable <see cref="AssemblyDocumentationAddition"/> from the provided <paramref name="additions"/>.</summary>
         /// <param name="additions">The <see cref="AssemblyDocumentationAddition"/>s to look through.</param>
         /// <returns>Returns the current <see cref="AssemblyDeclaration"/> instance.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="additions"/> is <c>null</c>.</exception>
         /// <remarks>
         /// It is possible to have multiple <see cref="AssemblyDocumentationAddition"/>s when working with large libraries. There may
         /// be one <see cref="AssemblyDocumentationAddition"/> for each major version. By providing them as a list it is easier to
@@ -163,13 +164,13 @@ namespace CodeMap.DeclarationNodes
         /// <param name="assembly">The <see cref="Assembly"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="AssemblyDeclaration"/> references the provided <paramref name="assembly"/>; <c>false</c> otherwise.</returns>
         public bool Equals(Assembly assembly)
-            => Equals(assembly?.GetName());
+            => assembly != null && Equals(assembly.GetName());
 
         /// <summary>Determines whether the current <see cref="AssemblyDeclaration"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
         /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="AssemblyDeclaration"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
         public bool Equals(AssemblyName assemblyName)
-            => !(assemblyName is null)
+            => assemblyName != null
             && string.Equals(Name, assemblyName.Name, StringComparison.OrdinalIgnoreCase)
             && Version == assemblyName.Version
             && string.Equals(Culture, assemblyName.CultureName, StringComparison.OrdinalIgnoreCase)
@@ -199,7 +200,7 @@ namespace CodeMap.DeclarationNodes
             => new
             {
                 Name = Name.ToLowerInvariant(),
-                Version = $"{Version.Major}.{Version.Minor}.{Version.Build}.{Version.Revision}",
+                VersionHashCode = Version.GetHashCode(),
                 Culture = Culture.ToLowerInvariant(),
                 PublicKeyToken = PublicKeyToken.ToLowerInvariant()
             }.GetHashCode();

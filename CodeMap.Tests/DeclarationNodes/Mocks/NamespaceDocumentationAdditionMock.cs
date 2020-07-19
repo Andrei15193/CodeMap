@@ -2,7 +2,7 @@
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 
-namespace CodeMap.Tests.DeclarationNodes
+namespace CodeMap.Tests.DeclarationNodes.Mocks
 {
     public class NamespaceDocumentationAdditionMock : NamespaceDocumentationAddition
     {

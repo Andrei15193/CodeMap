@@ -10,6 +10,7 @@ using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 using CodeMap.ReferenceData;
 using CodeMap.Tests.Data;
+using CodeMap.Tests.DeclarationNodes.Mocks;
 using CodeMap.Tests.DocumentationElements;
 using Moq;
 using Xunit;
