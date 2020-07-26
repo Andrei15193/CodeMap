@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
-#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using CodeMap.DocumentationElements;
@@ -17,19 +15,19 @@ namespace CodeMap.DeclarationNodes
         public static bool operator ==(MemberDeclaration memberDeclaration, MemberInfo memberInfo)
             => Equals(memberDeclaration, memberInfo);
 
-        /// <summary>Determines whether the provided <paramref name="memberDeclaration"/> and <paramref name="memberInfo"/> are not equal.</summary>
-        /// <param name="memberDeclaration">The <see cref="MemberDeclaration"/> to compare.</param>
-        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
-        public static bool operator !=(MemberDeclaration memberDeclaration, MemberInfo memberInfo)
-            => !Equals(memberDeclaration, memberInfo);
-
         /// <summary>Determines whether the provided <paramref name="memberDeclaration"/> and <paramref name="memberInfo"/> are equal.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
         /// <param name="memberDeclaration">The <see cref="MemberDeclaration"/> to compare.</param>
         /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
         public static bool operator ==(MemberInfo memberInfo, MemberDeclaration memberDeclaration)
             => Equals(memberDeclaration, memberInfo);
+
+        /// <summary>Determines whether the provided <paramref name="memberDeclaration"/> and <paramref name="memberInfo"/> are not equal.</summary>
+        /// <param name="memberDeclaration">The <see cref="MemberDeclaration"/> to compare.</param>
+        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
+        public static bool operator !=(MemberDeclaration memberDeclaration, MemberInfo memberInfo)
+            => !Equals(memberDeclaration, memberInfo);
 
         /// <summary>Determines whether the provided <paramref name="memberDeclaration"/> and <paramref name="memberInfo"/> are not equal.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
@@ -82,7 +80,12 @@ namespace CodeMap.DeclarationNodes
         /// determining whether the current instance actually maps to the provided <see cref="MemberInfo"/>. Otherwise the equality is determined
         /// by comparing references.
         /// </remarks>
-        public sealed override bool Equals(object obj)
+        public override bool Equals(object obj)
             => obj is MemberInfo memberInfo ? Equals(memberInfo) : base.Equals(obj);
+
+        /// <summary>Calculates the has code for the current <see cref="MemberDeclaration"/>.</summary>
+        /// <returns>Returns a hash code for the current instance.</returns>
+        public override int GetHashCode()
+            => base.GetHashCode();
     }
 }

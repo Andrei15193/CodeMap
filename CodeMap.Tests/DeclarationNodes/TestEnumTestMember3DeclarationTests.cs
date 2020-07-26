@@ -1,4 +1,6 @@
-﻿using CodeMap.DeclarationNodes;
+﻿using System;
+using System.Reflection;
+using CodeMap.DeclarationNodes;
 using CodeMap.Tests.Data;
 using Xunit;
 
@@ -8,6 +10,22 @@ namespace CodeMap.Tests.DeclarationNodes
     {
         protected override bool DeclarationNodePredicate(ConstantDeclaration constantDeclaration)
             => constantDeclaration.Name == nameof(TestEnum.TestMember3);
+
+        [Fact]
+        public void MemberEqualityComparison()
+        {
+            var fieldInfo = typeof(TestEnum).GetRuntimeField(nameof(TestEnum.TestMember3));
+            Assert.True(DeclarationNode.Equals(fieldInfo));
+            Assert.True(DeclarationNode.Equals(fieldInfo as object));
+            Assert.True(fieldInfo == DeclarationNode);
+            Assert.True(DeclarationNode == fieldInfo);
+
+            var toStringMember = typeof(object).GetRuntimeMethod(nameof(object.ToString), Type.EmptyTypes);
+            Assert.False(DeclarationNode.Equals(toStringMember));
+            Assert.False(DeclarationNode.Equals(toStringMember as object));
+            Assert.True(toStringMember != DeclarationNode);
+            Assert.True(DeclarationNode != toStringMember);
+        }
 
         [Fact]
         public void HasNameSet()
