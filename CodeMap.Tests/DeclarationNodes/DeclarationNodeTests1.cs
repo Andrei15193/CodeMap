@@ -33,13 +33,21 @@ namespace CodeMap.Tests.DeclarationNodes
         {
             return _GetAssemblyDeclarations()
                 .AsEnumerable<DeclarationNode>()
-                .Concat(_GetNamespaceDeclarations());
+                .Concat(_GetNamespaceDeclarations())
+                .Concat(_GetTypeDeclarations())
+                .Concat(_GetEnumMemberDeclarations());
 
             IEnumerable<AssemblyDeclaration> _GetAssemblyDeclarations()
                 => Enumerable.Repeat(TestDataAssemblyDeclaration, 1);
 
             IEnumerable<NamespaceDeclaration> _GetNamespaceDeclarations()
                 => _GetAssemblyDeclarations().SelectMany(assemblyDeclaration => assemblyDeclaration.Namespaces);
+
+            IEnumerable<TypeDeclaration> _GetTypeDeclarations()
+                => _GetNamespaceDeclarations().SelectMany(namespaceDeclaration => namespaceDeclaration.DeclaredTypes);
+
+            IEnumerable<MemberDeclaration> _GetEnumMemberDeclarations()
+                => _GetNamespaceDeclarations().SelectMany(namespaceDeclaration => namespaceDeclaration.Enums.SelectMany(enumDeclaration => enumDeclaration.Members));
         }
 
         protected Assembly TestDataAssembly
@@ -78,6 +86,65 @@ namespace CodeMap.Tests.DeclarationNodes
                 Assert.Equal(expectedParameter.Name, actualParameter.Name);
                 Assert.Equal(expectedParameter.Value, actualParameter.Value);
                 Assert.True(expectedParameter.Type == actualParameter.Type, $"Expected {expectedParameter.Type}.");
+            }
+        }
+
+        protected sealed class DeclarationNodeVisitorMock : DeclarationNodeVisitor
+        {
+            private readonly TDeclarationNode _expectedDeclarationNode;
+
+            public DeclarationNodeVisitorMock(TDeclarationNode declarationNode)
+                => _expectedDeclarationNode = declarationNode;
+
+            public int VisitCount { get; private set; }
+
+            protected override void VisitAssembly(AssemblyDeclaration assembly)
+                => _InvokeCallback(assembly);
+
+            protected override void VisitNamespace(NamespaceDeclaration @namespace)
+                => _InvokeCallback(@namespace);
+
+            protected override void VisitEnum(EnumDeclaration @enum)
+                => _InvokeCallback(@enum);
+
+            protected override void VisitDelegate(DelegateDeclaration @delegate)
+                => _InvokeCallback(@delegate);
+
+            protected override void VisitInterface(InterfaceDeclaration @interface)
+                => _InvokeCallback(@interface);
+
+            protected override void VisitClass(ClassDeclaration @class)
+                => _InvokeCallback(@class);
+
+            protected override void VisitStruct(StructDeclaration @struct)
+                => _InvokeCallback(@struct);
+
+            protected override void VisitConstant(ConstantDeclaration constant)
+                => _InvokeCallback(constant);
+
+            protected override void VisitField(FieldDeclaration field)
+                => _InvokeCallback(field);
+
+            protected override void VisitConstructor(ConstructorDeclaration constructor)
+                => _InvokeCallback(constructor);
+
+            protected override void VisitEvent(EventDeclaration @event)
+                => _InvokeCallback(@event);
+
+            protected override void VisitProperty(PropertyDeclaration property)
+                => _InvokeCallback(property);
+
+            protected override void VisitMethod(MethodDeclaration method)
+                => _InvokeCallback(method);
+
+            private void _InvokeCallback<TVisitedDeclarationNode>(TVisitedDeclarationNode actualDeclarationNode)
+                where TVisitedDeclarationNode : DeclarationNode
+            {
+                if (!typeof(TVisitedDeclarationNode).IsAssignableFrom(typeof(TDeclarationNode)))
+                    throw new NotImplementedException();
+
+                VisitCount++;
+                Assert.Same(_expectedDeclarationNode, actualDeclarationNode);
             }
         }
     }

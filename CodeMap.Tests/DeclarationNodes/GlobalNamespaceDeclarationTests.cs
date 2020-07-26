@@ -52,6 +52,10 @@ namespace CodeMap.Tests.DeclarationNodes
             => Assert.Empty(DeclarationNode.Structs);
 
         [Fact]
+        public void HasCircularReferenceSet()
+            => Assert.Single(DeclarationNode.Assembly.Namespaces, @namespace => ReferenceEquals(@namespace, DeclarationNode));
+
+        [Fact]
         public void HasEmptySummary()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
@@ -138,63 +142,11 @@ namespace CodeMap.Tests.DeclarationNodes
         [Fact]
         public void AcceptVisitor()
         {
-            var invocationCount = 0;
-            var visitor = new DeclarationNodeVisitorMock
-            {
-                VisitCallback = namespaceDeclaration =>
-                {
-                    Assert.Same(DeclarationNode, namespaceDeclaration);
-                    invocationCount++;
-                }
-            };
+            var visitor = new DeclarationNodeVisitorMock(DeclarationNode);
 
             DeclarationNode.Accept(visitor);
 
-            Assert.Equal(1, invocationCount);
-        }
-
-        private sealed class DeclarationNodeVisitorMock : DeclarationNodeVisitor
-        {
-            public Action<NamespaceDeclaration> VisitCallback { get; set; }
-
-            protected override void VisitNamespace(NamespaceDeclaration @namespace)
-                => VisitCallback(@namespace);
-
-            protected override void VisitAssembly(AssemblyDeclaration assembly)
-                => throw new NotImplementedException();
-
-            protected override void VisitClass(ClassDeclaration @class)
-                => throw new NotImplementedException();
-
-            protected override void VisitConstant(ConstantDeclaration constant)
-                => throw new NotImplementedException();
-
-            protected override void VisitConstructor(ConstructorDeclaration constructor)
-                => throw new NotImplementedException();
-
-            protected override void VisitDelegate(DelegateDeclaration @delegate)
-                => throw new NotImplementedException();
-
-            protected override void VisitEnum(EnumDeclaration @enum)
-                => throw new NotImplementedException();
-
-            protected override void VisitEvent(EventDeclaration @event)
-                => throw new NotImplementedException();
-
-            protected override void VisitField(FieldDeclaration field)
-                => throw new NotImplementedException();
-
-            protected override void VisitInterface(InterfaceDeclaration @interface)
-                => throw new NotImplementedException();
-
-            protected override void VisitMethod(MethodDeclaration method)
-                => throw new NotImplementedException();
-
-            protected override void VisitProperty(PropertyDeclaration property)
-                => throw new NotImplementedException();
-
-            protected override void VisitStruct(StructDeclaration @struct)
-                => throw new NotImplementedException();
+            Assert.Equal(1, visitor.VisitCount);
         }
     }
 }
