@@ -1,4 +1,11 @@
-﻿using System;
+﻿using CodeMap.DeclarationNodes;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
+using CodeMap.Tests.Data;
+using CodeMap.Tests.DeclarationNodes.Mocks;
+using CodeMap.Tests.DocumentationElements;
+using Moq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,13 +13,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
-using CodeMap.DeclarationNodes;
-using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
-using CodeMap.Tests.Data;
-using CodeMap.Tests.DeclarationNodes.Mocks;
-using CodeMap.Tests.DocumentationElements;
-using Moq;
 using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes
@@ -117,61 +117,6 @@ namespace CodeMap.Tests.DeclarationNodes
                         )
                 )
                 .AssertDocumentation(enumDocumentation);
-        }
-
-        [Fact]
-        public void CreateDelegateDocumentationElement()
-        {
-            var delegateType = typeof(TestDelegate<>);
-            var genericParameterType = delegateType.GetGenericArguments().Single();
-            var typeDocumentationElement = DeclarationNode.Create(delegateType);
-
-            typeDocumentationElement
-                .AssertEqual(() => typeDocumentationElement.Name, "TestDelegate")
-                .AssertEqual(() => typeDocumentationElement.Namespace.Name, "CodeMap.Tests.Data")
-                .AssertAssembly(() => typeDocumentationElement.Assembly, typeof(TestDelegate<>).Assembly)
-                .AssertSame(() => typeDocumentationElement.Assembly, typeDocumentationElement.Namespace.Assembly)
-                .AssertEqual(() => typeDocumentationElement.AccessModifier, AccessModifier.Public)
-                .AssertNull(() => typeDocumentationElement.DeclaringType)
-                .AssertCollectionMember(
-                    () => typeDocumentationElement.Attributes,
-                    attribute => attribute.AssertTestAttribute("delegate")
-                )
-                .AssertIs<DelegateDeclaration>(
-                    delegateDocumentationElement => delegateDocumentationElement
-                        .AssertTypeReference(() => delegateDocumentationElement.Return.Type, typeof(void))
-                        .AssertMember(
-                            () => delegateDocumentationElement.Return.Type,
-                            returnType => returnType.AssertIs<VoidTypeReference>()
-                        )
-                        .AssertCollectionMember(
-                            () => delegateDocumentationElement.Return.Attributes,
-                            attribute => attribute.AssertTestAttribute("delegate return")
-                        )
-                        .AssertTypeGenericParameters(() => delegateDocumentationElement.GenericParameters)
-                )
-                .AssertDelegateParameters(genericParameterType)
-                .AssertNoDocumentation();
-        }
-
-        [Fact]
-        public void CreateDelegateDocumentationElementDocumentation()
-        {
-            var memberDocumentation = _CreateMemberDocumentationMock("T:CodeMap.Tests.Data.TestDelegate`1");
-            var membersDocumentation = new MemberDocumentationCollection(
-                new[]
-                {
-                        memberDocumentation
-                }
-            );
-
-            var delegateType = typeof(TestDelegate<>);
-            var typeDocumentationElement = DeclarationNode.Create(delegateType, membersDocumentation);
-
-            typeDocumentationElement
-                .AssertEqual(() => typeDocumentationElement.Name, "TestDelegate")
-                .AssertIs<DelegateDeclaration>()
-                .AssertDocumentation(memberDocumentation);
         }
 
         [Fact]
