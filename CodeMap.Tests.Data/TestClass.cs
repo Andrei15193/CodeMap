@@ -128,6 +128,15 @@ namespace CodeMap.Tests.Data
         }
 
         /// <summary/>
+        public string TestReadOnlyProperty { get; }
+
+        /// <summary/>
+        public string TestWriteOnlyProperty { set { } }
+
+        /// <summary/>
+        public string TestPublicReadPrivateWriteProperty { get; private set; }
+
+        /// <summary/>
         public new int ClassShadowedTestMethod()
             => default;
 
