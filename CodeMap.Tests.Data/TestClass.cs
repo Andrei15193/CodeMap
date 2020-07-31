@@ -36,7 +36,7 @@ namespace CodeMap.Tests.Data
 
         /// <summary/>
         [Test("class field test 1", Value2 = "class field test 2", Value3 = "class field test 3")]
-        private byte TestField;
+        protected private byte TestField;
 
         /// <summary/>
         private readonly char ReadonlyTestField;
@@ -136,7 +136,7 @@ namespace CodeMap.Tests.Data
             => default;
 
         /// <summary/>
-        public sealed override bool VirtualTestMethod()
+        protected internal sealed override bool VirtualTestMethod()
             => default;
 
         /// <summary/>

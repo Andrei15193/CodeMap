@@ -43,7 +43,7 @@ namespace CodeMap.Tests.Data
         public abstract string AbstractTestMethod();
 
         /// <summary/>
-        public virtual bool VirtualTestMethod()
+        protected internal virtual bool VirtualTestMethod()
             => default;
     }
 }
