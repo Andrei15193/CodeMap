@@ -1,7 +1,7 @@
-﻿using System;
-using System.Reflection;
-using CodeMap.DeclarationNodes;
+﻿using CodeMap.DeclarationNodes;
 using CodeMap.Tests.Data;
+using System;
+using System.Reflection;
 using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes

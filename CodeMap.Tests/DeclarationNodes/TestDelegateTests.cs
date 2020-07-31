@@ -98,6 +98,10 @@ namespace CodeMap.Tests.DeclarationNodes
             => Assert.Empty(DeclarationNode.Return.Description);
 
         [Fact]
+        public void HasEmptyExceptions()
+            => Assert.Empty(DeclarationNode.Exceptions);
+
+        [Fact]
         public void AcceptVisitor()
         {
             var visitor = new DeclarationNodeVisitorMock(DeclarationNode);
