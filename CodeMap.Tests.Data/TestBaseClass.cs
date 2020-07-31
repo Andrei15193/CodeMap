@@ -44,6 +44,6 @@ namespace CodeMap.Tests.Data
 
         /// <summary/>
         public virtual bool VirtualTestMethod()
-            => default(bool);
+            => default;
     }
 }
