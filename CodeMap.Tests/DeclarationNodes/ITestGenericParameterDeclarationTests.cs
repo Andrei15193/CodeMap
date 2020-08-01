@@ -1,33 +1,32 @@
 ﻿using CodeMap.DeclarationNodes;
 using CodeMap.Tests.Data;
-using System.Linq;
 using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes
 {
-    public class ITestBaseInterfaceDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>
+    public class ITestGenericParameterDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>
     {
         protected override bool DeclarationNodePredicate(InterfaceDeclaration interfaceDeclaration)
-            => interfaceDeclaration.Name == nameof(ITestBaseInterface);
+            => interfaceDeclaration.Name == nameof(ITestGenericParameter<int, string, int, int, int, int>);
 
         [Fact]
         public void TypeEqualityComparison()
         {
-            Assert.True(DeclarationNode.Equals(typeof(ITestBaseInterface)));
-            Assert.True(DeclarationNode.Equals(typeof(ITestBaseInterface) as object));
-            Assert.True(typeof(ITestBaseInterface) == DeclarationNode);
-            Assert.True(DeclarationNode == typeof(ITestBaseInterface));
+            Assert.True(DeclarationNode.Equals(typeof(ITestGenericParameter<,,,,,>)));
+            Assert.True(DeclarationNode.Equals(typeof(ITestGenericParameter<,,,,,>) as object));
+            Assert.True(typeof(ITestGenericParameter<,,,,,>) == DeclarationNode);
+            Assert.True(DeclarationNode == typeof(ITestGenericParameter<,,,,,>));
 
-            var objectType = typeof(object);
-            Assert.False(DeclarationNode.Equals(objectType));
-            Assert.False(DeclarationNode.Equals(objectType as object));
-            Assert.True(objectType != DeclarationNode);
-            Assert.True(DeclarationNode != objectType);
+            var constructedGenericType = typeof(ITestGenericParameter<int, string, int, int, int, int>);
+            Assert.False(DeclarationNode.Equals(constructedGenericType));
+            Assert.False(DeclarationNode.Equals(constructedGenericType as object));
+            Assert.True(constructedGenericType != DeclarationNode);
+            Assert.True(DeclarationNode != constructedGenericType);
         }
 
         [Fact]
         public void HasNameSet()
-            => Assert.Equal("ITestBaseInterface", DeclarationNode.Name);
+            => Assert.Equal("ITestGenericParameter", DeclarationNode.Name);
 
         [Fact]
         public void HasAssemblySet()
@@ -46,31 +45,28 @@ namespace CodeMap.Tests.DeclarationNodes
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
-        public void HasNoGenericParameters()
-            => Assert.Empty(DeclarationNode.GenericParameters);
+        public void HasGenericParametersSet()
+            => Assert.Equal(6, DeclarationNode.GenericParameters.Count);
 
         [Fact]
         public void HasNoBaseInterfaces()
             => Assert.Empty(DeclarationNode.BaseInterfaces);
 
         [Fact]
-        public void HasMembersSet()
-            => Assert.Equal(
-                DeclarationNode.Events.AsEnumerable<MemberDeclaration>().Concat(DeclarationNode.Properties).Concat(DeclarationNode.Methods),
-                DeclarationNode.Members
-            );
+        public void HasNoMembers()
+            => Assert.Empty(DeclarationNode.Members);
 
         [Fact]
-        public void HasEventsSet()
-            => Assert.Single(DeclarationNode.Events);
+        public void HasNoEvents()
+            => Assert.Empty(DeclarationNode.Events);
 
         [Fact]
-        public void HasPropertiesSet()
-            => Assert.Single(DeclarationNode.Properties);
+        public void HasNoProperties()
+            => Assert.Empty(DeclarationNode.Properties);
 
         [Fact]
-        public void HasMethodsSet()
-            => Assert.Equal(2, DeclarationNode.Methods.Count);
+        public void HasNoMethods()
+            => Assert.Empty(DeclarationNode.Methods);
 
         [Fact]
         public void HasEmptySummary()

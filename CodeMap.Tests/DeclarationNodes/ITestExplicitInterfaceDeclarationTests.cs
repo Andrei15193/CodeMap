@@ -46,7 +46,7 @@ namespace CodeMap.Tests.DeclarationNodes
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
-        public void HasNoGenericParametersSet()
+        public void HasNoGenericParameters()
             => Assert.Empty(DeclarationNode.GenericParameters);
 
         [Fact]
