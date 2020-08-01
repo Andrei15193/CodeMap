@@ -1,7 +1,7 @@
 ﻿namespace CodeMap.Tests.Data
 {
     /// <summary/>
-    public interface ITestDocumentation
+    public class TestDocumentation
     {
         /// <summary/>
         int Member { get; }
@@ -119,6 +119,8 @@
         ///     <item test="item" test2="old description"></item>
         /// </list>
         /// </summary>
-        void TestMethod<GenericParameter>(int parameter);
+        public void TestMethod<GenericParameter>(int parameter)
+        {
+        }
     }
 }

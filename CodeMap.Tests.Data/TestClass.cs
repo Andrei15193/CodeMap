@@ -36,7 +36,7 @@ namespace CodeMap.Tests.Data
 
         /// <summary/>
         [Test("class field test 1", Value2 = "class field test 2", Value3 = "class field test 3")]
-        protected private byte TestField;
+        private protected byte TestField;
 
         /// <summary/>
         private readonly char ReadonlyTestField;
@@ -93,7 +93,7 @@ namespace CodeMap.Tests.Data
         public sealed override string VirtualTestProperty { get; set; }
 
         /// <summary/>
-        new public int ClassShadowedTestProperty { get; set; }
+        public new int ClassShadowedTestProperty { get; set; }
 
         /// <summary/>
         public int InterfaceShadowedTestProperty { get; set; }

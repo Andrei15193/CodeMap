@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using CodeMap.DeclarationNodes;
+﻿using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 using CodeMap.Tests.Data;
 using CodeMap.Tests.DeclarationNodes.Mocks;
+using System;
+using System.Linq;
 using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes
@@ -46,15 +46,11 @@ namespace CodeMap.Tests.DeclarationNodes
 
         [Fact]
         public void HasInterfacesSet()
-            => Assert.Equal(6, DeclarationNode.Interfaces.Count);
+            => Assert.Equal(5, DeclarationNode.Interfaces.Count);
 
         [Fact]
         public void HasITestBaseInterface()
             => Assert.Single(DeclarationNode.Interfaces, @interface => @interface == typeof(ITestBaseInterface));
-
-        [Fact]
-        public void HasITestDocumentation()
-            => Assert.Single(DeclarationNode.Interfaces, @interface => @interface == typeof(ITestDocumentation));
 
         [Fact]
         public void HasITestExplicitInterface()
@@ -74,7 +70,7 @@ namespace CodeMap.Tests.DeclarationNodes
 
         [Fact]
         public void HasClassesSet()
-            => Assert.Equal(7, DeclarationNode.Classes.Count);
+            => Assert.Equal(8, DeclarationNode.Classes.Count);
 
         [Fact]
         public void HasTestAbstractClass()
@@ -91,6 +87,10 @@ namespace CodeMap.Tests.DeclarationNodes
         [Fact]
         public void HasTestClass()
             => Assert.Single(DeclarationNode.Classes, @class => @class == typeof(TestClass<>));
+
+        [Fact]
+        public void HasTestDocumentation()
+            => Assert.Single(DeclarationNode.Classes, @class => @class == typeof(TestDocumentation));
 
         [Fact]
         public void HasTestExplicitClass()
