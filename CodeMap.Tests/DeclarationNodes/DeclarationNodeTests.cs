@@ -1,9 +1,9 @@
-﻿using CodeMap.DeclarationNodes;
-using CodeMap.Tests.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeMap.DeclarationNodes;
+using CodeMap.Tests.Data;
 using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes

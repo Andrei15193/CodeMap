@@ -1,8 +1,8 @@
-﻿using CodeMap.DocumentationElements;
-using Moq;
-using System;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using CodeMap.DocumentationElements;
+using Moq;
 
 namespace CodeMap.Tests.DocumentationElements
 {

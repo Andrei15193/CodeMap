@@ -1,10 +1,10 @@
-﻿using CodeMap.DocumentationElements;
-using CodeMap.Tests.Data;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
+using CodeMap.DocumentationElements;
+using CodeMap.Tests.Data;
 using Xunit;
 
 namespace CodeMap.Tests.DocumentationElements

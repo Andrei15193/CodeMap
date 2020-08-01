@@ -1,8 +1,8 @@
-﻿using CodeMap.DocumentationElements;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CodeMap.DocumentationElements;
 using Xunit;
 
 namespace CodeMap.Tests.DocumentationElements

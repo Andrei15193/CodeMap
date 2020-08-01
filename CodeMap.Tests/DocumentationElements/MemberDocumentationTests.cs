@@ -1,5 +1,5 @@
-﻿using CodeMap.DocumentationElements;
-using System;
+﻿using System;
+using CodeMap.DocumentationElements;
 using Xunit;
 
 namespace CodeMap.Tests.DocumentationElements

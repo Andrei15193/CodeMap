@@ -1,6 +1,6 @@
-﻿using Moq;
-using System;
+﻿using System;
 using System.Linq.Expressions;
+using Moq;
 
 namespace CodeMap.Tests.DocumentationElements
 {
