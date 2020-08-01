@@ -5,7 +5,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes
 {
-    public class TestDelegateTests : DeclarationNodeTests<DelegateDeclaration>
+    public class TestDelegateDeclarationTests : DeclarationNodeTests<DelegateDeclaration>
     {
         protected override bool DeclarationNodePredicate(DelegateDeclaration delegateDeclaration)
             => delegateDeclaration.Name == nameof(TestDelegate<int>);

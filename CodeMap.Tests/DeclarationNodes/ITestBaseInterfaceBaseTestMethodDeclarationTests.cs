@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes
 {
-    public class ITestBaseInterfaceBaseTestMethodTests : DeclarationNodeTests<MethodDeclaration>
+    public class ITestBaseInterfaceBaseTestMethodDeclarationTests : DeclarationNodeTests<MethodDeclaration>
     {
         protected override bool DeclarationNodePredicate(MethodDeclaration methodDeclaration)
             => methodDeclaration.Name == nameof(ITestBaseInterface.BaseTestMethod) && methodDeclaration.DeclaringType.Name == nameof(ITestBaseInterface);
