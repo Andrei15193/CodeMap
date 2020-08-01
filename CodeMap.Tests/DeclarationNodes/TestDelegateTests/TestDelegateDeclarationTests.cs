@@ -78,6 +78,10 @@ namespace CodeMap.Tests.DeclarationNodes.TestDelegateTests
             => Assert.True(typeof(void) == DeclarationNode.Return.Type);
 
         [Fact]
+        public void HasNoDeclaringType()
+            => Assert.Null(DeclarationNode.DeclaringType);
+
+        [Fact]
         public void HasEmptySummary()
             => Assert.Empty(DeclarationNode.Summary.Content);
 

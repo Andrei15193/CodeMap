@@ -53,6 +53,10 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
             => Assert.Empty(DeclarationNode.BaseInterfaces);
 
         [Fact]
+        public void HasNoDeclaringType()
+            => Assert.Null(DeclarationNode.DeclaringType);
+
+        [Fact]
         public void HasNoMembers()
             => Assert.Empty(DeclarationNode.Members);
 

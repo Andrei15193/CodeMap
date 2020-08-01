@@ -3,10 +3,10 @@ using System.Linq;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 using CodeMap.Tests.Data;
-using CodeMap.Tests.DeclarationNodes.Mocks;
+using CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests.Mocks;
 using Xunit;
 
-namespace CodeMap.Tests.DeclarationNodes.CodeMapTestsDataNamespaceTests
+namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
 {
     public class CodeMapTestsDataNamespaceDeclarationTests : DeclarationNodeTests<NamespaceDeclaration>
     {

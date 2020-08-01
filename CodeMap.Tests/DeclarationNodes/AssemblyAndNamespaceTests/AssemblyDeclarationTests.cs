@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
-using CodeMap.Tests.DeclarationNodes.Mocks;
+using CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests.Mocks;
 using Xunit;
 using static System.Diagnostics.DebuggableAttribute;
 
-namespace CodeMap.Tests.DeclarationNodes.AssemblyTests
+namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
 {
     public class AssemblyDeclarationTests : DeclarationNodeTests<AssemblyDeclaration>
     {

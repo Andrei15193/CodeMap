@@ -2,10 +2,10 @@
 using System.Linq;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
-using CodeMap.Tests.DeclarationNodes.Mocks;
+using CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests.Mocks;
 using Xunit;
 
-namespace CodeMap.Tests.DeclarationNodes.GlobalNamespaceTests
+namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
 {
     public class GlobalNamespaceDeclarationTests : DeclarationNodeTests<GlobalNamespaceDeclaration>
     {

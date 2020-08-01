@@ -58,6 +58,10 @@ namespace CodeMap.Tests.DeclarationNodes.TestEnumTests
             );
 
         [Fact]
+        public void HasNoDeclaringType()
+            => Assert.Null(DeclarationNode.DeclaringType);
+
+        [Fact]
         public void HasMembersSet()
             => Assert.Equal(3, DeclarationNode.Members.Count);
 

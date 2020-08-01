@@ -54,6 +54,10 @@ namespace CodeMap.Tests.DeclarationNodes.ITestExplicitInterfaceTests
             => Assert.Empty(DeclarationNode.BaseInterfaces);
 
         [Fact]
+        public void HasNoDeclaringType()
+            => Assert.Null(DeclarationNode.DeclaringType);
+
+        [Fact]
         public void HasMembersSet()
             => Assert.Equal(
                 DeclarationNode.Events.AsEnumerable<MemberDeclaration>().Concat(DeclarationNode.Properties).Concat(DeclarationNode.Methods),

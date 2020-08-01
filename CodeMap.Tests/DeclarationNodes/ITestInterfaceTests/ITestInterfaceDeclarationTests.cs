@@ -76,6 +76,10 @@ namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
             => Assert.Single(DeclarationNode.BaseInterfaces, baseInterface => baseInterface == typeof(ITestExtendedBaseInterface));
 
         [Fact]
+        public void HasNoDeclaringType()
+            => Assert.Null(DeclarationNode.DeclaringType);
+
+        [Fact]
         public void HasMembersSet()
             => Assert.Equal(
                 DeclarationNode.Events.AsEnumerable<MemberDeclaration>().Concat(DeclarationNode.Properties).Concat(DeclarationNode.Methods),
