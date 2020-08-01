@@ -50,6 +50,10 @@ namespace CodeMap.Tests.DeclarationNodes
             => Assert.Empty(DeclarationNode.GenericParameters);
 
         [Fact]
+        public void HasNoBaseInterfaces()
+            => Assert.Empty(DeclarationNode.BaseInterfaces);
+
+        [Fact]
         public void HasMembersSet()
             => Assert.Equal(
                 DeclarationNode.Events.AsEnumerable<MemberDeclaration>().Concat(DeclarationNode.Properties).Concat(DeclarationNode.Methods),

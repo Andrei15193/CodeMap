@@ -49,6 +49,14 @@ namespace CodeMap.Tests.DeclarationNodes
             => Assert.Empty(DeclarationNode.GenericParameters);
 
         [Fact]
+        public void HasBaseInterfacesSet()
+            => Assert.Single(DeclarationNode.BaseInterfaces);
+
+        [Fact]
+        public void HasITestBaseInterfaceBaseInterfaceSet()
+            => Assert.Single(DeclarationNode.BaseInterfaces, baseInterface => baseInterface == typeof(ITestBaseInterface));
+
+        [Fact]
         public void HasNoMembers()
             => Assert.Empty(DeclarationNode.Members);
 
