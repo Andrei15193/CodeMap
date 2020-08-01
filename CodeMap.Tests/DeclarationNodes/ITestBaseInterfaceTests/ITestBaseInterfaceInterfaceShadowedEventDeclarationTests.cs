@@ -32,6 +32,10 @@ namespace CodeMap.Tests.DeclarationNodes.ITestBaseInterfaceTests
             => Assert.Equal("InterfaceShadowedTestEvent", DeclarationNode.Name);
 
         [Fact]
+        public void HasAccessModifierSet()
+            => Assert.Equal(AccessModifier.Public, DeclarationNode.AccessModifier);
+
+        [Fact]
         public void HasDeclartingTypeSet()
             => Assert.True(typeof(ITestBaseInterface) == DeclarationNode.DeclaringType);
 

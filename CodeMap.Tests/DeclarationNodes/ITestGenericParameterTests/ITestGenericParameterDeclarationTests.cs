@@ -29,12 +29,12 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
             => Assert.Equal("ITestGenericParameter", DeclarationNode.Name);
 
         [Fact]
-        public void HasAssemblySet()
-            => Assert.Same(TestDataAssemblyDeclaration, DeclarationNode.Assembly);
-
-        [Fact]
         public void HasAccessModifierSet()
             => Assert.Equal(AccessModifier.Public, DeclarationNode.AccessModifier);
+
+        [Fact]
+        public void HasAssemblySet()
+            => Assert.Same(TestDataAssemblyDeclaration, DeclarationNode.Assembly);
 
         [Fact]
         public void HasCircularReferenceSet()

@@ -27,7 +27,8 @@ namespace CodeMap.Tests.DeclarationNodes
                 .Concat(_GetNamespaceDeclarations())
                 .Concat(_GetTypeDeclarations())
                 .Concat(_GetEnumMemberDeclarations())
-                .Concat(_GetInterfaceMemberDeclarations());
+                .Concat(_GetInterfaceMemberDeclarations())
+                .Concat(_GetClassMemberDeclarations());
 
             IEnumerable<AssemblyDeclaration> _GetAssemblyDeclarations()
                 => Enumerable.Repeat(TestDataAssemblyDeclaration, 1);
@@ -43,6 +44,9 @@ namespace CodeMap.Tests.DeclarationNodes
 
             IEnumerable<MemberDeclaration> _GetInterfaceMemberDeclarations()
                 => _GetNamespaceDeclarations().SelectMany(namespaceDeclaration => namespaceDeclaration.Interfaces.SelectMany(interfaceDeclaration => interfaceDeclaration.Members));
+
+            IEnumerable<MemberDeclaration> _GetClassMemberDeclarations()
+                => _GetNamespaceDeclarations().SelectMany(namespaceDeclaration => namespaceDeclaration.Classes.SelectMany(classDeclaration => classDeclaration.Members));
         }
 
         protected Assembly TestDataAssembly

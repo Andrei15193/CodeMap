@@ -30,12 +30,12 @@ namespace CodeMap.Tests.DeclarationNodes.ITestBaseInterfaceTests
             => Assert.Equal("ITestBaseInterface", DeclarationNode.Name);
 
         [Fact]
-        public void HasAssemblySet()
-            => Assert.Same(TestDataAssemblyDeclaration, DeclarationNode.Assembly);
-
-        [Fact]
         public void HasAccessModifierSet()
             => Assert.Equal(AccessModifier.Public, DeclarationNode.AccessModifier);
+
+        [Fact]
+        public void HasAssemblySet()
+            => Assert.Same(TestDataAssemblyDeclaration, DeclarationNode.Assembly);
 
         [Fact]
         public void HasCircularReferenceSet()

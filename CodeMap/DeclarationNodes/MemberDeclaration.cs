@@ -67,7 +67,7 @@ namespace CodeMap.DeclarationNodes
         /// <summary>Determines whether the current <see cref="MemberDeclaration"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="MemberDeclaration"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
-        public bool Equals(MemberInfo memberInfo)
+        public virtual bool Equals(MemberInfo memberInfo)
             => memberInfo != null
             && string.Equals(Name, memberInfo.Name, StringComparison.OrdinalIgnoreCase)
             && DeclaringType == memberInfo.DeclaringType;

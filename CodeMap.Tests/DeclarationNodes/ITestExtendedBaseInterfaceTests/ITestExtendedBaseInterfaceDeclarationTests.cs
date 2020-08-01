@@ -2,7 +2,7 @@
 using CodeMap.Tests.Data;
 using Xunit;
 
-namespace CodeMap.Tests.DeclarationNodes.ITestExplicitInterfaceTests
+namespace CodeMap.Tests.DeclarationNodes.ITestExtendedBaseInterfaceTests
 {
     public class ITestExtendedBaseInterfaceDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>
     {
@@ -29,12 +29,12 @@ namespace CodeMap.Tests.DeclarationNodes.ITestExplicitInterfaceTests
             => Assert.Equal("ITestExtendedBaseInterface", DeclarationNode.Name);
 
         [Fact]
-        public void HasAssemblySet()
-            => Assert.Same(TestDataAssemblyDeclaration, DeclarationNode.Assembly);
-
-        [Fact]
         public void HasAccessModifierSet()
             => Assert.Equal(AccessModifier.Public, DeclarationNode.AccessModifier);
+
+        [Fact]
+        public void HasAssemblySet()
+            => Assert.Same(TestDataAssemblyDeclaration, DeclarationNode.Assembly);
 
         [Fact]
         public void HasCircularReferenceSet()

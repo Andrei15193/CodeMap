@@ -32,6 +32,10 @@ namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
             => Assert.Equal("TestEvent", DeclarationNode.Name);
 
         [Fact]
+        public void HasAccessModifierSet()
+            => Assert.Equal(AccessModifier.Public, DeclarationNode.AccessModifier);
+
+        [Fact]
         public void HasDeclartingTypeSet()
             => Assert.True(typeof(ITestInterface<>) == DeclarationNode.DeclaringType);
 
