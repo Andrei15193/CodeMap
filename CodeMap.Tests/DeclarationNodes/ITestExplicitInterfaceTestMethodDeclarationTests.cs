@@ -6,15 +6,15 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes
 {
-    public class ITestBaseInterfaceInterfaceShadowedTestMethodTests : DeclarationNodeTests<MethodDeclaration>
+    public class ITestExplicitInterfaceTestMethodDeclarationTests : DeclarationNodeTests<MethodDeclaration>
     {
         protected override bool DeclarationNodePredicate(MethodDeclaration methodDeclaration)
-            => methodDeclaration.Name == nameof(ITestBaseInterface.InterfaceShadowedTestMethod) && methodDeclaration.DeclaringType.Name == nameof(ITestBaseInterface);
+            => methodDeclaration.Name == nameof(ITestExplicitInterface.TestMethod) && methodDeclaration.DeclaringType.Name == nameof(ITestExplicitInterface);
 
         [Fact]
         public void MemberEqualityComparison()
         {
-            var methodInfo = typeof(ITestBaseInterface).GetRuntimeMethod(nameof(ITestBaseInterface.InterfaceShadowedTestMethod), Type.EmptyTypes);
+            var methodInfo = typeof(ITestExplicitInterface).GetRuntimeMethod(nameof(ITestExplicitInterface.TestMethod), Type.EmptyTypes);
             Assert.True(DeclarationNode.Equals(methodInfo));
             Assert.True(DeclarationNode.Equals(methodInfo as object));
             Assert.True(methodInfo == DeclarationNode);
@@ -29,11 +29,11 @@ namespace CodeMap.Tests.DeclarationNodes
 
         [Fact]
         public void HasNameSet()
-            => Assert.Equal("InterfaceShadowedTestMethod", DeclarationNode.Name);
+            => Assert.Equal("TestMethod", DeclarationNode.Name);
 
         [Fact]
         public void HasDeclartingTypeSet()
-            => Assert.True(typeof(ITestBaseInterface) == DeclarationNode.DeclaringType);
+            => Assert.True(typeof(ITestExplicitInterface) == DeclarationNode.DeclaringType);
 
         [Fact]
         public void HasCircularReferenceSet()
@@ -77,7 +77,7 @@ namespace CodeMap.Tests.DeclarationNodes
 
         [Fact]
         public void HasReturnTypeSet()
-            => Assert.True(typeof(int) == DeclarationNode.Return.Type);
+            => Assert.True(typeof(void) == DeclarationNode.Return.Type);
 
         [Fact]
         public void HasEmptySummary()
