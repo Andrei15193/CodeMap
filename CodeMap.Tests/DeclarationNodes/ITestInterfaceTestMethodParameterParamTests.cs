@@ -5,10 +5,10 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes
 {
-    public class TestDelegateParameterParamTests : DeclarationNodeTests<DelegateDeclaration>
+    public class ITestInterfaceTestMethodParameterParamTests : DeclarationNodeTests<MethodDeclaration>
     {
-        protected override bool DeclarationNodePredicate(DelegateDeclaration delegateDeclaration)
-            => delegateDeclaration.Name == nameof(TestDelegate<int>);
+        protected override bool DeclarationNodePredicate(MethodDeclaration methodDeclaration)
+            => methodDeclaration.Name == nameof(ITestInterface<int>.TestMethod) && methodDeclaration.DeclaringType.Name == nameof(ITestInterface<int>);
 
         protected ParameterData Parameter
             => Assert.Single(DeclarationNode.Parameters);
@@ -25,8 +25,8 @@ namespace CodeMap.Tests.DeclarationNodes
         public void HasTestAttribute()
             => AssertAttribute<TestAttribute>(
                 Parameter.Attributes,
-                new (string, object, Type)[] { ("value1", "delegate parameter test 1", typeof(object)) },
-                new (string, object, Type)[] { ("Value2", "delegate parameter test 2", typeof(object)), ("Value3", "delegate parameter test 3", typeof(object)) }
+                new (string, object, Type)[] { ("value1", "interface method parameter test 1", typeof(object)) },
+                new (string, object, Type)[] { ("Value2", "interface method parameter test 2", typeof(object)), ("Value3", "interface method parameter test 3", typeof(object)) }
             );
 
         [Fact]

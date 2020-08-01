@@ -4,7 +4,7 @@ namespace CodeMap.Tests.Data
 {
     /// <summary/>
     [Test("interface test 1", Value2 = "interface test 2", Value3 = "interface test 3")]
-    public unsafe interface ITestInterface<TParam1> : ITestExtendedBaseInterface
+    public unsafe interface ITestInterface<TParam> : ITestExtendedBaseInterface
     {
         /// <summary/>
         [Test("interface event test 1", Value2 = "interface event test 2", Value3 = "interface event test 3")]

@@ -1,6 +1,6 @@
-﻿using System;
-using CodeMap.DeclarationNodes;
+﻿using CodeMap.DeclarationNodes;
 using CodeMap.Tests.Data;
+using System;
 using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes
@@ -46,7 +46,7 @@ namespace CodeMap.Tests.DeclarationNodes
             => Assert.Single(DeclarationNode.Namespace.DeclaredTypes, type => ReferenceEquals(type, DeclarationNode));
 
         [Fact]
-        public void HasAttributes()
+        public void HasAttributesSet()
             => Assert.Single(DeclarationNode.Attributes);
 
         [Fact]

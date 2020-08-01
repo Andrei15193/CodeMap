@@ -1,11 +1,11 @@
-﻿using System;
+﻿using CodeMap.DeclarationNodes;
+using CodeMap.DocumentationElements;
+using CodeMap.Tests.DeclarationNodes.Mocks;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
-using CodeMap.DeclarationNodes;
-using CodeMap.DocumentationElements;
-using CodeMap.Tests.DeclarationNodes.Mocks;
 using Xunit;
 using static System.Diagnostics.DebuggableAttribute;
 
@@ -70,7 +70,7 @@ namespace CodeMap.Tests.DeclarationNodes
             => Assert.Equal(new Version(1, 2, 3, 4), DeclarationNode.Version);
 
         [Fact]
-        public void HasAttributes()
+        public void HasAttributesSet()
             => Assert.Equal(4, DeclarationNode.Attributes.Count);
 
 #if DEBUG

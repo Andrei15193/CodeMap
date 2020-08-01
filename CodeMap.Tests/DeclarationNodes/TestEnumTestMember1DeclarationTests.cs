@@ -40,7 +40,7 @@ namespace CodeMap.Tests.DeclarationNodes
             => Assert.Single(Assert.IsType<EnumDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
-        public void HasAttributes()
+        public void HasAttributesSet()
             => Assert.Single(DeclarationNode.Attributes);
 
         [Fact]

@@ -42,7 +42,7 @@ namespace CodeMap.Tests.DeclarationNodes
             => Assert.Single(DeclarationNode.Namespace.DeclaredTypes, type => ReferenceEquals(type, DeclarationNode));
 
         [Fact]
-        public void HasAttributes()
+        public void HasAttributesSet()
             => Assert.Single(DeclarationNode.Attributes);
 
         [Fact]
