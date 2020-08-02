@@ -4,21 +4,21 @@ using CodeMap.DeclarationNodes;
 using CodeMap.Tests.Data;
 using Xunit;
 
-namespace CodeMap.Tests.DeclarationNodes.TestEnumTests
+namespace CodeMap.Tests.DeclarationNodes.TestBaseClassTests
 {
-    public class TestEnumTestMember2DeclarationTests : DeclarationNodeTests<ConstantDeclaration>
+    public class TestBaseClassConstructorDeclarationTests : DeclarationNodeTests<ConstructorDeclaration>
     {
-        protected override bool DeclarationNodePredicate(ConstantDeclaration constantDeclaration)
-            => constantDeclaration.Name == nameof(TestEnum.TestMember2);
+        protected override bool DeclarationNodePredicate(ConstructorDeclaration constructorDeclaration)
+            => constructorDeclaration.Name == nameof(TestBaseClass) && constructorDeclaration.DeclaringType.Name == nameof(TestBaseClass);
 
         [Fact]
         public void MemberEqualityComparison()
         {
-            var fieldInfo = typeof(TestEnum).GetRuntimeField(nameof(TestEnum.TestMember2));
-            Assert.True(DeclarationNode.Equals(fieldInfo));
-            Assert.True(DeclarationNode.Equals(fieldInfo as object));
-            Assert.True(fieldInfo == DeclarationNode);
-            Assert.True(DeclarationNode == fieldInfo);
+            var constructorInfo = typeof(TestBaseClass).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, Type.DefaultBinder, Type.EmptyTypes, null);
+            Assert.True(DeclarationNode.Equals(constructorInfo));
+            Assert.True(DeclarationNode.Equals(constructorInfo as object));
+            Assert.True(constructorInfo == DeclarationNode);
+            Assert.True(DeclarationNode == constructorInfo);
 
             var toStringMember = typeof(object).GetRuntimeMethod(nameof(object.ToString), Type.EmptyTypes);
             Assert.False(DeclarationNode.Equals(toStringMember));
@@ -29,35 +29,27 @@ namespace CodeMap.Tests.DeclarationNodes.TestEnumTests
 
         [Fact]
         public void HasNameSet()
-            => Assert.Equal("TestMember2", DeclarationNode.Name);
+            => Assert.Equal("TestBaseClass", DeclarationNode.Name);
+
+        [Fact]
+        public void HasAccessModifierSet()
+            => Assert.Equal(AccessModifier.Family, DeclarationNode.AccessModifier);
 
         [Fact]
         public void HasDeclartingTypeSet()
-            => Assert.True(typeof(TestEnum) == DeclarationNode.DeclaringType);
+            => Assert.True(typeof(TestBaseClass) == DeclarationNode.DeclaringType);
 
         [Fact]
         public void HasCircularReferenceSet()
-            => Assert.Single(Assert.IsType<EnumDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
+            => Assert.Single(Assert.IsType<ClassDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
         public void HasNoAttributes()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
-        public void HasAccessModifierSet()
-            => Assert.Equal(AccessModifier.Public, DeclarationNode.AccessModifier);
-
-        [Fact]
-        public void HasIsShadowingSet()
-            => Assert.False(DeclarationNode.IsShadowing);
-
-        [Fact]
-        public void HasTypeSet()
-            => Assert.True(typeof(TestEnum) == DeclarationNode.Type);
-
-        [Fact]
-        public void HasValueSet()
-            => Assert.Equal(TestEnum.TestMember2, DeclarationNode.Value);
+        public void HasNoParameters()
+            => Assert.Empty(DeclarationNode.Parameters);
 
         [Fact]
         public void HasEmptySummary()
@@ -74,6 +66,10 @@ namespace CodeMap.Tests.DeclarationNodes.TestEnumTests
         [Fact]
         public void HasEmptyRelatedMembers()
             => Assert.Empty(DeclarationNode.RelatedMembers);
+
+        [Fact]
+        public void HasEmptyExceptions()
+            => Assert.Empty(DeclarationNode.Exceptions);
 
         [Fact]
         public void AcceptVisitor()

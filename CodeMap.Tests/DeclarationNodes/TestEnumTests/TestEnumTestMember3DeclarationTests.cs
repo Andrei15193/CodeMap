@@ -44,6 +44,10 @@ namespace CodeMap.Tests.DeclarationNodes.TestEnumTests
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
+        public void HasAccessModifierSet()
+            => Assert.Equal(AccessModifier.Public, DeclarationNode.AccessModifier);
+
+        [Fact]
         public void HasIsShadowingSet()
             => Assert.False(DeclarationNode.IsShadowing);
 

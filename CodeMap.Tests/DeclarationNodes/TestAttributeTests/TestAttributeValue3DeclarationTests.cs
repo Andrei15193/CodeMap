@@ -9,7 +9,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestAttributeTests
     public class TestAttributeValue3DeclarationTests : DeclarationNodeTests<FieldDeclaration>
     {
         protected override bool DeclarationNodePredicate(FieldDeclaration fieldDeclaration)
-            => fieldDeclaration.Name == nameof(TestAttribute.Value3);
+            => fieldDeclaration.Name == nameof(TestAttribute.Value3) && fieldDeclaration.DeclaringType.Name == nameof(TestAttribute);
 
         [Fact]
         public void MemberEqualityComparison()
@@ -44,8 +44,20 @@ namespace CodeMap.Tests.DeclarationNodes.TestAttributeTests
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
+        public void HasAccessModifierSet()
+            => Assert.Equal(AccessModifier.Public, DeclarationNode.AccessModifier);
+
+        [Fact]
         public void HasIsShadowingSet()
             => Assert.False(DeclarationNode.IsShadowing);
+
+        [Fact]
+        public void HasIsReadOnlySet()
+            => Assert.False(DeclarationNode.IsReadOnly);
+
+        [Fact]
+        public void HasIsStaticgSet()
+            => Assert.False(DeclarationNode.IsStatic);
 
         [Fact]
         public void HasTypeSet()
