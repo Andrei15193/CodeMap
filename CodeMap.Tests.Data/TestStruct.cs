@@ -111,7 +111,7 @@ namespace CodeMap.Tests.Data
         /// <summary/>
         [Test("struct method test 1", Value2 = "struct method test 2", Value3 = "struct method test 3")]
         [return: Test("struct method return test 1", Value2 = "struct method return test 2", Value3 = "struct method return test 3")]
-        public void TestMethod  ([Test("struct method parameter test 1", Value2 = "struct method parameter test 2", Value3 = "struct method parameter test 3")] int param)
+        public void TestMethod([Test("struct method parameter test 1", Value2 = "struct method parameter test 2", Value3 = "struct method parameter test 3")] int param)
         {
         }
 

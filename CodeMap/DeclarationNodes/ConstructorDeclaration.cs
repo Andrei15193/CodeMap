@@ -26,7 +26,15 @@ namespace CodeMap.DeclarationNodes
             => constructorInfo != null
             && Parameters.Count == constructorInfo.GetParameters().Length
             && Parameters
-                .Zip(constructorInfo.GetParameters(), (parameterType, parameter) => (ExpectedParameterType: parameterType.Type, ActualParameterType: parameter.ParameterType))
+                .Zip(
+                    constructorInfo.GetParameters(),
+                    (parameter, constructorInfoParameter) => (
+                        ExpectedParameterType: parameter.Type,
+                        ActualParameterType: (parameter.IsInputByReference || parameter.IsInputOutputByReference || parameter.IsOutputByReference) && constructorInfoParameter.ParameterType.IsByRef
+                            ? constructorInfoParameter.ParameterType.GetElementType()
+                            : constructorInfoParameter.ParameterType
+                    )
+                )
                 .All(pair => pair.ExpectedParameterType == pair.ActualParameterType)
             && DeclaringType == constructorInfo.DeclaringType;
 

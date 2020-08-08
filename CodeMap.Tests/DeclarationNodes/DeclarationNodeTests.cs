@@ -28,7 +28,8 @@ namespace CodeMap.Tests.DeclarationNodes
                 .Concat(_GetTypeDeclarations())
                 .Concat(_GetEnumMemberDeclarations())
                 .Concat(_GetInterfaceMemberDeclarations())
-                .Concat(_GetClassMemberDeclarations());
+                .Concat(_GetClassMemberDeclarations())
+                .Concat(_GetStructMemberDeclarations());
 
             IEnumerable<AssemblyDeclaration> _GetAssemblyDeclarations()
                 => Enumerable.Repeat(TestDataAssemblyDeclaration, 1);
@@ -37,16 +38,28 @@ namespace CodeMap.Tests.DeclarationNodes
                 => _GetAssemblyDeclarations().SelectMany(assemblyDeclaration => assemblyDeclaration.Namespaces);
 
             IEnumerable<TypeDeclaration> _GetTypeDeclarations()
-                => _GetNamespaceDeclarations().SelectMany(namespaceDeclaration => namespaceDeclaration.DeclaredTypes);
+            {
+                return _GetNamespaceDeclarations().SelectMany(namespaceDeclaration => namespaceDeclaration.DeclaredTypes.SelectMany(_ExpandWithNestedTypes));
+
+                IEnumerable<TypeDeclaration> _ExpandWithNestedTypes(TypeDeclaration typeDeclaration)
+                    => typeDeclaration is ClassDeclaration classDeclaration
+                        ? Enumerable.Repeat(typeDeclaration, 1).Concat(classDeclaration.NestedTypes.SelectMany(_ExpandWithNestedTypes))
+                        : typeDeclaration is StructDeclaration structDeclaration
+                        ? Enumerable.Repeat(typeDeclaration, 1).Concat(structDeclaration.NestedTypes.SelectMany(_ExpandWithNestedTypes))
+                        : Enumerable.Repeat(typeDeclaration, 1);
+            }
 
             IEnumerable<MemberDeclaration> _GetEnumMemberDeclarations()
-                => _GetNamespaceDeclarations().SelectMany(namespaceDeclaration => namespaceDeclaration.Enums.SelectMany(enumDeclaration => enumDeclaration.Members));
+                => _GetTypeDeclarations().OfType<EnumDeclaration>().SelectMany(enumDeclaration => enumDeclaration.Members);
 
             IEnumerable<MemberDeclaration> _GetInterfaceMemberDeclarations()
-                => _GetNamespaceDeclarations().SelectMany(namespaceDeclaration => namespaceDeclaration.Interfaces.SelectMany(interfaceDeclaration => interfaceDeclaration.Members));
+                => _GetTypeDeclarations().OfType<InterfaceDeclaration>().SelectMany(interfaceDeclaration => interfaceDeclaration.Members);
 
             IEnumerable<MemberDeclaration> _GetClassMemberDeclarations()
-                => _GetNamespaceDeclarations().SelectMany(namespaceDeclaration => namespaceDeclaration.Classes.SelectMany(classDeclaration => classDeclaration.Members));
+                => _GetTypeDeclarations().OfType<ClassDeclaration>().SelectMany(classDeclaration => classDeclaration.Members);
+
+            IEnumerable<MemberDeclaration> _GetStructMemberDeclarations()
+                => _GetTypeDeclarations().OfType<StructDeclaration>().SelectMany(structDeclaration => structDeclaration.Members);
         }
 
         protected Assembly TestDataAssembly

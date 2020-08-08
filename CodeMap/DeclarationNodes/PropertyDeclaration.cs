@@ -58,7 +58,15 @@ namespace CodeMap.DeclarationNodes
             && string.Equals(Name, propertyInfo.Name, StringComparison.OrdinalIgnoreCase)
             && Parameters.Count == propertyInfo.GetIndexParameters().Length
             && Parameters
-                .Zip(propertyInfo.GetIndexParameters(), (parameterType, parameter) => (ExpectedParameterType: parameterType.Type, ActualParameterType: parameter.ParameterType))
+                .Zip(
+                    propertyInfo.GetIndexParameters(),
+                    (parameter, propertyInfoParameter) => (
+                        ExpectedParameterType: parameter.Type,
+                        ActualParameterType: (parameter.IsInputByReference || parameter.IsInputOutputByReference || parameter.IsOutputByReference) && propertyInfoParameter.ParameterType.IsByRef
+                            ? propertyInfoParameter.ParameterType.GetElementType()
+                            : propertyInfoParameter.ParameterType
+                    )
+                )
                 .All(pair => pair.ExpectedParameterType == pair.ActualParameterType)
             && DeclaringType == propertyInfo.DeclaringType;
 

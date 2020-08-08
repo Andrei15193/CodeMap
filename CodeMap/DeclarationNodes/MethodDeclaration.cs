@@ -51,7 +51,15 @@ namespace CodeMap.DeclarationNodes
             && string.Equals(Name, methodInfo.Name, StringComparison.OrdinalIgnoreCase)
             && Parameters.Count == methodInfo.GetParameters().Length
             && Parameters
-                .Zip(methodInfo.GetParameters(), (parameterType, parameter) => (ExpectedParameterType: parameterType.Type, ActualParameterType: parameter.ParameterType))
+                .Zip(
+                    methodInfo.GetParameters(),
+                    (parameter, methodInfoParameter) => (
+                        ExpectedParameterType: parameter.Type,
+                        ActualParameterType: (parameter.IsInputByReference || parameter.IsInputOutputByReference || parameter.IsOutputByReference) && methodInfoParameter.ParameterType.IsByRef
+                            ? methodInfoParameter.ParameterType.GetElementType()
+                            : methodInfoParameter.ParameterType
+                    )
+                )
                 .All(pair => pair.ExpectedParameterType == pair.ActualParameterType)
             && DeclaringType == methodInfo.DeclaringType;
 

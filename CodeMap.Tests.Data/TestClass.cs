@@ -156,7 +156,7 @@ namespace CodeMap.Tests.Data
         }
 
         /// <summary/>
-        public void TestMethod1(int param1)
+        public void TestMethod1(int param)
         {
         }
 
@@ -358,7 +358,7 @@ namespace CodeMap.Tests.Data
         }
 
         /// <summary/>
-        public void TestMethod39<TMethodParam>(ref TMethodParam param39)
+        public void TestMethod39<TMethodParam>(ref TMethodParam param)
         {
         }
 
