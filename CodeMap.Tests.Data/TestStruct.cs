@@ -4,7 +4,7 @@ namespace CodeMap.Tests.Data
 {
     /// <summary/>
     [Test("struct test 1", Value2 = "struct test 2", Value3 = "struct test 3")]
-    public unsafe struct TestStruct<TParam1> : ITestExtendedBaseInterface
+    public unsafe struct TestStruct<TParam> : ITestExtendedBaseInterface
     {
         /// <summary/>
         private enum NestedTestEnum

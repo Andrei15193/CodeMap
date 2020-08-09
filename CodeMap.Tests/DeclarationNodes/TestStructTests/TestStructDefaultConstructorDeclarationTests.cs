@@ -2,16 +2,16 @@
 using CodeMap.Tests.Data;
 using Xunit;
 
-namespace CodeMap.Tests.DeclarationNodes.TestClassTests.NestedTestStructTests
+namespace CodeMap.Tests.DeclarationNodes.TestStructTests
 {
-    public class TestClassNestedTestStructConstructorDeclarationTests : DeclarationNodeTests<ConstructorDeclaration>
+    public class TestStructDefaultConstructorDeclarationTests : DeclarationNodeTests<ConstructorDeclaration>
     {
         protected override bool DeclarationNodePredicate(ConstructorDeclaration constructorDeclaration)
-            => constructorDeclaration.Name == nameof(TestClass<int>.NestedTestStruct) && constructorDeclaration.DeclaringType.Name == nameof(TestClass<int>.NestedTestStruct) && constructorDeclaration.DeclaringType.DeclaringType.Name == nameof(TestClass<int>);
+            => constructorDeclaration.Name == nameof(TestStruct<int>) && constructorDeclaration.Parameters.Count == 0 && constructorDeclaration.DeclaringType.Name == nameof(TestStruct<int>);
 
         [Fact]
         public void HasNameSet()
-            => Assert.Equal("NestedTestStruct", DeclarationNode.Name);
+            => Assert.Equal("TestStruct", DeclarationNode.Name);
 
         [Fact]
         public void HasAccessModifierSet()
@@ -19,7 +19,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests.NestedTestStructTests
 
         [Fact]
         public void HasDeclartingTypeSet()
-            => Assert.True(typeof(TestClass<>.NestedTestStruct) == DeclarationNode.DeclaringType);
+            => Assert.True(typeof(TestStruct<>) == DeclarationNode.DeclaringType);
 
         [Fact]
         public void HasCircularReferenceSet()

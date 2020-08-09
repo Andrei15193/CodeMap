@@ -1,22 +1,23 @@
 ﻿using System.Linq;
+using System.Reflection;
 using CodeMap.DeclarationNodes;
 using CodeMap.Tests.Data;
 using Xunit;
 
-namespace CodeMap.Tests.DeclarationNodes.TestClassTests.INestedTestInterfaceTests
+namespace CodeMap.Tests.DeclarationNodes.TestStructTests.INestedTestInterfaceTests
 {
-    public class TestClassINestedTestInterfaceDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>
+    public class TestStructINestedTestInterfaceDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>
     {
         protected override bool DeclarationNodePredicate(InterfaceDeclaration interfaceDeclaration)
-            => interfaceDeclaration.Name == nameof(TestClass<int>.INestedTestInterface) && interfaceDeclaration.DeclaringType.Name == nameof(TestClass<int>);
+            => interfaceDeclaration.Name == "INestedTestInterface" && interfaceDeclaration.DeclaringType.Name == nameof(TestStruct<int>);
 
         [Fact]
         public void TypeEqualityComparison()
         {
-            Assert.True(DeclarationNode.Equals(typeof(TestClass<>.INestedTestInterface)));
-            Assert.True(DeclarationNode.Equals(typeof(TestClass<>.INestedTestInterface) as object));
-            Assert.True(typeof(TestClass<>.INestedTestInterface) == DeclarationNode);
-            Assert.True(DeclarationNode == typeof(TestClass<>.INestedTestInterface));
+            Assert.True(DeclarationNode.Equals(typeof(TestStruct<>).GetNestedType("INestedTestInterface", BindingFlags.NonPublic)));
+            Assert.True(DeclarationNode.Equals(typeof(TestStruct<>).GetNestedType("INestedTestInterface", BindingFlags.NonPublic) as object));
+            Assert.True(typeof(TestStruct<>).GetNestedType("INestedTestInterface", BindingFlags.NonPublic) == DeclarationNode);
+            Assert.True(DeclarationNode == typeof(TestStruct<>).GetNestedType("INestedTestInterface", BindingFlags.NonPublic));
 
             var objectType = typeof(object);
             Assert.False(DeclarationNode.Equals(objectType));
@@ -31,7 +32,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests.INestedTestInterfaceTest
 
         [Fact]
         public void HasAccessModifierSet()
-            => Assert.Equal(AccessModifier.Public, DeclarationNode.AccessModifier);
+            => Assert.Equal(AccessModifier.Private, DeclarationNode.AccessModifier);
 
         [Fact]
         public void HasAssemblySet()
@@ -43,7 +44,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests.INestedTestInterfaceTest
 
         [Fact]
         public void HasCircularReferenceSet()
-            => Assert.Single(Assert.IsType<ClassDeclaration>(DeclarationNode.DeclaringType).NestedTypes, type => ReferenceEquals(type, DeclarationNode));
+            => Assert.Single(Assert.IsType<StructDeclaration>(DeclarationNode.DeclaringType).NestedTypes, type => ReferenceEquals(type, DeclarationNode));
 
         [Fact]
         public void HasNoAttributes()

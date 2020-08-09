@@ -1,13 +1,14 @@
-﻿using CodeMap.DeclarationNodes;
+﻿using System.Reflection;
+using CodeMap.DeclarationNodes;
 using CodeMap.Tests.Data;
 using Xunit;
 
-namespace CodeMap.Tests.DeclarationNodes.TestClassTests.NestedTestStructTests
+namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestStructTests
 {
-    public class TestClassNestedTestStructConstructorDeclarationTests : DeclarationNodeTests<ConstructorDeclaration>
+    public class TestStructNestedTestStructConstructorDeclarationTests : DeclarationNodeTests<ConstructorDeclaration>
     {
         protected override bool DeclarationNodePredicate(ConstructorDeclaration constructorDeclaration)
-            => constructorDeclaration.Name == nameof(TestClass<int>.NestedTestStruct) && constructorDeclaration.DeclaringType.Name == nameof(TestClass<int>.NestedTestStruct) && constructorDeclaration.DeclaringType.DeclaringType.Name == nameof(TestClass<int>);
+            => constructorDeclaration.Name == "NestedTestStruct" && constructorDeclaration.DeclaringType.Name == "NestedTestStruct" && constructorDeclaration.DeclaringType.DeclaringType.Name == nameof(TestStruct<int>);
 
         [Fact]
         public void HasNameSet()
@@ -19,7 +20,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests.NestedTestStructTests
 
         [Fact]
         public void HasDeclartingTypeSet()
-            => Assert.True(typeof(TestClass<>.NestedTestStruct) == DeclarationNode.DeclaringType);
+            => Assert.True(typeof(TestStruct<>).GetNestedType("NestedTestStruct", BindingFlags.NonPublic) == DeclarationNode.DeclaringType);
 
         [Fact]
         public void HasCircularReferenceSet()

@@ -1,17 +1,18 @@
-﻿using CodeMap.DeclarationNodes;
+﻿using System;
+using CodeMap.DeclarationNodes;
 using CodeMap.Tests.Data;
 using Xunit;
 
-namespace CodeMap.Tests.DeclarationNodes.TestClassTests.NestedTestStructTests
+namespace CodeMap.Tests.DeclarationNodes.TestStructTests
 {
-    public class TestClassNestedTestStructConstructorDeclarationTests : DeclarationNodeTests<ConstructorDeclaration>
+    public class TestStructConstructorDeclarationTests : DeclarationNodeTests<ConstructorDeclaration>
     {
         protected override bool DeclarationNodePredicate(ConstructorDeclaration constructorDeclaration)
-            => constructorDeclaration.Name == nameof(TestClass<int>.NestedTestStruct) && constructorDeclaration.DeclaringType.Name == nameof(TestClass<int>.NestedTestStruct) && constructorDeclaration.DeclaringType.DeclaringType.Name == nameof(TestClass<int>);
+            => constructorDeclaration.Name == nameof(TestStruct<int>) && constructorDeclaration.Parameters.Count == 1 && constructorDeclaration.DeclaringType.Name == nameof(TestStruct<int>);
 
         [Fact]
         public void HasNameSet()
-            => Assert.Equal("NestedTestStruct", DeclarationNode.Name);
+            => Assert.Equal("TestStruct", DeclarationNode.Name);
 
         [Fact]
         public void HasAccessModifierSet()
@@ -19,19 +20,27 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests.NestedTestStructTests
 
         [Fact]
         public void HasDeclartingTypeSet()
-            => Assert.True(typeof(TestClass<>.NestedTestStruct) == DeclarationNode.DeclaringType);
+            => Assert.True(typeof(TestStruct<>) == DeclarationNode.DeclaringType);
 
         [Fact]
         public void HasCircularReferenceSet()
             => Assert.Single(Assert.IsType<StructDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
-            => Assert.Empty(DeclarationNode.Attributes);
+        public void HasAttributesSet()
+            => Assert.Single(DeclarationNode.Attributes);
 
         [Fact]
-        public void HasNoParameters()
-            => Assert.Empty(DeclarationNode.Parameters);
+        public void HasTestAttribute()
+            => AssertAttribute<TestAttribute>(
+                DeclarationNode.Attributes,
+                new (string, object, Type)[] { ("value1", "struct constructor test 1", typeof(object)) },
+                new (string, object, Type)[] { ("Value2", "struct constructor test 2", typeof(object)), ("Value3", "struct constructor test 3", typeof(object)) }
+            );
+
+        [Fact]
+        public void HasParametersSet()
+            => Assert.Single(DeclarationNode.Parameters);
 
         [Fact]
         public void HasEmptySummary()
