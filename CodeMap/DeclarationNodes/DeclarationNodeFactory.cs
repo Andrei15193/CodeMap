@@ -492,9 +492,9 @@ namespace CodeMap.DeclarationNodes
                 DeclaringType = declaringType,
                 IsStatic = methodInfo.IsStatic,
                 IsAbstract = methodInfo.IsAbstract && !@event.DeclaringType.IsInterface,
-                IsVirtual = !methodInfo.IsAbstract && methodInfo.IsVirtual && methodInfo.GetBaseDefinition() == methodInfo,
+                IsVirtual = !methodInfo.IsAbstract && !methodInfo.IsFinal && methodInfo.IsVirtual && methodInfo.GetBaseDefinition() == methodInfo,
                 IsOverride = methodInfo.IsVirtual && methodInfo.GetBaseDefinition() != methodInfo,
-                IsSealed = methodInfo.IsFinal,
+                IsSealed = methodInfo.IsVirtual && methodInfo.GetBaseDefinition() != methodInfo && methodInfo.IsFinal,
                 IsShadowing = (!methodInfo.IsVirtual || methodInfo.GetBaseDefinition() == methodInfo) && _IsShadowing(@event),
                 Adder = _GetEventAccessorData(@event.AddMethod),
                 Remover = _GetEventAccessorData(@event.RemoveMethod),
@@ -535,9 +535,9 @@ namespace CodeMap.DeclarationNodes
                 DeclaringType = declaringType,
                 IsStatic = methodInfo.IsStatic,
                 IsAbstract = methodInfo.IsAbstract && !property.DeclaringType.IsInterface,
-                IsVirtual = !methodInfo.IsAbstract && methodInfo.IsVirtual && methodInfo.GetBaseDefinition() == methodInfo,
+                IsVirtual = !methodInfo.IsAbstract && !methodInfo.IsFinal && methodInfo.IsVirtual && methodInfo.GetBaseDefinition() == methodInfo,
                 IsOverride = methodInfo.IsVirtual && methodInfo.GetBaseDefinition() != methodInfo,
-                IsSealed = methodInfo.IsFinal,
+                IsSealed = methodInfo.IsVirtual && methodInfo.GetBaseDefinition() != methodInfo && methodInfo.IsFinal,
                 IsShadowing = (!methodInfo.IsVirtual || methodInfo.GetBaseDefinition() == methodInfo) && _IsShadowing(property),
                 Getter = getterInfo,
                 Setter = setterInfo,
@@ -575,9 +575,9 @@ namespace CodeMap.DeclarationNodes
                 DeclaringType = declaringType,
                 IsStatic = method.IsStatic,
                 IsAbstract = method.IsAbstract && !method.DeclaringType.IsInterface,
-                IsVirtual = !method.IsAbstract && method.IsVirtual && method.GetBaseDefinition() == method,
+                IsVirtual = !method.IsAbstract && !method.IsFinal && method.IsVirtual && method.GetBaseDefinition() == method,
                 IsOverride = method.IsVirtual && method.GetBaseDefinition() != method,
-                IsSealed = method.IsFinal,
+                IsSealed = method.IsVirtual && method.GetBaseDefinition() != method && method.IsFinal,
                 IsShadowing = (!method.IsVirtual || method.GetBaseDefinition() == method) && _IsShadowing(method),
                 Parameters = method
                     .GetParameters()
@@ -671,22 +671,13 @@ namespace CodeMap.DeclarationNodes
         private bool _IsShadowing(MemberInfo memberInfo)
         {
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
-            var inheritedMembers = memberInfo
-                .DeclaringType
-                .GetInterfaces()
-                .SelectMany(baseInterface => baseInterface.GetMembers(bindingFlags));
+            var inheritedMembers = memberInfo.DeclaringType.IsInterface
+                ? memberInfo.DeclaringType.GetInterfaces().SelectMany(baseInterface => baseInterface.GetMembers(bindingFlags))
+                : memberInfo.DeclaringType.BaseType.GetMembers(bindingFlags);
 
-
-            if (memberInfo.DeclaringType.BaseType != null)
-                inheritedMembers = inheritedMembers.Concat(
-                    memberInfo
-                        .DeclaringType
-                        .BaseType
-                        .GetMembers(bindingFlags)
-                );
-
-            return memberInfo is MethodInfo methodInfo
-                ? inheritedMembers
+            return memberInfo switch
+            {
+                MethodInfo methodInfo => inheritedMembers
                     .OfType<MethodInfo>()
                     .Any(
                         inheritedMethodInfo =>
@@ -694,16 +685,20 @@ namespace CodeMap.DeclarationNodes
                             && methodInfo
                                 .GetParameters()
                                 .Select(parameter => _UnwrapeByRef(parameter.ParameterType))
-                                .SequenceEqual(
-                                    inheritedMethodInfo
-                                        .GetParameters()
-                                        .Select(parameter => _UnwrapeByRef(parameter.ParameterType))
-                                )
-                    )
-                : inheritedMembers.Any(
-                    inheritedMemberInfo =>
-                        string.Equals(memberInfo.Name, inheritedMemberInfo.Name, StringComparison.OrdinalIgnoreCase)
-                );
+                                .SequenceEqual(inheritedMethodInfo.GetParameters().Select(parameter => _UnwrapeByRef(parameter.ParameterType)))
+                    ),
+                PropertyInfo propertyInfo => inheritedMembers
+                    .OfType<PropertyInfo>()
+                    .Any(
+                        inheritedMethodInfo =>
+                            string.Equals(propertyInfo.Name, inheritedMethodInfo.Name, StringComparison.OrdinalIgnoreCase)
+                            && propertyInfo
+                                .GetIndexParameters()
+                                .Select(parameter => _UnwrapeByRef(parameter.ParameterType))
+                                .SequenceEqual(inheritedMethodInfo.GetIndexParameters().Select(parameter => _UnwrapeByRef(parameter.ParameterType)))
+                    ),
+                _ => inheritedMembers.Any(inheritedMemberInfo => string.Equals(memberInfo.Name, inheritedMemberInfo.Name, StringComparison.OrdinalIgnoreCase))
+            };
         }
 
         private IReadOnlyList<GenericTypeParameterData> _MapTypeGenericParameters(Type type, TypeDeclaration declaringDocumentationElement, MemberDocumentation memberDocumentation)
