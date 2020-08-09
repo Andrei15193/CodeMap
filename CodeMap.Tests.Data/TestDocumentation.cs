@@ -4,7 +4,7 @@
     public class TestDocumentation
     {
         /// <summary/>
-        int Member { get; }
+        public int Member { get; }
 
         /// <summary>
         /// plain text
@@ -119,6 +119,8 @@
         ///     <item test="item" test2="old description"></item>
         /// </list>
         /// </summary>
+        /// <typeparam name="GenericParameter">Some <c>code</c>, and a <see cref="Member"/> reference.</typeparam>
+        /// <param name="parameter">Some <c>code</c>, just for testing.</param>
         public void TestMethod<GenericParameter>(int parameter)
         {
         }
