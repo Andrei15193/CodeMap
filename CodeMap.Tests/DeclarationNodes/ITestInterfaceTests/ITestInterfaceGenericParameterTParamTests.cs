@@ -41,7 +41,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
             => Assert.False(GenericParameter.HasReferenceTypeConstraint);
 
         [Fact]
-        public void HasTypeConstraintsSet()
+        public void HasNoTypeConstraints()
             => Assert.Empty(GenericParameter.TypeConstraints);
 
         [Fact]

@@ -2,19 +2,19 @@
 using CodeMap.Tests.Data;
 using Xunit;
 
-namespace CodeMap.Tests.DeclarationNodes.TestDelegateTests
+namespace CodeMap.Tests.DeclarationNodes.TestDocumentationTests
 {
-    public class TestDelegateGenericParameterTParamTests : DeclarationNodeTests<DelegateDeclaration>
+    public class TestDocumentationTestMethodGenericParameterGenericParameterTests : DeclarationNodeTests<MethodDeclaration>
     {
-        protected override bool DeclarationNodePredicate(DelegateDeclaration delegateDeclaration)
-            => delegateDeclaration.Name == nameof(TestDelegate<int>);
+        protected override bool DeclarationNodePredicate(MethodDeclaration methodDeclaration)
+            => methodDeclaration.Name == nameof(TestDocumentation.TestMethod) && methodDeclaration.DeclaringType.Name == nameof(TestDocumentation);
 
         protected GenericParameterData GenericParameter
             => Assert.Single(DeclarationNode.GenericParameters);
 
         [Fact]
         public void HasNameSet()
-            => Assert.Equal("TParam", GenericParameter.Name);
+            => Assert.Equal("GenericParameter", GenericParameter.Name);
 
         [Fact]
         public void HasPositionSet()
@@ -45,7 +45,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestDelegateTests
             => Assert.Empty(GenericParameter.TypeConstraints);
 
         [Fact]
-        public void HasEmptyDescription()
-            => Assert.Empty(GenericParameter.Description);
+        public void HasDescriptionSet()
+            => Assert.NotEmpty(GenericParameter.Description);
     }
 }
