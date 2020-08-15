@@ -186,36 +186,33 @@ namespace CodeMap.DocumentationElements
             .ToReadOnlyList();
 
         private static IReadOnlyDictionary<string, string> _ReadXmlAttributes(XElement xmlElement)
-            => xmlElement
-                .Attributes()
-                .ToDictionary(
-                    attribute => attribute.Name.LocalName,
-                    attribute => attribute.Value,
-                    StringComparer.Ordinal
-                );
+            => xmlElement.Attributes().Any()
+            ? xmlElement.Attributes().ToDictionary(attribute => attribute.Name.LocalName, attribute => attribute.Value, StringComparer.Ordinal)
+            : Extensions.EmptyDictionary<string, string>();
 
         private static IReadOnlyDictionary<string, string> _ReadXmlAttributes(IEnumerable<XElement> xmlElements)
-            => xmlElements
+            => xmlElements.Attributes().Any()
+            ? xmlElements
                 .Attributes()
                 .GroupBy(attribute => attribute.Name.LocalName, StringComparer.Ordinal)
-                .ToDictionary(
-                    attributesByName => attributesByName.Key,
-                    attributesByName => attributesByName.First().Value,
-                    StringComparer.Ordinal
-                );
+                .ToDictionary(attributesByName => attributesByName.Key, attributesByName => attributesByName.First().Value, StringComparer.Ordinal)
+            : Extensions.EmptyDictionary<string, string>();
 
         private static IReadOnlyDictionary<string, string> _ReadXmlAttributesExcept(XElement xmlElement, string attributeLocalName)
-            => xmlElement
+            => xmlElement.Attributes().Any(attribute => attribute.Name.LocalName != attributeLocalName)
+            ? xmlElement
                 .Attributes()
                 .Where(attribute => attribute.Name.LocalName != attributeLocalName)
                 .ToDictionary(
                     attribute => attribute.Name.LocalName,
                     attribute => attribute.Value,
                     StringComparer.Ordinal
-                );
+                )
+            : Extensions.EmptyDictionary<string, string>();
 
         private static IReadOnlyDictionary<string, string> _ReadXmlAttributesExcept(IEnumerable<XElement> xmlElements, string attributeLocalName)
-            => xmlElements
+            => xmlElements.Attributes().Any(attribute => attribute.Name.LocalName != attributeLocalName)
+            ? xmlElements
                 .Attributes()
                 .Where(attribute => attribute.Name.LocalName != attributeLocalName)
                 .GroupBy(attribute => attribute.Name.LocalName, StringComparer.Ordinal)
@@ -223,7 +220,8 @@ namespace CodeMap.DocumentationElements
                     attributesByName => attributesByName.Key,
                     attributesByName => attributesByName.First().Value,
                     StringComparer.Ordinal
-                );
+                )
+            : Extensions.EmptyDictionary<string, string>();
 
         private IReadOnlyList<BlockDocumentationElement> _ReadBlocks(XElement sectionXmlElement)
         {
