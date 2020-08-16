@@ -9,18 +9,8 @@ namespace CodeMap.Tests.DocumentationElements
         [Fact]
         public void NullListsInitializesWithEmptyOnes()
         {
-            var memberDocumentation = new MemberDocumentation(
-                "canonical name",
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-            );
+            var memberDocumentation = new MemberDocumentation("canonical name", null, null, null, null, null, null, null, null, null);
+
             Assert.Empty(memberDocumentation.Examples);
             Assert.Empty(memberDocumentation.Exceptions);
             Assert.Empty(memberDocumentation.GenericParameters);
@@ -32,21 +22,8 @@ namespace CodeMap.Tests.DocumentationElements
         [Fact]
         public void ConstructorThrowsExceptionForNullCanonicalName()
         {
-            var exception = Assert.Throws<ArgumentNullException>(
-                "canonicalName",
-                () => new MemberDocumentation(
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                )
-            );
+            var exception = Assert.Throws<ArgumentNullException>("canonicalName", () => new MemberDocumentation(null, null, null, null, null, null, null, null, null, null));
+
             Assert.Equal(new ArgumentNullException("canonicalName").Message, exception.Message);
         }
     }
