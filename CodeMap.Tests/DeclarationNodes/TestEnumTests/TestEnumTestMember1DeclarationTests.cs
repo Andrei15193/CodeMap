@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestEnumTests
 {
-    public class TestEnumTestMember1DeclarationTests : DeclarationNodeTests<ConstantDeclaration>
+    public class TestEnumTestMember1DeclarationTests : DeclarationNodeTests<ConstantDeclaration>, IConstantDeclarationTests
     {
         protected override bool DeclarationNodePredicate(ConstantDeclaration constantDeclaration)
             => constantDeclaration.Name == nameof(TestEnum.TestMember1);
@@ -68,19 +68,19 @@ namespace CodeMap.Tests.DeclarationNodes.TestEnumTests
             => Assert.Equal(TestEnum.TestMember1, DeclarationNode.Value);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]

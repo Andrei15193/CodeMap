@@ -5,7 +5,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
 {
-    public class ITestInterfaceTestMethodParameterParamTests : DeclarationNodeTests<MethodDeclaration>
+    public class ITestInterfaceTestMethodParameterParamTests : DeclarationNodeTests<MethodDeclaration>, IParameterDataTests
     {
         protected override bool DeclarationNodePredicate(MethodDeclaration methodDeclaration)
             => methodDeclaration.Name == nameof(ITestInterface<int>.TestMethod) && methodDeclaration.DeclaringType.Name == nameof(ITestInterface<int>);
@@ -54,7 +54,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
             => Assert.True(typeof(int) == Parameter.Type);
 
         [Fact]
-        public void HasEmptyDescription()
+        public void HasDescriptionSet()
             => Assert.Empty(Parameter.Description);
     }
 }

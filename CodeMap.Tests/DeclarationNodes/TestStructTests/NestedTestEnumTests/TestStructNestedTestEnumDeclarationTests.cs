@@ -5,7 +5,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestEnumTests
 {
-    public class TestStructNestedTestEnumDeclarationTests : DeclarationNodeTests<EnumDeclaration>
+    public class TestStructNestedTestEnumDeclarationTests : DeclarationNodeTests<EnumDeclaration>, IEnumDeclarationTests
     {
         protected override bool DeclarationNodePredicate(EnumDeclaration enumDeclaration)
             => enumDeclaration.Name == "NestedTestEnum" && enumDeclaration.DeclaringType.Name == nameof(TestStruct<int>);
@@ -42,7 +42,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestEnumTests
             => Assert.True(typeof(int) == DeclarationNode.UnderlyingType);
 
         [Fact]
-        public void HasDeclaringType()
+        public void HasDeclaringTypeSet()
             => Assert.NotNull(DeclarationNode.DeclaringType);
 
         [Fact]
@@ -50,7 +50,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestEnumTests
             => Assert.Single(Assert.IsType<StructDeclaration>(DeclarationNode.DeclaringType).NestedTypes, type => ReferenceEquals(type, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
@@ -58,19 +58,19 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestEnumTests
             => Assert.Empty(DeclarationNode.Members);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]

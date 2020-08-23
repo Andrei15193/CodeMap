@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestStructTests
 {
-    public class TestStructNestedTestStructDeclarationTests : DeclarationNodeTests<StructDeclaration>
+    public class TestStructNestedTestStructDeclarationTests : DeclarationNodeTests<StructDeclaration>, IStructDefitionTests
     {
         protected override bool DeclarationNodePredicate(StructDeclaration structDeclaration)
             => structDeclaration.Name == "NestedTestStruct" && structDeclaration.DeclaringType.Name == nameof(TestStruct<int>);
@@ -47,15 +47,15 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestStructTests
             => Assert.Single(Assert.IsType<StructDeclaration>(DeclarationNode.DeclaringType).NestedTypes, type => ReferenceEquals(type, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
-        public void HasNoGenericParameters()
+        public void HasGenericParametersSet()
             => Assert.Empty(DeclarationNode.GenericParameters);
 
         [Fact]
-        public void HasNoImplementedInterfaces()
+        public void HasImplementedInterfacesSet()
             => Assert.Empty(DeclarationNode.ImplementedInterfaces);
 
         [Fact]
@@ -66,11 +66,11 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestStructTests
             );
 
         [Fact]
-        public void HasNoConstants()
+        public void HasConstantsSet()
             => Assert.Empty(DeclarationNode.Constants);
 
         [Fact]
-        public void HasNoFields()
+        public void HasFieldsSet()
             => Assert.Empty(DeclarationNode.Fields);
 
         [Fact]
@@ -78,15 +78,15 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestStructTests
             => Assert.Single(DeclarationNode.Constructors);
 
         [Fact]
-        public void HasNoEvents()
+        public void HasEventsSet()
             => Assert.Empty(DeclarationNode.Events);
 
         [Fact]
-        public void HasNoProperties()
+        public void HasPropertiesSet()
             => Assert.Empty(DeclarationNode.Properties);
 
         [Fact]
-        public void HasNoMethods()
+        public void HasMethodsSet()
             => Assert.Empty(DeclarationNode.Methods);
 
         [Fact]
@@ -97,39 +97,39 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestStructTests
             );
 
         [Fact]
-        public void HasNoNestedEnums()
+        public void HasNestedEnumsSet()
             => Assert.Empty(DeclarationNode.NestedEnums);
 
         [Fact]
-        public void HasNoNestedDelegates()
+        public void HasNestedDelegatesSet()
             => Assert.Empty(DeclarationNode.NestedDelegates);
 
         [Fact]
-        public void HasNoNestedInterfaces()
+        public void HasNestedInterfacesSet()
             => Assert.Empty(DeclarationNode.NestedInterfaces);
 
         [Fact]
-        public void HasNoNestedClasses()
+        public void HasNestedClassesSet()
             => Assert.Empty(DeclarationNode.NestedClasses);
 
         [Fact]
-        public void HasNoNestedStructs()
+        public void HasNestedStructsSet()
             => Assert.Empty(DeclarationNode.NestedStructs);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]

@@ -4,7 +4,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestAttributeTests
 {
-    public class TestAttributeConstructorParameterParamTests : DeclarationNodeTests<ConstructorDeclaration>
+    public class TestAttributeConstructorParameterParamTests : DeclarationNodeTests<ConstructorDeclaration>, IParameterDataTests
     {
         protected override bool DeclarationNodePredicate(ConstructorDeclaration constructorDeclaration)
             => constructorDeclaration.Name == nameof(TestAttribute) && constructorDeclaration.DeclaringType.Name == nameof(TestAttribute);
@@ -17,7 +17,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestAttributeTests
             => Assert.Equal("value1", Parameter.Name);
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(Parameter.Attributes);
 
         [Fact]
@@ -45,7 +45,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestAttributeTests
             => Assert.True(typeof(object) == Parameter.Type);
 
         [Fact]
-        public void HasEmptyDescription()
+        public void HasDescriptionSet()
             => Assert.Empty(Parameter.Description);
     }
 }

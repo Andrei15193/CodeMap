@@ -11,7 +11,7 @@ using static System.Diagnostics.DebuggableAttribute;
 
 namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
 {
-    public class AssemblyDeclarationTests : DeclarationNodeTests<AssemblyDeclaration>
+    public class AssemblyDeclarationTests : DeclarationNodeTests<AssemblyDeclaration>, IAssemblyDeclarationTests
     {
         protected override bool DeclarationNodePredicate(AssemblyDeclaration assemblyDeclaration)
             => true;
@@ -52,12 +52,12 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
             => Assert.Equal("CodeMap.Tests.Data", DeclarationNode.Name);
 
         [Fact]
-        public void HasCultureSetToEmptyString()
+        public void HasCultureSet()
             => Assert.Empty(DeclarationNode.Culture);
 
 #if DEBUG
         [Fact]
-        public void HasPublicKeyTokenSetToEmptyString()
+        public void HasPublicKeyTokenSet()
             => Assert.Empty(DeclarationNode.PublicKeyToken);
 #else
         [Fact]
@@ -171,19 +171,19 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
                 && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]

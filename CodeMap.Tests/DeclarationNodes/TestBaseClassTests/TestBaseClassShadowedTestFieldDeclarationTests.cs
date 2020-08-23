@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestBaseClassTests
 {
-    public class TestBaseClassShadowedTestFieldDeclarationTests : DeclarationNodeTests<FieldDeclaration>
+    public class TestBaseClassShadowedTestFieldDeclarationTests : DeclarationNodeTests<FieldDeclaration>, IFieldDeclarationTests
     {
         protected override bool DeclarationNodePredicate(FieldDeclaration fieldDeclaration)
             => fieldDeclaration.Name == "ShadowedTestField" && fieldDeclaration.DeclaringType.Name == nameof(TestBaseClass);
@@ -40,7 +40,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestBaseClassTests
             => Assert.Single(Assert.IsType<ClassDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
@@ -56,7 +56,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestBaseClassTests
             => Assert.False(DeclarationNode.IsReadOnly);
 
         [Fact]
-        public void HasIsStaticgSet()
+        public void HasIsStaticSet()
             => Assert.False(DeclarationNode.IsStatic);
 
         [Fact]
@@ -64,19 +64,19 @@ namespace CodeMap.Tests.DeclarationNodes.TestBaseClassTests
             => Assert.True(typeof(int) == DeclarationNode.Type);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]

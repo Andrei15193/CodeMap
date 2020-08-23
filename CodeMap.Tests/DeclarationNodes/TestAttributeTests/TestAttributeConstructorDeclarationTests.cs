@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestAttributeTests
 {
-    public class TestAttributeConstructorDeclarationTests : DeclarationNodeTests<ConstructorDeclaration>
+    public class TestAttributeConstructorDeclarationTests : DeclarationNodeTests<ConstructorDeclaration>, IConstructorDeclarationTests
     {
         protected override bool DeclarationNodePredicate(ConstructorDeclaration constructorDeclaration)
             => constructorDeclaration.Name == nameof(TestAttribute) && constructorDeclaration.DeclaringType.Name == nameof(TestAttribute);
@@ -44,7 +44,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestAttributeTests
             => Assert.Single(Assert.IsType<ClassDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
@@ -52,23 +52,23 @@ namespace CodeMap.Tests.DeclarationNodes.TestAttributeTests
             => Assert.Single(DeclarationNode.Parameters);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]
-        public void HasEmptyExceptions()
+        public void HasExceptionsSet()
             => Assert.Empty(DeclarationNode.Exceptions);
 
         [Fact]

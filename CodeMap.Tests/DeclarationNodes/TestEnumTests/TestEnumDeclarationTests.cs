@@ -5,7 +5,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestEnumTests
 {
-    public class TestEnumDeclarationTests : DeclarationNodeTests<EnumDeclaration>
+    public class TestEnumDeclarationTests : DeclarationNodeTests<EnumDeclaration>, IEnumDeclarationTests
     {
         protected override bool DeclarationNodePredicate(EnumDeclaration enumDeclaration)
             => enumDeclaration.Name == nameof(TestEnum);
@@ -58,7 +58,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestEnumTests
             );
 
         [Fact]
-        public void HasNoDeclaringType()
+        public void HasDeclaringTypeSet()
             => Assert.Null(DeclarationNode.DeclaringType);
 
         [Fact]
@@ -66,19 +66,19 @@ namespace CodeMap.Tests.DeclarationNodes.TestEnumTests
             => Assert.Equal(3, DeclarationNode.Members.Count);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestStructTests
 {
-    public class TestStructReadonlyTestFieldDeclarationTests : DeclarationNodeTests<FieldDeclaration>
+    public class TestStructReadonlyTestFieldDeclarationTests : DeclarationNodeTests<FieldDeclaration>, IFieldDeclarationTests
     {
         protected override bool DeclarationNodePredicate(FieldDeclaration fieldDeclaration)
             => fieldDeclaration.Name == "ReadonlyTestField" && fieldDeclaration.DeclaringType.Name == nameof(TestStruct<int>);
@@ -40,7 +40,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests
             => Assert.Single(Assert.IsType<StructDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
@@ -64,19 +64,19 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests
             => Assert.True(typeof(char) == DeclarationNode.Type);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]

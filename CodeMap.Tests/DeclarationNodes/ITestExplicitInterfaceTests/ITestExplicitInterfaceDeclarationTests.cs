@@ -5,7 +5,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.ITestExplicitInterfaceTests
 {
-    public class ITestExplicitInterfaceDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>
+    public class ITestExplicitInterfaceDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>, IInterfaceDeclarationTests
     {
         protected override bool DeclarationNodePredicate(InterfaceDeclaration interfaceDeclaration)
             => interfaceDeclaration.Name == nameof(ITestExplicitInterface);
@@ -42,19 +42,19 @@ namespace CodeMap.Tests.DeclarationNodes.ITestExplicitInterfaceTests
             => Assert.Single(DeclarationNode.Namespace.DeclaredTypes, type => ReferenceEquals(type, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
-        public void HasNoGenericParameters()
+        public void HasGenericParametersSet()
             => Assert.Empty(DeclarationNode.GenericParameters);
 
         [Fact]
-        public void HasNoBaseInterfaces()
+        public void HasBaseInterfacesSet()
             => Assert.Empty(DeclarationNode.BaseInterfaces);
 
         [Fact]
-        public void HasNoDeclaringType()
+        public void HasDeclaringTypeSet()
             => Assert.Null(DeclarationNode.DeclaringType);
 
         [Fact]
@@ -77,19 +77,19 @@ namespace CodeMap.Tests.DeclarationNodes.ITestExplicitInterfaceTests
             => Assert.Single(DeclarationNode.Methods);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]

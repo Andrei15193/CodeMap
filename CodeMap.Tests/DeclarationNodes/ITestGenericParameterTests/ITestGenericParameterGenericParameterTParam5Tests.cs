@@ -5,7 +5,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
 {
-    public class ITestGenericParameterGenericParameterTParam5Tests : DeclarationNodeTests<InterfaceDeclaration>
+    public class ITestGenericParameterGenericParameterTParam5Tests : DeclarationNodeTests<InterfaceDeclaration>, IGenericParameterDataTests
     {
         protected override bool DeclarationNodePredicate(InterfaceDeclaration interfaceDeclaration)
             => interfaceDeclaration.Name == nameof(ITestGenericParameter<int, string, int, int, int, int>);
@@ -53,7 +53,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
             );
 
         [Fact]
-        public void HasEmptyDescription()
+        public void HasDescriptionSet()
             => Assert.Empty(GenericParameter.Description);
     }
 }

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestDocumentationTests
 {
-    public class TestDocumentationTestMethodDeclarationTests : DeclarationNodeTests<MethodDeclaration>
+    public class TestDocumentationTestMethodDeclarationTests : DeclarationNodeTests<MethodDeclaration>, IMethodDeclarationTests
     {
         protected override bool DeclarationNodePredicate(MethodDeclaration methodDeclaration)
             => methodDeclaration.Name == nameof(TestDocumentation.TestMethod) && methodDeclaration.DeclaringType.Name == nameof(TestDocumentation);
@@ -44,7 +44,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestDocumentationTests
             => Assert.Single(Assert.IsType<ClassDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
@@ -80,7 +80,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestDocumentationTests
             => Assert.Single(DeclarationNode.Parameters);
 
         [Fact]
-        public void HasNoReturnAttributes()
+        public void HasReturnAttributesSet()
             => Assert.Empty(DeclarationNode.Return.Attributes);
 
         [Fact]
@@ -92,23 +92,23 @@ namespace CodeMap.Tests.DeclarationNodes.TestDocumentationTests
             => Assert.NotEmpty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]
-        public void HasEmptyReturnDescription()
+        public void HasReturnDescriptionSet()
             => Assert.Empty(DeclarationNode.Return.Description);
 
         [Fact]
-        public void HasEmptyExceptions()
+        public void HasExceptionsSet()
             => Assert.Empty(DeclarationNode.Exceptions);
 
         [Fact]

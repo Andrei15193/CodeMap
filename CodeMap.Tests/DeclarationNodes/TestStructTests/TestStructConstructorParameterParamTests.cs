@@ -5,7 +5,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestStructTests
 {
-    public class TestStructConstructorParameterParamTests : DeclarationNodeTests<ConstructorDeclaration>
+    public class TestStructConstructorParameterParamTests : DeclarationNodeTests<ConstructorDeclaration>, IParameterDataTests
     {
         protected override bool DeclarationNodePredicate(ConstructorDeclaration constructorDeclaration)
             => constructorDeclaration.Name == nameof(TestStruct<int>) && constructorDeclaration.Parameters.Count == 1 && constructorDeclaration.DeclaringType.Name == nameof(TestStruct<int>);
@@ -54,7 +54,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests
             => Assert.True(typeof(int) == Parameter.Type);
 
         [Fact]
-        public void HasEmptyDescription()
+        public void HasDescriptionSet()
             => Assert.Empty(Parameter.Description);
     }
 }

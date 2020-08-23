@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestExplicitClassTests
 {
-    public class TestExplicitClassTestMethodDeclarationTests : DeclarationNodeTests<MethodDeclaration>
+    public class TestExplicitClassTestMethodDeclarationTests : DeclarationNodeTests<MethodDeclaration>, IMethodDeclarationTests
     {
         protected override bool DeclarationNodePredicate(MethodDeclaration methodDeclaration)
             => methodDeclaration.Name == typeof(ITestExplicitInterface).Namespace + "." + nameof(ITestExplicitInterface) + "." + nameof(ITestExplicitInterface.TestMethod) && methodDeclaration.DeclaringType.Name == nameof(TestExplicitClass);
@@ -44,7 +44,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestExplicitClassTests
             => Assert.Single(Assert.IsType<ClassDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
@@ -72,11 +72,15 @@ namespace CodeMap.Tests.DeclarationNodes.TestExplicitClassTests
             => Assert.False(DeclarationNode.IsVirtual);
 
         [Fact]
-        public void HasNoParameters()
+        public void HasGenericParametersSet()
+            => Assert.Empty(DeclarationNode.GenericParameters);
+
+        [Fact]
+        public void HasParametersSet()
             => Assert.Empty(DeclarationNode.Parameters);
 
         [Fact]
-        public void HasNoReturnAttributes()
+        public void HasReturnAttributesSet()
             => Assert.Empty(DeclarationNode.Return.Attributes);
 
         [Fact]
@@ -84,27 +88,27 @@ namespace CodeMap.Tests.DeclarationNodes.TestExplicitClassTests
             => Assert.True(typeof(void) == DeclarationNode.Return.Type);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]
-        public void HasEmptyReturnDescription()
+        public void HasReturnDescriptionSet()
             => Assert.Empty(DeclarationNode.Return.Description);
 
         [Fact]
-        public void HasEmptyExceptions()
+        public void HasExceptionsSet()
             => Assert.Empty(DeclarationNode.Exceptions);
 
         [Fact]

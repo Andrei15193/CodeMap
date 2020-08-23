@@ -4,7 +4,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestDocumentationTests
 {
-    public class TestDocumentationTestMethodParameterParamTests : DeclarationNodeTests<MethodDeclaration>
+    public class TestDocumentationTestMethodParameterParamTests : DeclarationNodeTests<MethodDeclaration>, IParameterDataTests
     {
         protected override bool DeclarationNodePredicate(MethodDeclaration methodDeclaration)
             => methodDeclaration.Name == nameof(TestDocumentation.TestMethod) && methodDeclaration.DeclaringType.Name == nameof(TestDocumentation);
@@ -17,7 +17,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestDocumentationTests
             => Assert.Equal("parameter", Parameter.Name);
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(Parameter.Attributes);
 
         [Fact]

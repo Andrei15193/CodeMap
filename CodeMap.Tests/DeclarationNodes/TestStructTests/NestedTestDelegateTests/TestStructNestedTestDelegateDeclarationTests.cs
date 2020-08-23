@@ -5,7 +5,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestDelegateTests
 {
-    public class TestStructNestedTestDelegateDeclarationTests : DeclarationNodeTests<DelegateDeclaration>
+    public class TestStructNestedTestDelegateDeclarationTests : DeclarationNodeTests<DelegateDeclaration>, IDelegateDeclarationTests
     {
         protected override bool DeclarationNodePredicate(DelegateDeclaration delegateDeclaration)
             => delegateDeclaration.Name == "NestedTestDelegate" && delegateDeclaration.DeclaringType.Name == nameof(TestStruct<int>);
@@ -46,19 +46,19 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestDelegateTests
             => Assert.Single(Assert.IsType<StructDeclaration>(DeclarationNode.DeclaringType).NestedTypes, type => ReferenceEquals(type, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
-        public void HasNoGenericParameters()
+        public void HasGenericParametersSet()
             => Assert.Empty(DeclarationNode.GenericParameters);
 
         [Fact]
-        public void HasNoParameters()
+        public void HasParametersSet()
             => Assert.Empty(DeclarationNode.Parameters);
 
         [Fact]
-        public void HasNoReturn()
+        public void HasReturnAttributes()
             => Assert.Empty(DeclarationNode.Return.Attributes);
 
         [Fact]
@@ -66,27 +66,27 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestDelegateTests
             => Assert.True(typeof(void) == DeclarationNode.Return.Type);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]
-        public void HasReturnDescription()
+        public void HasReturnDescriptionSet()
             => Assert.Empty(DeclarationNode.Return.Description);
 
         [Fact]
-        public void HasEmptyExceptions()
+        public void HasExceptionsSet()
             => Assert.Empty(DeclarationNode.Exceptions);
 
         [Fact]

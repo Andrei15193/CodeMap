@@ -4,7 +4,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestClassTests
 {
-    public class TestClassGenericParameterTParamTests : DeclarationNodeTests<ClassDeclaration>
+    public class TestClassGenericParameterTParamTests : DeclarationNodeTests<ClassDeclaration>, IGenericParameterDataTests
     {
         protected override bool DeclarationNodePredicate(ClassDeclaration classDeclaration)
             => classDeclaration.Name == nameof(TestClass<int>);
@@ -41,11 +41,11 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
             => Assert.False(GenericParameter.HasReferenceTypeConstraint);
 
         [Fact]
-        public void HasNoTypeConstraints()
+        public void HasTypeConstraintsSet()
             => Assert.Empty(GenericParameter.TypeConstraints);
 
         [Fact]
-        public void HasEmptyDescription()
+        public void HasDescriptionSet()
             => Assert.Empty(GenericParameter.Description);
     }
 }

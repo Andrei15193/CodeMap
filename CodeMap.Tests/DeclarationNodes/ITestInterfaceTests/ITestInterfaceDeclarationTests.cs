@@ -7,7 +7,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
 {
-    public class ITestInterfaceDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>
+    public class ITestInterfaceDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>, IInterfaceDeclarationTests
     {
         protected override bool DeclarationNodePredicate(InterfaceDeclaration interfaceDeclaration)
             => interfaceDeclaration.Name == nameof(ITestInterface<int>);
@@ -76,7 +76,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
             => Assert.Single(DeclarationNode.BaseInterfaces, baseInterface => baseInterface == typeof(ITestExtendedBaseInterface));
 
         [Fact]
-        public void HasNoDeclaringType()
+        public void HasDeclaringTypeSet()
             => Assert.Null(DeclarationNode.DeclaringType);
 
         [Fact]
@@ -99,19 +99,19 @@ namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
             => Assert.Equal(2, DeclarationNode.Methods.Count);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]

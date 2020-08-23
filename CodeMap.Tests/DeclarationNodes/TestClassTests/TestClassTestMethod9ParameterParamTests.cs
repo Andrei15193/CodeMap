@@ -7,7 +7,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestClassTests
 {
-    public class TestClassTestMethod9ParameterParamTests : DeclarationNodeTests<MethodDeclaration>
+    public class TestClassTestMethod9ParameterParamTests : DeclarationNodeTests<MethodDeclaration>, IParameterDataTests
     {
         protected override bool DeclarationNodePredicate(MethodDeclaration methodDeclaration)
             => methodDeclaration.Name == nameof(TestClass<int>.TestMethod9) && methodDeclaration.DeclaringType.Name == nameof(TestClass<int>);
@@ -56,7 +56,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
             => Assert.True(typeof(int) == Parameter.Type);
 
         [Fact]
-        public void HasEmptyDescription()
+        public void HasDescriptionSet()
             => Assert.Empty(Parameter.Description);
     }
 }

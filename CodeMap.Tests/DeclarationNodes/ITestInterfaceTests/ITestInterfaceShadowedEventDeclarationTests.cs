@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
 {
-    public class ITestInterfaceShadowedEventDeclarationTests : DeclarationNodeTests<EventDeclaration>
+    public class ITestInterfaceShadowedEventDeclarationTests : DeclarationNodeTests<EventDeclaration>, IEventDeclarationTests
     {
         protected override bool DeclarationNodePredicate(EventDeclaration eventDeclaration)
             => eventDeclaration.Name == nameof(ITestInterface<int>.InterfaceShadowedTestEvent) && eventDeclaration.DeclaringType.Name == nameof(ITestInterface<int>);
@@ -44,7 +44,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
             => Assert.Single(Assert.IsType<InterfaceDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
@@ -72,19 +72,19 @@ namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
             => Assert.False(DeclarationNode.IsVirtual);
 
         [Fact]
-        public void HasNoAdderAttributes()
+        public void HasAdderAttributesSet()
             => Assert.Empty(DeclarationNode.Adder.Attributes);
 
         [Fact]
-        public void HasNoAdderReturnAttributes()
+        public void HasAdderReturnAttributesSet()
             => Assert.Empty(DeclarationNode.Adder.ReturnAttributes);
 
         [Fact]
-        public void HasNoRemoverAttributes()
+        public void HasRemoverAttributesSet()
             => Assert.Empty(DeclarationNode.Remover.Attributes);
 
         [Fact]
-        public void HasNoRemoverReturnAttributes()
+        public void HasRemoverReturnAttributesSet()
             => Assert.Empty(DeclarationNode.Remover.ReturnAttributes);
 
         [Fact]
@@ -92,23 +92,23 @@ namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
             => Assert.True(typeof(EventHandler) == DeclarationNode.Type);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]
-        public void HasEmptyExceptions()
+        public void HasExceptionsSet()
             => Assert.Empty(DeclarationNode.Exceptions);
 
         [Fact]

@@ -7,7 +7,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestClassTests
 {
-    public class TestClassDeclarationTests : DeclarationNodeTests<ClassDeclaration>
+    public class TestClassDeclarationTests : DeclarationNodeTests<ClassDeclaration>, IClassDeclarationTests
     {
         protected override bool DeclarationNodePredicate(ClassDeclaration classDeclaration)
             => classDeclaration.Name == nameof(TestClass<int>);
@@ -92,7 +92,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
             => Assert.False(DeclarationNode.IsStatic);
 
         [Fact]
-        public void HasNoDeclaringType()
+        public void HasDeclaringTypeSet()
             => Assert.Null(DeclarationNode.DeclaringType);
 
         [Fact]
@@ -154,19 +154,19 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
             => Assert.Single(DeclarationNode.NestedStructs);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]

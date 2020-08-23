@@ -5,7 +5,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestDelegateTests
 {
-    public class TestDelegateParameterParamTests : DeclarationNodeTests<DelegateDeclaration>
+    public class TestDelegateParameterParamTests : DeclarationNodeTests<DelegateDeclaration>, IParameterDataTests
     {
         protected override bool DeclarationNodePredicate(DelegateDeclaration delegateDeclaration)
             => delegateDeclaration.Name == nameof(TestDelegate<int>);
@@ -54,7 +54,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestDelegateTests
             => Assert.True(typeof(int) == Parameter.Type);
 
         [Fact]
-        public void HasEmptyDescription()
+        public void HasDescriptionSet()
             => Assert.Empty(Parameter.Description);
     }
 }

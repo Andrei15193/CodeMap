@@ -6,7 +6,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.TestClassTests
 {
-    public class TestClassTestWriteOnlyPropertyDeclarationTests : DeclarationNodeTests<PropertyDeclaration>
+    public class TestClassTestWriteOnlyPropertyDeclarationTests : DeclarationNodeTests<PropertyDeclaration>, IPropertyDeclarationTests
     {
         protected override bool DeclarationNodePredicate(PropertyDeclaration propertyDeclaration)
             => propertyDeclaration.Name == nameof(TestClass<int>.TestWriteOnlyProperty) && propertyDeclaration.DeclaringType.Name == nameof(TestClass<int>);
@@ -44,7 +44,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
             => Assert.Single(Assert.IsType<ClassDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
@@ -72,11 +72,19 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
             => Assert.False(DeclarationNode.IsVirtual);
 
         [Fact]
-        public void HasNoParameters()
+        public void HasParametersSet()
             => Assert.Empty(DeclarationNode.Parameters);
 
         [Fact]
-        public void HasNoGetter()
+        public void HasGetterAccessModifierSet()
+            => Assert.Null(DeclarationNode.Getter);
+
+        [Fact]
+        public void HasGetterAttributesSet()
+            => Assert.Null(DeclarationNode.Getter);
+
+        [Fact]
+        public void HasGetterReturnAttributesSet()
             => Assert.Null(DeclarationNode.Getter);
 
         [Fact]
@@ -84,11 +92,11 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
             => Assert.Equal(AccessModifier.Public, DeclarationNode.Setter.AccessModifier);
 
         [Fact]
-        public void HasNoSetterAttributes()
+        public void HasSetterAttributesSet()
             => Assert.Empty(DeclarationNode.Setter.Attributes);
 
         [Fact]
-        public void HasNoSetterReturnAttributes()
+        public void HasSetterReturnAttributesSet()
             => Assert.Empty(DeclarationNode.Setter.ReturnAttributes);
 
         [Fact]
@@ -96,27 +104,27 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
             => Assert.True(typeof(string) == DeclarationNode.Type);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]
-        public void HasEmptyExceptions()
+        public void HasExceptionsSet()
             => Assert.Empty(DeclarationNode.Exceptions);
 
         [Fact]
-        public void HasEmptyValue()
+        public void HasValueSet()
             => Assert.Empty(DeclarationNode.Value.Content);
 
         [Fact]

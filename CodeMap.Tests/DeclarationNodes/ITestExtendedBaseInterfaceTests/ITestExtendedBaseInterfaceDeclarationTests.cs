@@ -4,7 +4,7 @@ using Xunit;
 
 namespace CodeMap.Tests.DeclarationNodes.ITestExtendedBaseInterfaceTests
 {
-    public class ITestExtendedBaseInterfaceDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>
+    public class ITestExtendedBaseInterfaceDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>, IInterfaceDeclarationTests
     {
         protected override bool DeclarationNodePredicate(InterfaceDeclaration interfaceDeclaration)
             => interfaceDeclaration.Name == nameof(ITestExtendedBaseInterface);
@@ -41,11 +41,11 @@ namespace CodeMap.Tests.DeclarationNodes.ITestExtendedBaseInterfaceTests
             => Assert.Single(DeclarationNode.Namespace.DeclaredTypes, type => ReferenceEquals(type, DeclarationNode));
 
         [Fact]
-        public void HasNoAttributes()
+        public void HasAttributesSet()
             => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
-        public void HasNoGenericParameters()
+        public void HasGenericParametersSet()
             => Assert.Empty(DeclarationNode.GenericParameters);
 
         [Fact]
@@ -53,39 +53,43 @@ namespace CodeMap.Tests.DeclarationNodes.ITestExtendedBaseInterfaceTests
             => Assert.Single(DeclarationNode.BaseInterfaces);
 
         [Fact]
+        public void HasDeclaringTypeSet()
+            => Assert.Null(DeclarationNode.DeclaringType);
+
+        [Fact]
         public void HasITestBaseInterfaceBaseInterfaceSet()
             => Assert.Single(DeclarationNode.BaseInterfaces, baseInterface => baseInterface == typeof(ITestBaseInterface));
 
         [Fact]
-        public void HasNoMembers()
+        public void HasMembersSet()
             => Assert.Empty(DeclarationNode.Members);
 
         [Fact]
-        public void HasNoEvents()
+        public void HasEventsSet()
             => Assert.Empty(DeclarationNode.Events);
 
         [Fact]
-        public void HasNoProperties()
+        public void HasPropertiesSet()
             => Assert.Empty(DeclarationNode.Properties);
 
         [Fact]
-        public void HasNoMethods()
+        public void HasMethodsSet()
             => Assert.Empty(DeclarationNode.Methods);
 
         [Fact]
-        public void HasEmptySummary()
+        public void HasSummarySet()
             => Assert.Empty(DeclarationNode.Summary.Content);
 
         [Fact]
-        public void HasEmptyRemarks()
+        public void HasRemarksSet()
             => Assert.Empty(DeclarationNode.Remarks.Content);
 
         [Fact]
-        public void HasEmptyExamples()
+        public void HasExamplesSet()
             => Assert.Empty(DeclarationNode.Examples);
 
         [Fact]
-        public void HasEmptyRelatedMembers()
+        public void HasRelatedMembersSet()
             => Assert.Empty(DeclarationNode.RelatedMembers);
 
         [Fact]
