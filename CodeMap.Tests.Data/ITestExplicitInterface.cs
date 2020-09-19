@@ -2,20 +2,20 @@
 
 namespace CodeMap.Tests.Data
 {
-    /// <summary/>
+    /// <summary>This is an interface that is explicitly implemented, for documentation purposes.</summary>
     public interface ITestExplicitInterface
     {
-        /// <summary/>
+        /// <summary>An event to implement explicitly.</summary>
         event EventHandler TestEvent;
 
-        /// <summary/>
+        /// <summary>A property to implement explicitly.</summary>
         int TestProperty
         {
             get;
             set;
         }
 
-        /// <summary/>
+        /// <summary>A method to implement explicitly.</summary>
         void TestMethod();
     }
 }

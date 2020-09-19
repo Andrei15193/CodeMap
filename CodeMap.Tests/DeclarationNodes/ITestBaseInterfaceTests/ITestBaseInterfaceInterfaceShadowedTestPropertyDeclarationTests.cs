@@ -105,7 +105,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestBaseInterfaceTests
 
         [Fact]
         public void HasSummarySet()
-            => Assert.Empty(DeclarationNode.Summary.Content);
+            => Assert.NotEmpty(DeclarationNode.Summary.Content);
 
         [Fact]
         public void HasRemarksSet()
@@ -117,7 +117,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestBaseInterfaceTests
 
         [Fact]
         public void HasRelatedMembersSet()
-            => Assert.Empty(DeclarationNode.RelatedMembers);
+            => Assert.NotEmpty(DeclarationNode.RelatedMembers);
 
         [Fact]
         public void HasExceptionsSet()

@@ -59,7 +59,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestEnumTests
 
         [Fact]
         public void HasSummarySet()
-            => Assert.Empty(DeclarationNode.Summary.Content);
+            => Assert.NotEmpty(DeclarationNode.Summary.Content);
 
         [Fact]
         public void HasRemarksSet()

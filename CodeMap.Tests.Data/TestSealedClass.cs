@@ -1,6 +1,6 @@
 ﻿namespace CodeMap.Tests.Data
 {
-    /// <summary/>
+    /// <summary>A sealed class, just for testing purposes.</summary>
     public sealed class TestSealedClass
     {
     }

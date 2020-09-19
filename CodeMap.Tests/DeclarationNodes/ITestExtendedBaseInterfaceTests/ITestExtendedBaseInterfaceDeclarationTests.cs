@@ -78,7 +78,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestExtendedBaseInterfaceTests
 
         [Fact]
         public void HasSummarySet()
-            => Assert.Empty(DeclarationNode.Summary.Content);
+            => Assert.NotEmpty(DeclarationNode.Summary.Content);
 
         [Fact]
         public void HasRemarksSet()

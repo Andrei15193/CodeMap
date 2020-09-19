@@ -109,7 +109,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestDocumentationTests
 
         [Fact]
         public void HasSummarySet()
-            => Assert.Empty(DeclarationNode.Summary.Content);
+            => Assert.NotEmpty(DeclarationNode.Summary.Content);
 
         [Fact]
         public void HasRemarksSet()

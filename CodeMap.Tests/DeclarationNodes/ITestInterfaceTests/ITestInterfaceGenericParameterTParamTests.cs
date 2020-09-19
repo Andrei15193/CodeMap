@@ -46,6 +46,6 @@ namespace CodeMap.Tests.DeclarationNodes.ITestInterfaceTests
 
         [Fact]
         public void HasDescriptionSet()
-            => Assert.Empty(GenericParameter.Description);
+            => Assert.NotEmpty(GenericParameter.Description);
     }
 }

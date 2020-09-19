@@ -65,7 +65,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestAttributeTests
 
         [Fact]
         public void HasSummarySet()
-            => Assert.Empty(DeclarationNode.Summary.Content);
+            => Assert.NotEmpty(DeclarationNode.Summary.Content);
 
         [Fact]
         public void HasRemarksSet()

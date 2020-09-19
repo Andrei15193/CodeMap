@@ -1,6 +1,6 @@
 ﻿namespace CodeMap.Tests.Data
 {
-    /// <summary/>
+    /// <summary>A stati class, just for testing purposes.</summary>
     public static class TestStaticClass
     {
     }

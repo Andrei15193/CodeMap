@@ -89,7 +89,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
 
         [Fact]
         public void HasSummarySet()
-            => Assert.Empty(DeclarationNode.Summary.Content);
+            => Assert.NotEmpty(DeclarationNode.Summary.Content);
 
         [Fact]
         public void HasRemarksSet()
@@ -105,7 +105,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
 
         [Fact]
         public void HasReturnDescriptionSet()
-            => Assert.Empty(DeclarationNode.Return.Description);
+            => Assert.NotEmpty(DeclarationNode.Return.Description);
 
         [Fact]
         public void HasExceptionsSet()

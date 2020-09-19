@@ -74,7 +74,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
 
         [Fact]
         public void HasSummarySet()
-            => Assert.Empty(DeclarationNode.Summary.Content);
+            => Assert.NotEmpty(DeclarationNode.Summary.Content);
 
         [Fact]
         public void HasRemarksSet()
@@ -82,7 +82,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
 
         [Fact]
         public void HasExamplesSet()
-            => Assert.Empty(DeclarationNode.Examples);
+            => Assert.NotEmpty(DeclarationNode.Examples);
 
         [Fact]
         public void HasRelatedMembersSet()

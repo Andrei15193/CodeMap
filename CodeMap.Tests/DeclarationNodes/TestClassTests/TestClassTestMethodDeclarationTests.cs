@@ -101,31 +101,31 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
 
         [Fact]
         public void HasReturnTypeSet()
-            => Assert.True(typeof(void) == DeclarationNode.Return.Type);
+            => Assert.True(typeof(int) == DeclarationNode.Return.Type);
 
         [Fact]
         public void HasSummarySet()
-            => Assert.Empty(DeclarationNode.Summary.Content);
+            => Assert.NotEmpty(DeclarationNode.Summary.Content);
 
         [Fact]
         public void HasRemarksSet()
-            => Assert.Empty(DeclarationNode.Remarks.Content);
+            => Assert.NotEmpty(DeclarationNode.Remarks.Content);
 
         [Fact]
         public void HasExamplesSet()
-            => Assert.Empty(DeclarationNode.Examples);
+            => Assert.NotEmpty(DeclarationNode.Examples);
 
         [Fact]
         public void HasRelatedMembersSet()
-            => Assert.Empty(DeclarationNode.RelatedMembers);
+            => Assert.NotEmpty(DeclarationNode.RelatedMembers);
 
         [Fact]
         public void HasReturnDescriptionSet()
-            => Assert.Empty(DeclarationNode.Return.Description);
+            => Assert.NotEmpty(DeclarationNode.Return.Description);
 
         [Fact]
         public void HasExceptionsSet()
-            => Assert.Empty(DeclarationNode.Exceptions);
+            => Assert.NotEmpty(DeclarationNode.Exceptions);
 
         [Fact]
         public void AcceptVisitor()

@@ -118,7 +118,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests.NestedTestStructTests
 
         [Fact]
         public void HasSummarySet()
-            => Assert.Empty(DeclarationNode.Summary.Content);
+            => Assert.NotEmpty(DeclarationNode.Summary.Content);
 
         [Fact]
         public void HasRemarksSet()

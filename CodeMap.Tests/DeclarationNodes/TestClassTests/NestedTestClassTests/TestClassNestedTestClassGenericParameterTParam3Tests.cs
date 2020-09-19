@@ -47,6 +47,6 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests.NestedTestClassTests
 
         [Fact]
         public void HasDescriptionSet()
-            => Assert.Empty(GenericParameter.Description);
+            => Assert.NotEmpty(GenericParameter.Description);
     }
 }

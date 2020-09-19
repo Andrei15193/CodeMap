@@ -2,16 +2,16 @@
 
 namespace CodeMap.Tests.Data
 {
-    /// <summary/>
+    /// <summary>A class that explicitly implements <see cref="ITestExplicitInterface"/>.</summary>
     public class TestExplicitClass : ITestExplicitInterface
     {
-        /// <summary/>
+        /// <summary>An explicitly implemented event.</summary>
         event EventHandler ITestExplicitInterface.TestEvent { add { } remove { } }
 
-        /// <summary/>
+        /// <summary>An explicitly implemented property.</summary>
         int ITestExplicitInterface.TestProperty { get; set; }
 
-        /// <summary/>
+        /// <summary>An explicitly implemented method.</summary>
         void ITestExplicitInterface.TestMethod()
         {
         }
