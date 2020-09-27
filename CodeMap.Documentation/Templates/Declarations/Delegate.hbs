@@ -1,0 +1,44 @@
+﻿{{#>Layout node=this assembly=assembly title=(Concat assembly.name ' - ' name ' Delegate')}}
+<h2>{{MemberName this}} Delegate</h2>
+
+{{> Documentation summary}}
+
+<p>This is a <code>{{MemberAccessModifier this}}</code> delegate.</p>
+
+{{#each parameters}}
+{{#if @first}}
+<h3>Parameters</h3>
+<ul>
+    {{/if}}
+    <li>
+        <h5>{{this.name}}: {{TypeReferenceLink type}}</h5>
+        {{> Documentation description}}
+    </li>
+    {{#if @last}}
+</ul>
+{{/if}}
+{{/#each}}
+
+{{#each exceptions}}
+{{#if @first}}
+<h3>Exceptions</h3>
+<ul>
+    {{/if}}
+    <li>
+        <h5>{{TypeReferenceLink type}}</h5>
+        {{> Documentation description}}
+    </li>
+    {{#if @last}}
+</ul>
+{{/if}}
+{{/each}}
+
+{{#each return.description}}
+{{#if @first}}<h3>Returns: {{TypeReferenceLink @root.return.type}}</h3>{{/if}}
+{{> Documentation}}
+{{/each}}
+
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation examples}}
+{{> Documentation node=relatedMembers title='Related Members'}}
+{{/Layout}}

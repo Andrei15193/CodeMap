@@ -8,7 +8,7 @@ using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation
 {
-    public class MemberFileNameResolver
+    public class MemberFileNameResolver : IMemberFileNameResolver
     {
         private readonly Assembly _library;
         private readonly IDictionary<string, string> _cache = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -23,6 +23,9 @@ namespace CodeMap.Documentation
             => memberReference is TypeReference typeReference && typeReference.Assembly == _library
             ? _GetEntry(_GetKey(memberReference), _GetBaseName(memberReference))
             : _GetMicrosoftDocsLink(memberReference);
+
+        public string GetUrl(MemberInfo memberInfo)
+            => memberInfo.GetMemberUrl(_library);
 
         private string _GetKey(MemberReference memberReference)
         {

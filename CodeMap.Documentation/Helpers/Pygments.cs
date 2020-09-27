@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using HandlebarsDotNet;
 using PygmentSharp.Core;
 using PygmentSharp.Core.Formatting;
@@ -6,13 +7,15 @@ using PygmentSharp.Core.Lexing;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class Pygments : HandlebarsContextualHelper<string, string>
+    public class Pygments : IHandlebarsHelper
     {
-        public override string Name
+        public string Name
             => nameof(Pygments);
 
-        public override void Apply(TextWriter writer, PageContext context, string code, string language)
+        public void Apply(TextWriter writer, object context, params object[] parameters)
         {
+            string code = parameters.ElementAtOrDefault(0) as string ?? string.Empty;
+            string language = parameters.ElementAtOrDefault(1) as string;
             Lexer lexer = null;
             switch (language?.ToLowerInvariant())
             {

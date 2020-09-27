@@ -1,38 +1,23 @@
-﻿{{#with data}}
-{{#if (HasExposedDefinitions @root definitions)}}
-<h3>{{title}}</h3>
+﻿{{#each definitions}}
+{{#if @first}}
+<h3>{{@root.title}}</h3>
 <table class="table table-hover">
     <thead>
         <tr>
             <th>Name</th>
-            {{#if includeAccessor}}
-            <th>Access Modifier</th>
-            {{/if}}
+            {{#if @root.includeAccessor}}<th>Access Modifier</th>{{/if}}
             <th class="w-75">Summary</th>
         </tr>
     </thead>
     <tbody>
-        {{#if includeAccessor}}
-        {{#each definitions}}
-        {{#if (IsExposedDefinition @root this)}}
+        {{/if}}
         <tr>
-            <td>{{MemberLink @root this}}</td>
-            <td class="text-left text-nowrap"><code>{{MemberAccessModifier @root this}}</code></td>
-            <td>{{DocumentationContent @root summary}}</td>
+            <td>{{MemberLink}}</td>
+            {{#if @root.includeAccessor}}<td class="text-left text-nowrap"><code>{{MemberAccessModifier}}</code></td>{{/if}}
+            <td>{{> Documentation summary}}</td>
         </tr>
-        {{/if}}
-        {{/#each}}
-        {{else}}
-        {{#each definitions}}
-        {{#if (IsExposedDefinition @root this)}}
-        <tr>
-            <td>{{MemberLink  @root this}}</td>
-            <td>{{DocumentationContent  @root summary}}</td>
-        </tr>
-        {{/if}}
-        {{/#each}}
-        {{/if}}
+        {{#if @last}}
     </tbody>
 </table>
 {{/if}}
-{{/with}}
+{{/each}}

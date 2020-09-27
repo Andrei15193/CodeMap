@@ -1,15 +1,15 @@
-﻿{{#with declarationNode}}
-<h2>{{MemberName @root this}} Namespace</h2>
+﻿{{#>Layout node=this assembly=assembly title=(Concat assembly.name ' - ' name ' Namepsace')}}
+<h2>{{MemberName}} Namespace</h2>
 
-{{DocumentationContent @root summary}}
+{{> Documentation summary}}
 
-{{MemberDeclarationsList @root 'Enums' enums}}
-{{MemberDeclarationsList @root 'Delegates' delegates}}
-{{MemberDeclarationsList @root 'Interfaces' interfaces}}
-{{MemberDeclarationsList @root 'Classes' classes}}
-{{MemberDeclarationsList @root 'Structs' structs}}
+{{> MembersDeclaraction members=enums title='Enums'}}
+{{> MembersDeclaraction members=delegates title='Delegates'}}
+{{> MembersDeclaraction members=interfaces title='Interfaces'}}
+{{> MembersDeclaraction members=classes title='Classes'}}
+{{> MembersDeclaraction members=structs title='Structs'}}
 
-{{DocumentationContent @root remarks}}
-{{DocumentationContent @root examples}}
-{{RelatedMembersList @root relatedMembers}}
-{{/with}}
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation examples}}
+{{> Documentation node=relatedMembers title='Related Members'}}
+{{/Layout}}

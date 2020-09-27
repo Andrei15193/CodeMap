@@ -6,6 +6,6 @@ namespace CodeMap.Documentation.Helpers
     {
         string Name { get; }
 
-        void Apply(TextWriter writer, dynamic context, params object[] parameters);
+        void Apply(TextWriter writer, object context, params object[] parameters);
     }
 }

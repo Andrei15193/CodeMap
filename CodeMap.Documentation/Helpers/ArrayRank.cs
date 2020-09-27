@@ -1,16 +1,17 @@
 ﻿using System.IO;
+using System.Linq;
 using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class ArrayRank : HandlebarsContextualHelper<object>
+    public class ArrayRank : IHandlebarsHelper
     {
-        public override string Name
+        public string Name
             => nameof(ArrayRank);
 
-        public override void Apply(TextWriter writer, PageContext context, object parameter)
+        public void Apply(TextWriter writer, object context, params object[] parameters)
         {
-            if (parameter is ArrayTypeReference arrayTypeReference)
+            if (parameters.DefaultIfEmpty(context).First() is ArrayTypeReference arrayTypeReference)
             {
                 writer.Write('[');
                 writer.Write(new string(',', arrayTypeReference.Rank - 1));

@@ -1,5 +1,3 @@
-﻿{{#with data}}
-<a href="{{MemberUrl @root this}}">{{SimpleMemberName @root this}}</a>
-{{~#each genericArguments}}{{#if @first}}&lt;{{else}}, {{/if}}{{TypeReferenceLink @root this}}{{#if @last}}&gt;{{/if}}{{/each}}
-{{~ArrayRank @root this ~}}
-{{/with}}
+﻿<a href="{{MemberUrl this}}">{{SimpleMemberName this}}</a>
+{{~#each genericArguments}}{{#if @first}}&lt;{{else}}, {{/if}}{{TypeReferenceLink this}}{{#if @last}}&gt;{{/if}}{{/each}}
+{{~ArrayRank this ~}}

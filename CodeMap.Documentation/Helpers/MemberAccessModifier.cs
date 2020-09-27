@@ -1,17 +1,22 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class MemberAccessModifier : HandlebarsContextualHelper<DeclarationNode>
+    public class MemberAccessModifier : IHandlebarsHelper
     {
-        public override string Name
+        public string Name
             => nameof(MemberAccessModifier);
 
-        public override void Apply(TextWriter writer, PageContext context, DeclarationNode parameter)
+        public void Apply(TextWriter writer, object context, params object[] parameters)
         {
-            switch (parameter)
+            var declarationNode = parameters.DefaultIfEmpty(context).First() as DeclarationNode;
+            if (declarationNode is null)
+                throw new ArgumentException("Expected a " + nameof(DeclarationNode) + " provided as the first parameter or context.");
+
+            switch (declarationNode)
             {
                 case PropertyDeclaration propertyDeclaration:
                     if (propertyDeclaration.Getter != null && propertyDeclaration.Setter != null)
@@ -58,15 +63,18 @@ namespace CodeMap.Documentation.Helpers
                     break;
 
                 default:
-                    throw new ArgumentException($"Unhandled parameter type: '{parameter.GetType().Name}'");
+                    throw new ArgumentException($"Unhandled declaration node type: '{declarationNode.GetType().Name}'");
             }
         }
 
         private string _GetAccessModifierLabel(AccessModifier accessModifier)
             => accessModifier switch
             {
-                AccessModifier.FamilyOrAssembly => "protected",
+                AccessModifier.Private => "private",
+                AccessModifier.FamilyAndAssembly => "private",
+                AccessModifier.Assembly => "internal",
                 AccessModifier.Family => "protected",
+                AccessModifier.FamilyOrAssembly => "protected",
                 AccessModifier.Public => "public",
                 _ => throw new ArgumentException($"Unhandled access modifier: {accessModifier}.")
             };

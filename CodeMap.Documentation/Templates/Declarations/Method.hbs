@@ -1,7 +1,7 @@
-﻿{{#with declarationNode}}
-<h2>{{MemberName @root this}} Method</h2>
+﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaryingType.assembly.name ' - ' name ' Method')}}
+<h2>{{MemberName this}} Method</h2>
 
-{{DocumentationContent @root summary}}
+{{> Documentation summary}}
 
 {{#if isStatic}}
 <p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/static">static</a> method.</p>
@@ -17,7 +17,7 @@
 <p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/new-modifier">shadowing</a> method.</p>
 {{/if}}
 
-<p>This is a <code>{{MemberAccessModifier @root this}}</code> method.</p>
+<p>This is a <code>{{MemberAccessModifier this}}</code> method.</p>
 
 {{#each parameters}}
 {{#if @first}}
@@ -25,8 +25,8 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{this.name}}: {{TypeReferenceLink @root type}}</h5>
-        {{DocumentationContent @root description}}
+        <h5>{{name}}: {{TypeReferenceLink type}}</h5>
+        {{> Documentation description}}
     </li>
     {{#if @last}}
 </ul>
@@ -39,8 +39,8 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{TypeReferenceLink @root type}}</h5>
-        {{DocumentationContent @root description}}
+        <h5>{{TypeReferenceLink type}}</h5>
+        {{> Documentation description}}
     </li>
     {{#if @last}}
 </ul>
@@ -48,13 +48,11 @@
 {{/each}}
 
 {{#each return.description}}
-{{#if @first}}
-<h3>Returns: {{TypeReferenceLink @root @root.declarationNode.return.type}}</h3>
-{{/if}}
-{{DocumentationContent @root this}}
+{{#if @first}}<h3>Returns: {{TypeReferenceLink @root.return.type}}</h3>{{/if}}
+{{> Documentation}}
 {{/each}}
 
-{{DocumentationContent @root remarks}}
-{{DocumentationContent @root examples}}
-{{RelatedMembersList @root relatedMembers}}
-{{/with}}
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation examples}}
+{{> Documentation node=relatedMembers title='Related Members'}}
+{{/Layout}}

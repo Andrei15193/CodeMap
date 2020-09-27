@@ -1,15 +1,15 @@
-﻿{{#with declarationNode}}
-<h2>{{MemberName @root this}} Property</h2>
+﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaryingType.assembly.name ' - ' name ' Property')}}
+<h2>{{MemberName this}} Property</h2>
 
-<p>Property type: {{TypeReferenceLink @root type}}.</p>
-{{DocumentationContent @root summary}}
+<p>Property type: {{TypeReferenceLink type}}.</p>
+{{> Documentation summary}}
 
-{{#if (IsReadOnlyProperty @root this)}}
-<p>This is a read only property (<code>{{MemberAccessModifier @root this}}</code>).</p>
-{{else if (IsWriteOnlyProperty @root this)}}
-<p>This is a write only property (<code>{{MemberAccessModifier @root this}}</code>).</p>
+{{#if (IsReadOnlyProperty this)}}
+<p>This is a read only property (<code>{{MemberAccessModifier this}}</code>).</p>
+{{else if (IsWriteOnlyProperty this)}}
+<p>This is a write only property (<code>{{MemberAccessModifier this}}</code>).</p>
 {{else}}
-<p>This is a read and write property (<code>{{MemberAccessModifier @root this}}</code>).</p>
+<p>This is a read and write property (<code>{{MemberAccessModifier this}}</code>).</p>
 {{/if}}
 
 {{#if isStatic}}
@@ -26,7 +26,7 @@
 <p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/new-modifier">shadowing</a> property.</p>
 {{/if}}
 
-{{DocumentationContent @root value}}
+{{> Documentation node=value title='Value'}}
 
 {{#each parameters}}
 {{#if @first}}
@@ -34,8 +34,8 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{this.name}}: {{TypeReferenceLink @root type}}</h5>
-        {{DocumentationContent @root description}}
+        <h5>{{this.name}}: {{TypeReferenceLink type}}</h5>
+        {{> Documentation description}}
     </li>
     {{#if @last}}
 </ul>
@@ -48,15 +48,15 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{TypeReferenceLink @root type}}</h5>
-        {{DocumentationContent @root description}}
+        <h5>{{TypeReferenceLink type}}</h5>
+        {{> Documentation description}}
     </li>
     {{#if @last}}
 </ul>
 {{/if}}
 {{/each}}
 
-{{DocumentationContent @root remarks}}
-{{DocumentationContent @root examples}}
-{{RelatedMembersList @root relatedMembers}}
-{{/with}}
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation examples}}
+{{> Documentation node=relatedMembers title='Related Members'}}
+{{/Layout}}

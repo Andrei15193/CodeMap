@@ -1,0 +1,12 @@
+﻿{{#if (IsCollection node)}}
+{{#each node}}
+{{#if @first}}{{#if ../title}}<h3>{{../title}}</h3>{{/if}}{{/if}}
+{{> (GetDocumentationPartialName this)}}
+{{/each}}
+{{else if node}}
+{{#with node}}{{> (GetDocumentationPartialName) title=../title}}{{/with}}
+{{else if (IsCollection this)}}
+{{#each this}}{{> (GetDocumentationPartialName)}}{{/each}}
+{{else}}
+{{> (GetDocumentationPartialName)}}
+{{/if}}

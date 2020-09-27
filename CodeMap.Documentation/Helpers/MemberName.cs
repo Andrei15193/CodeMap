@@ -1,17 +1,19 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using CodeMap.DeclarationNodes;
 using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class MemberName : HandlebarsContextualHelper<object>
+    public class MemberName : IHandlebarsHelper
     {
-        public override string Name
+        public string Name
             => nameof(MemberName);
 
-        public override void Apply(TextWriter writer, PageContext context, object parameter)
+        public void Apply(TextWriter writer, object context, params object[] parameters)
         {
+            var parameter = parameters.DefaultIfEmpty(context).First();
             switch (parameter)
             {
                 case TypeDeclaration typeDeclaration:

@@ -1,0 +1,27 @@
+﻿{{#each members}}
+{{#if @first}}
+<h3>{{../title}}</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            {{#if ../includeAccessor}}
+            <th>Access Modifier</th>
+            {{/if}}
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{/if}}
+        <tr>
+            <td>{{MemberLink}}</td>
+            {{#if ../includeAccessor}}
+            <td class="text-left text-nowrap"><code>{{MemberAccessModifier}}</code></td>
+            {{/if}}
+            <td>{{> Documentation summary}}</td>
+        </tr>
+        {{#if @last}}
+    </tbody>
+</table>
+{{/if}}
+{{/each}}

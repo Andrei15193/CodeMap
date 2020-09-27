@@ -1,13 +1,19 @@
 ﻿using System.IO;
+using System.Linq;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class TypeReferenceLink : HandlebarsContextualHelper<object>
+    public class TypeReferenceLink : IHandlebarsHelper
     {
-        public override string Name
+        private readonly TemplateWriter _templateWriter;
+
+        public TypeReferenceLink(TemplateWriter templateWriter)
+            => _templateWriter = templateWriter;
+
+        public string Name
             => nameof(TypeReferenceLink);
 
-        public override void Apply(TextWriter writer, PageContext context, object parameter)
-            => HandlebarsExtensions.WriteTemplate(writer, Name, context.WithData(parameter));
+        public void Apply(TextWriter writer, object context, params object[] parameters)
+            => _templateWriter.Write(writer, Name, parameters.ElementAtOrDefault(0));
     }
 }

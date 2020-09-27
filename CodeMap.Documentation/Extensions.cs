@@ -268,7 +268,13 @@ namespace CodeMap.Documentation
         }
 
         public static string GetMemberUrl(this MemberInfoReferenceDocumentationElement memberInfoReference, AssemblyDeclaration library)
-            => library == memberInfoReference.ReferredMember.Module.Assembly ? memberInfoReference.ReferredMember.GetMemberFullName() + ".html" : memberInfoReference.ReferredMember.GetMicrosoftDocsLink();
+            => memberInfoReference.ReferredMember.GetMemberUrl(library);
+
+        public static string GetMemberUrl(this MemberInfo memberInfo, AssemblyDeclaration library)
+            => library == memberInfo.Module.Assembly ? memberInfo.GetMemberFullName() + ".html" : memberInfo.GetMicrosoftDocsLink();
+
+        public static string GetMemberUrl(this MemberInfo memberInfo, Assembly library)
+            => library == memberInfo.Module.Assembly ? memberInfo.GetMemberFullName() + ".html" : memberInfo.GetMicrosoftDocsLink();
 
         public static string GetMicrosoftDocsLink(this MemberInfo member)
         {

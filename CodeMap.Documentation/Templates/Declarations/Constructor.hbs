@@ -1,9 +1,9 @@
-﻿{{#with declarationNode}}
-<h2>{{MemberName @root this}} Constructor</h2>
+﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaryingType.assembly.name ' - ' name ' Constructor')}}
+<h2>{{MemberName this}} Constructor</h2>
 
-{{DocumentationContent @root summary}}
+{{> Documentation summary}}
 
-<p>This is a <code>{{MemberAccessModifier @root this}}</code> constructor.</p>
+<p>This is a <code>{{MemberAccessModifier this}}</code> constructor.</p>
 
 {{#each parameters}}
 {{#if @first}}
@@ -11,8 +11,8 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{name}}: {{TypeReferenceLink @root type}}</h5>
-        {{DocumentationContent @root description}}
+        <h5>{{name}}: {{TypeReferenceLink type}}</h5>
+        {{> Documentation description}}
     </li>
     {{#if @last}}
 </ul>
@@ -25,15 +25,15 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{TypeReferenceLink @root type}}</h5>
-        {{DocumentationContent @root description}}
+        <h5>{{TypeReferenceLink type}}</h5>
+        {{> Documentation description}}
     </li>
     {{#if @last}}
 </ul>
 {{/if}}
 {{/each}}
 
-{{DocumentationContent @root remarks}}
-{{DocumentationContent @root examples}}
-{{RelatedMembersList @root relatedMembers}}
-{{/with}}
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation examples}}
+{{> Documentation node=relatedMembers title='Related Members'}}
+{{/Layout}}

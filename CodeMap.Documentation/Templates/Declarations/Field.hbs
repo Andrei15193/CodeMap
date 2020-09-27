@@ -1,0 +1,16 @@
+﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaryingType.assembly.name ' - ' name ' Field')}}
+<h2>{{MemberName this}} Field</h2>
+
+<p>Field type: {{TypeReferenceLink type}}.</p>
+{{> Documentation summary}}
+
+{{#if isStatic}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/static">static</a> field.</p>
+{{else if isShadowing}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/new-modifier">shadowing</a> field.</p>
+{{/if}}
+
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation examples}}
+{{> Documentation node=relatedMembers title='Related Members'}}
+{{/Layout}}

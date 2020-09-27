@@ -1,29 +1,36 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using CodeMap.DeclarationNodes;
 using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.Helpers
 {
-    public class MemberUrl : HandlebarsContextualHelper<object>
+    public class MemberUrl : IHandlebarsHelper
     {
-        public override string Name
+        private readonly PageContext _pageContext;
+
+        public MemberUrl(PageContext pageContext)
+            => _pageContext = pageContext;
+
+        public string Name
             => nameof(MemberUrl);
 
-        public override void Apply(TextWriter writer, PageContext context, object parameter)
+        public void Apply(TextWriter writer, object context, params object[] parameters)
         {
+            var parameter = parameters.DefaultIfEmpty(context).First();
             switch (parameter)
             {
                 case DeclarationNode declarationNode:
-                    writer.Write(context.MemberFileNameResolver.GetFileName(declarationNode));
+                    writer.Write(_pageContext.MemberFileNameResolver.GetFileName(declarationNode));
                     break;
 
                 case ArrayTypeReference arrayTypeReference:
-                    Apply(writer, context, arrayTypeReference.ItemType);
+                    Apply(writer, _pageContext, arrayTypeReference.ItemType);
                     break;
 
                 case MemberReference memberReference:
-                    writer.Write(context.MemberFileNameResolver.GetUrl(memberReference));
+                    writer.Write(_pageContext.MemberFileNameResolver.GetUrl(memberReference));
                     break;
 
                 default:
