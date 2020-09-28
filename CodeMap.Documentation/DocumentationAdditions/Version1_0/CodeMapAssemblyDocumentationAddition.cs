@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
+using CodeMap.Handlebars;
 
 namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
 {

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text.RegularExpressions;
 using CodeMap.DeclarationNodes;
+using CodeMap.Handlebars;
 
 namespace CodeMap.Documentation
 {

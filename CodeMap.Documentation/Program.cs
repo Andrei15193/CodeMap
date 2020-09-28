@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
+using CodeMap.Handlebars;
 using HtmlAgilityPack;
 
 namespace CodeMap.Documentation

@@ -8,130 +8,10 @@
 
   <ItemGroup>
     <None Remove="Assets\Style.css" />
-    <None Remove="Partials\Breadcrumbs.hbs" />
-    <None Remove="Partials\Documentation.hbs" />
-    <None Remove="Partials\Layout.hbs" />
-    <None Remove="Templates\Assembly.hbs" />
-    <None Remove="Templates\Code.hbs" />
-    <None Remove="Templates\CodeBlock.hbs" />
-    <None Remove="Templates\Declarations\Class.hbs" />
-    <None Remove="Templates\Declarations\Constant.hbs" />
-    <None Remove="Templates\Declarations\Constructor.hbs" />
-    <None Remove="Templates\Declarations\Delegate.hbs" />
-    <None Remove="Templates\Declarations\Enum.hbs" />
-    <None Remove="Templates\Declarations\Event.hbs" />
-    <None Remove="Templates\Declarations\Field.hbs" />
-    <None Remove="Templates\Declarations\Interface.hbs" />
-    <None Remove="Templates\Declarations\Method.hbs" />
-    <None Remove="Templates\Declarations\Namespace.hbs" />
-    <None Remove="Templates\Declarations\Property.hbs" />
-    <None Remove="Templates\Declarations\Struct.hbs" />
-    <None Remove="Templates\DeprecationNotice.hbs" />
-    <None Remove="Templates\GenericParameterReference.hbs" />
-    <None Remove="Templates\Helpers\Code.hbs" />
-    <None Remove="Templates\Helpers\CodeBlock.hbs" />
-    <None Remove="Templates\Helpers\DefinitionList.hbs" />
-    <None Remove="Templates\Helpers\DefinitionListItem.hbs" />
-    <None Remove="Templates\Helpers\DefinitionListItemDescription.hbs" />
-    <None Remove="Templates\Helpers\DefinitionListItemTerm.hbs" />
-    <None Remove="Templates\Helpers\DefinitionListTitle.hbs" />
-    <None Remove="Templates\Helpers\Example.hbs" />
-    <None Remove="Templates\Helpers\GenericParameterReference.hbs" />
-    <None Remove="Templates\Helpers\Hyperlink.hbs" />
-    <None Remove="Templates\Helpers\ListItem.hbs" />
-    <None Remove="Templates\Helpers\MemberDeclarationsList.hbs" />
-    <None Remove="Templates\Helpers\MemberLink.hbs" />
-    <None Remove="Templates\Helpers\OrderedList.hbs" />
-    <None Remove="Templates\Helpers\Paragraph.hbs" />
-    <None Remove="Templates\Helpers\ParameterReference.hbs" />
-    <None Remove="Templates\Helpers\TypeReferenceLink.hbs" />
-    <None Remove="Templates\Hyperlink.hbs" />
-    <None Remove="Templates\ListItem.hbs" />
-    <None Remove="Templates\OrderedList.hbs" />
-    <None Remove="Templates\OtherVersions.hbs" />
-    <None Remove="Templates\Paragraph.hbs" />
-    <None Remove="Templates\ParameterReference.hbs" />
-    <None Remove="Templates\Remarks.hbs" />
-    <None Remove="Templates\Summary.hbs" />
-    <None Remove="Templates\Table.hbs" />
-    <None Remove="Templates\TableCell.hbs" />
-    <None Remove="Templates\TableColumn.hbs" />
-    <None Remove="Templates\TableRow.hbs" />
-    <None Remove="Templates\Text.hbs" />
-    <None Remove="Templates\UnorderedList.hbs" />
-    <None Remove="Partials\Documentation\Code.hbs" />
-    <None Remove="Partials\Documentation\CodeBlock.hbs" />
-    <None Remove="Partials\Documentation\DefinitionList.hbs" />
-    <None Remove="Partials\Documentation\DefinitionListItem.hbs" />
-    <None Remove="Partials\Documentation\DefinitionListItemDescription.hbs" />
-    <None Remove="Partials\Documentation\DefinitionListItemTerm.hbs" />
-    <None Remove="Partials\Documentation\DefinitionListTitle.hbs" />
-    <None Remove="Partials\Documentation\Example.hbs" />
-    <None Remove="Partials\Documentation\GenericParameterReference.hbs" />
-    <None Remove="Partials\Documentation\Hyperlink.hbs" />
-    <None Remove="Partials\Documentation\ListItem.hbs" />
-    <None Remove="Partials\Documentation\OrderedList.hbs" />
-    <None Remove="Partials\Documentation\Paragraph.hbs" />
-    <None Remove="Partials\Documentation\ParameterReference.hbs" />
-    <None Remove="Partials\Documentation\Remarks.hbs" />
-    <None Remove="Partials\Documentation\Summary.hbs" />
-    <None Remove="Partials\Documentation\Table.hbs" />
-    <None Remove="Partials\Documentation\TableCell.hbs" />
-    <None Remove="Partials\Documentation\TableColumn.hbs" />
-    <None Remove="Partials\Documentation\TableRow.hbs" />
-    <None Remove="Partials\Documentation\Text.hbs" />
-    <None Remove="Partials\Documentation\UnorderedList.hbs" />
-    <None Remove="Partials\Documentation\Value.hbs" />
-    <None Remove="Partials\MembersDeclaraction.hbs" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\Style.css" />
-    <EmbeddedResource Include="Partials\Breadcrumbs.hbs" />
-    <EmbeddedResource Include="Partials\Layout.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Constant.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Event.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Field.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Struct.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Interface.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Class.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Constructor.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Delegate.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Method.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Property.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Enum.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Namespace.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Assembly.hbs" />
-    <EmbeddedResource Include="Templates\Helpers\MemberDeclarationsList.hbs" />
-    <EmbeddedResource Include="Templates\Helpers\TypeReferenceLink.hbs" />
-    <EmbeddedResource Include="Templates\Helpers\MemberLink.hbs" />
-    <EmbeddedResource Include="Templates\DeprecationNotice.hbs" />
-    <EmbeddedResource Include="Templates\OtherVersions.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\Code.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\CodeBlock.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\DefinitionList.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\DefinitionListItem.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\DefinitionListItemDescription.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\DefinitionListItemTerm.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\DefinitionListTitle.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\Example.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\GenericParameterReference.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\Hyperlink.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\ListItem.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\OrderedList.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\Paragraph.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\ParameterReference.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\Remarks.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\Summary.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\Table.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\TableCell.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\TableColumn.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\TableRow.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\Text.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\UnorderedList.hbs" />
-    <EmbeddedResource Include="Partials\Documentation\Value.hbs" />
-    <EmbeddedResource Include="Partials\MembersDeclaraction.hbs" />
-    <EmbeddedResource Include="Partials\Documentation.hbs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -141,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CodeMap.Handlebars\CodeMap.Handlebars.csproj" />
     <ProjectReference Include="..\CodeMap\CodeMap.csproj" />
   </ItemGroup>
 
