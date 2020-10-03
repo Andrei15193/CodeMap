@@ -78,8 +78,8 @@ namespace CodeMap.Handlebars
 
         private void _ApplyTempalte(string templateName, DeclarationNode declarationNode)
         {
-            using var fileStreamWriter = GetTextWriter(declarationNode);
-            TemplateWriter.Write(fileStreamWriter, templateName, declarationNode);
+            using var textWriter = GetTextWriter(declarationNode);
+            TemplateWriter.Write(textWriter, templateName, declarationNode);
         }
     }
 }

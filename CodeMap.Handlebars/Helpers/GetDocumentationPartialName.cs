@@ -89,7 +89,7 @@ namespace CodeMap.Handlebars.Helpers
                 => PartialName = DocumentationPartialNames.Code;
 
             protected override void VisitInlineReference(MemberInfoReferenceDocumentationElement memberInfoReference)
-                => PartialName = DocumentationPartialNames.Hyperlink;
+                => PartialName = DocumentationPartialNames.MemberReference;
 
             protected override void VisitGenericParameterReference(GenericParameterReferenceDocumentationElement genericParameterReference)
                 => PartialName = DocumentationPartialNames.GenericParameterReference;

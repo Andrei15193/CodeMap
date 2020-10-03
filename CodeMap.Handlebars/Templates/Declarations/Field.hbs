@@ -1,7 +1,7 @@
-﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaryingType.assembly.name ' - ' name ' Field')}}
-<h2>{{MemberName this}} Field</h2>
+﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaringType.assembly.name ' - ' name ' Field')}}
+<h2>{{name}} Field</h2>
 
-<p>Field type: {{TypeReferenceLink type}}.</p>
+<p>Field type: {{MemberReference type}}.</p>
 {{> Documentation summary}}
 
 {{#if isStatic}}

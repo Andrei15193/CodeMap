@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 using CodeMap.Handlebars.Visitors;
@@ -33,25 +32,6 @@ namespace CodeMap.Handlebars
                 }
 
             return $"{version.Major}.{version.Minor}.{version.Revision}{prerelease}";
-        }
-
-        public static string CollapseIndentation(this string value)
-        {
-            var trimmedValue = value.Trim('\r', '\n');
-            var match = Regex.Match(trimmedValue, @"^\s+", RegexOptions.Multiline);
-            if (match.Success)
-            {
-                var indentation = match.Value.Length;
-                do
-                {
-                    indentation = Math.Min(indentation, match.Value.Length);
-                    match = match.NextMatch();
-                } while (match.Success);
-                var collapsedText = Regex.Replace(trimmedValue, @$"^\s{{{indentation}}}", string.Empty, RegexOptions.Multiline);
-                return collapsedText;
-            }
-            else
-                return trimmedValue;
         }
 
         public static string GetMemberName(this TypeDeclaration typeDeclaration)

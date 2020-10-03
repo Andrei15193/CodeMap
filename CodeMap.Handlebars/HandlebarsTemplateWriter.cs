@@ -10,38 +10,31 @@ namespace CodeMap.Handlebars
 {
     public class HandlebarsTemplateWriter : TemplateWriter
     {
-        private readonly PageContext _pageContext;
-        private readonly Lazy<IReadOnlyDictionary<string, Action<TextWriter, object>>> _templates;
+        private readonly IReadOnlyDictionary<string, Action<TextWriter, object>> _templates;
 
-        public HandlebarsTemplateWriter(PageContext pageContext)
-            => (_pageContext, _templates) = (pageContext, new Lazy<IReadOnlyDictionary<string, Action<TextWriter, object>>>(_GetTemplates));
+        public HandlebarsTemplateWriter(IMemberReferenceResolver memberReferenceResolver)
+            => _templates = _GetTemplates(memberReferenceResolver);
 
         public sealed override void Write(TextWriter textWriter, string templateName, object context)
-            => _templates.Value[templateName](textWriter, context);
+            => _templates[templateName](textWriter, context);
 
-        protected virtual IEnumerable<IHandlebarsHelper> GetHelpers()
+        protected virtual IEnumerable<IHandlebarsHelper> GetHelpers(IMemberReferenceResolver memberReferenceResolver)
         {
             yield return new IsCollection();
             yield return new Concat();
-            yield return new Semver();
-            yield return new GetAssemblyCompany();
-            yield return new GetDocumentationPartialName();
-            yield return new MemberName();
-            yield return new SimpleMemberName();
-            yield return new MemberUrl(_pageContext);
-            yield return new MemberLink(this);
-            yield return new MemberAccessModifier();
-            yield return new TypeReferenceLink(this);
-            yield return new ArrayRank();
             yield return new Format();
+            yield return new Semver();
             yield return new Pygments();
+            yield return new GetAssemblyCompany();
+            yield return new MemberReference(memberReferenceResolver);
+            yield return new GetDocumentationPartialName();
+            yield return new MemberAccessModifier();
             yield return new IsReadOnlyProperty();
             yield return new IsReadWriteProperty();
             yield return new IsWriteOnlyProperty();
-            yield return new MemberDeclarationsList(this);
         }
 
-        protected virtual IEnumerable<IHandlebarsBlockHelper> GetBlockHelpers()
+        protected virtual IEnumerable<IHandlebarsBlockHelper> GetBlockHelpers(IMemberReferenceResolver memberReferenceResolver)
             => Enumerable.Empty<IHandlebarsBlockHelper>();
 
         protected virtual IReadOnlyDictionary<string, string> GetViews()
@@ -68,26 +61,25 @@ namespace CodeMap.Handlebars
                     StringComparer.OrdinalIgnoreCase
                 );
 
-        private IReadOnlyDictionary<string, Action<TextWriter, object>> _GetTemplates()
+        private IReadOnlyDictionary<string, Action<TextWriter, object>> _GetTemplates(IMemberReferenceResolver memberReferenceResolver)
         {
-
             var handlebars = HandlebarsDotNet.Handlebars.Create();
-            foreach (var helper in GetHelpers() ?? Enumerable.Empty<IHandlebarsHelper>())
-                handlebars.RegisterHelper(helper.Name, helper.Apply);
+            foreach (var helper in _GetLatest(GetHelpers(memberReferenceResolver) ?? Enumerable.Empty<IHandlebarsHelper>(), helper => helper.Name, helper => helper))
+                handlebars.RegisterHelper(helper.Key, helper.Value.Apply);
 
-            foreach (var blockHelper in GetBlockHelpers() ?? Enumerable.Empty<IHandlebarsBlockHelper>())
-                handlebars.RegisterHelper(blockHelper.Name, blockHelper.Apply);
+            foreach (var blockHelper in _GetLatest(GetBlockHelpers(memberReferenceResolver) ?? Enumerable.Empty<IHandlebarsBlockHelper>(), blockHelper => blockHelper.Name, blockHelper => blockHelper))
+                handlebars.RegisterHelper(blockHelper.Key, blockHelper.Value.Apply);
 
-            foreach (var (viewName, viewTemplate) in _GetLatestProviders(GetViews() ?? Enumerable.Empty<KeyValuePair<string, string>>()))
+            foreach (var (viewName, viewTemplate) in _GetLatest(GetViews() ?? Enumerable.Empty<KeyValuePair<string, string>>(), pair => pair.Key, pair => pair.Value))
                 using (var viewTextReader = new StringReader(viewTemplate))
                     handlebars.RegisterTemplate(viewName, handlebars.Compile(viewTextReader));
 
-            return _GetLatestProviders(GetTemplates() ?? Enumerable.Empty<KeyValuePair<string, string>>())
+            return _GetLatest(GetTemplates() ?? Enumerable.Empty<KeyValuePair<string, string>>(), pair => pair.Key, pair => pair.Value)
                 .ToDictionary(
-                    pair => pair.Name,
+                    pair => pair.Key,
                     pair =>
                     {
-                        var templateTextReader = new StringReader(pair.Template);
+                        var templateTextReader = new StringReader(pair.Value);
                         return handlebars.Compile(templateTextReader);
                     },
                     StringComparer.OrdinalIgnoreCase
@@ -100,7 +92,7 @@ namespace CodeMap.Handlebars
             return streamReader.ReadToEnd();
         }
 
-        private static IEnumerable<(string Name, string Template)> _GetLatestProviders(IEnumerable<KeyValuePair<string, string>> providers)
-            => providers.GroupBy(pair => pair.Key, pair => pair.Value, (viewName, viewProviders) => (viewName, viewProviders.Last()), StringComparer.OrdinalIgnoreCase);
+        private static IEnumerable<(string Key, TValue Value)> _GetLatest<TItem, TValue>(IEnumerable<TItem> items, Func<TItem, string> keySelector, Func<TItem, TValue> valueSelector)
+            => items.GroupBy(keySelector, valueSelector, (key, values) => (key, values.Last()), StringComparer.OrdinalIgnoreCase);
     }
 }

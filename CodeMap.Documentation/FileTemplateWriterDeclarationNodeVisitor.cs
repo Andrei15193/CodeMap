@@ -7,16 +7,15 @@ namespace CodeMap.Documentation
 {
     public class FileTemplateWriterDeclarationNodeVisitor : TemplateWriterDeclarationNodeVisitor
     {
-        public FileTemplateWriterDeclarationNodeVisitor(DirectoryInfo targetDirectory, IMemberFileNameResolver memberFileNameResolver, TemplateWriter templateWriter)
+        private readonly DirectoryInfo _targetDirecotry;
+        private readonly IMemberReferenceResolver _memberFileNameResolver;
+
+        public FileTemplateWriterDeclarationNodeVisitor(DirectoryInfo targetDirectory, IMemberReferenceResolver memberFileNameResolver, TemplateWriter templateWriter)
             : base(templateWriter)
-            => (DirectoryInfo, MemberFileNameResolver) = (targetDirectory, memberFileNameResolver);
-
-        protected DirectoryInfo DirectoryInfo { get; }
-
-        protected IMemberFileNameResolver MemberFileNameResolver { get; }
+            => (_targetDirecotry, _memberFileNameResolver) = (targetDirectory, memberFileNameResolver);
 
         protected override TextWriter GetTextWriter(DeclarationNode declarationNode)
-            => new StreamWriter(new FileStream(Path.Combine(DirectoryInfo.FullName, MemberFileNameResolver.GetFileName(declarationNode)), FileMode.Create, FileAccess.Write));
+            => new StreamWriter(new FileStream(Path.Combine(_targetDirecotry.FullName, _memberFileNameResolver.GetFileName(declarationNode)), FileMode.Create, FileAccess.Write, FileShare.Read));
 
         protected override void VisitAssembly(AssemblyDeclaration assembly)
         {
@@ -29,9 +28,9 @@ namespace CodeMap.Documentation
 
         private void _ClearFolder()
         {
-            if (DirectoryInfo.Exists)
-                DirectoryInfo.Delete(true);
-            DirectoryInfo.Create();
+            if (_targetDirecotry.Exists)
+                _targetDirecotry.Delete(true);
+            _targetDirecotry.Create();
         }
 
         private void _WriteAssets()
@@ -41,7 +40,7 @@ namespace CodeMap.Documentation
                 var match = Regex.Match(resource, @"Assets\.(?<fileName>\w+\.\w+)$", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
-                    using var fileStream = new FileStream(Path.Combine(DirectoryInfo.FullName, match.Groups["fileName"].Value), FileMode.Create, FileAccess.Write);
+                    using var fileStream = new FileStream(Path.Combine(_targetDirecotry.FullName, match.Groups["fileName"].Value), FileMode.Create, FileAccess.Write);
                     using var assetStream = typeof(Program).Assembly.GetManifestResourceStream(resource);
                     assetStream.CopyTo(fileStream);
                 }

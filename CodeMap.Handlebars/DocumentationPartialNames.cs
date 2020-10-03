@@ -42,6 +42,8 @@
 
         public const string Code = "Code";
 
+        public const string MemberReference = "MemberReference";
+
         public const string Hyperlink = "Hyperlink";
 
         public const string ParameterReference = "ParameterReference";

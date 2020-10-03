@@ -1,7 +1,7 @@
-﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaryingType.assembly.name ' - ' name ' Event')}}
-<h2>{{MemberName this}} Event</h2>
+﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaringType.assembly.name ' - ' name ' Event')}}
+<h2>{{name}} Event</h2>
 
-<p>Event type: {{TypeReferenceLink type}}.</p>
+<p>Event type: {{MemberReference type}}.</p>
 {{> Documentation summary}}
 
 {{#if isStatic}}

@@ -4,9 +4,9 @@ using CodeMap.ReferenceData;
 
 namespace CodeMap.Handlebars
 {
-    public interface IMemberFileNameResolver
+    public interface IMemberReferenceResolver
     {
-        string GetFileName(DeclarationNode declatationNode);
+        string GetFileName(DeclarationNode declarationNode);
         string GetUrl(MemberReference memberReference);
         string GetUrl(MemberInfo memberInfo);
     }

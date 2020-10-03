@@ -1,5 +1,5 @@
 ﻿{{#>Layout node=this assembly=assembly title=(Concat assembly.name ' - ' name ' Delegate')}}
-<h2>{{MemberName this}} Delegate</h2>
+<h2>{{name}} Delegate</h2>
 
 {{> Documentation summary}}
 
@@ -11,7 +11,7 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{this.name}}: {{TypeReferenceLink type}}</h5>
+        <h5>{{this.name}}: {{MemberReference type}}</h5>
         {{> Documentation description}}
     </li>
     {{#if @last}}
@@ -25,7 +25,7 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{TypeReferenceLink type}}</h5>
+        <h5>{{MemberReference type}}</h5>
         {{> Documentation description}}
     </li>
     {{#if @last}}
@@ -34,7 +34,7 @@
 {{/each}}
 
 {{#each return.description}}
-{{#if @first}}<h3>Returns: {{TypeReferenceLink @root.return.type}}</h3>{{/if}}
+{{#if @first}}<h3>Returns: {{MemberReference @root.return.type}}</h3>{{/if}}
 {{> Documentation}}
 {{/each}}
 

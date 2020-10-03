@@ -1,5 +1,5 @@
-﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaryingType.assembly.name ' - ' name ' Constructor')}}
-<h2>{{MemberName this}} Constructor</h2>
+﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaringType.assembly.name ' - ' name ' Constructor')}}
+<h2>{{name}} Constructor</h2>
 
 {{> Documentation summary}}
 
@@ -11,7 +11,7 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{name}}: {{TypeReferenceLink type}}</h5>
+        <h5>{{name}}: {{MemberReference type}}</h5>
         {{> Documentation description}}
     </li>
     {{#if @last}}
@@ -25,7 +25,7 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{TypeReferenceLink type}}</h5>
+        <h5>{{MemberReference type}}</h5>
         {{> Documentation description}}
     </li>
     {{#if @last}}

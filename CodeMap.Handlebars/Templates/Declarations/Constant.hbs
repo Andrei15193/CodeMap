@@ -1,7 +1,7 @@
-﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaryingType.assembly.name ' - ' name ' Constant')}}
-<h2>{{MemberName this}} Constant</h2>
+﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaringType.assembly.name ' - ' name ' Constant')}}
+<h2>{{name}} Constant</h2>
 
-<p>Constant type: {{TypeReferenceLink type}}.</p>
+<p>Constant type: {{MemberReference type}}.</p>
 {{> Documentation summary}}
 
 {{#if isStatic}}

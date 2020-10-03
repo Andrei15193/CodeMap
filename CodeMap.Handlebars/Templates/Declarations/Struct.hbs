@@ -1,12 +1,12 @@
 ﻿{{#>Layout node=this assembly=assembly title=(Concat assembly.name ' - ' name ' Struct')}}
-<h2>{{MemberName @root this}} Struct</h2>
+<h2>{{name}} Struct</h2>
 
 {{> Documentation summary}}
 
 <p>
     {{#each implementedInterfaces}}
     {{~#if @first}}<br />Implemented interfaces:{{else}},{{/if}}
-    {{TypeReferenceLink @root this ~}}
+    {{MemberReference ~}}
     {{/each}}
 </p>
 

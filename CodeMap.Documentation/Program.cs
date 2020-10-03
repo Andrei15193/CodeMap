@@ -31,8 +31,8 @@ namespace CodeMap.Documentation
             var hasExplicitTargetDirectory = !string.IsNullOrWhiteSpace(arguments.TargetSubdirectory);
             var targetDirectory = outputDirectory.CreateSubdirectory(hasExplicitTargetDirectory ? arguments.TargetSubdirectory : documentation.Version.ToSemver());
 
-            var memberFileNameResolver = new MemberFileNameResolver(library);
-            var templateWriter = new HandlebarsTemplateWriter(new PageContext(memberFileNameResolver));
+            var memberFileNameResolver = new DefaultMemberReferenceResolver(library);
+            var templateWriter = new HandlebarsTemplateWriter(memberFileNameResolver);
 
             documentation.Accept(new FileTemplateWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));
 

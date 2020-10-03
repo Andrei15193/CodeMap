@@ -18,6 +18,7 @@
     <None Remove="Partials\Documentation\GenericParameterReference.hbs" />
     <None Remove="Partials\Documentation\Hyperlink.hbs" />
     <None Remove="Partials\Documentation\ListItem.hbs" />
+    <None Remove="Partials\Documentation\MemberReference.hbs" />
     <None Remove="Partials\Documentation\OrderedList.hbs" />
     <None Remove="Partials\Documentation\Paragraph.hbs" />
     <None Remove="Partials\Documentation\ParameterReference.hbs" />
@@ -46,15 +47,13 @@
     <None Remove="Templates\Declarations\Property.hbs" />
     <None Remove="Templates\Declarations\Struct.hbs" />
     <None Remove="Templates\DeprecationNotice.hbs" />
-    <None Remove="Templates\Helpers\MemberDeclarationsList.hbs" />
-    <None Remove="Templates\Helpers\MemberLink.hbs" />
-    <None Remove="Templates\Helpers\TypeReferenceLink.hbs" />
     <None Remove="Templates\OtherVersions.hbs" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Partials\Breadcrumbs.hbs" />
     <EmbeddedResource Include="Partials\Documentation.hbs" />
+    <EmbeddedResource Include="Partials\Documentation\MemberReference.hbs" />
     <EmbeddedResource Include="Partials\Documentation\Code.hbs" />
     <EmbeddedResource Include="Partials\Documentation\CodeBlock.hbs" />
     <EmbeddedResource Include="Partials\Documentation\DefinitionList.hbs" />
@@ -94,9 +93,6 @@
     <EmbeddedResource Include="Templates\Declarations\Property.hbs" />
     <EmbeddedResource Include="Templates\Declarations\Struct.hbs" />
     <EmbeddedResource Include="Templates\DeprecationNotice.hbs" />
-    <EmbeddedResource Include="Templates\Helpers\MemberDeclarationsList.hbs" />
-    <EmbeddedResource Include="Templates\Helpers\MemberLink.hbs" />
-    <EmbeddedResource Include="Templates\Helpers\TypeReferenceLink.hbs" />
     <EmbeddedResource Include="Templates\OtherVersions.hbs" />
   </ItemGroup>
 

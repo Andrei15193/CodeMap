@@ -12,8 +12,7 @@ namespace CodeMap.Handlebars.Visitors
             => _nameBuilder.ToString();
 
         protected override void VisitAssembly(AssemblyDeclaration assembly)
-        {
-        }
+            => _nameBuilder.Append(assembly.Name);
 
         protected override void VisitNamespace(NamespaceDeclaration @namespace)
             => _nameBuilder.Append(@namespace.Name);

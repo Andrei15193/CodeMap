@@ -1,13 +1,13 @@
 ﻿{{#>Layout node=this assembly=assembly title=(Concat assembly.name ' - ' name ' Class')}}
-<h2>{{MemberName}} Class</h2>
+<h2>{{name}} Class</h2>
 
 {{> Documentation summary}}
 
 <p>
-    Base type: {{TypeReferenceLink baseClass}}.
+    Base type: {{MemberReference baseClass}}.
     {{#each implementedInterfaces}}
     {{~#if @first}}<br />Implemented interfaces:{{else}},{{/if}}
-    {{TypeReferenceLink this ~}}
+    {{MemberReference ~}}
     {{/each}}
 </p>
 

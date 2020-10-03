@@ -1,7 +1,7 @@
-﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaryingType.assembly.name ' - ' name ' Property')}}
-<h2>{{MemberName this}} Property</h2>
+﻿{{#>Layout node=this assembly=declaringType.assembly title=(Concat declaringType.assembly.name ' - ' name ' Property')}}
+<h2>{{name}} Property</h2>
 
-<p>Property type: {{TypeReferenceLink type}}.</p>
+<p>Property type: {{MemberReference type}}.</p>
 {{> Documentation summary}}
 
 {{#if (IsReadOnlyProperty this)}}
@@ -34,7 +34,7 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{this.name}}: {{TypeReferenceLink type}}</h5>
+        <h5>{{this.name}}: {{MemberReference type}}</h5>
         {{> Documentation description}}
     </li>
     {{#if @last}}
@@ -48,7 +48,7 @@
 <ul>
     {{/if}}
     <li>
-        <h5>{{TypeReferenceLink type}}</h5>
+        <h5>{{MemberReference type}}</h5>
         {{> Documentation description}}
     </li>
     {{#if @last}}
