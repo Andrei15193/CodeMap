@@ -1,9 +1,10 @@
-﻿using CodeMap.DocumentationElements;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
@@ -26,7 +27,7 @@ namespace CodeMap.DeclarationNodes
 
                 MemberDocumentationCollection membersDocumentation;
                 using (var xmlDocumentationReader = xmlDocumentationFileInfo.OpenText())
-                    membersDocumentation = new XmlDocumentationReader(canonicalNameResolver).Read(xmlDocumentationReader);
+                    membersDocumentation = new XmlDocumentationReader(new MemberReferenceFactory(), canonicalNameResolver).Read(xmlDocumentationReader);
 
                 return new DeclarationNodeFactory(canonicalNameResolver, membersDocumentation).Create(assembly);
             }

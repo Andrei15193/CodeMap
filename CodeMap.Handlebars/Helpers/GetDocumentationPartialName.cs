@@ -88,7 +88,7 @@ namespace CodeMap.Handlebars.Helpers
             protected override void VisitInlineCode(InlineCodeDocumentationElement inlineCode)
                 => PartialName = DocumentationPartialNames.Code;
 
-            protected override void VisitInlineReference(MemberInfoReferenceDocumentationElement memberInfoReference)
+            protected override void VisitInlineReference(ReferenceDataDocumentationElement memberInfoReference)
                 => PartialName = DocumentationPartialNames.MemberReference;
 
             protected override void VisitGenericParameterReference(GenericParameterReferenceDocumentationElement genericParameterReference)

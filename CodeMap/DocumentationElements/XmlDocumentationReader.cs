@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.DocumentationElements
 {
@@ -19,17 +20,22 @@ namespace CodeMap.DocumentationElements
             XmlNodeType.SignificantWhitespace
         };
         private readonly CanonicalNameResolver _canonicalNameResolver;
+        private readonly MemberReferenceFactory _memberReferenceFactory;
 
         /// <summary>Initializes a new instance of the <see cref="XmlDocumentationReader"/> class.</summary>
         public XmlDocumentationReader()
-            : this(null)
+            : this(null, null)
         {
         }
 
         /// <summary>Initializes a new instance of the <see cref="XmlDocumentationReader"/> class.</summary>
+        /// <param name="memberReferenceFactory">The <see cref="MemberReferenceFactory"/> to use when mapping <see cref="System.Reflection.MemberInfo"/>s to <see cref="MemberReference"/>s.</param>
         /// <param name="canonicalNameResolver">The <see cref="CanonicalNameResolver"/> to use for resolving references.</param>
-        public XmlDocumentationReader(CanonicalNameResolver canonicalNameResolver)
-            => _canonicalNameResolver = canonicalNameResolver;
+        public XmlDocumentationReader(MemberReferenceFactory memberReferenceFactory, CanonicalNameResolver canonicalNameResolver)
+        {
+            _memberReferenceFactory = memberReferenceFactory ?? new MemberReferenceFactory();
+            _canonicalNameResolver = canonicalNameResolver;
+        }
 
         /// <summary>Reads the XML documentation into <see cref="MemberDocumentation"/> items.</summary>
         /// <param name="input">The <see cref="TextReader"/> from which to load <see cref="MemberDocumentation"/> items.</param>
@@ -179,7 +185,7 @@ namespace CodeMap.DocumentationElements
                 where relatedMemberCrefAttribute != null
                 let referencedMember = _canonicalNameResolver?.TryFindMemberInfoFor(relatedMemberCrefAttribute.Value)
                 select referencedMember != null
-                    ? DocumentationElement.MemberReference(referencedMember, _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
+                    ? DocumentationElement.MemberReference(_memberReferenceFactory.Create(referencedMember), _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
                     : DocumentationElement.MemberReference(relatedMemberCrefAttribute.Value, _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
                 as MemberReferenceDocumentationElement
             )
@@ -442,7 +448,7 @@ namespace CodeMap.DocumentationElements
                             _AddTextElementIfExists();
                             var referencedMember = _canonicalNameResolver?.TryFindMemberInfoFor(memberReferenceCrefAttribute.Value);
                             inlineElements.Add(referencedMember != null
-                                ? DocumentationElement.MemberReference(referencedMember, _ReadXmlAttributesExcept(xmlElement, "cref"))
+                                ? DocumentationElement.MemberReference(_memberReferenceFactory.Create(referencedMember), _ReadXmlAttributesExcept(xmlElement, "cref"))
                                 : DocumentationElement.MemberReference(memberReferenceCrefAttribute.Value, _ReadXmlAttributesExcept(xmlElement, "cref"))
                                 as MemberReferenceDocumentationElement
                             );

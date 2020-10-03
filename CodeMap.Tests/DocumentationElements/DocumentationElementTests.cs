@@ -79,7 +79,7 @@ namespace CodeMap.Tests.DocumentationElements
             protected override void VisitInlineReference(MemberNameReferenceDocumentationElement memberNameReference)
                 => _InvokeCallback(memberNameReference);
 
-            protected override void VisitInlineReference(MemberInfoReferenceDocumentationElement memberInfoReference)
+            protected override void VisitInlineReference(ReferenceDataDocumentationElement memberInfoReference)
                 => _InvokeCallback(memberInfoReference);
 
             protected override void VisitInlineCode(InlineCodeDocumentationElement inlineCode)

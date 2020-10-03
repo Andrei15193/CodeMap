@@ -1917,8 +1917,8 @@ fourth line
                     _AssertAreEqual(expectedInlineCode, (InlineCodeDocumentationElement)actual);
                     break;
 
-                case MemberInfoReferenceDocumentationElement expectedMemberInfoReference:
-                    _AssertAreEqual(expectedMemberInfoReference, (MemberInfoReferenceDocumentationElement)actual);
+                case ReferenceDataDocumentationElement expectedMemberInfoReference:
+                    _AssertAreEqual(expectedMemberInfoReference, (ReferenceDataDocumentationElement)actual);
                     break;
 
                 case MemberNameReferenceDocumentationElement expectedMemberNameReference:
@@ -1952,7 +1952,7 @@ fourth line
             Assert.Equal(expected.Code, actual.Code);
         }
 
-        private static void _AssertAreEqual(MemberInfoReferenceDocumentationElement expected, MemberInfoReferenceDocumentationElement actual)
+        private static void _AssertAreEqual(ReferenceDataDocumentationElement expected, ReferenceDataDocumentationElement actual)
         {
             Assert.Equal(expected.ReferredMember, actual.ReferredMember);
         }
@@ -2050,7 +2050,7 @@ fourth line
         {
             switch (relatedMember)
             {
-                case MemberInfoReferenceDocumentationElement memberInfoReference:
+                case ReferenceDataDocumentationElement memberInfoReference:
                     Assert.Single(memberInfoReference.XmlAttributes);
                     Assert.Equal("seealso", memberInfoReference.XmlAttributes["test"]);
                     break;
@@ -2212,7 +2212,7 @@ fourth line
             foreach (var inlineElement in inlineElements)
                 switch (inlineElement)
                 {
-                    case MemberInfoReferenceDocumentationElement memberInfoReferenceDocumentationElement:
+                    case ReferenceDataDocumentationElement memberInfoReferenceDocumentationElement:
                         _AssertMemberReferenceXmlAttributes(memberInfoReferenceDocumentationElement);
                         break;
 
@@ -2234,7 +2234,7 @@ fourth line
                 }
         }
 
-        private static void _AssertMemberReferenceXmlAttributes(MemberInfoReferenceDocumentationElement memberInfoReference)
+        private static void _AssertMemberReferenceXmlAttributes(ReferenceDataDocumentationElement memberInfoReference)
         {
             Assert.Single(memberInfoReference.XmlAttributes);
             Assert.Equal("see", memberInfoReference.XmlAttributes["test"]);

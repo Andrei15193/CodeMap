@@ -96,8 +96,8 @@ namespace CodeMap.DocumentationElements
             => throw new InvalidOperationException($"Could not find member from '{memberNameReference.CanonicalName}' canonical name. Override VisitInlineReference(MemberNameReferenceDocumentationElement) to ignore this error.");
 
         /// <summary>Visits an inline member reference.</summary>
-        /// <param name="memberInfoReference">The <see cref="MemberInfoReferenceDocumentationElement"/> to visit.</param>
-        protected internal abstract void VisitInlineReference(MemberInfoReferenceDocumentationElement memberInfoReference);
+        /// <param name="memberInfoReference">The <see cref="ReferenceDataDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitInlineReference(ReferenceDataDocumentationElement memberInfoReference);
 
         /// <summary>Visits an inline code snippet.</summary>
         /// <param name="inlineCode">The <see cref="InlineCodeDocumentationElement"/> to visit.</param>

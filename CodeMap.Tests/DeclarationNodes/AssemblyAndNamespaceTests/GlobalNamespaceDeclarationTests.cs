@@ -2,6 +2,7 @@
 using System.Linq;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
 using CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests.Mocks;
 using Xunit;
 
@@ -126,10 +127,11 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         [Fact]
         public void ApplyRelatedMembersDocumenationAddition()
         {
-            var relatedMembers = new[] { DocumentationElement.MemberReference(typeof(object)) };
+            var memberReferenceFactory = new MemberReferenceFactory();
+            var relatedMembers = new[] { DocumentationElement.MemberReference(memberReferenceFactory.Create(typeof(object))) };
 
             DeclarationNode.Apply(
-                new NamespaceDocumentationAdditionMock { Skip = true, RelatedMembers = new[] { DocumentationElement.MemberReference(typeof(object)) } },
+                new NamespaceDocumentationAdditionMock { Skip = true, RelatedMembers = new[] { DocumentationElement.MemberReference(memberReferenceFactory.Create(typeof(object))) } },
                 new NamespaceDocumentationAdditionMock { RelatedMembers = relatedMembers }
             );
 

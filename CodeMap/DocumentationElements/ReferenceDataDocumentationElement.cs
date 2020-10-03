@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.DocumentationElements
 {
     /// <summary>Represents a resolved member reference corresponding to the <c>see</c> and <c>seealso</c> XML elements.</summary>
-    public sealed class MemberInfoReferenceDocumentationElement : MemberReferenceDocumentationElement
+    public sealed class ReferenceDataDocumentationElement : MemberReferenceDocumentationElement
     {
-        internal MemberInfoReferenceDocumentationElement(MemberInfo referredMember, IReadOnlyDictionary<string, string> xmlAttributes)
+        internal ReferenceDataDocumentationElement(MemberReference referredMember, IReadOnlyDictionary<string, string> xmlAttributes)
         {
             ReferredMember = referredMember ?? throw new ArgumentNullException(nameof(referredMember));
 
@@ -18,7 +18,7 @@ namespace CodeMap.DocumentationElements
         }
 
         /// <summary>The referred member.</summary>
-        public MemberInfo ReferredMember { get; }
+        public MemberReference ReferredMember { get; }
 
         /// <summary>The XML attributes specified on the member reference element.</summary>
         public IReadOnlyDictionary<string, string> XmlAttributes { get; }

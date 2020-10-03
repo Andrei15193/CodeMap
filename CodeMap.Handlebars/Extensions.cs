@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CodeMap.DeclarationNodes;
-using CodeMap.DocumentationElements;
 using CodeMap.Handlebars.Visitors;
 using CodeMap.ReferenceData;
 
@@ -32,20 +30,6 @@ namespace CodeMap.Handlebars
                 }
 
             return $"{version.Major}.{version.Minor}.{version.Revision}{prerelease}";
-        }
-
-        public static string GetMemberName(this TypeDeclaration typeDeclaration)
-        {
-            var visitor = new MemberDeclarationNameVisitor();
-            typeDeclaration.Accept(visitor);
-            return visitor.Result;
-        }
-
-        public static string GetMemberName(this MemberDeclaration memberDeclaration)
-        {
-            var visitor = new MemberDeclarationNameVisitor();
-            memberDeclaration.Accept(visitor);
-            return visitor.Result;
         }
 
         public static string GetMemberName(this MemberReference memberReference)
@@ -246,15 +230,6 @@ namespace CodeMap.Handlebars
             }
             return memberNameBuilder.ToString();
         }
-
-        public static string GetMemberUrl(this MemberInfoReferenceDocumentationElement memberInfoReference, AssemblyDeclaration library)
-            => memberInfoReference.ReferredMember.GetMemberUrl(library);
-
-        public static string GetMemberUrl(this MemberInfo memberInfo, AssemblyDeclaration library)
-            => library == memberInfo.Module.Assembly ? memberInfo.GetMemberFullName() + ".html" : memberInfo.GetMicrosoftDocsLink();
-
-        public static string GetMemberUrl(this MemberInfo memberInfo, Assembly library)
-            => library == memberInfo.Module.Assembly ? memberInfo.GetMemberFullName() + ".html" : memberInfo.GetMicrosoftDocsLink();
 
         public static string GetMicrosoftDocsLink(this MemberInfo member)
         {
