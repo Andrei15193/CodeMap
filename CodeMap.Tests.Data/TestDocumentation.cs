@@ -33,8 +33,8 @@
         ///     This is a code block, we can use Pygments for syntax highlighting.
         /// </code>
         /// 
-        /// <code lang="C#">
-        ///     public class ListSo
+        /// <code language="C#">
+        ///     public class LikeSo
         ///     {
         ///         public void MyMethodThatDoesStuff()
         ///         {

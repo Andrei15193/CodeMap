@@ -7,8 +7,11 @@
     {{#each implementedInterfaces}}
     {{~#if @first}}<br />Implemented interfaces:{{else}},{{/if}}
     {{MemberReference ~}}
+    {{~#if @last}}.{{/if}}
     {{/each}}
 </p>
+
+{{> GenericParametersDocumentation genericParameters}}
 
 {{> MembersDeclaraction members=constants title='Constants' includeAccessor=1}}
 {{> MembersDeclaraction members=fields title='Fields' includeAccessor=1}}
@@ -26,5 +29,5 @@
 
 {{> Documentation node=remarks title='Remarks'}}
 {{> Documentation examples}}
-{{> Documentation node=relatedMembers title='Related Members'}}
+{{> Documentation node=relatedMembers title='Related Members' asList=1}}
 {{/Layout}}

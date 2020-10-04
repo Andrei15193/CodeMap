@@ -17,7 +17,7 @@ namespace CodeMap.Handlebars.Visitors
             => _nameBuilder.Append(assembly.Name);
 
         protected override void VisitNamespace(NamespaceDeclaration @namespace)
-            => _nameBuilder.Append(@namespace.Name);
+            => _nameBuilder.Append(@namespace is GlobalNamespaceDeclaration ? "global" : @namespace.Name);
 
         protected override void VisitEnum(EnumDeclaration @enum)
             => _nameBuilder.Append(@enum.Name);

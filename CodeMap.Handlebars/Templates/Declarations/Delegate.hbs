@@ -5,6 +5,8 @@
 
 <p>This is a <code>{{MemberAccessModifier}}</code> delegate.</p>
 
+{{> GenericParametersDocumentation genericParameters}}
+
 {{#each parameters}}
 {{#if @first}}
 <h3>Parameters</h3>
@@ -37,5 +39,5 @@
 
 {{> Documentation node=remarks title='Remarks'}}
 {{> Documentation examples}}
-{{> Documentation node=relatedMembers title='Related Members'}}
+{{> Documentation node=relatedMembers title='Related Members' asList=1}}
 {{/Layout}}

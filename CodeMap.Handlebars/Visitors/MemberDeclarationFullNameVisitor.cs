@@ -26,32 +26,48 @@ namespace CodeMap.Handlebars.Visitors
             => _VisitTypeDeclaration(@enum);
 
         protected override void VisitDelegate(DelegateDeclaration @delegate)
-            => _VisitTypeDeclaration(@delegate);
+        {
+            _VisitTypeDeclaration(@delegate);
+            if (@delegate.GenericParameters.Any())
+                _fullNameBuilder.Append('`').Append(@delegate.GenericParameters.Count);
+        }
 
         protected override void VisitInterface(InterfaceDeclaration @interface)
-            => _VisitTypeDeclaration(@interface);
+        {
+            _VisitTypeDeclaration(@interface);
+            if (@interface.GenericParameters.Any())
+                _fullNameBuilder.Append('`').Append(@interface.GenericParameters.Count);
+        }
 
         protected override void VisitClass(ClassDeclaration @class)
-            => _VisitTypeDeclaration(@class);
+        {
+            _VisitTypeDeclaration(@class);
+            if (@class.GenericParameters.Any())
+                _fullNameBuilder.Append('`').Append(@class.GenericParameters.Count);
+        }
 
         protected override void VisitStruct(StructDeclaration @struct)
-            => _VisitTypeDeclaration(@struct);
+        {
+            _VisitTypeDeclaration(@struct);
+            if (@struct.GenericParameters.Any())
+                _fullNameBuilder.Append('`').Append(@struct.GenericParameters.Count);
+        }
 
         protected override void VisitConstant(ConstantDeclaration constant)
         {
-            _VisitTypeDeclaration(constant.DeclaringType);
+            constant.DeclaringType.Accept(this);
             _fullNameBuilder.Append('.').Append(constant.Name);
         }
 
         protected override void VisitField(FieldDeclaration field)
         {
-            _VisitTypeDeclaration(field.DeclaringType);
+            field.DeclaringType.Accept(this);
             _fullNameBuilder.Append('.').Append(field.Name);
         }
 
         protected override void VisitConstructor(ConstructorDeclaration constructor)
         {
-            _VisitTypeDeclaration(constructor.DeclaringType);
+            constructor.DeclaringType.Accept(this);
             _fullNameBuilder.Append('.').Append(constructor.DeclaringType.Name);
             if (!_excludeParameters && constructor.Parameters.Any())
             {
@@ -63,13 +79,13 @@ namespace CodeMap.Handlebars.Visitors
 
         protected override void VisitEvent(EventDeclaration @event)
         {
-            _VisitTypeDeclaration(@event.DeclaringType);
+            @event.DeclaringType.Accept(this);
             _fullNameBuilder.Append('.').Append(@event.Name);
         }
 
         protected override void VisitProperty(PropertyDeclaration property)
         {
-            _VisitTypeDeclaration(property.DeclaringType);
+            property.DeclaringType.Accept(this);
             _fullNameBuilder.Append('.').Append(property.Name);
             if (!_excludeParameters && property.Parameters.Any())
             {
@@ -81,7 +97,7 @@ namespace CodeMap.Handlebars.Visitors
 
         protected override void VisitMethod(MethodDeclaration method)
         {
-            _VisitTypeDeclaration(method.DeclaringType);
+            method.DeclaringType.Accept(this);
             _fullNameBuilder.Append('.').Append(method.Name);
             if (method.GenericParameters.Any())
                 _fullNameBuilder.Append('`').Append(method.GenericParameters.Count);
@@ -96,12 +112,7 @@ namespace CodeMap.Handlebars.Visitors
 
         private void _VisitTypeDeclaration(TypeDeclaration typeDeclaration)
         {
-            if (!(typeDeclaration.DeclaringType is null))
-            {
-                typeDeclaration.DeclaringType.Accept(this);
-                _fullNameBuilder.Append('.');
-            }
-            else if (!(typeDeclaration.Namespace is GlobalNamespaceDeclaration))
+            if (!(typeDeclaration.Namespace is GlobalNamespaceDeclaration))
             {
                 typeDeclaration.Namespace.Accept(this);
                 _fullNameBuilder.Append('.');

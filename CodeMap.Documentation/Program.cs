@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CodeMap.DeclarationNodes;
@@ -12,9 +11,9 @@ using HtmlAgilityPack;
 
 namespace CodeMap.Documentation
 {
-    public static class Program
+    internal static class Program
     {
-        public static void Main(params string[] args)
+        internal static void Main(params string[] args)
         {
             var arguments = Arguments.GetFrom(args);
             if (arguments.OutputPath == null)
@@ -123,31 +122,6 @@ namespace CodeMap.Documentation
 
             bool IsSelectedVersion(FileInfo htmlFile, string version)
                 => string.Equals(version, htmlFile.Directory.Name, StringComparison.OrdinalIgnoreCase);
-        }
-
-        private class Arguments
-        {
-            public static Arguments GetFrom(IEnumerable<string> args)
-            {
-                var result = new Arguments();
-                string name = null;
-                foreach (var arg in args)
-                    if (arg.StartsWith('-'))
-                        name = arg.Substring(1);
-                    else if (name != null)
-                    {
-                        var property = typeof(Arguments).GetRuntimeProperty(name);
-                        if (property != null)
-                            property.SetValue(result, arg);
-                        name = null;
-                    }
-
-                return result;
-            }
-
-            public string OutputPath { get; set; }
-
-            public string TargetSubdirectory { get; set; }
         }
     }
 }

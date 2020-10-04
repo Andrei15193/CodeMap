@@ -47,30 +47,30 @@ namespace CodeMap.Handlebars.Visitors
             => _writer.Write(genericTypeParameter.Name);
 
         protected override void VisitConstant(ConstantReference constant)
-            => _writeHyperlink(_writer, constant.Name, _memberReferenceResolver.GetUrl(constant));
+            => _writeHyperlink(_writer, _memberReferenceResolver.GetUrl(constant), constant.Name);
 
         protected override void VisitField(FieldReference field)
-            => _writeHyperlink(_writer, field.Name, _memberReferenceResolver.GetUrl(field));
+            => _writeHyperlink(_writer, _memberReferenceResolver.GetUrl(field), field.Name);
 
         protected override void VisitConstructor(ConstructorReference constructor)
         {
-            _writeHyperlink(_writer, constructor.DeclaringType.Name, _memberReferenceResolver.GetUrl(constructor));
+            _writeHyperlink(_writer, _memberReferenceResolver.GetUrl(constructor), constructor.DeclaringType.Name);
             _VisitTypes('(', constructor.ParameterTypes, ')');
         }
 
         protected override void VisitEvent(EventReference @event)
-            => _writeHyperlink(_writer, @event.Name, _memberReferenceResolver.GetUrl(@event));
+            => _writeHyperlink(_writer, _memberReferenceResolver.GetUrl(@event), @event.Name);
 
         protected override void VisitProperty(PropertyReference property)
         {
-            _writeHyperlink(_writer, property.Name, _memberReferenceResolver.GetUrl(property));
+            _writeHyperlink(_writer, _memberReferenceResolver.GetUrl(property), property.Name);
             if (property.ParameterTypes.Any())
                 _VisitTypes('[', property.ParameterTypes, ']');
         }
 
         protected override void VisitMethod(MethodReference method)
         {
-            _writeHyperlink(_writer, method.Name, _memberReferenceResolver.GetUrl(method));
+            _writeHyperlink(_writer, _memberReferenceResolver.GetUrl(method), method.Name);
             _VisitTypes('(', method.ParameterTypes, ')');
         }
 

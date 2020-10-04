@@ -19,18 +19,13 @@ namespace CodeMap.Handlebars
 
         public string GetFileName(DeclarationNode declarationNode)
         {
-            if (declarationNode is AssemblyDeclaration)
-                return "index.html";
-            else
-            {
-                var memberDeclarationFullNameVisitor = new MemberDeclarationFullNameVisitor(excludeParameters: false);
-                declarationNode.Accept(memberDeclarationFullNameVisitor);
+            var memberDeclarationFullNameVisitor = new MemberDeclarationFullNameVisitor(excludeParameters: false);
+            declarationNode.Accept(memberDeclarationFullNameVisitor);
 
-                var memberDeclarationBaseNameVisitor = new MemberDeclarationFullNameVisitor(excludeParameters: true);
-                declarationNode.Accept(memberDeclarationBaseNameVisitor);
+            var memberDeclarationBaseNameVisitor = new MemberDeclarationFullNameVisitor(excludeParameters: true);
+            declarationNode.Accept(memberDeclarationBaseNameVisitor);
 
-                return _GetEntry(memberDeclarationFullNameVisitor.Result, memberDeclarationBaseNameVisitor.Result);
-            }
+            return _GetEntry(memberDeclarationFullNameVisitor.Result, memberDeclarationBaseNameVisitor.Result);
         }
 
         public string GetUrl(MemberReference memberReference)

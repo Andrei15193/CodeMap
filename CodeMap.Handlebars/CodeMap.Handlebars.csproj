@@ -32,6 +32,7 @@
     <None Remove="Partials\Documentation\Text.hbs" />
     <None Remove="Partials\Documentation\UnorderedList.hbs" />
     <None Remove="Partials\Documentation\Value.hbs" />
+    <None Remove="Partials\GenericParametersDocumentation.hbs" />
     <None Remove="Partials\Layout.hbs" />
     <None Remove="Partials\MembersDeclaraction.hbs" />
     <None Remove="Templates\Declarations\Assembly.hbs" />
@@ -80,6 +81,7 @@
     <EmbeddedResource Include="Partials\Documentation\Exception.hbs" />
     <EmbeddedResource Include="Partials\Documentation\Value.hbs" />
     <EmbeddedResource Include="Partials\Layout.hbs" />
+    <EmbeddedResource Include="Partials\GenericParametersDocumentation.hbs" />
     <EmbeddedResource Include="Partials\MembersDeclaraction.hbs" />
     <EmbeddedResource Include="Templates\Declarations\Assembly.hbs" />
     <EmbeddedResource Include="Templates\Declarations\Class.hbs" />

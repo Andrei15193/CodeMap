@@ -23,7 +23,7 @@ namespace CodeMap.DeclarationNodes
             var xmlDocumentationFileInfo = new FileInfo(Path.ChangeExtension(assembly.Location, ".xml"));
             if (xmlDocumentationFileInfo.Exists)
             {
-                var canonicalNameResolver = new CanonicalNameResolver(new[] { assembly }.Concat(assembly.GetReferencedAssemblies().Select(Assembly.Load)));
+                var canonicalNameResolver = new CanonicalNameResolver(_LoadAssemblies(assembly));
 
                 MemberDocumentationCollection membersDocumentation;
                 using (var xmlDocumentationReader = xmlDocumentationFileInfo.OpenText())
@@ -48,7 +48,7 @@ namespace CodeMap.DeclarationNodes
             var xmlDocumentationFileInfo = new FileInfo(Path.ChangeExtension(assembly.Location, ".xml"));
             if (xmlDocumentationFileInfo.Exists)
             {
-                var canonicalNameResolver = new CanonicalNameResolver(new[] { assembly }.Concat(assembly.GetReferencedAssemblies().Select(Assembly.Load)));
+                var canonicalNameResolver = new CanonicalNameResolver(_LoadAssemblies(assembly));
 
                 MemberDocumentationCollection membersDocumentation;
                 using (var xmlDocumentationReader = xmlDocumentationFileInfo.OpenText())
@@ -77,10 +77,25 @@ namespace CodeMap.DeclarationNodes
                 throw new ArgumentNullException(nameof(membersDocumentation));
 
             return new DeclarationNodeFactory(
-                new CanonicalNameResolver(new[] { assembly }.Concat(assembly.GetReferencedAssemblies().Select(Assembly.Load))),
+                new CanonicalNameResolver(_LoadAssemblies(assembly)),
                 membersDocumentation,
                 declarationFilter
             ).Create(assembly);
+        }
+
+        private static IEnumerable<Assembly> _LoadAssemblies(Assembly assembly)
+        {
+            var assemblies = new HashSet<Assembly>();
+            var assembliesToVisit = new Queue<Assembly>();
+            assembliesToVisit.Enqueue(assembly);
+            do
+            {
+                var currentAssembly = assembliesToVisit.Dequeue();
+                if (assemblies.Add(currentAssembly))
+                    foreach (var referencedAssembly in currentAssembly.GetReferencedAssemblies())
+                        assembliesToVisit.Enqueue(Assembly.Load(referencedAssembly));
+            } while (assembliesToVisit.Count > 0);
+            return assemblies;
         }
 
         private static IEnumerable<TypeDeclaration> _GetWithNested(ClassDeclaration classDocumentationElement)

@@ -1,8 +1,21 @@
 ﻿{{#if (IsCollection node)}}
+{{#if asList}}
+{{#each node}}
+{{#if @first}}
+{{#if ../title}}<h3>{{../title}}</h3>{{/if}}
+<ul>
+    {{/if}}
+    <li>{{> (GetDocumentationPartialName this)}}</li>
+    {{#if @last}}
+</ul>
+{{/if}}
+{{/each}}
+{{else}}
 {{#each node}}
 {{#if @first}}{{#if ../title}}<h3>{{../title}}</h3>{{/if}}{{/if}}
 {{> (GetDocumentationPartialName this)}}
 {{/each}}
+{{/if}}
 {{else if node}}
 {{#with node}}{{> (GetDocumentationPartialName) title=../title}}{{/with}}
 {{else if (IsCollection this)}}

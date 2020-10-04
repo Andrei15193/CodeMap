@@ -1,12 +1,33 @@
 ﻿using System;
+using System.IO;
+using CodeMap.DeclarationNodes;
+using CodeMap.Documentation;
+using CodeMap.Handlebars;
 
 namespace CodeMap.Tests.Data.Documentation
 {
-    public class Program
+    internal static class Program
     {
-        public static void Main(params string[] args)
+        internal static void Main(params string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var arguments = Arguments.GetFrom(args);
+            if (arguments.OutputPath == null)
+                throw new ArgumentException("Expected -OutputPath", nameof(args));
+            if (arguments.TargetSubdirectory == null)
+                throw new ArgumentException("Expected -TargetSubdirectory", nameof(args));
+
+            var library = typeof(GlobalTestClass).Assembly;
+            var documentation = DeclarationNode.Create(library, DeclarationFilter.All);
+
+            var outputDirectory = new DirectoryInfo(arguments.OutputPath);
+            outputDirectory.Create();
+
+            var targetDirectory = outputDirectory.CreateSubdirectory(arguments.TargetSubdirectory);
+
+            var memberFileNameResolver = new DefaultMemberReferenceResolver(library, "netcore-3.1");
+            var templateWriter = new HandlebarsTemplateWriter(memberFileNameResolver);
+
+            documentation.Accept(new FileTemplateWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));
         }
     }
 }
