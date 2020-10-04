@@ -20,7 +20,7 @@ namespace CodeMap.Handlebars.Visitors
                 if (_result is null)
                 {
                     if (!string.IsNullOrWhiteSpace(_view))
-                        _linkBuilder.Append("?view=").Append("netstandard-3.1");
+                        _linkBuilder.Append("?view=").Append(_view);
                     _result = _linkBuilder.ToString();
                 }
                 return _result;

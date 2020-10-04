@@ -25,7 +25,9 @@ namespace CodeMap.Handlebars.Visitors
                 type.DeclaringType.Accept(this);
                 _fullNameBuilder.Append('.');
             }
-            else if (!string.IsNullOrWhiteSpace(type.Namespace))
+            else if (string.IsNullOrWhiteSpace(type.Namespace))
+                _fullNameBuilder.Append("global-namespace").Append('.');
+            else
                 _fullNameBuilder.Append(type.Namespace).Append('.');
 
             _fullNameBuilder.Append(type.Name);

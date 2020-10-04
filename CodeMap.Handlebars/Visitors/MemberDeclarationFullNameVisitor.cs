@@ -20,7 +20,7 @@ namespace CodeMap.Handlebars.Visitors
             => _fullNameBuilder.Append("index");
 
         protected override void VisitNamespace(NamespaceDeclaration @namespace)
-            => _fullNameBuilder.Append(@namespace.Name);
+            => _fullNameBuilder.Append(@namespace is GlobalNamespaceDeclaration ? "global-namespace" : @namespace.Name);
 
         protected override void VisitEnum(EnumDeclaration @enum)
             => _VisitTypeDeclaration(@enum);
