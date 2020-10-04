@@ -48,7 +48,7 @@ namespace CodeMap.DeclarationNodes
         public ValueDocumentationElement Value { get; internal set; }
 
         /// <summary>Documented exceptions that might be thrown when using the property.</summary>
-        public IReadOnlyCollection<ExceptionData> Exceptions { get; internal set; }
+        public IReadOnlyCollection<ExceptionDocumentationElement> Exceptions { get; internal set; }
 
         /// <summary>Determines whether the current <see cref="PropertyDeclaration"/> is equal to the provided <paramref name="propertyInfo"/>.</summary>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to compare to.</param>

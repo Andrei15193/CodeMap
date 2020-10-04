@@ -14,6 +14,10 @@ namespace CodeMap.DocumentationElements
         /// <param name="summary">The <see cref="SummaryDocumentationElement"/> to visit.</param>
         protected internal abstract void VisitSummary(SummaryDocumentationElement summary);
 
+        /// <summary>Visits an exception element.</summary>
+        /// <param name="exception">The <see cref="ExceptionDocumentationElement"/> to visit.</param>
+        protected internal abstract void VisitException(ExceptionDocumentationElement exception);
+
         /// <summary>Visits a remarks element.</summary>
         /// <param name="remarks">The <see cref="RemarksDocumentationElement"/> to visit.</param>
         protected internal abstract void VisitRemarks(RemarksDocumentationElement remarks);

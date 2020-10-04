@@ -18,6 +18,17 @@
 <p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/new-modifier">shadowing</a> event.</p>
 {{/if}}
 
+{{#each exceptions}}
+{{#if @first}}
+<h3>Exceptions</h3>
+<ul>
+    {{/if}}
+    <li>{{> Documentation}}</li>
+    {{#if @last}}
+</ul>
+{{/if}}
+{{/each}}
+
 {{> Documentation node=remarks title='Remarks'}}
 {{> Documentation examples}}
 {{> Documentation node=relatedMembers title='Related Members'}}

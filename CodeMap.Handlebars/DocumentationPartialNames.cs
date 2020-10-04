@@ -8,6 +8,8 @@
 
         public const string Example = "Example";
 
+        public const string Exception = "Exception";
+
         public const string Value = "Value";
 
         public const string Paragraph = "Paragraph";

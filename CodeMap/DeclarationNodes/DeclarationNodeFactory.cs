@@ -15,9 +15,10 @@ namespace CodeMap.DeclarationNodes
         private readonly BlockDescriptionDocumentationElement _emptyBlockDocumentationElementCollection = DocumentationElement.BlockDescription(Enumerable.Empty<BlockDocumentationElement>());
         private readonly CanonicalNameResolver _canonicalNameResolver;
         private readonly MemberDocumentationCollection _membersDocumentation;
+        private readonly DeclarationFilter _declarationFilter;
 
-        public DeclarationNodeFactory(CanonicalNameResolver canonicalNameResolver, MemberDocumentationCollection membersDocumentation)
-            => (_canonicalNameResolver, _membersDocumentation) = (canonicalNameResolver, membersDocumentation);
+        public DeclarationNodeFactory(CanonicalNameResolver canonicalNameResolver, MemberDocumentationCollection membersDocumentation, DeclarationFilter declarationFilter)
+            => (_canonicalNameResolver, _membersDocumentation, _declarationFilter) = (canonicalNameResolver, membersDocumentation, declarationFilter ?? new DeclarationFilter());
 
         public AssemblyDeclaration Create(Assembly assembly)
         {
@@ -43,21 +44,15 @@ namespace CodeMap.DeclarationNodes
 
             assemblyDocumentationElement.Namespaces = assembly
                 .DefinedTypes
-                .Where(type => type.DeclaringType == null && !Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute)))
+                .Where(type => type.DeclaringType == null && _declarationFilter.ShouldMap(type))
                 .OrderBy(type => type.Namespace, StringComparer.OrdinalIgnoreCase)
                 .GroupBy(type => type.Namespace, StringComparer.OrdinalIgnoreCase)
                 .Select(
                     typesByNamespace =>
                     {
                         var @namespace = string.IsNullOrWhiteSpace(typesByNamespace.Key)
-                            ? new GlobalNamespaceDeclaration
-                            {
-                                Name = string.Empty
-                            }
-                            : new NamespaceDeclaration
-                            {
-                                Name = typesByNamespace.Key,
-                            };
+                            ? new GlobalNamespaceDeclaration { Name = string.Empty }
+                            : new NamespaceDeclaration { Name = typesByNamespace.Key };
                         @namespace.Assembly = assemblyDocumentationElement;
                         @namespace.Summary = DocumentationElement.Summary();
                         @namespace.Remarks = DocumentationElement.Remarks();
@@ -174,7 +169,7 @@ namespace CodeMap.DeclarationNodes
                 Summary = memberDocumentation.Summary,
                 Remarks = memberDocumentation.Remarks,
                 Examples = memberDocumentation.Examples,
-                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
+                Exceptions = memberDocumentation.Exceptions,
                 RelatedMembers = memberDocumentation.RelatedMembers
             };
 
@@ -193,10 +188,7 @@ namespace CodeMap.DeclarationNodes
                 Attributes = _MapAttributesDataFrom(interfaceType.CustomAttributes),
                 BaseInterfaces = interfaceType
                     .GetInterfaces()
-                    .Except(interfaceType
-                        .GetInterfaces()
-                        .SelectMany(baseInterface => baseInterface.GetInterfaces())
-                    )
+                    .Except(interfaceType.GetInterfaces().SelectMany(baseInterface => baseInterface.GetInterfaces()))
                     .OrderBy(baseInterface => baseInterface.Namespace, StringComparer.OrdinalIgnoreCase)
                     .ThenBy(baseInterface => baseInterface.Name, StringComparer.OrdinalIgnoreCase)
                     .Select(baseInterface => (TypeReference)_memberReferenceFactory.Create(baseInterface))
@@ -235,16 +227,8 @@ namespace CodeMap.DeclarationNodes
                 BaseClass = (TypeReference)_memberReferenceFactory.Create(classType.BaseType),
                 ImplementedInterfaces = classType
                     .GetInterfaces()
-                    .Except(
-                        classType
-                            .BaseType
-                            .GetInterfaces()
-                    )
-                    .Except(
-                        classType
-                            .GetInterfaces()
-                            .SelectMany(baseInterface => baseInterface.GetInterfaces())
-                    )
+                    .Except(classType.BaseType.GetInterfaces())
+                    .Except(classType.GetInterfaces().SelectMany(baseInterface => baseInterface.GetInterfaces()))
                     .OrderBy(implementedInterface => implementedInterface.Namespace)
                     .ThenBy(implementedInterface => implementedInterface.Name)
                     .ThenBy(implementedInterface => implementedInterface.GetGenericArguments().Length)
@@ -273,7 +257,7 @@ namespace CodeMap.DeclarationNodes
                 .Concat(classDocumentationElement.Methods)
                 .ToReadOnlyList();
 
-            var nestedTypes = _GetTypes(classType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic), @namespace, classDocumentationElement);
+            var nestedTypes = _GetTypes(classType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).Where(_declarationFilter.ShouldMap), @namespace, classDocumentationElement);
             classDocumentationElement.NestedTypes = nestedTypes;
 
             classDocumentationElement.NestedEnums = nestedTypes.OfType<EnumDeclaration>().ToReadOnlyList();
@@ -352,7 +336,7 @@ namespace CodeMap.DeclarationNodes
         private IReadOnlyCollection<ConstantDeclaration> _GetConstants(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
                 .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetField | BindingFlags.DeclaredOnly)
-                .Where(field => !field.IsSpecialName && field.IsLiteral)
+                .Where(field => !field.IsSpecialName && field.IsLiteral && _declarationFilter.ShouldMap(field))
                 .OrderBy(constant => constant.Name, StringComparer.OrdinalIgnoreCase)
                 .Select(constant => _GetConstant(constant, declaringDocumentationElement))
                 .ToReadOnlyList();
@@ -360,7 +344,7 @@ namespace CodeMap.DeclarationNodes
         private IReadOnlyCollection<FieldDeclaration> _GetFields(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
                 .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.GetField | BindingFlags.DeclaredOnly)
-                .Where(field => !field.IsLiteral && field.GetCustomAttribute<CompilerGeneratedAttribute>() == null)
+                .Where(field => !field.IsLiteral && _declarationFilter.ShouldMap(field))
                 .OrderBy(field => field.Name, StringComparer.OrdinalIgnoreCase)
                 .Select(field => _GetField(field, declaringDocumentationElement))
                 .ToReadOnlyList();
@@ -368,6 +352,7 @@ namespace CodeMap.DeclarationNodes
         private IReadOnlyCollection<ConstructorDeclaration> _GetConstructors(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
                 .GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Where(_declarationFilter.ShouldMap)
                 .OrderBy(constructor => constructor.GetParameters().Length)
                 .Select(constructor => _GetConstructor(constructor, declaringDocumentationElement))
                 .ToReadOnlyList();
@@ -375,6 +360,7 @@ namespace CodeMap.DeclarationNodes
         private IReadOnlyCollection<EventDeclaration> _GetEvents(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
                 .GetEvents(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Where(_declarationFilter.ShouldMap)
                 .OrderBy(@event => @event.Name, StringComparer.OrdinalIgnoreCase)
                 .Select(@event => _GetEvent(@event, declaringDocumentationElement))
                 .ToReadOnlyList();
@@ -382,15 +368,17 @@ namespace CodeMap.DeclarationNodes
         private IReadOnlyCollection<PropertyDeclaration> _GetProperties(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
                 .GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Where(_declarationFilter.ShouldMap)
                 .OrderBy(property => property.Name, StringComparer.OrdinalIgnoreCase)
                 .ThenBy(property => property.GetIndexParameters().Length)
                 .Select(property => _GetProperty(property, declaringDocumentationElement))
+                .Where(property => property != null)
                 .ToReadOnlyList();
 
         private IReadOnlyCollection<MethodDeclaration> _GetMethods(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
                 .GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                .Where(method => !method.IsSpecialName && !Attribute.IsDefined(method, typeof(CompilerGeneratedAttribute)))
+                .Where(method => !method.IsSpecialName && _declarationFilter.ShouldMap(method))
                 .OrderBy(method => method.Name, StringComparer.OrdinalIgnoreCase)
                 .ThenBy(method => method.GetParameters().Length)
                 .Select(method => _GetMethod(method, declaringDocumentationElement))
@@ -453,7 +441,7 @@ namespace CodeMap.DeclarationNodes
                     .Select(parameter => _GetParameter(parameter, memberDocumentation))
                     .ToReadOnlyList(),
                 Summary = memberDocumentation.Summary,
-                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
+                Exceptions = memberDocumentation.Exceptions,
                 Remarks = memberDocumentation.Remarks,
                 Examples = memberDocumentation.Examples,
                 RelatedMembers = memberDocumentation.RelatedMembers
@@ -472,7 +460,7 @@ namespace CodeMap.DeclarationNodes
                 DeclaringType = declaringType,
                 Parameters = Extensions.EmptyReadOnlyList<ParameterData>(),
                 Summary = memberDocumentation.Summary,
-                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
+                Exceptions = memberDocumentation.Exceptions,
                 Remarks = memberDocumentation.Remarks,
                 Examples = memberDocumentation.Examples,
                 RelatedMembers = memberDocumentation.RelatedMembers
@@ -499,7 +487,7 @@ namespace CodeMap.DeclarationNodes
                 Adder = _GetEventAccessorData(@event.AddMethod),
                 Remover = _GetEventAccessorData(@event.RemoveMethod),
                 Summary = memberDocumentation.Summary,
-                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
+                Exceptions = memberDocumentation.Exceptions,
                 Remarks = memberDocumentation.Remarks,
                 Examples = memberDocumentation.Examples,
                 RelatedMembers = memberDocumentation.RelatedMembers
@@ -515,44 +503,48 @@ namespace CodeMap.DeclarationNodes
 
         private PropertyDeclaration _GetProperty(PropertyInfo property, TypeDeclaration declaringType)
         {
-            var memberDocumentation = _GetMemberDocumentationFor(property);
-
             var getterInfo = _GetPropertyAccessorData(property.GetMethod);
             var setterInfo = _GetPropertyAccessorData(property.SetMethod);
-            var methodInfo = (property.GetMethod ?? property.SetMethod);
-            return new PropertyDeclaration
+            if (getterInfo is null && setterInfo is null)
+                return null;
+            else
             {
-                Name = property.Name,
-                AccessModifier = setterInfo == null || (getterInfo != null && getterInfo.AccessModifier >= setterInfo.AccessModifier)
-                    ? getterInfo.AccessModifier
-                    : setterInfo.AccessModifier,
-                Type = _memberReferenceFactory.Create(property.PropertyType),
-                Attributes = _MapAttributesDataFrom(property.CustomAttributes),
-                Parameters = property
-                    .GetIndexParameters()
-                    .Select(parameter => _GetParameter(parameter, memberDocumentation))
-                    .ToReadOnlyList(),
-                DeclaringType = declaringType,
-                IsStatic = methodInfo.IsStatic,
-                IsAbstract = methodInfo.IsAbstract && !property.DeclaringType.IsInterface,
-                IsVirtual = !methodInfo.IsAbstract && !methodInfo.IsFinal && methodInfo.IsVirtual && methodInfo.GetBaseDefinition() == methodInfo,
-                IsOverride = methodInfo.IsVirtual && methodInfo.GetBaseDefinition() != methodInfo,
-                IsSealed = methodInfo.IsVirtual && methodInfo.GetBaseDefinition() != methodInfo && methodInfo.IsFinal,
-                IsShadowing = (!methodInfo.IsVirtual || methodInfo.GetBaseDefinition() == methodInfo) && _IsShadowing(property),
-                Getter = getterInfo,
-                Setter = setterInfo,
-                Summary = memberDocumentation.Summary,
-                Value = memberDocumentation.Value,
-                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
-                Remarks = memberDocumentation.Remarks,
-                Examples = memberDocumentation.Examples,
-                RelatedMembers = memberDocumentation.RelatedMembers
-            };
+                var memberDocumentation = _GetMemberDocumentationFor(property);
+                var methodInfo = (property.GetMethod ?? property.SetMethod);
+                return new PropertyDeclaration
+                {
+                    Name = property.Name,
+                    AccessModifier = setterInfo == null || (getterInfo != null && getterInfo.AccessModifier >= setterInfo.AccessModifier)
+                        ? getterInfo.AccessModifier
+                        : setterInfo.AccessModifier,
+                    Type = _memberReferenceFactory.Create(property.PropertyType),
+                    Attributes = _MapAttributesDataFrom(property.CustomAttributes),
+                    Parameters = property
+                        .GetIndexParameters()
+                        .Select(parameter => _GetParameter(parameter, memberDocumentation))
+                        .ToReadOnlyList(),
+                    DeclaringType = declaringType,
+                    IsStatic = methodInfo.IsStatic,
+                    IsAbstract = methodInfo.IsAbstract && !property.DeclaringType.IsInterface,
+                    IsVirtual = !methodInfo.IsAbstract && !methodInfo.IsFinal && methodInfo.IsVirtual && methodInfo.GetBaseDefinition() == methodInfo,
+                    IsOverride = methodInfo.IsVirtual && methodInfo.GetBaseDefinition() != methodInfo,
+                    IsSealed = methodInfo.IsVirtual && methodInfo.GetBaseDefinition() != methodInfo && methodInfo.IsFinal,
+                    IsShadowing = (!methodInfo.IsVirtual || methodInfo.GetBaseDefinition() == methodInfo) && _IsShadowing(property),
+                    Getter = getterInfo,
+                    Setter = setterInfo,
+                    Summary = memberDocumentation.Summary,
+                    Value = memberDocumentation.Value,
+                    Exceptions = memberDocumentation.Exceptions,
+                    Remarks = memberDocumentation.Remarks,
+                    Examples = memberDocumentation.Examples,
+                    RelatedMembers = memberDocumentation.RelatedMembers
+                };
+            }
         }
 
         private PropertyAccessorData _GetPropertyAccessorData(MethodInfo accessorMethod)
         {
-            if (accessorMethod == null)
+            if (accessorMethod is null || !_declarationFilter.ShouldMapPropertyAccessor(accessorMethod))
                 return null;
 
             return new PropertyAccessorData
@@ -592,7 +584,7 @@ namespace CodeMap.DeclarationNodes
                     Attributes = _MapAttributesDataFrom(method.ReturnParameter.CustomAttributes)
                 },
                 Summary = memberDocumentation.Summary,
-                Exceptions = _MapExceptions(memberDocumentation.Exceptions),
+                Exceptions = memberDocumentation.Exceptions,
                 Remarks = memberDocumentation.Remarks,
                 Examples = memberDocumentation.Examples,
                 RelatedMembers = memberDocumentation.RelatedMembers
@@ -870,19 +862,6 @@ namespace CodeMap.DeclarationNodes
 
             return result;
         }
-
-        private IReadOnlyCollection<ExceptionData> _MapExceptions(IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> exceptions)
-            => (
-                from exception in exceptions
-                let exceptionType = _canonicalNameResolver.TryFindMemberInfoFor(exception.Key) as Type
-                where exceptionType != null && typeof(Exception).IsAssignableFrom(exceptionType)
-                orderby exceptionType.Namespace, exceptionType.Name
-                select new ExceptionData
-                {
-                    Type = (TypeReference)_memberReferenceFactory.Create(exceptionType),
-                    Description = exception.Value
-                }
-        ).ToReadOnlyList();
 
         private MemberDocumentation _GetMemberDocumentationFor(MemberInfo memberInfo)
             => _membersDocumentation.TryFind(_canonicalNameResolver.GetCanonicalNameFrom(memberInfo), out var memberDocumentation) ? memberDocumentation : _emptyMemberDocumentation;

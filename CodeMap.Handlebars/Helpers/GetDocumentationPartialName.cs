@@ -34,6 +34,9 @@ namespace CodeMap.Handlebars.Helpers
             protected override void VisitExample(ExampleDocumentationElement example)
                 => PartialName = DocumentationPartialNames.Example;
 
+            protected override void VisitException(ExceptionDocumentationElement exception)
+                => PartialName = DocumentationPartialNames.Exception;
+
             protected override void VisitValue(ValueDocumentationElement value)
                 => PartialName = DocumentationPartialNames.Value;
 

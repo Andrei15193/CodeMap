@@ -19,6 +19,9 @@ namespace CodeMap.Tests.DocumentationElements
             protected override void VisitSummary(SummaryDocumentationElement summary)
                 => _InvokeCallback(summary);
 
+            protected override void VisitException(ExceptionDocumentationElement exception)
+                => _InvokeCallback(exception);
+
             protected override void VisitRemarks(RemarksDocumentationElement remarks)
                 => _InvokeCallback(remarks);
 

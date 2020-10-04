@@ -41,7 +41,7 @@ namespace CodeMap.DeclarationNodes
         public MethodReturnData Return { get; internal set; }
 
         /// <summary>Documented exceptions that might be thrown when calling the method.</summary>
-        public IReadOnlyCollection<ExceptionData> Exceptions { get; internal set; }
+        public IReadOnlyCollection<ExceptionDocumentationElement> Exceptions { get; internal set; }
 
         /// <summary>Determines whether the current <see cref="MethodDeclaration"/> is equal to the provided <paramref name="methodInfo"/>.</summary>
         /// <param name="methodInfo">The <see cref="MethodInfo"/> to compare to.</param>

@@ -1523,9 +1523,8 @@ fourth line
     </assembly>
     <members>
         <member name=""canonical name"">
-            <exception cref=""exception1"">{_richBlockContent}</exception>
-            <exception cref=""exception2"">{_richBlockContent}</exception>
-            <exception cref=""exception2"">{_richBlockContent}</exception>
+            <exception cref=""System.ArgumentException"" test=""exception"">{_richBlockContent}</exception>
+            <exception cref=""System.ArgumentNullException"" test=""exception"">{_richBlockContent}{_richBlockContent}</exception>
         </member>
     </members>
 </doc>
@@ -1534,10 +1533,10 @@ fourth line
 
             Assert.Single(result);
             _AssertAreEqual(
-                new Dictionary<string, BlockDescriptionDocumentationElement>(StringComparer.Ordinal)
+                new[]
                 {
-                    { "exception1", _richBlockElements },
-                    { "exception2", DocumentationElement.BlockDescription(_richBlockElements.Concat(_richBlockElements)) }
+                    DocumentationElement.Exception(DocumentationElement.MemberReference("System.ArgumentException"), _richBlockElements),
+                    DocumentationElement.Exception(DocumentationElement.MemberReference("System.ArgumentNullException"), DocumentationElement.BlockDescription(_richBlockElements.Concat(_richBlockElements)))
                 },
                 result.Single(memberDocumentation => memberDocumentation.CanonicalName == "canonical name").Exceptions
             );
@@ -1796,6 +1795,19 @@ fourth line
                 _AssertAreEqual(expectedElement, actualElement);
         }
 
+        private static void _AssertAreEqual(ExceptionDocumentationElement expected, ExceptionDocumentationElement actual)
+        {
+            _AssertAreEqual(expected.Exception, actual.Exception);
+            _AssertAreEqual(expected.Description, actual.Description);
+        }
+
+        private static void _AssertAreEqual(IEnumerable<ExceptionDocumentationElement> expected, IEnumerable<ExceptionDocumentationElement> actual)
+        {
+            Assert.Equal(expected.Count(), actual.Count());
+            foreach (var (expectedElement, actualElement) in expected.Zip(actual, (expectedElement, actualElement) => (expectedElement, actualElement)))
+                _AssertAreEqual(expectedElement, actualElement);
+        }
+
         private static void _AssertAreEqual(ValueDocumentationElement expected, ValueDocumentationElement actual)
             => _AssertAreEqual(expected.Content, actual.Content);
 
@@ -1980,7 +1992,7 @@ fourth line
             foreach (var parameter in memberDocumentation.Parameters.Values)
                 _AssertParameterXmlAttributes(parameter);
             _AssertReturnsXmlAttributes(memberDocumentation.Returns);
-            foreach (var exception in memberDocumentation.Exceptions.Values)
+            foreach (var exception in memberDocumentation.Exceptions)
                 _AssertExceptionXmlAttributes(exception);
             _AssertRemarksXmlAttributes(memberDocumentation.Remarks);
             foreach (var example in memberDocumentation.Examples)
@@ -2037,6 +2049,12 @@ fourth line
             Assert.Single(example.XmlAttributes);
             Assert.Equal("example", example.XmlAttributes["test"]);
             _AssertBlockElementsXmlAttributes(example.Content);
+        }
+
+        private static void _AssertExceptionXmlAttributes(ExceptionDocumentationElement exception)
+        {
+            Assert.Single(exception.XmlAttributes);
+            Assert.Equal("exception", exception.XmlAttributes["test"]);
         }
 
         private static void _AssertValueXmlAttributes(ValueDocumentationElement value)

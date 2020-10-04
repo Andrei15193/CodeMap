@@ -33,7 +33,7 @@ namespace CodeMap.DocumentationElements
             IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> genericParameters,
             IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> parameters,
             BlockDescriptionDocumentationElement returns,
-            IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> exceptions,
+            IReadOnlyList<ExceptionDocumentationElement> exceptions,
             RemarksDocumentationElement remarks,
             IEnumerable<ExampleDocumentationElement> examples,
             ValueDocumentationElement value,
@@ -44,7 +44,7 @@ namespace CodeMap.DocumentationElements
             GenericParameters = genericParameters ?? Extensions.EmptyDictionary<string, BlockDescriptionDocumentationElement>();
             Parameters = parameters ?? Extensions.EmptyDictionary<string, BlockDescriptionDocumentationElement>();
             Returns = returns ?? DocumentationElement.BlockDescription(Enumerable.Empty<BlockDocumentationElement>());
-            Exceptions = exceptions ?? Extensions.EmptyDictionary<string, BlockDescriptionDocumentationElement>();
+            Exceptions = exceptions ?? Extensions.EmptyReadOnlyList<ExceptionDocumentationElement>();
             Remarks = remarks ?? DocumentationElement.Remarks(Enumerable.Empty<BlockDocumentationElement>());
             Examples = examples.ToReadOnlyList() ?? Enumerable.Empty<ExampleDocumentationElement>().ToReadOnlyList();
             Value = value ?? DocumentationElement.Value(Enumerable.Empty<BlockDocumentationElement>());
@@ -67,7 +67,7 @@ namespace CodeMap.DocumentationElements
         public BlockDescriptionDocumentationElement Returns { get; }
 
         /// <summary>The exceptions documentation.</summary>
-        public IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> Exceptions { get; }
+        public IReadOnlyList<ExceptionDocumentationElement> Exceptions { get; }
 
         /// <summary>The remarks section.</summary>
         public RemarksDocumentationElement Remarks { get; }

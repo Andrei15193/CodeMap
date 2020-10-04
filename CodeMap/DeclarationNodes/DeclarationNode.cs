@@ -8,7 +8,7 @@ using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
-    /// <summary>A documentation element that is part of the documentation tree for an <see cref="System.Reflection.Assembly"/> and associated XML documentation.</summary>
+    /// <summary>A documentation element that is part of the documentation tree for an <see cref="Assembly"/> and associated XML documentation.</summary>
     public abstract class DeclarationNode
     {
         /// <summary>Creates an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</summary>
@@ -29,10 +29,35 @@ namespace CodeMap.DeclarationNodes
                 using (var xmlDocumentationReader = xmlDocumentationFileInfo.OpenText())
                     membersDocumentation = new XmlDocumentationReader(new MemberReferenceFactory(), canonicalNameResolver).Read(xmlDocumentationReader);
 
-                return new DeclarationNodeFactory(canonicalNameResolver, membersDocumentation).Create(assembly);
+                return new DeclarationNodeFactory(canonicalNameResolver, membersDocumentation, new DeclarationFilter()).Create(assembly);
             }
             else
-                return Create(assembly, new MemberDocumentationCollection(Enumerable.Empty<MemberDocumentation>()));
+                return Create(assembly, new MemberDocumentationCollection(Enumerable.Empty<MemberDocumentation>()), new DeclarationFilter());
+        }
+
+        /// <summary>Creates an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyDeclaration"/>.</param>
+        /// <param name="declarationFilter">A <see cref="DeclarationFilter"/> used to select which <see cref="MemberInfo"/>s will be mapped to <see cref="DeclarationNode"/>s.</param>
+        /// <returns>Returns an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
+        public static AssemblyDeclaration Create(Assembly assembly, DeclarationFilter declarationFilter)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly));
+
+            var xmlDocumentationFileInfo = new FileInfo(Path.ChangeExtension(assembly.Location, ".xml"));
+            if (xmlDocumentationFileInfo.Exists)
+            {
+                var canonicalNameResolver = new CanonicalNameResolver(new[] { assembly }.Concat(assembly.GetReferencedAssemblies().Select(Assembly.Load)));
+
+                MemberDocumentationCollection membersDocumentation;
+                using (var xmlDocumentationReader = xmlDocumentationFileInfo.OpenText())
+                    membersDocumentation = new XmlDocumentationReader(new MemberReferenceFactory(), canonicalNameResolver).Read(xmlDocumentationReader);
+
+                return new DeclarationNodeFactory(canonicalNameResolver, membersDocumentation, declarationFilter).Create(assembly);
+            }
+            else
+                return Create(assembly, new MemberDocumentationCollection(Enumerable.Empty<MemberDocumentation>()), declarationFilter);
         }
 
         /// <summary>Creates an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</summary>
@@ -41,9 +66,10 @@ namespace CodeMap.DeclarationNodes
         /// A <see cref="MemberDocumentationCollection"/> containing written documentation to associated to
         /// <see cref="DeclarationNode"/>s representing assembly member declarations.
         /// </param>
+        /// <param name="declarationFilter">A <see cref="DeclarationFilter"/> used to select which <see cref="MemberInfo"/>s will be mapped to <see cref="DeclarationNode"/>s.</param>
         /// <returns>Returns an <see cref="AssemblyDeclaration"/> from the provided <paramref name="assembly"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> or <paramref name="membersDocumentation"/> are <c>null</c>.</exception>
-        public static AssemblyDeclaration Create(Assembly assembly, MemberDocumentationCollection membersDocumentation)
+        public static AssemblyDeclaration Create(Assembly assembly, MemberDocumentationCollection membersDocumentation, DeclarationFilter declarationFilter)
         {
             if (assembly == null)
                 throw new ArgumentNullException(nameof(assembly));
@@ -51,55 +77,10 @@ namespace CodeMap.DeclarationNodes
                 throw new ArgumentNullException(nameof(membersDocumentation));
 
             return new DeclarationNodeFactory(
-                    new CanonicalNameResolver(new[] { assembly }.Concat(assembly.GetReferencedAssemblies().Select(Assembly.Load))),
-                    membersDocumentation
-                )
-                .Create(assembly);
-        }
-
-        /// <summary>Creates a <see cref="TypeDeclaration"/> from the provided <paramref name="type"/>.</summary>
-        /// <param name="type">The <see cref="Type"/> from which to create a <see cref="TypeDeclaration"/>.</param>
-        /// <returns>Returns a <see cref="TypeDeclaration"/> from the provided <paramref name="type"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="type"/> is <c>null</c>.</exception>
-        /// <remarks>
-        /// This method creates the entire <see cref="AssemblyDeclaration"/> and returns the <see cref="TypeDeclaration"/>
-        /// for the provided <paramref name="type"/>.
-        /// </remarks>
-        public static TypeDeclaration Create(Type type)
-            => Create(type, new MemberDocumentationCollection(Enumerable.Empty<MemberDocumentation>()));
-
-        /// <summary>Creates a <see cref="TypeDeclaration"/> from the provided <paramref name="type"/>.</summary>
-        /// <param name="type">The <see cref="Type"/> from which to create a <see cref="TypeDeclaration"/>.</param>
-        /// <param name="membersDocumentation">
-        /// A <see cref="MemberDocumentationCollection"/> containing written documentation to associated to
-        /// <see cref="DeclarationNode"/>s representing assembly member declarations.
-        /// </param>
-        /// <returns>Returns a <see cref="TypeDeclaration"/> from the provided <paramref name="type"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="type"/> or <paramref name="membersDocumentation"/> are <c>null</c>.</exception>
-        /// <remarks>
-        /// This method creates the entire <see cref="AssemblyDeclaration"/> and returns the <see cref="TypeDeclaration"/>
-        /// for the provided <paramref name="type"/>.
-        /// </remarks>
-        public static TypeDeclaration Create(Type type, MemberDocumentationCollection membersDocumentation)
-        {
-            if (type == null)
-                throw new ArgumentNullException(nameof(type));
-            if (membersDocumentation == null)
-                throw new ArgumentNullException(nameof(membersDocumentation));
-
-            return Create(type.Assembly, membersDocumentation)
-                .Namespaces
-                .Where(@namespace => string.Equals(@namespace.Name, type.Namespace, StringComparison.OrdinalIgnoreCase))
-                .SelectMany(
-                    @namespace => @namespace
-                        .Enums
-                        .AsEnumerable<TypeDeclaration>()
-                        .Concat(@namespace.Delegates)
-                        .Concat(@namespace.Interfaces)
-                        .Concat(@namespace.Classes.SelectMany(_GetWithNested))
-                        .Concat(@namespace.Structs.SelectMany(_GetWithNested))
-                )
-                .FirstOrDefault(typeDocumentationElement => typeDocumentationElement == type);
+                new CanonicalNameResolver(new[] { assembly }.Concat(assembly.GetReferencedAssemblies().Select(Assembly.Load))),
+                membersDocumentation,
+                declarationFilter
+            ).Create(assembly);
         }
 
         private static IEnumerable<TypeDeclaration> _GetWithNested(ClassDeclaration classDocumentationElement)

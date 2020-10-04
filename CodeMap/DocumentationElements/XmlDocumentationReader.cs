@@ -134,25 +134,20 @@ namespace CodeMap.DocumentationElements
             );
         }
 
-        private IReadOnlyDictionary<string, BlockDescriptionDocumentationElement> _ReadExceptions(XElement memberDocumentationXmlElement)
+        private IReadOnlyList<ExceptionDocumentationElement> _ReadExceptions(XElement memberDocumentationXmlElement)
             => (
                 from exceptionXmlElement in memberDocumentationXmlElement.Elements("exception")
                 let exceptionCrefAttribute = exceptionXmlElement.Attribute("cref")
                 where exceptionCrefAttribute != null
                 group exceptionXmlElement by exceptionCrefAttribute.Value into exceptionXmlElementsByType
+                let exceptionType = _canonicalNameResolver?.TryFindMemberInfoFor(exceptionXmlElementsByType.Key)
                 let blockDocumentationElements = exceptionXmlElementsByType.SelectMany(_ReadBlocks)
                 let xmlAttributes = _ReadXmlAttributesExcept(exceptionXmlElementsByType, "cref")
-                select new
-                {
-                    CanonicalName = exceptionXmlElementsByType.Key,
-                    DescriptionBlockElements = DocumentationElement.BlockDescription(blockDocumentationElements, xmlAttributes)
-                }
-            )
-            .ToDictionary(
-                exception => exception.CanonicalName,
-                exception => exception.DescriptionBlockElements,
-                StringComparer.Ordinal
-            );
+                let exceptionTypeReference = exceptionType is null
+                    ? DocumentationElement.MemberReference(exceptionXmlElementsByType.Key)
+                    : DocumentationElement.MemberReference(_memberReferenceFactory.Create(exceptionType)) as MemberReferenceDocumentationElement
+                select DocumentationElement.Exception(exceptionTypeReference, blockDocumentationElements, xmlAttributes)
+            ).ToReadOnlyList();
 
         private RemarksDocumentationElement _ReadRemarks(XElement memberDocumentationXmlElement)
         {

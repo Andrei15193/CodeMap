@@ -15,6 +15,7 @@
     <None Remove="Partials\Documentation\DefinitionListItemTerm.hbs" />
     <None Remove="Partials\Documentation\DefinitionListTitle.hbs" />
     <None Remove="Partials\Documentation\Example.hbs" />
+    <None Remove="Partials\Documentation\Exception.hbs" />
     <None Remove="Partials\Documentation\GenericParameterReference.hbs" />
     <None Remove="Partials\Documentation\Hyperlink.hbs" />
     <None Remove="Partials\Documentation\ListItem.hbs" />
@@ -76,6 +77,7 @@
     <EmbeddedResource Include="Partials\Documentation\TableRow.hbs" />
     <EmbeddedResource Include="Partials\Documentation\Text.hbs" />
     <EmbeddedResource Include="Partials\Documentation\UnorderedList.hbs" />
+    <EmbeddedResource Include="Partials\Documentation\Exception.hbs" />
     <EmbeddedResource Include="Partials\Documentation\Value.hbs" />
     <EmbeddedResource Include="Partials\Layout.hbs" />
     <EmbeddedResource Include="Partials\MembersDeclaraction.hbs" />

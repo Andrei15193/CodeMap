@@ -17,7 +17,7 @@ namespace CodeMap.DeclarationNodes
         public IReadOnlyList<ParameterData> Parameters { get; internal set; }
 
         /// <summary>Documented exceptions that might be thrown when calling the constructor.</summary>
-        public IReadOnlyCollection<ExceptionData> Exceptions { get; internal set; }
+        public IReadOnlyCollection<ExceptionDocumentationElement> Exceptions { get; internal set; }
 
         /// <summary>Determines whether the current <see cref="ConstructorDeclaration"/> is equal to the provided <paramref name="constructorInfo"/>.</summary>
         /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> to compare to.</param>

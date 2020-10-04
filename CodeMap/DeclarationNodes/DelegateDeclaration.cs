@@ -21,7 +21,7 @@ namespace CodeMap.DeclarationNodes
         public MethodReturnData Return { get; internal set; }
 
         /// <summary>The delegate documented exceptions.</summary>
-        public IReadOnlyCollection<ExceptionData> Exceptions { get; internal set; }
+        public IReadOnlyList<ExceptionDocumentationElement> Exceptions { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>

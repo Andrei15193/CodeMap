@@ -16,7 +16,7 @@ namespace CodeMap.Tests.DeclarationNodes
 
         protected DeclarationNodeTests()
         {
-            _testDataAssemblyDeclaration = new Lazy<AssemblyDeclaration>(() => CodeMap.DeclarationNodes.DeclarationNode.Create(TestDataAssembly));
+            _testDataAssemblyDeclaration = new Lazy<AssemblyDeclaration>(() => CodeMap.DeclarationNodes.DeclarationNode.Create(TestDataAssembly, DeclarationFilter.All));
             _declarationNode = new Lazy<TDeclarationNode>(() => Assert.Single(_GetDeclarationNodes().OfType<TDeclarationNode>(), DeclarationNodePredicate));
         }
 

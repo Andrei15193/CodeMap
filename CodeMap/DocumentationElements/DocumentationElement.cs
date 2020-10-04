@@ -32,6 +32,34 @@ namespace CodeMap.DocumentationElements
         public static SummaryDocumentationElement Summary(IEnumerable<BlockDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
             => new SummaryDocumentationElement(content, xmlAttributes);
 
+        /// <summary>Creates an <see cref="ExceptionDocumentationElement"/> with the provided <paramref name="description"/>.</summary>
+        /// <param name="exception">The exception being thrown.</param>
+        /// <param name="description">The content of the <c>exception</c> XML element.</param>
+        /// <returns>Returns an <see cref="ExceptionDocumentationElement"/> with the provided <paramref name="description"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="description"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="description"/> contains <c>null</c> elements.</exception>
+        public static ExceptionDocumentationElement Exception(MemberReferenceDocumentationElement exception, IEnumerable<BlockDocumentationElement> description)
+            => new ExceptionDocumentationElement(exception, description, null);
+
+        /// <summary>Creates an <see cref="ExceptionDocumentationElement"/> with the provided <paramref name="description"/>.</summary>
+        /// <param name="exception">The exception being thrown.</param>
+        /// <param name="description">The content of the <c>exception</c> XML element.</param>
+        /// <returns>Returns an <see cref="ExceptionDocumentationElement"/> with the provided <paramref name="description"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="description"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="description"/> contains <c>null</c> elements.</exception>
+        public static ExceptionDocumentationElement Exception(MemberReferenceDocumentationElement exception, params BlockDocumentationElement[] description)
+            => new ExceptionDocumentationElement(exception, description, null);
+
+        /// <summary>Creates an <see cref="ExceptionDocumentationElement"/> with the provided <paramref name="description"/>.</summary>
+        /// <param name="exception">The exception being thrown.</param>
+        /// <param name="description">The content of the <c>exception</c> XML element.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the example element.</param>
+        /// <returns>Returns an <see cref="ExceptionDocumentationElement"/> with the provided <paramref name="description"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="description"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="description"/> contains <c>null</c> elements.</exception>
+        public static ExceptionDocumentationElement Exception(MemberReferenceDocumentationElement exception, IEnumerable<BlockDocumentationElement> description, IReadOnlyDictionary<string, string> xmlAttributes)
+            => new ExceptionDocumentationElement(exception, description, xmlAttributes);
+
         /// <summary>Creates a <see cref="RemarksDocumentationElement"/> with the provided <paramref name="content"/>.</summary>
         /// <param name="content">The content of the <c>remarks</c> XML element.</param>
         /// <returns>Returns a <see cref="RemarksDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
