@@ -29,9 +29,6 @@ namespace CodeMap.Handlebars
             yield return new MemberReference(memberReferenceResolver);
             yield return new GetDocumentationPartialName();
             yield return new MemberAccessModifier();
-            yield return new IsReadOnlyProperty();
-            yield return new IsReadWriteProperty();
-            yield return new IsWriteOnlyProperty();
         }
 
         protected virtual IEnumerable<IHandlebarsBlockHelper> GetBlockHelpers(IMemberReferenceResolver memberReferenceResolver)

@@ -9,15 +9,14 @@ namespace CodeMap.Handlebars.Visitors
         private readonly StringBuilder _fullNameBuilder = new StringBuilder();
         private readonly bool _excludeParameters;
 
-        public MemberReferenceFullNameVisitor(bool excluseParameters)
-            => _excludeParameters = excluseParameters;
+        public MemberReferenceFullNameVisitor(bool excludeParameters)
+            => _excludeParameters = excludeParameters;
 
         public string Result
             => _fullNameBuilder.ToString();
 
         protected override void VisitAssembly(AssemblyReference assembly)
-        {
-        }
+            => _fullNameBuilder.Append("index");
 
         protected override void VisitType(TypeReference type)
         {

@@ -3,11 +3,10 @@ using System.Linq;
 using System.Reflection;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
-using CodeMap.Handlebars;
 
 namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
 {
-    public class CodeMapAssemblyDocumentationAddition : AssemblyDocumentationAddition
+    internal class CodeMapAssemblyDocumentationAddition : AssemblyDocumentationAddition
     {
         public override bool CanApply(AssemblyDeclaration assemblyDeclaration)
             => assemblyDeclaration.Version.Major == 1 && assemblyDeclaration.Version.Minor == 0;

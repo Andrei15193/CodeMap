@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using CodeMap.DeclarationNodes;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.Handlebars.Visitors
 {
@@ -21,36 +23,27 @@ namespace CodeMap.Handlebars.Visitors
             => _nameBuilder.Append(@enum.Name);
 
         protected override void VisitDelegate(DelegateDeclaration @delegate)
-            => _nameBuilder.Append(@delegate.Name);
+        {
+            _nameBuilder.Append(@delegate.Name);
+            _AppendGenericParameters(@delegate.GenericParameters);
+        }
 
         protected override void VisitInterface(InterfaceDeclaration @interface)
         {
             _nameBuilder.Append(@interface.Name);
-            if (@interface.GenericParameters.Any())
-                _nameBuilder
-                    .Append('<')
-                    .Append(string.Join(", ", @interface.GenericParameters.Select(genericParameter => genericParameter.Name)))
-                    .Append('>');
+            _AppendGenericParameters(@interface.GenericParameters);
         }
 
         protected override void VisitClass(ClassDeclaration @class)
         {
             _nameBuilder.Append(@class.Name);
-            if (@class.GenericParameters.Any())
-                _nameBuilder
-                    .Append('<')
-                    .Append(string.Join(", ", @class.GenericParameters.Select(genericParameter => genericParameter.Name)))
-                    .Append('>');
+            _AppendGenericParameters(@class.GenericParameters);
         }
 
         protected override void VisitStruct(StructDeclaration @struct)
         {
             _nameBuilder.Append(@struct.Name);
-            if (@struct.GenericParameters.Any())
-                _nameBuilder
-                    .Append('<')
-                    .Append(string.Join(", ", @struct.GenericParameters.Select(genericParameter => genericParameter.Name)))
-                    .Append('>');
+            _AppendGenericParameters(@struct.GenericParameters);
         }
 
         protected override void VisitConstant(ConstantDeclaration constant)
@@ -60,11 +53,10 @@ namespace CodeMap.Handlebars.Visitors
             => _nameBuilder.Append(field.Name);
 
         protected override void VisitConstructor(ConstructorDeclaration constructor)
-            => _nameBuilder
-                .Append(constructor.DeclaringType.Name)
-                .Append('(')
-                .Append(string.Join(", ", constructor.Parameters.Select(parameter => parameter.Type.GetMemberName())))
-                .Append(')');
+        {
+            _nameBuilder.Append(constructor.DeclaringType.Name);
+            _AppendReferencedMembers('(', constructor.Parameters.Select(parameter => parameter.Type), ')');
+        }
 
         protected override void VisitEvent(EventDeclaration @event)
             => _nameBuilder.Append(@event.Name);
@@ -73,17 +65,48 @@ namespace CodeMap.Handlebars.Visitors
         {
             _nameBuilder.Append(property.Name);
             if (property.Parameters.Any())
-                _nameBuilder
-                    .Append('[')
-                    .Append(string.Join(", ", property.Parameters.Select(parameter => parameter.Type.GetMemberName())))
-                    .Append(']');
+                _AppendReferencedMembers('[', property.Parameters.Select(parameter => parameter.Type), ']');
         }
 
         protected override void VisitMethod(MethodDeclaration method)
-            => _nameBuilder
-                .Append(method.Name)
-                .Append('(')
-                .Append(string.Join(", ", method.Parameters.Select(parameter => parameter.Type.GetMemberName())))
-                .Append(')');
+        {
+            _nameBuilder.Append(method.Name);
+            _AppendReferencedMembers('(', method.Parameters.Select(parameter => parameter.Type), ')');
+        }
+
+        private void _AppendGenericParameters(IEnumerable<GenericTypeParameterData> genericTypeParameters)
+        {
+            if (genericTypeParameters.Any())
+            {
+                _nameBuilder.Append('<');
+                var isFirst = true;
+                foreach (var genericParameter in genericTypeParameters)
+                {
+                    if (isFirst)
+                        isFirst = false;
+                    else
+                        _nameBuilder.Append(", ");
+                    _nameBuilder.Append(genericParameter.Name);
+                }
+                _nameBuilder.Append('>');
+            }
+        }
+
+        private void _AppendReferencedMembers(char openingCharacter, IEnumerable<MemberReference> memberReferences, char closingCharacter)
+        {
+            var visitor = new MemberReferenceNameBuilderVisitor(_nameBuilder);
+
+            _nameBuilder.Append(openingCharacter);
+            var isFirst = true;
+            foreach (var memberReference in memberReferences)
+            {
+                if (isFirst)
+                    isFirst = false;
+                else
+                    _nameBuilder.Append(", ");
+                memberReference.Accept(visitor);
+            }
+            _nameBuilder.Append(closingCharacter);
+        }
     }
 }

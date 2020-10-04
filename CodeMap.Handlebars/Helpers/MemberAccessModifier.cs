@@ -25,20 +25,10 @@ namespace CodeMap.Handlebars.Helpers
                             writer.Write(_GetAccessModifierLabel(propertyDeclaration.AccessModifier));
                             writer.Write(" get, set");
                         }
-                        else if (propertyDeclaration.Getter.AccessModifier >= AccessModifier.Family && propertyDeclaration.Setter.AccessModifier >= AccessModifier.Family)
+                        else
                         {
                             writer.Write(_GetAccessModifierLabel(propertyDeclaration.Getter.AccessModifier));
                             writer.Write(" get; ");
-                            writer.Write(_GetAccessModifierLabel(propertyDeclaration.Setter.AccessModifier));
-                            writer.Write(" set");
-                        }
-                        else if (propertyDeclaration.Getter.AccessModifier >= AccessModifier.Family)
-                        {
-                            writer.Write(_GetAccessModifierLabel(propertyDeclaration.Getter.AccessModifier));
-                            writer.Write(" get");
-                        }
-                        else
-                        {
                             writer.Write(_GetAccessModifierLabel(propertyDeclaration.Setter.AccessModifier));
                             writer.Write(" set");
                         }

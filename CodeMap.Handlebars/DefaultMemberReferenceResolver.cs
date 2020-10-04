@@ -11,10 +11,11 @@ namespace CodeMap.Handlebars
     public class DefaultMemberReferenceResolver : IMemberReferenceResolver
     {
         private readonly Assembly _library;
+        private readonly string _microsoftDocsView;
         private readonly IDictionary<string, string> _cache;
 
-        public DefaultMemberReferenceResolver(Assembly library)
-            => (_library, _cache) = (library, new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
+        public DefaultMemberReferenceResolver(Assembly library, string microsoftDocsView)
+            => (_library, _microsoftDocsView, _cache) = (library, microsoftDocsView, new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
 
         public string GetFileName(DeclarationNode declarationNode)
         {
@@ -22,10 +23,10 @@ namespace CodeMap.Handlebars
                 return "index.html";
             else
             {
-                var memberDeclarationFullNameVisitor = new MemberDeclarationFullNameVisitor(excluseParameters: false);
+                var memberDeclarationFullNameVisitor = new MemberDeclarationFullNameVisitor(excludeParameters: false);
                 declarationNode.Accept(memberDeclarationFullNameVisitor);
 
-                var memberDeclarationBaseNameVisitor = new MemberDeclarationFullNameVisitor(excluseParameters: true);
+                var memberDeclarationBaseNameVisitor = new MemberDeclarationFullNameVisitor(excludeParameters: true);
                 declarationNode.Accept(memberDeclarationBaseNameVisitor);
 
                 return _GetEntry(memberDeclarationFullNameVisitor.Result, memberDeclarationBaseNameVisitor.Result);
@@ -39,28 +40,20 @@ namespace CodeMap.Handlebars
 
             if (librarySelectorVisitor.Library == _library)
             {
-                var memberReferenceFullNameVisitor = new MemberReferenceFullNameVisitor(false);
+                var memberReferenceFullNameVisitor = new MemberReferenceFullNameVisitor(excludeParameters: false);
                 memberReference.Accept(memberReferenceFullNameVisitor);
 
-                var memberReferenceBaseNameVisitor = new MemberReferenceFullNameVisitor(true);
+                var memberReferenceBaseNameVisitor = new MemberReferenceFullNameVisitor(excludeParameters: true);
                 memberReference.Accept(memberReferenceBaseNameVisitor);
 
                 return _GetEntry(memberReferenceFullNameVisitor.Result, memberReferenceBaseNameVisitor.Result);
             }
             else
             {
-                var memberReferenceMicrosoftLinkVisitor = new MemberReferenceMicrosoftLinkVisitor();
+                var memberReferenceMicrosoftLinkVisitor = new MemberReferenceMicrosoftLinkVisitor(_microsoftDocsView);
                 memberReference.Accept(memberReferenceMicrosoftLinkVisitor);
                 return memberReferenceMicrosoftLinkVisitor.Result;
             }
-        }
-
-        public string GetUrl(MemberInfo memberInfo)
-        {
-            if (memberInfo.Module.Assembly == _library)
-                return _GetEntry(memberInfo.GetMemberFullName(), memberInfo.GetMemberName());
-            else
-                return memberInfo.GetMicrosoftDocsLink();
         }
 
         private string _GetEntry(string key, string baseFileName)

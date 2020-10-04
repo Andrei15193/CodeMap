@@ -10,15 +10,14 @@ namespace CodeMap.Handlebars.Visitors
         private readonly StringBuilder _fullNameBuilder = new StringBuilder();
         private readonly bool _excludeParameters;
 
-        public MemberDeclarationFullNameVisitor(bool excluseParameters)
-            => _excludeParameters = excluseParameters;
+        public MemberDeclarationFullNameVisitor(bool excludeParameters)
+            => _excludeParameters = excludeParameters;
 
         public string Result
             => _fullNameBuilder.ToString();
 
         protected override void VisitAssembly(AssemblyDeclaration assembly)
-        {
-        }
+            => _fullNameBuilder.Append("index");
 
         protected override void VisitNamespace(NamespaceDeclaration @namespace)
             => _fullNameBuilder.Append(@namespace.Name);

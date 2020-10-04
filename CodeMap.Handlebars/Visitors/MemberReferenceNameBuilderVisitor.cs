@@ -4,12 +4,12 @@ using CodeMap.ReferenceData;
 
 namespace CodeMap.Handlebars.Visitors
 {
-    internal class MemberReferenceNameVisitor : MemberReferenceVisitor
+    internal class MemberReferenceNameBuilderVisitor : MemberReferenceVisitor
     {
-        private readonly StringBuilder _nameBuilder = new StringBuilder();
+        private readonly StringBuilder _nameBuilder;
 
-        public string Result
-            => _nameBuilder.ToString();
+        public MemberReferenceNameBuilderVisitor(StringBuilder nameBuilder)
+            => _nameBuilder = nameBuilder;
 
         protected override void VisitArray(ArrayTypeReference array)
         {
@@ -21,8 +21,7 @@ namespace CodeMap.Handlebars.Visitors
         }
 
         protected override void VisitAssembly(AssemblyReference assembly)
-        {
-        }
+            => _nameBuilder.Append(assembly.Name);
 
         protected override void VisitType(TypeReference type)
         {
@@ -51,6 +50,9 @@ namespace CodeMap.Handlebars.Visitors
             pointer.ReferentType.Accept(this);
             _nameBuilder.Append('*');
         }
+
+        protected override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
+            => _nameBuilder.Append(genericTypeParameter.Name);
 
         protected override void VisitConstant(ConstantReference constant)
         {
@@ -86,12 +88,6 @@ namespace CodeMap.Handlebars.Visitors
             @event.DeclaringType.Accept(this);
             _nameBuilder.Append('.').Append(@event.Name);
         }
-
-        protected override void VisitGenericMethodParameter(GenericMethodParameterReference genericMethodParameter)
-            => _nameBuilder.Append(genericMethodParameter.Name);
-
-        protected override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
-            => _nameBuilder.Append(genericTypeParameter.Name);
 
         protected override void VisitProperty(PropertyReference property)
         {
@@ -144,5 +140,8 @@ namespace CodeMap.Handlebars.Visitors
             }
             _nameBuilder.Append(')');
         }
+
+        protected override void VisitGenericMethodParameter(GenericMethodParameterReference genericMethodParameter)
+            => _nameBuilder.Append(genericMethodParameter.Name);
     }
 }

@@ -12,9 +12,9 @@ using HtmlAgilityPack;
 
 namespace CodeMap.Documentation
 {
-    internal static class Program
+    public static class Program
     {
-        internal static void Main(string[] args)
+        public static void Main(params string[] args)
         {
             var arguments = Arguments.GetFrom(args);
             if (arguments.OutputPath == null)
@@ -31,7 +31,7 @@ namespace CodeMap.Documentation
             var hasExplicitTargetDirectory = !string.IsNullOrWhiteSpace(arguments.TargetSubdirectory);
             var targetDirectory = outputDirectory.CreateSubdirectory(hasExplicitTargetDirectory ? arguments.TargetSubdirectory : documentation.Version.ToSemver());
 
-            var memberFileNameResolver = new DefaultMemberReferenceResolver(library);
+            var memberFileNameResolver = new DefaultMemberReferenceResolver(library, "netstandard-2.1");
             var templateWriter = new HandlebarsTemplateWriter(memberFileNameResolver);
 
             documentation.Accept(new FileTemplateWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));

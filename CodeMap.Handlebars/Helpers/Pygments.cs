@@ -16,25 +16,30 @@ namespace CodeMap.Handlebars.Helpers
         {
             string code = parameters.ElementAtOrDefault(0) as string ?? string.Empty;
             string language = parameters.ElementAtOrDefault(1) as string;
-            Lexer lexer = null;
-            switch (language?.ToLowerInvariant())
-            {
-                case "c#":
-                    lexer = new CSharpLexer();
-                    break;
 
-                case "xml":
-                    lexer = new HtmlLexer();
-                    break;
-            }
-            if (lexer != null)
-                writer.WriteSafeString(Pygmentize.Content(code).WithLexer(lexer).WithFormatter(new HtmlFormatter(new HtmlFormatterOptions())).AsString());
-            else
+            var lexer = GetLexer(language?.ToLowerInvariant());
+            if (lexer is null)
             {
                 writer.WriteSafeString("<pre><code>");
                 writer.Write(code);
                 writer.WriteSafeString("</pre></code>");
             }
+            else
+                writer.WriteSafeString(Pygmentize.Content(code).WithLexer(lexer).WithFormatter(new HtmlFormatter(new HtmlFormatterOptions())).AsString());
         }
+
+        protected virtual Lexer GetLexer(string language)
+            => language switch
+            {
+                "c#" => new CSharpLexer(),
+                "xml" => new HtmlLexer(),
+                "html" => new HtmlLexer(),
+                "css" => new CssLexer(),
+                "js" => new JavascriptLexer(),
+                "ts" => new TypescriptLexer(),
+                "bash" => new BashLexer(),
+                "sql" => new SqlLexer(),
+                _ => null,
+            };
     }
 }

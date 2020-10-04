@@ -4,12 +4,14 @@
 <p>Property type: {{MemberReference type}}.</p>
 {{> Documentation summary}}
 
-{{#if (IsReadOnlyProperty this)}}
-<p>This is a read only property (<code>{{MemberAccessModifier this}}</code>).</p>
-{{else if (IsWriteOnlyProperty this)}}
-<p>This is a write only property (<code>{{MemberAccessModifier this}}</code>).</p>
+{{#if getter}}
+{{#if setter}}
+<p>This is a read and write property (<code>{{MemberAccessModifier}}</code>).</p>
 {{else}}
-<p>This is a read and write property (<code>{{MemberAccessModifier this}}</code>).</p>
+<p>This is a read only property (<code>{{MemberAccessModifier}}</code>).</p>
+{{/if}}
+{{else}}
+<p>This is a write only property (<code>{{MemberAccessModifier}}</code>).</p>
 {{/if}}
 
 {{#if isStatic}}

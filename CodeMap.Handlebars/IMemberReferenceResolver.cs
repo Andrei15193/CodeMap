@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using CodeMap.DeclarationNodes;
+﻿using CodeMap.DeclarationNodes;
 using CodeMap.ReferenceData;
 
 namespace CodeMap.Handlebars
@@ -8,6 +7,5 @@ namespace CodeMap.Handlebars
     {
         string GetFileName(DeclarationNode declarationNode);
         string GetUrl(MemberReference memberReference);
-        string GetUrl(MemberInfo memberInfo);
     }
 }

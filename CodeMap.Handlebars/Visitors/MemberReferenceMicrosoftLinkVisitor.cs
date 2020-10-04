@@ -7,9 +7,25 @@ namespace CodeMap.Handlebars.Visitors
     internal class MemberReferenceMicrosoftLinkVisitor : MemberReferenceVisitor
     {
         private readonly StringBuilder _linkBuilder = new StringBuilder("https://docs.microsoft.com/dotnet/api/");
+        private readonly string _view;
+        private string _result;
+
+        public MemberReferenceMicrosoftLinkVisitor(string view)
+            => _view = view;
 
         public string Result
-            => _linkBuilder.Append("?view=netstandard-2.1").ToString();
+        {
+            get
+            {
+                if (_result is null)
+                {
+                    if (!string.IsNullOrWhiteSpace(_view))
+                        _linkBuilder.Append("?view=").Append("netstandard-3.1");
+                    _result = _linkBuilder.ToString();
+                }
+                return _result;
+            }
+        }
 
         protected override void VisitArray(ArrayTypeReference array)
             => array.ItemType.Accept(this);

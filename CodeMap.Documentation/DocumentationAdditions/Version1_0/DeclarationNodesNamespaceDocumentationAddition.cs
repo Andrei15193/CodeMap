@@ -4,7 +4,7 @@ using CodeMap.DocumentationElements;
 
 namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
 {
-    public class DeclarationNodesNamespaceDocumentationAddition : NamespaceDocumentationAddition
+    internal class DeclarationNodesNamespaceDocumentationAddition : NamespaceDocumentationAddition
     {
         public override bool CanApply(NamespaceDeclaration @namespace)
             => string.Equals("CodeMap.DeclarationNodes", @namespace.Name, StringComparison.OrdinalIgnoreCase);
