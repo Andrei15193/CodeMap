@@ -8,7 +8,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
     public class ITestGenericParameterGenericParameterTParam5Tests : DeclarationNodeTests<InterfaceDeclaration>, IGenericParameterDataTests
     {
         protected override bool DeclarationNodePredicate(InterfaceDeclaration interfaceDeclaration)
-            => interfaceDeclaration.Name == nameof(ITestGenericParameter<int, string, int, int, int, int>);
+            => interfaceDeclaration.Name == nameof(ITestGenericParameter<int, string, int, int, int, int, int>);
 
         protected GenericParameterData GenericParameter
             => DeclarationNode.GenericParameters.ElementAt(4);
@@ -42,6 +42,10 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
             => Assert.False(GenericParameter.HasReferenceTypeConstraint);
 
         [Fact]
+        public void HasHasUnmanagedTypeConstraintSet()
+            => Assert.False(GenericParameter.HasUnmanagedTypeConstraint);
+
+        [Fact]
         public void HasTypeConstraintsSet()
             => Assert.Single(GenericParameter.TypeConstraints);
 
@@ -49,7 +53,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
         public void HasTParam1TypeConstaintSet()
             => Assert.Single(
                 GenericParameter.TypeConstraints,
-                typeConstraint => typeConstraint == typeof(ITestGenericParameter<,,,,,>).GetGenericArguments().ElementAt(0)
+                typeConstraint => typeConstraint == typeof(ITestGenericParameter<,,,,,,>).GetGenericArguments().ElementAt(0)
             );
 
         [Fact]

@@ -122,11 +122,11 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
 #if DEBUG
         [Fact]
         public void HasDependenciesSet()
-            => Assert.Equal(5, DeclarationNode.Dependencies.Count);
+            => Assert.Equal(6, DeclarationNode.Dependencies.Count);
 #else
         [Fact]
         public void HasDependenciesSet()
-            => Assert.Equal(4, DeclarationNode.Dependencies.Count);
+            => Assert.Equal(5, DeclarationNode.Dependencies.Count);
 #endif
 
 #if DEBUG
@@ -159,6 +159,14 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasSystemRuntimeExtensionsSet()
             => Assert.Single(DeclarationNode.Dependencies, dependency =>
                 dependency.Name == "System.Runtime.Extensions"
+                && dependency.Version == new Version(4, 2, 2, 0)
+                && dependency.Culture == string.Empty
+                && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
+
+        [Fact]
+        public void HasSystemRuntimegInteropServicesSet()
+            => Assert.Single(DeclarationNode.Dependencies, dependency =>
+                dependency.Name == "System.Runtime.InteropServices"
                 && dependency.Version == new Version(4, 2, 2, 0)
                 && dependency.Culture == string.Empty
                 && dependency.PublicKeyToken == "b03f5f7f11d50a3a");

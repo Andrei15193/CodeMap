@@ -41,6 +41,10 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
             => Assert.False(GenericParameter.HasReferenceTypeConstraint);
 
         [Fact]
+        public void HasHasUnmanagedTypeConstraintSet()
+            => Assert.False(GenericParameter.HasUnmanagedTypeConstraint);
+
+        [Fact]
         public void HasTypeConstraintsSet()
             => Assert.Empty(GenericParameter.TypeConstraints);
 

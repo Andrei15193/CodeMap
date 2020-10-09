@@ -8,7 +8,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
     public class ITestGenericParameterGenericParameterTParam1Tests : DeclarationNodeTests<InterfaceDeclaration>, IGenericParameterDataTests
     {
         protected override bool DeclarationNodePredicate(InterfaceDeclaration interfaceDeclaration)
-            => interfaceDeclaration.Name == nameof(ITestGenericParameter<int, string, int, int, int, int>);
+            => interfaceDeclaration.Name == nameof(ITestGenericParameter<int, string, int, int, int, int, int>);
 
         protected GenericParameterData GenericParameter
             => DeclarationNode.GenericParameters.ElementAt(0);
@@ -40,6 +40,10 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
         [Fact]
         public void HasHasReferenceTypeConstraintSet()
             => Assert.False(GenericParameter.HasReferenceTypeConstraint);
+
+        [Fact]
+        public void HasHasUnmanagedTypeConstraintSet()
+            => Assert.False(GenericParameter.HasUnmanagedTypeConstraint);
 
         [Fact]
         public void HasTypeConstraintsSet()

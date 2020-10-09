@@ -1,9 +1,9 @@
 ﻿#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
 using System;
 using System.Collections.Generic;
+using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
@@ -56,6 +56,9 @@ namespace CodeMap.DeclarationNodes
 
         /// <summary>Indicates whether the generic argument must be a reference type.</summary>
         public bool HasReferenceTypeConstraint { get; internal set; }
+
+        /// <summary>Indicates whether the generic argument must be an unmanaged type.</summary>
+        public bool HasUnmanagedTypeConstraint { get; internal set; }
 
         /// <summary>Indicates whether the generic argument must be a non nullable value type.</summary>
         public bool HasNonNullableValueTypeConstraint { get; internal set; }

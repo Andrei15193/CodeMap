@@ -7,17 +7,17 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
     public class ITestGenericParameterDeclarationTests : DeclarationNodeTests<InterfaceDeclaration>, IInterfaceDeclarationTests
     {
         protected override bool DeclarationNodePredicate(InterfaceDeclaration interfaceDeclaration)
-            => interfaceDeclaration.Name == nameof(ITestGenericParameter<int, string, int, int, int, int>);
+            => interfaceDeclaration.Name == nameof(ITestGenericParameter<int, string, int, int, int, int, int>);
 
         [Fact]
         public void TypeEqualityComparison()
         {
-            Assert.True(DeclarationNode.Equals(typeof(ITestGenericParameter<,,,,,>)));
-            Assert.True(DeclarationNode.Equals(typeof(ITestGenericParameter<,,,,,>) as object));
-            Assert.True(typeof(ITestGenericParameter<,,,,,>) == DeclarationNode);
-            Assert.True(DeclarationNode == typeof(ITestGenericParameter<,,,,,>));
+            Assert.True(DeclarationNode.Equals(typeof(ITestGenericParameter<,,,,,,>)));
+            Assert.True(DeclarationNode.Equals(typeof(ITestGenericParameter<,,,,,,>) as object));
+            Assert.True(typeof(ITestGenericParameter<,,,,,,>) == DeclarationNode);
+            Assert.True(DeclarationNode == typeof(ITestGenericParameter<,,,,,,>));
 
-            var constructedGenericType = typeof(ITestGenericParameter<int, string, int, int, int, int>);
+            var constructedGenericType = typeof(ITestGenericParameter<int, string, int, int, int, int, int>);
             Assert.False(DeclarationNode.Equals(constructedGenericType));
             Assert.False(DeclarationNode.Equals(constructedGenericType as object));
             Assert.True(constructedGenericType != DeclarationNode);
@@ -46,7 +46,7 @@ namespace CodeMap.Tests.DeclarationNodes.ITestGenericParameter
 
         [Fact]
         public void HasGenericParametersSet()
-            => Assert.Equal(6, DeclarationNode.GenericParameters.Count);
+            => Assert.Equal(7, DeclarationNode.GenericParameters.Count);
 
         [Fact]
         public void HasBaseInterfacesSet()

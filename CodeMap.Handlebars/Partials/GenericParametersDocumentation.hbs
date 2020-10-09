@@ -9,6 +9,7 @@
         {{#if isContravariant}}<p>This generic parameter is <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/concepts/covariance-contravariance">contravariant</a>.</p>{{/if}}
         {{#if hasReferenceTypeConstraint}}<p>This generic parameter is constrained to <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters">reference types</a>.</p>{{/if}}
         {{#if hasNonNullableValueTypeConstraint}}<p>This generic parameter is constrained to <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters">value types</a>.</p>{{/if}}
+        {{#if hasUnmanagedTypeConstraint}}<p>This generic parameter is constrained to <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters">unamanged types</a>.</p>{{/if}}
         {{#if hasDefaultConstructorConstraint}}<p>This generic parameter is constrained to having <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters">a public parameterless constructor</a>.</p>{{/if}}
         {{#each typeConstraints}}{{#if @first}}<p>This generic parameter has the following type constraints: {{else}}, {{/if}}{{MemberReference}}{{#if @last}}.</p>{{/if}}{{/each}}
         {{> Documentation description}}

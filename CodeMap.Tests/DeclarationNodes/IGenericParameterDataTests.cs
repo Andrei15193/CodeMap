@@ -16,6 +16,8 @@
 
         void HasHasReferenceTypeConstraintSet();
 
+        void HasHasUnmanagedTypeConstraintSet();
+
         void HasTypeConstraintsSet();
 
         void HasDescriptionSet();

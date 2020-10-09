@@ -43,7 +43,7 @@ namespace CodeMap.Tests.DocumentationElements
         [InlineData("T:CodeMap.Tests.Data.TestSealedClass", typeof(TestSealedClass))]
         [InlineData("T:CodeMap.Tests.Data.TestStruct`1", typeof(TestStruct<>))]
         [InlineData("T:GlobalTestClass", typeof(GlobalTestClass))]
-        [InlineData("T:CodeMap.Tests.Data.ITestGenericParameter`6", typeof(ITestGenericParameter<,,,,,>))]
+        [InlineData("T:CodeMap.Tests.Data.ITestGenericParameter`7", typeof(ITestGenericParameter<,,,,,,>))]
         [InlineData("T:CodeMap.Tests.Data.TestAttribute", typeof(TestAttribute))]
         public void TypeCanonicalNameResolution(string canonicalName, Type type)
         {

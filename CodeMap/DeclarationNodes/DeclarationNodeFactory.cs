@@ -738,17 +738,22 @@ namespace CodeMap.DeclarationNodes
                 .DeclaringType
                 ?.GetGenericArguments()
                 .Length ?? 0;
+
             genericParameter.Position = type.GenericParameterPosition - genericParameterPositionOffset;
             genericParameter.IsCovariant =
                 (genericParameterAttributes & GenericParameterAttributes.Covariant) == GenericParameterAttributes.Covariant;
             genericParameter.IsContravariant =
                 (genericParameterAttributes & GenericParameterAttributes.Contravariant) == GenericParameterAttributes.Contravariant;
             genericParameter.HasNonNullableValueTypeConstraint =
-                (genericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) == GenericParameterAttributes.NotNullableValueTypeConstraint;
+                (genericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) == GenericParameterAttributes.NotNullableValueTypeConstraint
+                && !type.GetCustomAttributes().Any(attribute => string.Equals(attribute.GetType().Name, "IsUnmanagedAttribute", StringComparison.OrdinalIgnoreCase));
             genericParameter.HasReferenceTypeConstraint =
                 (genericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) == GenericParameterAttributes.ReferenceTypeConstraint;
             genericParameter.HasDefaultConstructorConstraint =
                 (genericParameterAttributes & (GenericParameterAttributes.DefaultConstructorConstraint | GenericParameterAttributes.NotNullableValueTypeConstraint)) == GenericParameterAttributes.DefaultConstructorConstraint;
+            genericParameter.HasUnmanagedTypeConstraint =
+                (genericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) == GenericParameterAttributes.NotNullableValueTypeConstraint
+                && type.GetCustomAttributes().Any(attribute => string.Equals(attribute.GetType().Name, "IsUnmanagedAttribute", StringComparison.OrdinalIgnoreCase));
             genericParameter.TypeConstraints =
                 type
                     .GetGenericParameterConstraints()

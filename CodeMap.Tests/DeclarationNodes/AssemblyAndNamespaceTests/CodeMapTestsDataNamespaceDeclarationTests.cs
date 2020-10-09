@@ -63,7 +63,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
 
         [Fact]
         public void HasITestGenericParameterInterface()
-            => Assert.Single(DeclarationNode.Interfaces, @interface => @interface == typeof(ITestGenericParameter<,,,,,>));
+            => Assert.Single(DeclarationNode.Interfaces, @interface => @interface == typeof(ITestGenericParameter<,,,,,,>));
 
         [Fact]
         public void HasITestInterface()
