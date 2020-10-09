@@ -450,6 +450,15 @@ namespace CodeMap.DocumentationElements
                         }
                         break;
 
+                    case XElement xmlElement when xmlElement.Name.LocalName.Equals("a", StringComparison.Ordinal):
+                        var hyperlinkHrefAttribute = xmlElement.Attribute("href");
+                        if (hyperlinkHrefAttribute != null)
+                        {
+                            _AddTextElementIfExists();
+                            inlineElements.Add(DocumentationElement.Hyperlink(hyperlinkHrefAttribute.Value, xmlElement.Value, _ReadXmlAttributesExcept(xmlElement, "href")));
+                        }
+                        break;
+
                     case XElement xmlElement when xmlElement.Name.LocalName.Equals("paramref", StringComparison.Ordinal):
                         var parameterReferenceNameAttribute = xmlElement.Attribute("name");
                         if (parameterReferenceNameAttribute != null)

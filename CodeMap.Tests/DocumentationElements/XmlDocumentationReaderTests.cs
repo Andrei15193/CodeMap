@@ -15,7 +15,8 @@ namespace CodeMap.Tests.DocumentationElements
                 <paramref name=""parameter reference"" test=""paramref""/>
                 <typeparamref name=""generic parameter reference"" test=""typeparamref""/>
                 <see cref=""member reference"" test=""see""/>
-                <c test=""c"">some code</c>"
+                <c test=""c"">some code</c>
+                <a href=""url"" test=""a"">hyperlink</a>"
             .Trim();
         private static readonly string _richBlockContent = $@"
                 {_richInlineContent}
@@ -67,6 +68,8 @@ namespace CodeMap.Tests.DocumentationElements
                 DocumentationElement.MemberReference("member reference"),
                 DocumentationElement.Text(" "),
                 DocumentationElement.InlineCode("some code"),
+                DocumentationElement.Text(" "),
+                DocumentationElement.Hyperlink("url", "hyperlink")
         };
         private static readonly BlockDescriptionDocumentationElement _richBlockElements = DocumentationElement.BlockDescription(
             new BlockDocumentationElement[]
@@ -1937,6 +1940,10 @@ fourth line
                     _AssertAreEqual(expectedMemberNameReference, (MemberNameReferenceDocumentationElement)actual);
                     break;
 
+                case HyperlinkDocumentationElement expectedHyperlink:
+                    _AssertAreEqual(expectedHyperlink, (HyperlinkDocumentationElement)actual);
+                    break;
+
                 case GenericParameterReferenceDocumentationElement expectedGenericParameterReference:
                     _AssertAreEqual(expectedGenericParameterReference, (GenericParameterReferenceDocumentationElement)actual);
                     break;
@@ -1972,6 +1979,12 @@ fourth line
         private static void _AssertAreEqual(MemberNameReferenceDocumentationElement expected, MemberNameReferenceDocumentationElement actual)
         {
             Assert.Equal(expected.CanonicalName, actual.CanonicalName);
+        }
+
+        private static void _AssertAreEqual(HyperlinkDocumentationElement expected, HyperlinkDocumentationElement actual)
+        {
+            Assert.Equal(expected.Destination, actual.Destination);
+            Assert.Equal(expected.Text, actual.Text);
         }
 
         private static void _AssertAreEqual(GenericParameterReferenceDocumentationElement expected, GenericParameterReferenceDocumentationElement actual)
@@ -2238,6 +2251,10 @@ fourth line
                         _AssertMemberReferenceXmlAttributes(memberNameReferenceDocumentationElement);
                         break;
 
+                    case HyperlinkDocumentationElement hyperlinkDocumentationElement:
+                        _AssertHyperlinkXmlAttributes(hyperlinkDocumentationElement);
+                        break;
+
                     case ParameterReferenceDocumentationElement parameterReferenceDocumentationElement:
                         _AssertParameterReferenceXmlAttributes(parameterReferenceDocumentationElement);
                         break;
@@ -2262,6 +2279,12 @@ fourth line
         {
             Assert.Single(memberNameReference.XmlAttributes);
             Assert.Equal("see", memberNameReference.XmlAttributes["test"]);
+        }
+
+        private static void _AssertHyperlinkXmlAttributes(HyperlinkDocumentationElement hyperlink)
+        {
+            Assert.Single(hyperlink.XmlAttributes);
+            Assert.Equal("a", hyperlink.XmlAttributes["test"]);
         }
 
         private static void _AssertParameterReferenceXmlAttributes(ParameterReferenceDocumentationElement parameterReference)

@@ -13,7 +13,7 @@
         /// <para>
         /// Plain text followed by a parameter reference: <paramref name="parameter" test="paramref"/> and then
         /// by a generic parameter reference: <typeparamref name="GenericParameter" test="typeparamref"/> and then
-        /// by a member reference: <see cref="Member" test="see"/>.
+        /// by a member reference: <see cref="Member" test="see"/>. You can even add <a href="https://github.com/Andrei15193/CodeMap/issues/29">custom links</a>.
         /// </para>
         /// <para>
         /// In the second paragraph we have an inline code snippet: <c test="c">some code</c>. And following up with a table.

@@ -529,6 +529,38 @@ namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
                     {
                         { "section", "Additions" }
                     }
+                ),
+                DocumentationElement.Paragraph(
+                    new InlineDocumentationElement[]
+                    {
+                        DocumentationElement.Text(@"
+                            Anchor elements can be used in documentation to generate custom hyperlinks.
+                            This is useful to reference different pages, repositories and so on that
+                            cannot be done through the ".CollapseIndentation()
+                        ),
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see", "see"),
+                        DocumentationElement.Text(" and "),
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/seealso", "seealso"),
+                        DocumentationElement.Text(" elements.")
+                    },
+                    new Dictionary<string, string>
+                    {
+                        { "subsection", "Hyperlinks (#29)" }
+                    }
+                ),
+                DocumentationElement.Paragraph(
+                    new[] { DocumentationElement.Text("The following will generate a hyperlink towards GitHub.") },
+                    new Dictionary<string, string>
+                    {
+                        { "subsectionExample", "Example" }
+                    }
+                ),
+                DocumentationElement.CodeBlock(
+                    "This is a <a href=\"http://github.com\">hyperlink</a> example.",
+                    new Dictionary<string, string>
+                    {
+                        { "language", "xml" }
+                    }
                 )
             );
 
