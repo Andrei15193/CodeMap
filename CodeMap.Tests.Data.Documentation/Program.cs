@@ -26,7 +26,7 @@ namespace CodeMap.Tests.Data.Documentation
             var targetDirectory = outputDirectory.CreateSubdirectory(arguments.TargetSubdirectory);
 
             var memberFileNameResolver = new DefaultMemberReferenceResolver(library, "netcore-3.1");
-            var templateWriter = new HandlebarsTemplateWriter(memberFileNameResolver);
+            var templateWriter = new TestDataHandlebarsTemplateWriter(memberFileNameResolver);
 
             documentation.Accept(new FileTemplateWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));
         }
