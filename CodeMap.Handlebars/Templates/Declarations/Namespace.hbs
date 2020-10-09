@@ -1,5 +1,5 @@
 ﻿{{#>Layout node=this assembly=assembly title=(Concat assembly.name ' - ' name ' Namepsace')}}
-<h2>{{name}} Namespace</h2>
+<h2>{{#if name}}{{name}}{{else}}global{{/if}} Namespace</h2>
 
 {{> Documentation summary}}
 

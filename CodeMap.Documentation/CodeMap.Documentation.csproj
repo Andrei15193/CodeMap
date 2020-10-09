@@ -8,10 +8,12 @@
 
   <ItemGroup>
     <None Remove="Assets\Style.css" />
+    <None Remove="Partials\Layout.hbs" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\Style.css" />
+    <EmbeddedResource Include="Partials\Layout.hbs" />
   </ItemGroup>
 
   <ItemGroup>

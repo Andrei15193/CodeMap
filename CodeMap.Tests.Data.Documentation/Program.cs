@@ -3,6 +3,7 @@ using System.IO;
 using CodeMap.DeclarationNodes;
 using CodeMap.Documentation;
 using CodeMap.Handlebars;
+using CodeMap.Tests.Data.Documentation.DocumentationAdditions;
 
 namespace CodeMap.Tests.Data.Documentation
 {
@@ -17,7 +18,7 @@ namespace CodeMap.Tests.Data.Documentation
                 throw new ArgumentException("Expected -TargetSubdirectory", nameof(args));
 
             var library = typeof(GlobalTestClass).Assembly;
-            var documentation = DeclarationNode.Create(library, DeclarationFilter.All);
+            var documentation = DeclarationNode.Create(library, DeclarationFilter.All).Apply(new TestDataAssemblyDocumentationAddition());
 
             var outputDirectory = new DirectoryInfo(arguments.OutputPath);
             outputDirectory.Create();

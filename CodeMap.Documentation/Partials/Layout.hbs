@@ -15,6 +15,7 @@
             <h1 class="flex-grow-1 flex-shrink-1">{{assembly.name}} <small>{{Semver assembly.version}}</small></h1>
             <a class="btn btn-link" href="https://github.com/{{GetAssemblyCompany assembly}}/{{assembly.name}}">View on GitHub</a>
             <a class="btn btn-link" href="https://www.nuget.org/packages/{{assembly.name}}/{{Semver assembly.version}}">View on NuGet</a>
+            <div id="otherVersions"></div>
         </div>
 
         <hr />
@@ -22,6 +23,7 @@
 
     <div class="flex-grow-1 flex-shrink-1">
         <div class="d-flex flex-column container px-2 pt-2">
+            <div id="deprecationNotice"></div>
             {{> Breadcrumbs node}}
 
             {{> @partial-block node}}

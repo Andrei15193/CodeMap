@@ -31,7 +31,7 @@ namespace CodeMap.Documentation
             var targetDirectory = outputDirectory.CreateSubdirectory(hasExplicitTargetDirectory ? arguments.TargetSubdirectory : documentation.Version.ToSemver());
 
             var memberFileNameResolver = new DefaultMemberReferenceResolver(library, "netstandard-2.1");
-            var templateWriter = new HandlebarsTemplateWriter(memberFileNameResolver);
+            var templateWriter = hasExplicitTargetDirectory ? new HandlebarsTemplateWriter(memberFileNameResolver) : new CodeMapHandlebarsTemplateWriter(memberFileNameResolver);
 
             documentation.Accept(new FileTemplateWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));
 
@@ -82,36 +82,38 @@ namespace CodeMap.Documentation
                     htmlDocument.Load(htmlFile.FullName);
 
                     var otherVersionsHtmlNode = htmlDocument.GetElementbyId("otherVersions");
-                    otherVersionsHtmlNode.ParentNode.ReplaceChild(
-                        htmlDocument.CreateTextNode(templateWriter.Apply(
-                            "OtherVersions",
-                            new
-                            {
-                                IsLatestSelected = IsLatest(htmlFile),
-                                PathToLatest = IsLatest(htmlFile) ? "index.html" : "../index.html",
-                                HasOtherVersions = versions.Skip(1).Any(),
-                                Versions = from version in versions.AsEnumerable().Reverse()
-                                           select new
-                                           {
-                                               IsSelected = IsSelectedVersion(htmlFile, version),
-                                               Label = version,
-                                               Path = IsLatest(htmlFile) ? $"{version}/index.Html" : $"../{version}/index.Html"
-                                           }
-                            })),
-                        otherVersionsHtmlNode
-                    );
+                    if (otherVersionsHtmlNode != null)
+                        otherVersionsHtmlNode.ParentNode.ReplaceChild(
+                            htmlDocument.CreateTextNode(templateWriter.Apply(
+                                "OtherVersions",
+                                new
+                                {
+                                    IsLatestSelected = IsLatest(htmlFile),
+                                    PathToLatest = IsLatest(htmlFile) ? "index.html" : "../index.html",
+                                    HasOtherVersions = versions.Skip(1).Any(),
+                                    Versions = from version in versions.AsEnumerable().Reverse()
+                                               select new
+                                               {
+                                                   IsSelected = IsSelectedVersion(htmlFile, version),
+                                                   Label = version,
+                                                   Path = IsLatest(htmlFile) ? $"{version}/index.Html" : $"../{version}/index.Html"
+                                               }
+                                })),
+                            otherVersionsHtmlNode
+                        );
 
                     var deprecationNoticeHtmlNode = htmlDocument.GetElementbyId("deprecationNotice");
-                    deprecationNoticeHtmlNode.ParentNode.ReplaceChild(
-                        htmlDocument.CreateTextNode(templateWriter.Apply(
-                            "DeprecationNotice",
-                            new
-                            {
-                                IsLatest = IsLatest(htmlFile) || IsSelectedVersion(htmlFile, versions.Last()),
-                                PathToLatest = "../index.html"
-                            })),
-                        deprecationNoticeHtmlNode
-                    );
+                    if (deprecationNoticeHtmlNode != null)
+                        deprecationNoticeHtmlNode.ParentNode.ReplaceChild(
+                            htmlDocument.CreateTextNode(templateWriter.Apply(
+                                "DeprecationNotice",
+                                new
+                                {
+                                    IsLatest = IsLatest(htmlFile) || IsSelectedVersion(htmlFile, versions.Last()),
+                                    PathToLatest = "../index.html"
+                                })),
+                            deprecationNoticeHtmlNode
+                        );
 
                     htmlDocument.Save(htmlFile.FullName);
                 }

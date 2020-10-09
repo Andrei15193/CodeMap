@@ -34,7 +34,7 @@ namespace CodeMap.Handlebars
         protected virtual IEnumerable<IHandlebarsBlockHelper> GetBlockHelpers(IMemberReferenceResolver memberReferenceResolver)
             => Enumerable.Empty<IHandlebarsBlockHelper>();
 
-        protected virtual IReadOnlyDictionary<string, string> GetViews()
+        protected virtual IReadOnlyDictionary<string, string> GetPartials()
             => typeof(HandlebarsTemplateWriter)
                 .Assembly
                 .GetManifestResourceNames()
@@ -42,7 +42,7 @@ namespace CodeMap.Handlebars
                 .Where(item => item.Match.Success)
                 .ToDictionary(
                     item => item.Match.Groups["templateName"].Value,
-                    item => _ReadFromEmbeddedResource(typeof(HandlebarsTemplateWriter).Assembly, item.Resource),
+                    item => ReadFromEmbeddedResource(typeof(HandlebarsTemplateWriter).Assembly, item.Resource),
                     StringComparer.OrdinalIgnoreCase
                 );
 
@@ -54,7 +54,7 @@ namespace CodeMap.Handlebars
                 .Where(item => item.Match.Success)
                 .ToDictionary(
                     item => item.Match.Groups["templateName"].Value,
-                    item => _ReadFromEmbeddedResource(typeof(HandlebarsTemplateWriter).Assembly, item.Resource),
+                    item => ReadFromEmbeddedResource(typeof(HandlebarsTemplateWriter).Assembly, item.Resource),
                     StringComparer.OrdinalIgnoreCase
                 );
 
@@ -67,7 +67,7 @@ namespace CodeMap.Handlebars
             foreach (var blockHelper in _GetLatest(GetBlockHelpers(memberReferenceResolver) ?? Enumerable.Empty<IHandlebarsBlockHelper>(), blockHelper => blockHelper.Name, blockHelper => blockHelper))
                 handlebars.RegisterHelper(blockHelper.Key, blockHelper.Value.Apply);
 
-            foreach (var (viewName, viewTemplate) in _GetLatest(GetViews() ?? Enumerable.Empty<KeyValuePair<string, string>>(), pair => pair.Key, pair => pair.Value))
+            foreach (var (viewName, viewTemplate) in _GetLatest(GetPartials() ?? Enumerable.Empty<KeyValuePair<string, string>>(), pair => pair.Key, pair => pair.Value))
                 using (var viewTextReader = new StringReader(viewTemplate))
                     handlebars.RegisterTemplate(viewName, handlebars.Compile(viewTextReader));
 
@@ -83,7 +83,7 @@ namespace CodeMap.Handlebars
                 );
         }
 
-        private static string _ReadFromEmbeddedResource(Assembly assembly, string embeddedResourceName)
+        protected static string ReadFromEmbeddedResource(Assembly assembly, string embeddedResourceName)
         {
             using var streamReader = new StreamReader(assembly.GetManifestResourceStream(embeddedResourceName));
             return streamReader.ReadToEnd();
