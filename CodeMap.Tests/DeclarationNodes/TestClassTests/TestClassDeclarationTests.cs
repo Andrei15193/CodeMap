@@ -104,7 +104,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
 
         [Fact]
         public void HasConstantsSet()
-            => Assert.Single(DeclarationNode.Constants);
+            => Assert.Equal(2, DeclarationNode.Constants.Count);
 
         [Fact]
         public void HasFieldsSet()

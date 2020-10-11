@@ -391,6 +391,7 @@ namespace CodeMap.DeclarationNodes
             {
                 Name = field.Name,
                 AccessModifier = _GetAccessModifierFrom(field),
+                IsShadowing = _IsShadowing(field),
                 Value = field.GetValue(null),
                 Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() != null
                     ? _memberReferenceFactory.CreateDynamic()

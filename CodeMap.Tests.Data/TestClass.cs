@@ -77,6 +77,9 @@ namespace CodeMap.Tests.Data
         [Test("class constant test 1", Value2 = "class constant test 2", Value3 = "class constant test 3")]
         private const double TestConstant = 1;
 
+        /// <summary>A constant that shadows <see cref="TestBaseClass.ClassShadowedTestConstant"/>.</summary>
+        public new const float ClassShadowedTestConstant = 2;
+
         /// <summary>A test field, with attributes.</summary>
         /// <example>
         /// This is an example, where you usually have an use case with some sample code to illustrate how the defined type is useful.

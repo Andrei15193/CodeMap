@@ -82,7 +82,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestBaseClassTests
 
         [Fact]
         public void HasConstantsSet()
-            => Assert.Empty(DeclarationNode.Constants);
+            => Assert.Single(DeclarationNode.Constants);
 
         [Fact]
         public void HasFieldsSet()

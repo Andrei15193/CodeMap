@@ -5,6 +5,10 @@ namespace CodeMap.Tests.Data
     /// <summary>A base class declaring members of all kinds that are inherited, overridden and shadowed.</summary>
     public abstract class TestBaseClass
     {
+        /// <summary>A public constant that is shadowed in <see cref="TestClass{TParam}"/>.</summary>
+        /// <seealso cref="TestClass{TParam}.ClassShadowedTestConstant"/>
+        public const float ClassShadowedTestConstant = 1;
+
         /// <summary>A protected field that is shadowed in <see cref="TestClass{TParam}"/>.</summary>
         /// <seealso cref="TestClass{TParam}.ShadowedTestField"/>
         protected int ShadowedTestField;
