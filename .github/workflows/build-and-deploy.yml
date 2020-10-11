@@ -130,7 +130,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore -property:SignAssembly=True -property:AssemblyOriginatorKeyFile=../CodeMap.snk
+      run: dotnet build --configuration Release --no-restore -property:SignAssembly=True -property:AssemblyOriginatorKeyFile=../CodeMap.snk -property:DisableStrongNamer=False
 
     - name: Test
       run: dotnet test --configuration Release --no-restore --verbosity normal
@@ -146,7 +146,8 @@ jobs:
           -property:PackageVersion=${{ steps.package_info.outputs.package_version }} `
           -property:RepositoryCommit=$env:GITHUB_SHA `
           -property:SignAssembly=True `
-          -property:AssemblyOriginatorKeyFile=../CodeMap.snk
+          -property:AssemblyOriginatorKeyFile=../CodeMap.snk `
+          -property:DisableStrongNamer=False
 
     - name: Create Release
       uses: actions/create-release@v1

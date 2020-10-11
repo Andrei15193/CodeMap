@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -15,6 +15,7 @@
     <PackageReleaseNotes>Added customizable Handlebars based website generator using CodeMap.</PackageReleaseNotes>
     <PackageTags>common reusable infrastructure handlebars html documentation</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/Andrei15193/CodeMap/master/package_logo.png</PackageIconUrl>
+    <DisableStrongNamer>true</DisableStrongNamer>
   </PropertyGroup>
 
   <ItemGroup>
@@ -114,8 +115,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Handlebars.Net" Version="1.10.1" />
+    <PackageReference Include="Handlebars.Net" Version="1.11.5" />
     <PackageReference Include="PygmentSharp.Core" Version="0.3.0" />
+    <PackageReference Include="StrongNamer" Version="0.2.5" />
   </ItemGroup>
 
   <ItemGroup>
