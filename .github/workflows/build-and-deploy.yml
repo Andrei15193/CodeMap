@@ -104,12 +104,16 @@ jobs:
           $assemblyVersion = "${majorVersion}.${minorVersion}.0.$($currentRevision)"
           $packageVersion = "${majorVersion}.${minorVersion}.$($currentRevision)"
         }
-        $description = (Select-Xml -Path ./CodeMap/CodeMap.csproj -XPath "//Project/PropertyGroup/Description/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
-        $releaseNotes = (Select-Xml -Path ./CodeMap/CodeMap.csproj -XPath "//Project/PropertyGroup/PackageReleaseNotes/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
+        $codeMapDescription = (Select-Xml -Path ./CodeMap/CodeMap.csproj -XPath "//Project/PropertyGroup/Description/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
+        $codeMapReleaseNotes = (Select-Xml -Path ./CodeMap/CodeMap.csproj -XPath "//Project/PropertyGroup/PackageReleaseNotes/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
+        $codeMapHandlebarsDescription = (Select-Xml -Path ./CodeMap.Handlebars/CodeMap.Handlebars.csproj -XPath "//Project/PropertyGroup/Description/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
+        $codeMapHandlebarsReleaseNotes = (Select-Xml -Path ./CodeMap.Handlebars/CodeMap.Handlebars.csproj -XPath "//Project/PropertyGroup/PackageReleaseNotes/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
         Write-Host "::set-output name=package_version::$packageVersion"
         Write-Host "::set-output name=assembly_version::$assemblyVersion"
-        Write-Host "::set-output name=package_description::$description"
-        Write-Host "::set-output name=package_release_notes::$releaseNotes"
+        Write-Host "::set-output name=codemap_package_description::$codeMapDescription"
+        Write-Host "::set-output name=codemap_package_release_notes::$codeMapReleaseNotes"
+        Write-Host "::set-output name=codemap_handlebars_package_description::$description"
+        Write-Host "::set-output name=codemap_handlebars_package_release_notes::$releaseNotes"
         Write-Host "::set-output name=is_pre_release::$(($null -ne $preRelease).ToString().ToLowerInvariant())"
         [Convert]::FromBase64String("${{ secrets.KeyFile }}") | Set-Content ./CodeMap.snk -AsByteStream
 
@@ -159,14 +163,19 @@ jobs:
         tag_name: ${{ steps.package_info.outputs.package_version }}
         release_name: Release ${{ steps.package_info.outputs.package_version }}
         body: |
-          ${{ steps.package_info.outputs.package_description }}
-          Release Notes
-          -------------
-          ${{ steps.package_info.outputs.package_release_notes }}
+          ## CodeMap
+          ${{ steps.package_info.outputs.codemap_package_description }}
+          ### Release Notes
+          ${{ steps.package_info.outputs.codemap_package_release_notes }}
+          
+          ## CodeMap.Handlebars
+          ${{ steps.package_info.outputs.codemap_handlebars_package_description }}
+          ### Release Notes
+          ${{ steps.package_info.outputs.codemap_handlebars_package_release_notes }}
         draft: true
         prerelease: ${{ steps.package_info.outputs.is_pre_release }}
 
-    - name: Upload NuGet Package to Release
+    - name: Upload CodeMap NuGet Package to Release
       uses: actions/upload-release-asset@v1
       if: startsWith(github.ref, 'refs/heads/releases/')
       env:
@@ -175,6 +184,17 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./publish/CodeMap.${{ steps.package_info.outputs.package_version }}.nupkg
         asset_name: CodeMap.${{ steps.package_info.outputs.package_version }}.nupkg
+        asset_content_type: application/zip
+
+    - name: Upload CodeMap.Handlebars NuGet Package to Release
+      uses: actions/upload-release-asset@v1
+      if: startsWith(github.ref, 'refs/heads/releases/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./publish/CodeMap.Handlebars.${{ steps.package_info.outputs.package_version }}.nupkg
+        asset_name: CodeMap.Handlebars.${{ steps.package_info.outputs.package_version }}.nupkg
         asset_content_type: application/zip
 
     - name: Build Project Site

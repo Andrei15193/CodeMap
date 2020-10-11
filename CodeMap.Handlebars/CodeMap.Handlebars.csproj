@@ -12,7 +12,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Andrei15193/CodeMap.git</RepositoryUrl>
-    <PackageReleaseNotes>Added customizable Handlebars based website generator using CodeMap.</PackageReleaseNotes>
+    <PackageReleaseNotes>* Added customizable Handlebars based website generator using CodeMap.</PackageReleaseNotes>
     <PackageTags>common reusable infrastructure handlebars html documentation</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/Andrei15193/CodeMap/master/package_logo.png</PackageIconUrl>
     <DisableStrongNamer>true</DisableStrongNamer>
