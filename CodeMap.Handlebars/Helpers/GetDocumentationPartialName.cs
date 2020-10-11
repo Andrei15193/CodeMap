@@ -5,11 +5,62 @@ using CodeMap.DocumentationElements;
 
 namespace CodeMap.Handlebars.Helpers
 {
+    /// <summary>A helper used to get the partial name for a <see cref="DocumentationElement"/>.</summary>
+    /// <example>
+    /// The following template will generate a paragraph containing the partial name for a <see cref="DocumentationElement"/>.
+    /// <code language="html">
+    /// &lt;p&gt;{{GetDocumentationPartialName}}&lt;/p&gt;
+    /// </code>
+    /// If the current context is an <see cref="SummaryDocumentationElement"/>, the output would be equal to <see cref="DocumentationPartialNames.Summary"/> (<c>Summary</c>):
+    /// <code language="html">
+    /// &lt;p&gt;Summary&lt;/p&gt;
+    /// </code>
+    /// While it may not be useful to display this information like this, it is useful to use this helper as a selector for a specific partial.
+    /// For instance, the <c>Documentation</c> partial is defined like this:
+    /// <code language="html">
+    /// {{#if (IsCollection node)}}
+    /// {{#if asList}}
+    /// {{#each node}}
+    /// {{#if @first}}
+    /// {{#if ../title}}&lt;h3&gt;{{../title}}&lt;/h3&gt;{{/if}}
+    /// &lt;ul&gt;
+    ///     {{/if}}
+    ///     &lt;li&gt;{{&gt; (GetDocumentationPartialName this)}}&lt;/li&gt;
+    ///     {{#if @last}}
+    /// &lt;/ul&gt;
+    /// {{/if}}
+    /// {{/each}}
+    /// {{else}}
+    /// {{#each node}}
+    /// {{#if @first}}{{#if ../title}}&lt;h3&gt;{{../title}}&lt;/h3&gt;{{/if}}{{/if}}
+    /// {{&gt; (GetDocumentationPartialName this)}}
+    /// {{/each}}
+    /// {{/if}}
+    /// {{else if node}}
+    /// {{#with node}}{{&gt; (GetDocumentationPartialName) title=../title}}{{/with}}
+    /// {{else if (IsCollection this)}}
+    /// {{#each this}}{{&gt; (GetDocumentationPartialName)}}{{/each}}
+    /// {{else}}
+    /// {{&gt; (GetDocumentationPartialName)}}
+    /// {{/if}}
+    /// </code>
+    /// As you can see, the specific <see cref="DocumentationElement"/> partial name is selected using this helper, it's like determining the name
+    /// of the function you want to call dynamically.
+    /// </example>
     public class GetDocumentationPartialName : IHandlebarsHelper
     {
+        /// <summary>Gets the name of the helper.</summary>
+        /// <value>The value of this property is <c>GetDocumentationPartialName</c>. It is a constant.</value>
         public string Name
             => nameof(GetDocumentationPartialName);
 
+        /// <summary>Gets the assembly company attribute value from the first parameter or current context.</summary>
+        /// <param name="writer">The <see cref="TextWriter"/> to write the result to.</param>
+        /// <param name="context">The context in which this helper is called.</param>
+        /// <param name="parameters">The parameter with which this helper has been called.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the first parameter is not an <see cref="DocumentationElement"/> or when not provided and the given <paramref name="context"/> is not an <see cref="DocumentationElement"/>.
+        /// </exception>
         public void Apply(TextWriter writer, object context, params object[] parameters)
         {
             var documentationElement = parameters.DefaultIfEmpty(context).First() as DocumentationElement;

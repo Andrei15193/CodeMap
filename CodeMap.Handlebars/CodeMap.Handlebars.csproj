@@ -2,6 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
+    <Description>A Handlebars.NET based implementation for generating documentation for libraries as static HTML websites.</Description>
+    <Authors>Andrei15193</Authors>
+    <Copyright>Andrei15193</Copyright>
+    <PackageProjectUrl>https://github.com/Andrei15193/CodeMap</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/Andrei15193/CodeMap.git</RepositoryUrl>
+    <PackageReleaseNotes>Added customizable Handlebars based website generator using CodeMap.</PackageReleaseNotes>
+    <PackageTags>common reusable infrastructure handlebars html documentation</PackageTags>
+    <PackageIconUrl>https://raw.githubusercontent.com/Andrei15193/CodeMap/master/package_logo.png</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>

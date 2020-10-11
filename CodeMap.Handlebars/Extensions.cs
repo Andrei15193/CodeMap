@@ -2,7 +2,7 @@
 
 namespace CodeMap.Handlebars
 {
-    public static class Extensions
+    internal static class Extensions
     {
         public static string ToSemver(this Version version)
         {
