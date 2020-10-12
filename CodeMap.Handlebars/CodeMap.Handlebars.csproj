@@ -10,6 +10,7 @@
     <Copyright>Andrei15193</Copyright>
     <PackageProjectUrl>https://github.com/Andrei15193/CodeMap</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIcon>logo.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Andrei15193/CodeMap.git</RepositoryUrl>
     <PackageReleaseNotes>* Added customizable Handlebars based website generator using CodeMap.</PackageReleaseNotes>
@@ -17,54 +18,6 @@
     <PackageIconUrl>https://raw.githubusercontent.com/Andrei15193/CodeMap/master/package_logo.png</PackageIconUrl>
     <DisableStrongNamer>true</DisableStrongNamer>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Partials\Breadcrumbs.hbs" />
-    <None Remove="Partials\Documentation.hbs" />
-    <None Remove="Partials\Documentation\Code.hbs" />
-    <None Remove="Partials\Documentation\CodeBlock.hbs" />
-    <None Remove="Partials\Documentation\DefinitionList.hbs" />
-    <None Remove="Partials\Documentation\DefinitionListItem.hbs" />
-    <None Remove="Partials\Documentation\DefinitionListItemDescription.hbs" />
-    <None Remove="Partials\Documentation\DefinitionListItemTerm.hbs" />
-    <None Remove="Partials\Documentation\DefinitionListTitle.hbs" />
-    <None Remove="Partials\Documentation\Example.hbs" />
-    <None Remove="Partials\Documentation\Exception.hbs" />
-    <None Remove="Partials\Documentation\GenericParameterReference.hbs" />
-    <None Remove="Partials\Documentation\Hyperlink.hbs" />
-    <None Remove="Partials\Documentation\ListItem.hbs" />
-    <None Remove="Partials\Documentation\MemberReference.hbs" />
-    <None Remove="Partials\Documentation\OrderedList.hbs" />
-    <None Remove="Partials\Documentation\Paragraph.hbs" />
-    <None Remove="Partials\Documentation\ParameterReference.hbs" />
-    <None Remove="Partials\Documentation\Remarks.hbs" />
-    <None Remove="Partials\Documentation\Summary.hbs" />
-    <None Remove="Partials\Documentation\Table.hbs" />
-    <None Remove="Partials\Documentation\TableCell.hbs" />
-    <None Remove="Partials\Documentation\TableColumn.hbs" />
-    <None Remove="Partials\Documentation\TableRow.hbs" />
-    <None Remove="Partials\Documentation\Text.hbs" />
-    <None Remove="Partials\Documentation\UnorderedList.hbs" />
-    <None Remove="Partials\Documentation\Value.hbs" />
-    <None Remove="Partials\GenericParametersDocumentation.hbs" />
-    <None Remove="Partials\Layout.hbs" />
-    <None Remove="Partials\MembersDeclaraction.hbs" />
-    <None Remove="Templates\Declarations\Assembly.hbs" />
-    <None Remove="Templates\Declarations\Class.hbs" />
-    <None Remove="Templates\Declarations\Constant.hbs" />
-    <None Remove="Templates\Declarations\Constructor.hbs" />
-    <None Remove="Templates\Declarations\Delegate.hbs" />
-    <None Remove="Templates\Declarations\Enum.hbs" />
-    <None Remove="Templates\Declarations\Event.hbs" />
-    <None Remove="Templates\Declarations\Field.hbs" />
-    <None Remove="Templates\Declarations\Interface.hbs" />
-    <None Remove="Templates\Declarations\Method.hbs" />
-    <None Remove="Templates\Declarations\Namespace.hbs" />
-    <None Remove="Templates\Declarations\Property.hbs" />
-    <None Remove="Templates\Declarations\Struct.hbs" />
-    <None Remove="Templates\DeprecationNotice.hbs" />
-    <None Remove="Templates\OtherVersions.hbs" />
-  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Partials\Breadcrumbs.hbs" />
