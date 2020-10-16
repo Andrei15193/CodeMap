@@ -112,8 +112,8 @@ jobs:
         Write-Host "::set-output name=assembly_version::$assemblyVersion"
         Write-Host "::set-output name=codemap_package_description::$codeMapDescription"
         Write-Host "::set-output name=codemap_package_release_notes::$codeMapReleaseNotes"
-        Write-Host "::set-output name=codemap_handlebars_package_description::$description"
-        Write-Host "::set-output name=codemap_handlebars_package_release_notes::$releaseNotes"
+        Write-Host "::set-output name=codemap_handlebars_package_description::$codeMapHandlebarsDescription"
+        Write-Host "::set-output name=codemap_handlebars_package_release_notes::$codeMapHandlebarsReleaseNotes"
         Write-Host "::set-output name=is_pre_release::$(($null -ne $preRelease).ToString().ToLowerInvariant())"
         [Convert]::FromBase64String("${{ secrets.KeyFile }}") | Set-Content ./CodeMap.snk -AsByteStream
 
