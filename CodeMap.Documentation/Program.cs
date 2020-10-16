@@ -92,12 +92,12 @@ namespace CodeMap.Documentation
                     if (deprecationNoticeHtmlNode != null)
                         if (_IsDocumentationSelected(codeMapDirectory, htmlFile))
                             deprecationNoticeHtmlNode.ParentNode.ReplaceChild(
-                                htmlDocument.CreateTextNode(ApplyDeprecationNotice(codeMapDirectory, htmlFile, _GetVersions(codeMapDirectory).Last())),
+                                htmlDocument.CreateTextNode(ApplyDeprecationNotice(codeMapDirectory, htmlFile, _GetVersions(codeMapDirectory).LastOrDefault())),
                                 deprecationNoticeHtmlNode
                             );
                         else if (_IsDocumentationSelected(codeMapHandlebarsDirectory, htmlFile))
                             deprecationNoticeHtmlNode.ParentNode.ReplaceChild(
-                                htmlDocument.CreateTextNode(ApplyDeprecationNotice(codeMapHandlebarsDirectory, htmlFile, _GetVersions(codeMapHandlebarsDirectory).Last())),
+                                htmlDocument.CreateTextNode(ApplyDeprecationNotice(codeMapHandlebarsDirectory, htmlFile, _GetVersions(codeMapHandlebarsDirectory).LastOrDefault())),
                                 deprecationNoticeHtmlNode
                             );
 
@@ -146,7 +146,7 @@ namespace CodeMap.Documentation
                     "DeprecationNotice",
                     new
                     {
-                        IsLatest = _IsSelectedVersion(documentationDirectory, htmlFile, latestVersion),
+                        IsLatest = latestVersion is null || _IsSelectedVersion(documentationDirectory, htmlFile, latestVersion),
                         PathToLatest = $"../{latestVersion}/index.html"
                     });
         }
