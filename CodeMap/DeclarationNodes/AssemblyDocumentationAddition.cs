@@ -64,40 +64,40 @@ namespace CodeMap.DeclarationNodes
         }
 
         /// <summary>
-        /// A filtering predicate that indicates whether the current instance can be applied to the provided <paramref name="assemblyDeclaration"/>.
+        /// A filtering predicate that indicates whether the current instance can be applied to the provided <paramref name="assembly"/>.
         /// </summary>
-        /// <param name="assemblyDeclaration">The <see cref="AssemblyDeclaration"/> to check.</param>
+        /// <param name="assembly">The <see cref="AssemblyDeclaration"/> to check.</param>
         /// <returns>Returns <c>true</c> if the current addition is applicable; <c>false</c> otherwise.</returns>
-        public abstract bool CanApply(AssemblyDeclaration assemblyDeclaration);
+        public abstract bool CanApply(AssemblyDeclaration assembly);
 
-        /// <summary>Gets the summary addition for the provided <paramref name="assemblyDeclaration"/>.</summary>
-        /// <param name="assemblyDeclaration">The <see cref="AssemblyDeclaration"/> for which to get the summary addition.</param>
-        /// <returns>Returns a <see cref="SummaryDocumentationElement"/> for the provided <paramref name="assemblyDeclaration"/>.</returns>
-        public virtual SummaryDocumentationElement GetSummary(AssemblyDeclaration assemblyDeclaration)
+        /// <summary>Gets the summary addition for the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyDeclaration"/> for which to get the summary addition.</param>
+        /// <returns>Returns a <see cref="SummaryDocumentationElement"/> for the provided <paramref name="assembly"/>.</returns>
+        public virtual SummaryDocumentationElement GetSummary(AssemblyDeclaration assembly)
             => null;
 
-        /// <summary>Gets the remarks addition for the provided <paramref name="assemblyDeclaration"/>.</summary>
-        /// <param name="assemblyDeclaration">The <see cref="AssemblyDeclaration"/> for which to get the remarks addition.</param>
-        /// <returns>Returns a <see cref="RemarksDocumentationElement"/> for the provided <paramref name="assemblyDeclaration"/>.</returns>
-        public virtual RemarksDocumentationElement GetRemarks(AssemblyDeclaration assemblyDeclaration)
+        /// <summary>Gets the remarks addition for the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyDeclaration"/> for which to get the remarks addition.</param>
+        /// <returns>Returns a <see cref="RemarksDocumentationElement"/> for the provided <paramref name="assembly"/>.</returns>
+        public virtual RemarksDocumentationElement GetRemarks(AssemblyDeclaration assembly)
             => null;
 
-        /// <summary>Gets the example additions for the provided <paramref name="assemblyDeclaration"/>.</summary>
-        /// <param name="assemblyDeclaration">The <see cref="AssemblyDeclaration"/> for which to get the example additions.</param>
-        /// <returns>Returns a collection of <see cref="ExampleDocumentationElement"/> for the provided <paramref name="assemblyDeclaration"/>.</returns>
-        public virtual IEnumerable<ExampleDocumentationElement> GetExamples(AssemblyDeclaration assemblyDeclaration)
+        /// <summary>Gets the example additions for the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyDeclaration"/> for which to get the example additions.</param>
+        /// <returns>Returns a collection of <see cref="ExampleDocumentationElement"/> for the provided <paramref name="assembly"/>.</returns>
+        public virtual IEnumerable<ExampleDocumentationElement> GetExamples(AssemblyDeclaration assembly)
             => null;
 
-        /// <summary>Gets the related members addition for the provided <paramref name="assemblyDeclaration"/>.</summary>
-        /// <param name="assemblyDeclaration">The <see cref="AssemblyDeclaration"/> for which to get the related members addition.</param>
-        /// <returns>Returns a collection of <see cref="MemberReferenceDocumentationElement"/> for the provided <paramref name="assemblyDeclaration"/>.</returns>
-        public virtual IEnumerable<MemberReferenceDocumentationElement> GetRelatedMembers(AssemblyDeclaration assemblyDeclaration)
+        /// <summary>Gets the related members addition for the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyDeclaration"/> for which to get the related members addition.</param>
+        /// <returns>Returns a collection of <see cref="MemberReferenceDocumentationElement"/> for the provided <paramref name="assembly"/>.</returns>
+        public virtual IEnumerable<MemberReferenceDocumentationElement> GetRelatedMembers(AssemblyDeclaration assembly)
             => null;
 
-        /// <summary>Gets the namespace additions for the provided <paramref name="assemblyDeclaration"/>.</summary>
-        /// <param name="assemblyDeclaration">The <see cref="AssemblyDeclaration"/> for which to get the namespace additions.</param>
-        /// <returns>Returns a collection of <see cref="NamespaceDocumentationAddition"/> for the provided <paramref name="assemblyDeclaration"/>.</returns>
-        public virtual IEnumerable<NamespaceDocumentationAddition> GetNamespaceAdditions(AssemblyDeclaration assemblyDeclaration)
+        /// <summary>Gets the namespace additions for the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyDeclaration"/> for which to get the namespace additions.</param>
+        /// <returns>Returns a collection of <see cref="NamespaceDocumentationAddition"/> for the provided <paramref name="assembly"/>.</returns>
+        public virtual IEnumerable<NamespaceDocumentationAddition> GetNamespaceAdditions(AssemblyDeclaration assembly)
             => null;
     }
 }

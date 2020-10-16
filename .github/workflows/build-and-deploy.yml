@@ -197,12 +197,6 @@ jobs:
         asset_name: CodeMap.Handlebars.${{ steps.package_info.outputs.package_version }}.nupkg
         asset_content_type: application/zip
 
-    - name: Build Test Data Site
-      shell: pwsh
-      working-directory: ./CodeMap.Tests.Data.Documentation
-      run: |
-        dotnet run --configuration Release --no-build -OutputPath '../project-site/CodeMap' -TargetSubdirectory 'test-data'
-
     - name: Build Project Site
       shell: pwsh
       working-directory: ./CodeMap.Documentation
@@ -215,6 +209,12 @@ jobs:
         {
           dotnet run --configuration Release --no-build -OutputPath '../project-site' -TargetSubdirectory 'dev'
         }
+
+    - name: Build Test Data Site
+      shell: pwsh
+      working-directory: ./CodeMap.Tests.Data.Documentation
+      run: |
+        dotnet run --configuration Release --no-build -OutputPath '../project-site/CodeMap' -TargetSubdirectory 'test-data'
 
     - name: Publish Project Site
       uses: peaceiris/actions-gh-pages@v3.6.1

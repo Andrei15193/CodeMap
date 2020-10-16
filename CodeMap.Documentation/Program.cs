@@ -21,7 +21,7 @@ namespace CodeMap.Documentation
 
             WriteHomePage(arguments);
             WriteDocumentation(arguments, typeof(DeclarationNode).Assembly, new DocumentationAdditions.Version1_0.CodeMapAssemblyDocumentationAddition());
-            WriteDocumentation(arguments, typeof(HandlebarsTemplateWriter).Assembly);
+            WriteDocumentation(arguments, typeof(HandlebarsTemplateWriter).Assembly, new DocumentationAdditions.Version1_0.CodeMapHandlerbarsAssemblyDocumentationAddition());
 
             _UpdateFiles(arguments);
         }
@@ -70,7 +70,6 @@ namespace CodeMap.Documentation
             var directories = codeMapDirectory
                 .GetDirectories()
                 .Concat(codeMapHandlebarsDirectory.GetDirectories())
-                .Where(_IsVersionDirectory)
                 .Concat(Enumerable.Repeat(outputDirectory, 1));
 
             Parallel.ForEach(directories, _WriteAssets);
