@@ -8,7 +8,7 @@
     <Description>An extensible tool for generating documentation for your .NET libraries. Generate HTML, Markdown or in any other format, customise the documentation at your discretion.</Description>
     <Authors>Andrei15193</Authors>
     <Copyright>Andrei15193</Copyright>
-    <PackageProjectUrl>https://github.com/Andrei15193/CodeMap</PackageProjectUrl>
+    <PackageProjectUrl>https://Andrei15193.github.io/CodeMap</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
