@@ -63,8 +63,6 @@
     <EmbeddedResource Include="Templates\Declarations\Namespace.hbs" />
     <EmbeddedResource Include="Templates\Declarations\Property.hbs" />
     <EmbeddedResource Include="Templates\Declarations\Struct.hbs" />
-    <EmbeddedResource Include="Templates\DeprecationNotice.hbs" />
-    <EmbeddedResource Include="Templates\OtherVersions.hbs" />
   </ItemGroup>
 
   <ItemGroup>

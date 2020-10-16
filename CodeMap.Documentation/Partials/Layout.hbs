@@ -10,23 +10,18 @@
     <link rel="stylesheet" href="Style.css" />
 </head>
 <body class="d-flex flex-column">
-    <div>
-        <div class="d-flex flex-row align-items-center container px-2 pt-2">
-            <h1 class="flex-grow-1 flex-shrink-1">{{assembly.name}} <small>{{Semver assembly.version}}</small></h1>
-            <a class="btn btn-link" href="https://github.com/{{GetAssemblyCompany assembly}}/{{assembly.name}}">View on GitHub</a>
-            <a class="btn btn-link" href="https://www.nuget.org/packages/{{assembly.name}}/{{Semver assembly.version}}">View on NuGet</a>
-            <div id="otherVersions"></div>
-        </div>
-
-        <hr />
-    </div>
+    <div id="navigation"></div>
 
     <div class="flex-grow-1 flex-shrink-1">
-        <div class="d-flex flex-column container px-2 pt-2">
-            <div id="deprecationNotice"></div>
-            {{> Breadcrumbs node}}
 
+        <div class="d-flex flex-column container px-2 pt-2">
+            {{#if node}}
+            {{> Breadcrumbs node}}
+            <div id="deprecationNotice"></div>
             {{> @partial-block node}}
+            {{else}}
+            {{> @partial-block}}
+            {{/if}}
         </div>
     </div>
 
@@ -34,10 +29,10 @@
         <hr />
 
         <div class="d-flex flex-column container px-2">
-            <p class="footer">
-                <a href="https://github.com/{{GetAssemblyCompany assembly}}/{{assembly.name}}/releases/tag/{{Semver assembly.version}}">{{assembly.name}} {{Semver assembly.version}}</a>
+            <p class="text-center">
+                <a href="https://github.com/Andrei15193/CodeMap/releases/tag/{{Semver assembly.version}}">{{assembly.name}} {{Semver assembly.version}}</a>
                 -
-                <a href="https://github.com/{{GetAssemblyCompany assembly}}/{{assembly.name}}">View on GitHub</a>
+                <a href="https://github.com/Andrei15193/CodeMap">View on GitHub</a>
                 -
                 <a href="https://www.nuget.org/packages/{{assembly.name}}/{{Semver assembly.version}}">View on NuGet</a>
             </p>

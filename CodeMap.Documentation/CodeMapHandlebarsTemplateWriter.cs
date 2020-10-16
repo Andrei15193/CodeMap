@@ -16,5 +16,13 @@ namespace CodeMap.Documentation
             {
                 ["Layout"] = ReadFromEmbeddedResource(typeof(CodeMapHandlebarsTemplateWriter).Assembly, "CodeMap.Documentation.Partials.Layout.hbs")
             };
+
+        protected override IReadOnlyDictionary<string, string> GetTemplates()
+            => new Dictionary<string, string>(base.GetTemplates(), StringComparer.OrdinalIgnoreCase)
+            {
+                { "Home", ReadFromEmbeddedResource(typeof(CodeMapHandlebarsTemplateWriter).Assembly, "CodeMap.Documentation.Templates.Home.hbs") },
+                { "Navigation", ReadFromEmbeddedResource(typeof(CodeMapHandlebarsTemplateWriter).Assembly, "CodeMap.Documentation.Templates.Navigation.hbs") },
+                { "DeprecationNotice", ReadFromEmbeddedResource(typeof(CodeMapHandlebarsTemplateWriter).Assembly, "CodeMap.Documentation.Templates.DeprecationNotice.hbs") }
+            };
     }
 }

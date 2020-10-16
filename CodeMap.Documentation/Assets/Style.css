@@ -3,7 +3,6 @@ th { white-space: nowrap; }
 p, th, td, li { text-align: justify; }
 table.table > thead > tr > th p:last-child, table.table > tbody > tr > td p:last-child { margin-bottom: 0; }
 pre { padding: 2px 7px; background-color: #F8F8F8; }
-p.footer { text-align: center; }
 
 /* Pygments theme: Colorful */
 .highlight .hll { background-color: #ffffcc }

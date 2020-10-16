@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,13 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Style.css" />
-    <None Remove="Partials\Layout.hbs" />
+    <None Remove="Templates\Navigation.hbs" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\Style.css" />
     <EmbeddedResource Include="Partials\Layout.hbs" />
+    <EmbeddedResource Include="Templates\DeprecationNotice.hbs" />
+    <EmbeddedResource Include="Templates\Home.hbs" />
+    <EmbeddedResource Include="Templates\Navigation.hbs" />
+    <EmbeddedResource Include="Templates\OtherVersions.hbs" />
   </ItemGroup>
 
   <ItemGroup>

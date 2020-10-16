@@ -7,7 +7,6 @@
     <meta http-equiv="Expires" content="0" />
     <title>{{title}}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
-    <link rel="stylesheet" href="Style.css" />
 </head>
 <body class="d-flex flex-column">
     <div>
@@ -32,7 +31,7 @@
         <hr />
 
         <div class="d-flex flex-column container px-2">
-            <p class="footer">
+            <p class="text-center">
                 <a href="https://github.com/{{GetAssemblyCompany assembly}}/{{assembly.name}}/releases/tag/{{Semver assembly.version}}">{{assembly.name}} {{Semver assembly.version}}</a>
                 -
                 <a href="https://github.com/{{GetAssemblyCompany assembly}}/{{assembly.name}}">View on GitHub</a>
