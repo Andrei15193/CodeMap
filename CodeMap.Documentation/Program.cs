@@ -22,6 +22,8 @@ namespace CodeMap.Documentation
             WriteHomePage(arguments);
             WriteDocumentation(arguments, typeof(DeclarationNode).Assembly, new DocumentationAdditions.Version1_0.CodeMapAssemblyDocumentationAddition());
             WriteDocumentation(arguments, typeof(HandlebarsTemplateWriter).Assembly);
+
+            _UpdateFiles(arguments);
         }
 
         private static void WriteHomePage(Arguments arguments)
@@ -35,9 +37,6 @@ namespace CodeMap.Documentation
 
             using (var indexFileStreamWriter = new StreamWriter(new FileStream(Path.Combine(outputDirectory.FullName, "index.html"), FileMode.Create, FileAccess.Write, FileShare.Read)))
                 templateWriter.Write(indexFileStreamWriter, "Home", codeMapAssemblyDeclaration);
-
-            if (string.IsNullOrWhiteSpace(arguments.TargetSubdirectory))
-                _UpdateFiles(outputDirectory, templateWriter);
         }
 
         private static void WriteDocumentation(Arguments arguments, Assembly assembly, params AssemblyDocumentationAddition[] assemblyDocumentationAdditions)
@@ -58,16 +57,21 @@ namespace CodeMap.Documentation
             assemblyDeclaration.Accept(new FileTemplateWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));
         }
 
-        private static void _UpdateFiles(DirectoryInfo outputDirectoryInfo, TemplateWriter templateWriter)
+        private static void _UpdateFiles(Arguments arguments)
         {
-            var codeMapDirectory = outputDirectoryInfo.CreateSubdirectory("CodeMap");
-            var codeMapHandlebarsDirectory = outputDirectoryInfo.CreateSubdirectory("CodeMap.Handlebars");
+            var codeMapAssembly = typeof(DeclarationNode).Assembly;
+            var codeMapAssemblyDeclaration = DeclarationNode.Create(codeMapAssembly);
+            var templateWriter = new CodeMapHandlebarsTemplateWriter(new DefaultMemberReferenceResolver(codeMapAssembly, "netstandard-2.1"));
+
+            var outputDirectory = new DirectoryInfo(arguments.OutputPath);
+            var codeMapDirectory = outputDirectory.CreateSubdirectory("CodeMap");
+            var codeMapHandlebarsDirectory = outputDirectory.CreateSubdirectory("CodeMap.Handlebars");
 
             var directories = codeMapDirectory
                 .GetDirectories()
                 .Concat(codeMapHandlebarsDirectory.GetDirectories())
                 .Where(_IsVersionDirectory)
-                .Concat(Enumerable.Repeat(outputDirectoryInfo, 1));
+                .Concat(Enumerable.Repeat(outputDirectory, 1));
 
             Parallel.ForEach(directories, _WriteAssets);
 
@@ -84,7 +88,6 @@ namespace CodeMap.Documentation
                             htmlDocument.CreateTextNode(ApplyNavigation(htmlFile, codeMapDirectory, codeMapHandlebarsDirectory)),
                             navigationHtmlNode
                         );
-
 
                     var deprecationNoticeHtmlNode = htmlDocument.GetElementbyId("deprecationNotice");
                     if (deprecationNoticeHtmlNode != null)
@@ -105,7 +108,7 @@ namespace CodeMap.Documentation
 
             string ApplyNavigation(FileInfo htmlFile, DirectoryInfo codeMapDirectory, DirectoryInfo codeMapHandlebarsDirectory)
             {
-                var isHomePageSelected = string.Equals(htmlFile.Directory.FullName, outputDirectoryInfo.FullName, StringComparison.OrdinalIgnoreCase) && string.Equals("index.html", htmlFile.Name);
+                var isHomePageSelected = string.Equals(htmlFile.Directory.FullName, outputDirectory.FullName, StringComparison.OrdinalIgnoreCase) && string.Equals("index.html", htmlFile.Name);
                 return templateWriter.Apply(
                     "Navigation",
                     new
@@ -122,8 +125,8 @@ namespace CodeMap.Documentation
                                               IsSelected = _IsSelectedVersion(codeMapDirectory, htmlFile, codeMapVersion),
                                               Label = codeMapVersion,
                                               Path = isHomePageSelected
-                                              ? $"CodeMap/{codeMapVersion}/index.html"
-                                              : $"../../CodeMap/{codeMapVersion}/index.html"
+                                                  ? $"{codeMapDirectory.Name}/{codeMapVersion}/index.html"
+                                                  : $"../../{codeMapDirectory.Name}/{codeMapVersion}/index.html"
                                           },
                         IsCodeMapSelected = _IsDocumentationSelected(codeMapDirectory, htmlFile),
                         CodeMapHandlebarsVersions = from codeMapHandlebarsVersion in _GetVersions(codeMapHandlebarsDirectory).Reverse()
@@ -132,8 +135,8 @@ namespace CodeMap.Documentation
                                                         IsSelected = _IsSelectedVersion(codeMapHandlebarsDirectory, htmlFile, codeMapHandlebarsVersion),
                                                         Label = codeMapHandlebarsVersion,
                                                         Path = isHomePageSelected
-                                                            ? $"CodeMap.Handlebars/{codeMapHandlebarsVersion}/index.html"
-                                                            : $"../../CodeMap.Handlebars/{codeMapHandlebarsVersion}/index.html"
+                                                            ? $"{codeMapHandlebarsDirectory.Name}/{codeMapHandlebarsVersion}/index.html"
+                                                            : $"../../{codeMapHandlebarsDirectory.Name}/{codeMapHandlebarsVersion}/index.html"
                                                     },
                         IsCodeMapHandlebarsSelected = _IsDocumentationSelected(codeMapHandlebarsDirectory, htmlFile)
                     });
