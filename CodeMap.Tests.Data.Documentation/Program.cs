@@ -28,7 +28,7 @@ namespace CodeMap.Tests.Data.Documentation
             var memberFileNameResolver = new DefaultMemberReferenceResolver(library, "netcore-3.1");
             var templateWriter = new HandlebarsTemplateWriter(memberFileNameResolver);
 
-            documentation.Accept(new FileTemplateWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));
+            documentation.Accept(new HandlebarsWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));
         }
     }
 }

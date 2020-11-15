@@ -33,7 +33,7 @@ namespace CodeMap.Documentation
 
             var codeMapAssembly = typeof(DeclarationNode).Assembly;
             var codeMapAssemblyDeclaration = DeclarationNode.Create(codeMapAssembly);
-            var templateWriter = new CodeMapHandlebarsTemplateWriter(new DefaultMemberReferenceResolver(codeMapAssembly, "netstandard-2.1"));
+            var templateWriter = new HandlebarsTemplateWriter(new DefaultMemberReferenceResolver(codeMapAssembly, "netstandard-2.1"));
 
             using (var indexFileStreamWriter = new StreamWriter(new FileStream(Path.Combine(outputDirectory.FullName, "index.html"), FileMode.Create, FileAccess.Write, FileShare.Read)))
                 templateWriter.Write(indexFileStreamWriter, "Home", codeMapAssemblyDeclaration);
@@ -46,7 +46,7 @@ namespace CodeMap.Documentation
                 .Apply(assemblyDocumentationAdditions);
 
             var memberFileNameResolver = new DefaultMemberReferenceResolver(assembly, "netstandard-2.1");
-            var templateWriter = new CodeMapHandlebarsTemplateWriter(memberFileNameResolver);
+            var templateWriter = new HandlebarsTemplateWriter(memberFileNameResolver);
 
             var documentationDirectory = new DirectoryInfo(arguments.OutputPath).CreateSubdirectory(assemblyDeclaration.Name);
             var targetDirectory = documentationDirectory.CreateSubdirectory(!string.IsNullOrWhiteSpace(arguments.TargetSubdirectory) ? arguments.TargetSubdirectory : assemblyDeclaration.Version.ToSemver());
@@ -54,14 +54,14 @@ namespace CodeMap.Documentation
             targetDirectory.Delete(true);
             targetDirectory.Create();
 
-            assemblyDeclaration.Accept(new FileTemplateWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));
+            assemblyDeclaration.Accept(new HandlebarsWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));
         }
 
         private static void _UpdateFiles(Arguments arguments)
         {
             var codeMapAssembly = typeof(DeclarationNode).Assembly;
             var codeMapAssemblyDeclaration = DeclarationNode.Create(codeMapAssembly);
-            var templateWriter = new CodeMapHandlebarsTemplateWriter(new DefaultMemberReferenceResolver(codeMapAssembly, "netstandard-2.1"));
+            var templateWriter = new HandlebarsTemplateWriter(new DefaultMemberReferenceResolver(codeMapAssembly, "netstandard-2.1"));
 
             var outputDirectory = new DirectoryInfo(arguments.OutputPath);
             var codeMapDirectory = outputDirectory.CreateSubdirectory("CodeMap");

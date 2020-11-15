@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\Style.css" />
     <EmbeddedResource Include="Partials\Breadcrumbs.hbs" />
     <EmbeddedResource Include="Partials\Documentation.hbs" />
     <EmbeddedResource Include="Partials\Documentation\MemberReference.hbs" />
@@ -71,6 +72,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="EmbeddedResourceBrowser" Version="1.1.0" />
     <PackageReference Include="Handlebars.Net" Version="1.11.5" />
     <PackageReference Include="PygmentSharp.Core" Version="0.3.0" />
     <PackageReference Include="StrongNamer" Version="0.2.5" />

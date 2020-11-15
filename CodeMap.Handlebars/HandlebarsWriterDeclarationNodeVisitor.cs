@@ -1,30 +1,33 @@
 ﻿using System.IO;
 using CodeMap.DeclarationNodes;
+using EmbeddedResourceBrowser;
 
 namespace CodeMap.Handlebars
 {
-    /// <summary>A base <see cref="DeclarationNodeVisitor"/> implementation based on a <see cref="Handlebars.TemplateWriter"/>.</summary>
-    /// <remarks>This implementation visits every declaration and applies the respective template using the <see cref="DeclarationNode"/> as its context.</remarks>
-    /// <seealso cref="DocumentationTemplateNames"/>
-    public abstract class TemplateWriterDeclarationNodeVisitor : DeclarationNodeVisitor
+    /// <summary>Represents a <a href="https://github.com/Handlebars-Net/Handlebars.Net">Handlebars.NET</a> based writer for generating documentation.</summary>
+    public class HandlebarsWriterDeclarationNodeVisitor : DeclarationNodeVisitor
     {
-        /// <summary>Initializes a new instance of the <see cref="TemplateWriterDeclarationNodeVisitor"/> class.</summary>
-        /// <param name="templateWriter">The <see cref="Handlebars.TemplateWriter"/> to use for applying <see cref="DeclarationNode"/> templates.</param>
-        protected TemplateWriterDeclarationNodeVisitor(TemplateWriter templateWriter)
-            => TemplateWriter = templateWriter;
+        private readonly IMemberReferenceResolver _memberReferenceResolver;
+        private readonly DirectoryInfo _directoryInfo;
+        private readonly HandlebarsTemplateWriter _handlebarsTemplateWriter;
 
-        /// <summary>The <see cref="Handlebars.TemplateWriter"/> used to apply templates for each visited <see cref="DeclarationNode"/>.</summary>
-        protected TemplateWriter TemplateWriter { get; }
-
-        /// <summary>Gets a <see cref="TextWriter"/> where the applied template is written to.</summary>
-        /// <param name="declarationNode">The <see cref="DeclarationNode"/> for which to get the <see cref="TextWriter"/>.</param>
-        /// <returns>Returns a <see cref="TextWriter"/> for the provided <paramref name="declarationNode"/> where the applied template is written to.</returns>
-        protected abstract TextWriter GetTextWriter(DeclarationNode declarationNode);
+        /// <summary>Initialzies a new instance of the <see cref="HandlebarsWriterDeclarationNodeVisitor"/> class.</summary>
+        /// <param name="directoryInfo">The directory to write the documentation files to.</param>
+        /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used to generate documentation file names.</param>
+        /// <param name="handlebarsTemplateWriter">The <see cref="HandlebarsTemplateWriter"/> used for generating documentation files.</param>
+        public HandlebarsWriterDeclarationNodeVisitor(DirectoryInfo directoryInfo, IMemberReferenceResolver memberReferenceResolver, HandlebarsTemplateWriter handlebarsTemplateWriter)
+        {
+            _memberReferenceResolver = memberReferenceResolver;
+            _directoryInfo = directoryInfo;
+            _handlebarsTemplateWriter = handlebarsTemplateWriter;
+        }
 
         /// <summary>Visits an <see cref="AssemblyDeclaration"/>.</summary>
         /// <param name="assembly">The <see cref="AssemblyDeclaration"/> to visit.</param>
         protected override void VisitAssembly(AssemblyDeclaration assembly)
         {
+            _handlebarsTemplateWriter.Assets.CopyTo(_directoryInfo);
+
             _ApplyTempalte(DocumentationTemplateNames.Assembly, assembly);
 
             foreach (var @namespace in assembly.Namespaces)
@@ -113,8 +116,9 @@ namespace CodeMap.Handlebars
 
         private void _ApplyTempalte(string templateName, DeclarationNode declarationNode)
         {
-            using var textWriter = GetTextWriter(declarationNode);
-            TemplateWriter.Write(textWriter, templateName, declarationNode);
+            using var fileStream = new FileStream(Path.Combine(_directoryInfo.FullName, _memberReferenceResolver.GetFileName(declarationNode)), FileMode.Create, FileAccess.Write, FileShare.Read);
+            using var fileStreamWriter = new StreamWriter(fileStream);
+            _handlebarsTemplateWriter.Write(fileStreamWriter, templateName, declarationNode);
         }
     }
 }

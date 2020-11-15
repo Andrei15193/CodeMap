@@ -60,7 +60,36 @@ namespace CodeMap.Handlebars.Helpers
             if (version is null)
                 throw new ArgumentException("Expected a " + nameof(Version) + " provided as the first parameter or context.");
 
-            writer.Write(version.ToSemver());
+            writer.Write(ToSemver(version));
+        }
+
+        /// <summary>Gets the Semver expression for the givem <paramref name="version"/>.</summary>
+        /// <param name="version">The <see cref="Version"/> to convert to a Semver expression.</param>
+        /// <returns>Returns the Semver expression for the given <paramref name="version"/>.</returns>
+        /// <remarks>
+        /// See the remarks on the declarying type (<see cref="Semver"/>) for more information about the default mapping between
+        /// a <see cref="Version"/> and a Semver expression.
+        /// </remarks>
+        protected virtual string ToSemver(Version version)
+        {
+            var prerelease = string.Empty;
+            if (version.Build > 0)
+                switch (version.Build / 1000)
+                {
+                    case 1:
+                        prerelease = "-alpha" + version.Build % 1000;
+                        break;
+
+                    case 2:
+                        prerelease = "-beta" + version.Build % 1000;
+                        break;
+
+                    case 3:
+                        prerelease = "-rc" + version.Build % 1000;
+                        break;
+                }
+
+            return $"{version.Major}.{version.Minor}.{version.Revision}{prerelease}";
         }
     }
 }
