@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace CodeMap.ReferenceData
 {
@@ -16,15 +15,6 @@ namespace CodeMap.ReferenceData
                 return type.Name;
         }
 
-        public static string GetMethodName(this MethodBase methodBase)
-        {
-            var backTickIndex = methodBase.Name.LastIndexOf("``", StringComparison.OrdinalIgnoreCase);
-            if (backTickIndex >= 0)
-                return methodBase.Name.Substring(0, backTickIndex);
-            else
-                return methodBase.Name;
-        }
-
         public static Type GetDeclaringType(this Type type)
         {
             if (type.DeclaringType == null)
@@ -32,12 +22,7 @@ namespace CodeMap.ReferenceData
 
             var genericArgumentsOffset = type.DeclaringType.GetGenericArguments().Length;
             if (type.IsGenericType && type.IsConstructedGenericType)
-                return type.DeclaringType.MakeGenericType(
-                    type
-                        .GetGenericArguments()
-                        .Take(genericArgumentsOffset)
-                        .ToArray()
-                );
+                return type.DeclaringType.MakeGenericType(type.GetGenericArguments().Take(genericArgumentsOffset).ToArray());
             else
                 return type.DeclaringType;
         }

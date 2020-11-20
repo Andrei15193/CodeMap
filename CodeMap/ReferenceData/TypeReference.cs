@@ -46,21 +46,16 @@ namespace CodeMap.ReferenceData
                && !type.IsGenericParameter
                && Name.Equals(type.GetTypeName(), StringComparison.OrdinalIgnoreCase)
                && Namespace.Equals(type.Namespace, StringComparison.OrdinalIgnoreCase)
-               && (DeclaringType is null ? type.DeclaringType is null : DeclaringType.Equals(_GetConstructedDeclaringType(type), originator, originatorMatch))
-               && GenericArguments.Count == type.GetGenericArguments().Length - (type.DeclaringType?.GetGenericArguments().Length ?? 0)
+               && (DeclaringType is null ? type.DeclaringType is null : DeclaringType.Equals(type.GetDeclaringType(), originator, originatorMatch))
+               && GenericArguments.Count == type.GetCurrentGenericArguments().Count()
                && (
                     type.IsConstructedGenericType
                         ? GenericArguments
-                           .Zip(type.GetGenericArguments().Skip(type.DeclaringType?.GetGenericArguments().Length ?? 0), (expectedGenericArgument, actualGenericArgument) => (ExpectedGenericArgument: expectedGenericArgument, ActualGenericArgument: actualGenericArgument))
+                           .Zip(type.GetCurrentGenericArguments(), (expectedGenericArgument, actualGenericArgument) => (ExpectedGenericArgument: expectedGenericArgument, ActualGenericArgument: actualGenericArgument))
                            .All(pair => pair.ExpectedGenericArgument.Equals(pair.ActualGenericArgument, originator, originatorMatch))
                         : GenericArguments
                             .All(genericArgument => genericArgument is GenericTypeParameterReference genericTypeParameter && ReferenceEquals(this, genericTypeParameter.DeclaringType))
                )
                && Assembly.Equals(type.Assembly);
-
-        private static Type _GetConstructedDeclaringType(Type type)
-            => type.IsConstructedGenericType && type.DeclaringType.GetGenericArguments().Length > 0
-                ? type.DeclaringType.MakeGenericType(type.GetGenericArguments().Take(type.DeclaringType.GetGenericArguments().Length).ToArray())
-                : type.DeclaringType;
     }
 }

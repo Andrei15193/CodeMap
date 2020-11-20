@@ -304,7 +304,7 @@ namespace CodeMap.ReferenceData
         {
             var methodReference = new MethodReference
             {
-                Name = methodInfo.GetMethodName().ToString()
+                Name = methodInfo.Name
             };
             return (
                 methodReference,

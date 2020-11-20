@@ -45,7 +45,7 @@ namespace CodeMap.ReferenceData
         internal bool Equals(MethodBase methodBase, GenericMethodParameterReference originator, Type originatorMatch)
             => methodBase != null
                && DeclaringType.Equals(methodBase.DeclaringType)
-               && Name.Equals(methodBase.GetMethodName(), StringComparison.OrdinalIgnoreCase)
+               && Name.Equals(methodBase.Name, StringComparison.OrdinalIgnoreCase)
                && methodBase.GetGenericArguments().Length == GenericArguments.Count
                && (
                    methodBase.IsConstructedGenericMethod

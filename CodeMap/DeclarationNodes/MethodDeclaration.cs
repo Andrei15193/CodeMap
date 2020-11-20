@@ -49,7 +49,7 @@ namespace CodeMap.DeclarationNodes
         /// <returns>Returns <c>true</c> if the current <see cref="MethodDeclaration"/> references the provided <paramref name="methodInfo"/>; <c>false</c> otherwise.</returns>
         public bool Equals(MethodInfo methodInfo)
             => methodInfo != null
-            && string.Equals(Name, methodInfo.GetMethodName(), StringComparison.OrdinalIgnoreCase)
+            && string.Equals(Name, methodInfo.Name, StringComparison.OrdinalIgnoreCase)
             && Parameters.Count == methodInfo.GetParameters().Length
             && Parameters
                 .Zip(
