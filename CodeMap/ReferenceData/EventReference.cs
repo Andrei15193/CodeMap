@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Reflection;
 
 namespace CodeMap.ReferenceData
 {
     /// <summary>Represents an event reference.</summary>
-    public sealed class EventReference : MemberReference
+    public sealed class EventReference : MemberReference, IEquatable<EventInfo>
     {
         internal EventReference()
         {
@@ -20,5 +21,19 @@ namespace CodeMap.ReferenceData
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override void Accept(MemberReferenceVisitor visitor)
             => visitor.VisitEvent(this);
+
+        /// <summary>Determines whether the current <see cref="EventReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
+        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="EventReference"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
+        public override bool Equals(MemberInfo memberInfo)
+            => Equals(memberInfo as EventInfo);
+
+        /// <summary>Determines whether the current <see cref="EventReference"/> is equal to the provided <paramref name="eventInfo"/>.</summary>
+        /// <param name="eventInfo">The <see cref="EventInfo"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="EventReference"/> references the provided <paramref name="eventInfo"/>; <c>false</c> otherwise.</returns>
+        public bool Equals(EventInfo eventInfo)
+            => eventInfo != null
+               && Name.Equals(eventInfo.Name, StringComparison.OrdinalIgnoreCase)
+               && DeclaringType.Equals(eventInfo.DeclaringType);
     }
 }

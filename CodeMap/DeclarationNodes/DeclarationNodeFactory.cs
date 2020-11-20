@@ -562,7 +562,7 @@ namespace CodeMap.DeclarationNodes
 
             var methodDocumentationElement = new MethodDeclaration
             {
-                Name = method.Name,
+                Name = method.GetMethodName(),
                 AccessModifier = _GetAccessModifierFrom(method),
                 Attributes = _MapAttributesDataFrom(method.CustomAttributes),
                 DeclaringType = declaringType,

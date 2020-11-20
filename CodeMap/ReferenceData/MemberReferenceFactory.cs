@@ -165,8 +165,7 @@ namespace CodeMap.ReferenceData
 
         private void _InitializeTypeReference(Type type, TypeReference typeReference)
         {
-            var declaringType = type.GetDeclaringType();
-            typeReference.Name = type.GetTypeName().ToString();
+            typeReference.Name = type.GetTypeName();
             typeReference.Namespace = type.Namespace;
             typeReference.Assembly = Create(type.Assembly);
         }
@@ -205,7 +204,8 @@ namespace CodeMap.ReferenceData
         {
             var genericTypeParameterReference = new GenericTypeParameterReference
             {
-                Name = type.Name
+                Name = type.Name,
+                Position = type.GenericParameterPosition
             };
             return (
                 genericTypeParameterReference,
@@ -217,7 +217,8 @@ namespace CodeMap.ReferenceData
         {
             var genericMethodParameterReference = new GenericMethodParameterReference
             {
-                Name = type.Name
+                Name = type.Name,
+                Position = type.GenericParameterPosition
             };
             return (
                 genericMethodParameterReference,
@@ -303,7 +304,7 @@ namespace CodeMap.ReferenceData
         {
             var methodReference = new MethodReference
             {
-                Name = methodInfo.Name
+                Name = methodInfo.GetMethodName().ToString()
             };
             return (
                 methodReference,

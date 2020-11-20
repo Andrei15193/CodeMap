@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CodeMap.ReferenceData
 {
@@ -30,5 +31,36 @@ namespace CodeMap.ReferenceData
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override void Accept(MemberReferenceVisitor visitor)
             => visitor.VisitType(this);
+
+        /// <summary>Determines whether the current <see cref="TypeReference"/> is equal to the provided <paramref name="type"/>.</summary>
+        /// <param name="type">The <see cref="Type"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="TypeReference"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
+        public override bool Equals(Type type)
+            => Equals(type, null, null);
+
+        internal override bool Equals(Type type, GenericMethodParameterReference originator, Type originatorMatch)
+            => type != null
+               && !type.IsPointer
+               && !type.IsArray
+               && !type.IsByRef
+               && !type.IsGenericParameter
+               && Name.Equals(type.GetTypeName(), StringComparison.OrdinalIgnoreCase)
+               && Namespace.Equals(type.Namespace, StringComparison.OrdinalIgnoreCase)
+               && (DeclaringType is null ? type.DeclaringType is null : DeclaringType.Equals(_GetConstructedDeclaringType(type), originator, originatorMatch))
+               && GenericArguments.Count == type.GetGenericArguments().Length - (type.DeclaringType?.GetGenericArguments().Length ?? 0)
+               && (
+                    type.IsConstructedGenericType
+                        ? GenericArguments
+                           .Zip(type.GetGenericArguments().Skip(type.DeclaringType?.GetGenericArguments().Length ?? 0), (expectedGenericArgument, actualGenericArgument) => (ExpectedGenericArgument: expectedGenericArgument, ActualGenericArgument: actualGenericArgument))
+                           .All(pair => pair.ExpectedGenericArgument.Equals(pair.ActualGenericArgument, originator, originatorMatch))
+                        : GenericArguments
+                            .All(genericArgument => genericArgument is GenericTypeParameterReference genericTypeParameter && ReferenceEquals(this, genericTypeParameter.DeclaringType))
+               )
+               && Assembly.Equals(type.Assembly);
+
+        private static Type _GetConstructedDeclaringType(Type type)
+            => type.IsConstructedGenericType && type.DeclaringType.GetGenericArguments().Length > 0
+                ? type.DeclaringType.MakeGenericType(type.GetGenericArguments().Take(type.DeclaringType.GetGenericArguments().Length).ToArray())
+                : type.DeclaringType;
     }
 }

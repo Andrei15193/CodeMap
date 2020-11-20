@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 
 namespace CodeMap.ReferenceData
 {
@@ -10,16 +9,10 @@ namespace CodeMap.ReferenceData
         {
         }
 
-        /// <summary>Determines whether the current <see cref="VoidTypeReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
-        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="VoidTypeReference"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
-        public override bool Equals(MemberInfo memberInfo)
-            => memberInfo is Type type && Equals(type);
-
         /// <summary>Determines whether the current <see cref="VoidTypeReference"/> is equal to the provided <paramref name="type"/>.</summary>
         /// <param name="type">The <see cref="Type"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="VoidTypeReference"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
-        public bool Equals(Type type)
+        public override bool Equals(Type type)
             => type == typeof(void);
     }
 }

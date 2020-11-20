@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace CodeMap.ReferenceData
 {
     /// <summary>Represents a method reference.</summary>
-    public sealed class MethodReference : MemberReference
+    public sealed class MethodReference : MemberReference, IEquatable<MethodInfo>
     {
         internal MethodReference()
         {
@@ -27,5 +29,35 @@ namespace CodeMap.ReferenceData
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override void Accept(MemberReferenceVisitor visitor)
             => visitor.VisitMethod(this);
+
+        /// <summary>Determines whether the current <see cref="MethodReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
+        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="MethodReference"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
+        public override bool Equals(MemberInfo memberInfo)
+            => Equals(memberInfo as MethodInfo);
+
+        /// <summary>Determines whether the current <see cref="MethodReference"/> is equal to the provided <paramref name="methodInfo"/>.</summary>
+        /// <param name="methodInfo">The <see cref="MethodInfo"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="MethodReference"/> references the provided <paramref name="methodInfo"/>; <c>false</c> otherwise.</returns>
+        public bool Equals(MethodInfo methodInfo)
+            => Equals(methodInfo, null, null);
+
+        internal bool Equals(MethodBase methodBase, GenericMethodParameterReference originator, Type originatorMatch)
+            => methodBase != null
+               && DeclaringType.Equals(methodBase.DeclaringType)
+               && Name.Equals(methodBase.GetMethodName(), StringComparison.OrdinalIgnoreCase)
+               && methodBase.GetGenericArguments().Length == GenericArguments.Count
+               && (
+                   methodBase.IsConstructedGenericMethod
+                       ? GenericArguments
+                           .Zip(methodBase.GetGenericArguments(), (expectedGenericArgument, actualGenericArgument) => (ExpectedGenericArgument: expectedGenericArgument, ActualGenericArgument: actualGenericArgument))
+                           .All(pair => pair.ExpectedGenericArgument.Equals(pair.ActualGenericArgument, originator, originatorMatch))
+                       : GenericArguments
+                           .All(genericArgument => genericArgument is GenericMethodParameterReference genericMethodParameter && ReferenceEquals(this, genericMethodParameter.DeclaringMethod))
+               )
+               && ParameterTypes.Count == methodBase.GetParameters().Length
+               && ParameterTypes
+                   .Zip(methodBase.GetParameters(), (parameterType, parameter) => (Expected: parameterType, Actual: parameter.ParameterType))
+                   .All(pair => pair.Expected.Equals(pair.Actual, originator, originatorMatch));
     }
 }

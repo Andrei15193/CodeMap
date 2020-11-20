@@ -15,19 +15,19 @@ namespace CodeMap.ReferenceData
         public static bool operator ==(MemberReference memberReference, MemberInfo memberInfo)
             => Equals(memberReference, memberInfo);
 
-        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="memberInfo"/> are not equal.</summary>
-        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
-        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
-        public static bool operator !=(MemberReference memberReference, MemberInfo memberInfo)
-            => !Equals(memberReference, memberInfo);
-
         /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="memberInfo"/> are equal.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
         /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
         /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
         public static bool operator ==(MemberInfo memberInfo, MemberReference memberReference)
             => Equals(memberReference, memberInfo);
+
+        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="memberInfo"/> are not equal.</summary>
+        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
+        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
+        public static bool operator !=(MemberReference memberReference, MemberInfo memberInfo)
+            => !Equals(memberReference, memberInfo);
 
         /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="memberInfo"/> are not equal.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
@@ -54,22 +54,11 @@ namespace CodeMap.ReferenceData
         /// by comparing references.
         /// </remarks>
         public sealed override bool Equals(object obj)
-            => obj != null
-            && obj is MemberInfo memberInfo
-                ? Equals(memberInfo)
-                : base.Equals(obj);
+            => obj != null && obj is MemberInfo memberInfo ? Equals(memberInfo) : base.Equals(obj);
 
         /// <summary>Determines whether the current <see cref="MemberReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="MemberReference"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
-        public virtual bool Equals(MemberInfo memberInfo)
-        {
-            if (memberInfo == null)
-                return false;
-
-            var visitor = new MemberInfoEqualityComparerVisitor(memberInfo);
-            Accept(visitor);
-            return visitor.AreEqual;
-        }
+        public abstract bool Equals(MemberInfo memberInfo);
     }
 }

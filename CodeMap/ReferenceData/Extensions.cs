@@ -1,18 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace CodeMap.ReferenceData
 {
     internal static class Extensions
     {
-        public static ReadOnlySpan<char> GetTypeName(this Type type)
+        public static string GetTypeName(this Type type)
         {
             var backTickIndex = type.Name.LastIndexOf('`');
             if (backTickIndex >= 0)
-                return type.Name.AsSpan(0, backTickIndex);
+                return type.Name.Substring(0, backTickIndex);
             else
                 return type.Name;
+        }
+
+        public static string GetMethodName(this MethodBase methodBase)
+        {
+            var backTickIndex = methodBase.Name.LastIndexOf("``", StringComparison.OrdinalIgnoreCase);
+            if (backTickIndex >= 0)
+                return methodBase.Name.Substring(0, backTickIndex);
+            else
+                return methodBase.Name;
         }
 
         public static Type GetDeclaringType(this Type type)

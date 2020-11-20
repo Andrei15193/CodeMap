@@ -17,5 +17,17 @@ namespace CodeMap.ReferenceData
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
         public override void Accept(MemberReferenceVisitor visitor)
             => visitor.VisitGenericTypeParameter(this);
+
+        /// <summary>Determines whether the current <see cref="GenericMethodParameterReference"/> is equal to the provided <paramref name="type"/>.</summary>
+        /// <param name="type">The <see cref="Type"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="GenericMethodParameterReference"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
+        public override bool Equals(Type type)
+            => Equals(type, null, null);
+
+        internal override bool Equals(Type type, GenericMethodParameterReference originator, Type originatorMatch)
+            => type != null
+               && type.IsGenericTypeParameter
+               && Position == type.GenericParameterPosition
+               && DeclaringType.Equals(type.DeclaringType, originator, originatorMatch);
     }
 }

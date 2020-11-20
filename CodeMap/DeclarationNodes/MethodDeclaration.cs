@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
@@ -48,7 +49,7 @@ namespace CodeMap.DeclarationNodes
         /// <returns>Returns <c>true</c> if the current <see cref="MethodDeclaration"/> references the provided <paramref name="methodInfo"/>; <c>false</c> otherwise.</returns>
         public bool Equals(MethodInfo methodInfo)
             => methodInfo != null
-            && string.Equals(Name, methodInfo.Name, StringComparison.OrdinalIgnoreCase)
+            && string.Equals(Name, methodInfo.GetMethodName(), StringComparison.OrdinalIgnoreCase)
             && Parameters.Count == methodInfo.GetParameters().Length
             && Parameters
                 .Zip(
@@ -60,7 +61,7 @@ namespace CodeMap.DeclarationNodes
                             : methodInfoParameter.ParameterType
                     )
                 )
-                .All(pair => pair.ExpectedParameterType == pair.ActualParameterType)
+                .All(pair => pair.ExpectedParameterType.Equals(pair.ActualParameterType))
             && DeclaringType == methodInfo.DeclaringType;
 
         /// <summary>Determines whether the current <see cref="MethodDeclaration"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
