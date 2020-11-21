@@ -6,7 +6,7 @@ using System.Reflection;
 namespace CodeMap.ReferenceData
 {
     /// <summary>Represents an Assembly member reference.</summary>
-    public abstract class MemberReference : IEquatable<MemberInfo>
+    public abstract class MemberReference : IEquatable<MemberInfo>, IEquatable<Assembly>, IEquatable<AssemblyName>
     {
         /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="memberInfo"/> are equal.</summary>
         /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
@@ -49,16 +49,33 @@ namespace CodeMap.ReferenceData
         /// <param name="obj">The <see cref="object"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="MemberReference"/> references the provided <paramref name="obj"/>; <c>false</c> otherwise.</returns>
         /// <remarks>
-        /// If the provided <paramref name="obj"/> is a <see cref="MemberInfo"/> instance then the comparison is done by comparing members and
-        /// determining whether the current instance actually maps to the provided <see cref="MemberInfo"/>. Otherwise the equality is determined
-        /// by comparing references.
+        /// If the provided <paramref name="obj"/> is a <see cref="MemberInfo"/>, <see cref="Assembly"/> or <see cref="AssemblyName"/> then the
+        /// comparison is done by checking whether the current instance actually maps to the provided actual instance. Otherwise the equality is
+        /// determined by comparing references.
         /// </remarks>
         public sealed override bool Equals(object obj)
-            => obj != null && obj is MemberInfo memberInfo ? Equals(memberInfo) : base.Equals(obj);
+            => obj switch
+            {
+                MemberInfo memberInfo => Equals(memberInfo),
+                Assembly assembly => Equals(assembly),
+                AssemblyName assemblyName => Equals(assemblyName),
+                _ => base.Equals(obj)
+            };
 
         /// <summary>Determines whether the current <see cref="MemberReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="MemberReference"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
         public abstract bool Equals(MemberInfo memberInfo);
+
+        /// <summary>Determines whether the current <see cref="MemberReference"/> is equal to the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="Assembly"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="MemberReference"/> references the provided <paramref name="assembly"/>; <c>false</c> otherwise.</returns>
+        public bool Equals(Assembly assembly)
+            => assembly != null && Equals(assembly.GetName());
+
+        /// <summary>Determines whether the current <see cref="MemberReference"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="MemberReference"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
+        public abstract bool Equals(AssemblyName assemblyName);
     }
 }

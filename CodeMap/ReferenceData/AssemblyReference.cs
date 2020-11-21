@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
+﻿#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 using System;
 using System.Reflection;
@@ -6,7 +6,7 @@ using System.Reflection;
 namespace CodeMap.ReferenceData
 {
     /// <summary>Represents a documented .NET assembly reference.</summary>
-    public sealed class AssemblyReference : IEquatable<Assembly>, IEquatable<AssemblyName>
+    public sealed class AssemblyReference : MemberReference
     {
         /// <summary>Determines whether the provided <paramref name="assemblyReference"/> and <paramref name="assembly"/> are equal.</summary>
         /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
@@ -83,41 +83,24 @@ namespace CodeMap.ReferenceData
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>
-        public void Accept(MemberReferenceVisitor visitor)
+        public override void Accept(MemberReferenceVisitor visitor)
             => visitor.VisitAssembly(this);
 
-        /// <summary>Determines whether the current <see cref="AssemblyReference"/> is equal to the provided <paramref name="assembly"/>.</summary>
-        /// <param name="assembly">The <see cref="Assembly"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="AssemblyReference"/> references the provided <paramref name="assembly"/>; <c>false</c> otherwise.</returns>
-        public bool Equals(Assembly assembly)
-            => assembly != null && Equals(assembly.GetName());
+        /// <summary>Determines whether the current <see cref="MemberReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
+        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="MemberReference"/> references the provided <paramref name="memberInfo"/>; <c>false</c> otherwise.</returns>
+        /// <remarks>This method always returns <c>false</c> because a <see cref="MemberInfo"/> cannot represent an assembly.</remarks>
+        public override bool Equals(MemberInfo memberInfo)
+            => false;
 
         /// <summary>Determines whether the current <see cref="AssemblyReference"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
         /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="AssemblyReference"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
-        public bool Equals(AssemblyName assemblyName)
+        public override bool Equals(AssemblyName assemblyName)
             => assemblyName != null
                 && string.Equals(Name, assemblyName.Name, StringComparison.OrdinalIgnoreCase)
                 && Version == assemblyName.Version
                 && string.Equals(Culture, assemblyName.CultureName, StringComparison.OrdinalIgnoreCase)
                 && string.Equals(PublicKeyToken, assemblyName.GetPublicKeyToken().ToBase16String(), StringComparison.OrdinalIgnoreCase);
-
-        /// <summary>Determines whether the current <see cref="AssemblyReference"/> is equal to the provided <paramref name="obj"/>.</summary>
-        /// <param name="obj">The <see cref="object"/> to compare to.</param>
-        /// <returns>Returns <c>true</c> if the current <see cref="AssemblyReference"/> references the provided <paramref name="obj"/>; <c>false</c> otherwise.</returns>
-        /// <remarks>
-        /// If the provided <paramref name="obj"/> is an <see cref="Assembly"/> or <see cref="AssemblyName"/> instance then the comparison is done by
-        /// comparing members and determining whether the current instance actually maps to the provided <see cref="Assembly"/> or
-        /// <see cref="AssemblyName"/>. Otherwise the equality is determined by comparing references.
-        /// </remarks>
-        public override bool Equals(object obj)
-        {
-            if (obj is Assembly assembly)
-                return Equals(assembly);
-            else if (obj is AssemblyName assemblyName)
-                return Equals(assemblyName);
-            else
-                return base.Equals(obj);
-        }
     }
 }

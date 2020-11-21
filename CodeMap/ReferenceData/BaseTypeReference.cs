@@ -21,6 +21,13 @@ namespace CodeMap.ReferenceData
         /// <returns>Returns <c>true</c> if the current <see cref="BaseTypeReference"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public abstract bool Equals(Type type);
 
+        /// <summary>Determines whether the current <see cref="BaseTypeReference"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="BaseTypeReference"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
+        /// <remarks>This method always returns <c>false</c> because an <see cref="AssemblyName"/> cannot represent an assembly member.</remarks>
+        public sealed override bool Equals(AssemblyName assemblyName)
+            => false;
+
         internal abstract bool Equals(Type type, GenericMethodParameterReference originator, Type originatorMatch);
     }
 }

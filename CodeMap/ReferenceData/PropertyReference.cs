@@ -44,5 +44,12 @@ namespace CodeMap.ReferenceData
                && ParameterTypes
                    .Zip(propertyInfo.GetIndexParameters(), (parameterType, parameter) => (Expected: parameterType, Actual: parameter.ParameterType))
                    .All(pair => pair.Expected.Equals(pair.Actual));
+
+        /// <summary>Determines whether the current <see cref="PropertyReference"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="PropertyReference"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
+        /// <remarks>This method always returns <c>false</c> because an <see cref="AssemblyName"/> cannot represent a property reference.</remarks>
+        public sealed override bool Equals(AssemblyName assemblyName)
+            => false;
     }
 }

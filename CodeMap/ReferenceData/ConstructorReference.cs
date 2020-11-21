@@ -40,5 +40,12 @@ namespace CodeMap.ReferenceData
                && ParameterTypes
                     .Zip(constructorInfo.GetParameters(), (parameterType, parameter) => (Expected: parameterType, Actual: parameter.ParameterType))
                     .All(pair => pair.Expected.Equals(pair.Actual));
+
+        /// <summary>Determines whether the current <see cref="ConstructorReference"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="BaseTypeReference"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
+        /// <remarks>This method always returns <c>false</c> because an <see cref="ConstructorReference"/> cannot represent a constructor reference.</remarks>
+        public sealed override bool Equals(AssemblyName assemblyName)
+            => false;
     }
 }

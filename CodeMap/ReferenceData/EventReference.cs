@@ -35,5 +35,12 @@ namespace CodeMap.ReferenceData
             => eventInfo != null
                && Name.Equals(eventInfo.Name, StringComparison.OrdinalIgnoreCase)
                && DeclaringType.Equals(eventInfo.DeclaringType);
+
+        /// <summary>Determines whether the current <see cref="EventReference"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="EventReference"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
+        /// <remarks>This method always returns <c>false</c> because an <see cref="AssemblyName"/> cannot represent an event reference.</remarks>
+        public sealed override bool Equals(AssemblyName assemblyName)
+            => false;
     }
 }

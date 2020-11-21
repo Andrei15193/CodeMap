@@ -35,5 +35,12 @@ namespace CodeMap.ReferenceData
             => fieldInfo != null
                && Name.Equals(fieldInfo.Name, StringComparison.OrdinalIgnoreCase)
                && DeclaringType.Equals(fieldInfo.DeclaringType);
+
+        /// <summary>Determines whether the current <see cref="FieldReference"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="FieldReference"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
+        /// <remarks>This method always returns <c>false</c> because an <see cref="AssemblyName"/> cannot represent a field reference.</remarks>
+        public sealed override bool Equals(AssemblyName assemblyName)
+            => false;
     }
 }

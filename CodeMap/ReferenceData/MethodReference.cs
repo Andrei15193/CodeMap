@@ -42,6 +42,13 @@ namespace CodeMap.ReferenceData
         public bool Equals(MethodInfo methodInfo)
             => Equals(methodInfo, null, null);
 
+        /// <summary>Determines whether the current <see cref="MethodReference"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
+        /// <returns>Returns <c>true</c> if the current <see cref="MethodReference"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
+        /// <remarks>This method always returns <c>false</c> because an <see cref="AssemblyName"/> cannot represent a method reference.</remarks>
+        public sealed override bool Equals(AssemblyName assemblyName)
+            => false;
+
         internal bool Equals(MethodBase methodBase, GenericMethodParameterReference originator, Type originatorMatch)
             => methodBase != null
                && DeclaringType.Equals(methodBase.DeclaringType)
