@@ -21,6 +21,9 @@ namespace CodeMap.Tests.ReferenceData
             protected override void VisitAssembly(AssemblyReference assembly)
                 => _InvokeCallback(assembly);
 
+            protected override void VisitNamespace(NamespaceReference @namespace)
+                => _InvokeCallback(@namespace);
+
             protected override void VisitType(TypeReference type)
                 => _InvokeCallback(type);
 

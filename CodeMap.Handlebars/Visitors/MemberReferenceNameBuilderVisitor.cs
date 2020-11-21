@@ -23,6 +23,9 @@ namespace CodeMap.Handlebars.Visitors
         protected override void VisitAssembly(AssemblyReference assembly)
             => _nameBuilder.Append(assembly.Name);
 
+        protected override void VisitNamespace(NamespaceReference @namespace)
+            => _nameBuilder.Append(@namespace.Name);
+
         protected override void VisitType(TypeReference type)
         {
             _nameBuilder.Append(type.Name);

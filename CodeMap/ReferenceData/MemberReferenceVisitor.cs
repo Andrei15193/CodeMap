@@ -3,6 +3,14 @@
     /// <summary>Represents a visitor for <see cref="MemberReference"/> instances.</summary>
     public abstract class MemberReferenceVisitor
     {
+        /// <summary>Visits the given <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyReference"/> to visit.</param>
+        protected internal abstract void VisitAssembly(AssemblyReference assembly);
+
+        /// <summary>Visits the given <paramref name="namespace"/>.</summary>
+        /// <param name="namespace">The <see cref="NamespaceReference"/> to visit.</param>
+        protected internal abstract void VisitNamespace(NamespaceReference @namespace);
+
         /// <summary>Visits the given <paramref name="type"/>.</summary>
         /// <param name="type">The <see cref="TypeReference"/> to visit.</param>
         protected internal abstract void VisitType(TypeReference type);
@@ -50,9 +58,5 @@
         /// <summary>Visits the given <paramref name="method"/>.</summary>
         /// <param name="method">The <see cref="MethodReference"/> to visit.</param>
         protected internal abstract void VisitMethod(MethodReference method);
-
-        /// <summary>Visits the given <paramref name="assembly"/>.</summary>
-        /// <param name="assembly">The <see cref="AssemblyReference"/> to visit.</param>
-        protected internal abstract void VisitAssembly(AssemblyReference assembly);
     }
 }

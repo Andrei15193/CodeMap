@@ -18,6 +18,9 @@ namespace CodeMap.Handlebars.Visitors
         protected override void VisitAssembly(AssemblyReference assembly)
             => _fullNameBuilder.Append("index");
 
+        protected override void VisitNamespace(NamespaceReference @namespace)
+            => _fullNameBuilder.Append(string.IsNullOrWhiteSpace(@namespace.Name) ? "global-namespace" : @namespace.Name);
+
         protected override void VisitType(TypeReference type)
         {
             if (type.DeclaringType != null)
@@ -25,10 +28,8 @@ namespace CodeMap.Handlebars.Visitors
                 type.DeclaringType.Accept(this);
                 _fullNameBuilder.Append('.');
             }
-            else if (string.IsNullOrWhiteSpace(type.Namespace))
-                _fullNameBuilder.Append("global-namespace").Append('.');
             else
-                _fullNameBuilder.Append(type.Namespace).Append('.');
+                type.Namespace.Accept(this);
 
             _fullNameBuilder.Append(type.Name);
             if (type.GenericArguments.Any())

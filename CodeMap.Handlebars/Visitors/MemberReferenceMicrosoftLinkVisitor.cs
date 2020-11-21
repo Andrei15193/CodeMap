@@ -27,10 +27,11 @@ namespace CodeMap.Handlebars.Visitors
             }
         }
 
-        protected override void VisitArray(ArrayTypeReference array)
-            => array.ItemType.Accept(this);
-
         protected override void VisitAssembly(AssemblyReference assembly)
+        {
+        }
+
+        protected override void VisitNamespace(NamespaceReference @namespace)
         {
         }
 
@@ -51,6 +52,9 @@ namespace CodeMap.Handlebars.Visitors
                 _linkBuilder.Append(type.GenericArguments.Count);
             }
         }
+
+        protected override void VisitArray(ArrayTypeReference array)
+            => array.ItemType.Accept(this);
 
         protected override void VisitByRef(ByRefTypeReference byRef)
             => byRef.ReferentType.Accept(this);

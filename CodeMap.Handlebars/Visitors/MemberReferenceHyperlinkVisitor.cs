@@ -18,14 +18,8 @@ namespace CodeMap.Handlebars.Visitors
         protected override void VisitAssembly(AssemblyReference assembly)
             => throw new NotImplementedException("Assembly references are not handled.");
 
-        protected override void VisitArray(ArrayTypeReference array)
-        {
-            array.ItemType.Accept(this);
-            _writer.Write('[');
-            for (var rankCount = 1; rankCount < array.Rank; rankCount++)
-                _writer.Write(',');
-            _writer.Write(']');
-        }
+        protected override void VisitNamespace(NamespaceReference @namespace)
+            => throw new NotImplementedException("Namespace references are not handled.");
 
         protected override void VisitType(TypeReference type)
         {
@@ -42,6 +36,15 @@ namespace CodeMap.Handlebars.Visitors
 
         protected override void VisitByRef(ByRefTypeReference byRef)
             => byRef.ReferentType.Accept(this);
+
+        protected override void VisitArray(ArrayTypeReference array)
+        {
+            array.ItemType.Accept(this);
+            _writer.Write('[');
+            for (var rankCount = 1; rankCount < array.Rank; rankCount++)
+                _writer.Write(',');
+            _writer.Write(']');
+        }
 
         protected override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
             => _writer.Write(genericTypeParameter.Name);

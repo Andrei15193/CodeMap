@@ -11,13 +11,17 @@ namespace CodeMap.ReferenceData
         private DynamicTypeReference _dynamicTypeReference;
         private readonly IDictionary<AssemblyName, AssemblyReference> _cachedAssemblyReferences;
         private readonly IDictionary<MemberInfo, MemberReference> _cachedMemberReferences;
+        private readonly IDictionary<NamespaceCacheKey, NamespaceReference> _cachedNamespaceReferences;
 
         /// <summary>Initializes a new instance of the <see cref="MemberReferenceFactory"/> class.</summary>
         public MemberReferenceFactory()
         {
+            var assemblyNameEqualityComparer = new AssemblyNameEqualityComparer();
+
             _dynamicTypeReference = null;
-            _cachedAssemblyReferences = new Dictionary<AssemblyName, AssemblyReference>(new AssemblyNameEqualityComparer());
+            _cachedAssemblyReferences = new Dictionary<AssemblyName, AssemblyReference>(assemblyNameEqualityComparer);
             _cachedMemberReferences = new Dictionary<MemberInfo, MemberReference>();
+            _cachedNamespaceReferences = new Dictionary<NamespaceCacheKey, NamespaceReference>(new NamespaceCacheKeyEqualityComparer(assemblyNameEqualityComparer));
         }
 
         /// <summary>Creates an <see cref="MemberReference"/> for the provided <paramref name="memberInfo"/>.</summary>
@@ -95,6 +99,43 @@ namespace CodeMap.ReferenceData
             return assemblyReference;
         }
 
+        /// <summary>Creates a <see cref="NamespaceReference"/> for the provided namespace <paramref name="name"/> and <paramref name="assembly"/>.</summary>
+        /// <param name="name">The name of the namespace.</param>
+        /// <param name="assembly">The <see cref="Assembly"/> in which the namespace is declared.</param>
+        /// <returns>Returns an <see cref="Assembly"/> for the provided namespace <paramref name="name"/> and <paramref name="assembly"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
+        public NamespaceReference CreateNamespace(string name, Assembly assembly)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly));
+
+            return CreateNamespace(name, assembly.GetName());
+        }
+
+        /// <summary>Creates a <see cref="NamespaceReference"/> for the provided namespace <paramref name="name"/> and <paramref name="assemblyName"/>.</summary>
+        /// <param name="name">The name of the namespace.</param>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> in which the namespace is declared.</param>
+        /// <returns>Returns an <see cref="AssemblyName"/> for the provided namespace <paramref name="name"/> and <paramref name="assemblyName"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assemblyName"/> is <c>null</c>.</exception>
+        public NamespaceReference CreateNamespace(string name, AssemblyName assemblyName)
+        {
+            if (assemblyName == null)
+                throw new ArgumentNullException(nameof(assemblyName));
+
+            var namespaceName = string.IsNullOrWhiteSpace(name) ? string.Empty : name;
+            var cacheKey = new NamespaceCacheKey(namespaceName, assemblyName);
+            if (!_cachedNamespaceReferences.TryGetValue(cacheKey, out var namespaceReference))
+            {
+                namespaceReference = new NamespaceReference
+                {
+                    Name = namespaceName,
+                    Assembly = Create(assemblyName)
+                };
+                _cachedNamespaceReferences.Add(cacheKey, namespaceReference);
+            }
+            return namespaceReference;
+        }
+
         private (MemberReference MemberReference, Action CircularReferenceSetter) _GetMemberReference(MemberInfo memberInfo)
         {
             switch (memberInfo)
@@ -166,8 +207,7 @@ namespace CodeMap.ReferenceData
         private void _InitializeTypeReference(Type type, TypeReference typeReference)
         {
             typeReference.Name = type.GetTypeName();
-            typeReference.Namespace = type.Namespace;
-            typeReference.Assembly = Create(type.Assembly);
+            typeReference.Namespace = CreateNamespace(type.Namespace, type.Assembly);
         }
 
         private (ArrayTypeReference MemberReference, Action CircularReferenceSetter) _GetArrayTypeReference(Type type)
@@ -333,6 +373,15 @@ namespace CodeMap.ReferenceData
                 Culture = assemblyName.CultureName,
                 PublicKeyToken = assemblyName.GetPublicKeyToken().ToBase16String()
             };
+        private struct NamespaceCacheKey
+        {
+            public NamespaceCacheKey(string name, AssemblyName assemblyName)
+                => (Name, AssemblyName) = (name, assemblyName);
+
+            public string Name { get; }
+
+            public AssemblyName AssemblyName { get; }
+        }
 
         private sealed class AssemblyNameEqualityComparer : IEqualityComparer<AssemblyName>
         {
@@ -359,6 +408,20 @@ namespace CodeMap.ReferenceData
                         PublicKeyToken = asseblyName.GetPublicKeyToken().ToBase16String()
                     }.GetHashCode()
                     : throw new ArgumentNullException(nameof(asseblyName));
+        }
+
+        private sealed class NamespaceCacheKeyEqualityComparer : IEqualityComparer<NamespaceCacheKey>
+        {
+            private readonly IEqualityComparer<AssemblyName> _assemblyNameEqualityComparer;
+
+            public NamespaceCacheKeyEqualityComparer(IEqualityComparer<AssemblyName> assemblyNameEqualityComparer)
+                => _assemblyNameEqualityComparer = assemblyNameEqualityComparer;
+
+            public bool Equals(NamespaceCacheKey x, NamespaceCacheKey y)
+                => string.Equals(x.Name, y.Name, StringComparison.OrdinalIgnoreCase) && _assemblyNameEqualityComparer.Equals(x.AssemblyName, y.AssemblyName);
+
+            public int GetHashCode(NamespaceCacheKey obj)
+                => HashCode.Combine(obj.Name.GetHashCode(StringComparison.OrdinalIgnoreCase), obj.AssemblyName);
         }
     }
 }

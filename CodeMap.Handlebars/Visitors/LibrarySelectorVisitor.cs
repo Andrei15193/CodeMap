@@ -9,6 +9,9 @@ namespace CodeMap.Handlebars.Visitors
         protected override void VisitAssembly(AssemblyReference assembly)
             => Library = assembly;
 
+        protected override void VisitNamespace(NamespaceReference @namespace)
+            => Library = @namespace.Assembly;
+
         protected override void VisitType(TypeReference type)
             => Library = type.Assembly;
 

@@ -29,7 +29,7 @@ namespace CodeMap.Tests.ReferenceData
             var visitor = new MemberReferenceVisitorMock<TypeReference>(typeReference);
 
             Assert.Equal("Int32", typeReference.Name);
-            Assert.Equal("System", typeReference.Namespace);
+            Assert.Equal("System", typeReference.Namespace.Name);
             Assert.Empty(typeReference.GenericArguments);
             Assert.Null(typeReference.DeclaringType);
             Assert.True(typeReference.Assembly == typeof(int).Assembly.GetName());

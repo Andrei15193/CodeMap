@@ -15,7 +15,7 @@ namespace CodeMap.ReferenceData
         public string Name { get; internal set; }
 
         /// <summary>The type namespace.</summary>
-        public string Namespace { get; internal set; }
+        public NamespaceReference Namespace { get; internal set; }
 
         /// <summary>The type generic arguments. These can be generic parameter declarations or actual types in case of a constructed generic type.</summary>
         public IReadOnlyList<BaseTypeReference> GenericArguments { get; internal set; }
@@ -24,7 +24,8 @@ namespace CodeMap.ReferenceData
         public TypeReference DeclaringType { get; internal set; }
 
         /// <summary>The declaring assembly.</summary>
-        public AssemblyReference Assembly { get; internal set; }
+        public AssemblyReference Assembly
+            => Namespace.Assembly;
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
@@ -45,7 +46,7 @@ namespace CodeMap.ReferenceData
                && !type.IsByRef
                && !type.IsGenericParameter
                && Name.Equals(type.GetTypeName(), StringComparison.OrdinalIgnoreCase)
-               && Namespace.Equals(type.Namespace, StringComparison.OrdinalIgnoreCase)
+               && Namespace.Name.Equals(type.Namespace, StringComparison.OrdinalIgnoreCase)
                && (DeclaringType is null ? type.DeclaringType is null : DeclaringType.Equals(type.GetDeclaringType(), originator, originatorMatch))
                && GenericArguments.Count == type.GetCurrentGenericArguments().Count()
                && (
