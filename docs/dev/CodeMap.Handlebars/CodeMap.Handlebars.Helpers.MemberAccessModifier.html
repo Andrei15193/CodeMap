@@ -1,16 +1,47 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>CodeMap.Handlebars - MemberAccessModifier Class</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
-    <link rel="stylesheet" href="Style.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="Style.css">
 </head>
 <body class="d-flex flex-column">
-    <div id="navigation"></div>
+    
+<nav id="navigation" class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="../../index.html">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap</a>
+                    <div class="dropdown-menu">
+                        
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap.Handlebars</a>
+                    <div class="dropdown-menu">
+                        
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/Andrei15193/CodeMap">View on GitHub</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.nuget.org/packages/CodeMap">View on NuGet</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
     <div class="flex-grow-1 flex-shrink-1">
 
@@ -28,7 +59,8 @@
         <li class="breadcrumb-item active" aria-current="page">MemberAccessModifier</li>
     </ol>
 </nav>
-            <div id="deprecationNotice"></div>
+            <div id="deprecationNotice">
+</div>
 <h2>MemberAccessModifier Class</h2>
 
 <p>A helper used to get the access modifier textual description for a <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.DeclarationNode?view=netstandard-2.1">DeclarationNode</a>. Most useful for properties where the access modifier can be changed for one of the accessors.
@@ -36,7 +68,7 @@
 
 <p>
     Base type: <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Object?view=netstandard-2.1">object</a>.
-<br />Implemented interfaces:
+<br>Implemented interfaces:
     <a href="CodeMap.Handlebars.HelpersIHandlebarsHelper.html">IHandlebarsHelper</a>.
 </p>
 
@@ -111,10 +143,10 @@
 
 <h3>Example</h3>
 <p>The following template will generate a paragraph containing the access modifier of the given parameter.
-</p><div class="highlight" ><pre style="; " ><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">{{MemberAccessModifier declaration}}</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
+</p><div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">{{MemberAccessModifier declaration}}</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
 </pre></div>
 <p>If the current context exposes a <code>declaration</code> property that is a public property with a private setter <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.PropertyDeclaration?view=netstandard-2.1">PropertyDeclaration</a>, the output will be as follows:
-</p><div class="highlight" ><pre style="; " ><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">public get; private set</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
+</p><div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">public get; private set</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
 </pre></div>
 
 
@@ -122,7 +154,7 @@
     </div>
 
     <div>
-        <hr />
+        <hr>
 
         <div class="d-flex flex-column container px-2">
             <p class="text-center">
