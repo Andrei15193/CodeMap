@@ -15,7 +15,7 @@ namespace CodeMap.Tests.DocumentationElements
         }
 
         [Fact]
-        public void CreatinTableColumnElementWithContentContainingNullThrowsException()
+        public void CreatingTableColumnElementWithContentContainingNullThrowsException()
         {
             var exception = Assert.Throws<ArgumentException>("name", () => DocumentationElement.TableColumn(new InlineDocumentationElement[] { null }));
 
