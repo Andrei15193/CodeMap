@@ -2,7 +2,7 @@
   "profiles": {
     "CodeMap.Documentation": {
       "commandName": "Project",
-      "commandLineArgs": "-OutputPath test"
+      "commandLineArgs": "-OutputPath ./docs"
     }
   }
 }

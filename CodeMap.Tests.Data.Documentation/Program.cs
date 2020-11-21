@@ -12,9 +12,9 @@ namespace CodeMap.Tests.Data.Documentation
         internal static void Main(params string[] args)
         {
             var arguments = Arguments.GetFrom(args);
-            if (arguments.OutputPath == null)
+            if (string.IsNullOrWhiteSpace(arguments.OutputPath))
                 throw new ArgumentException("Expected -OutputPath", nameof(args));
-            if (arguments.TargetSubdirectory == null)
+            if (string.IsNullOrWhiteSpace(arguments.TargetSubdirectory))
                 throw new ArgumentException("Expected -TargetSubdirectory", nameof(args));
 
             var library = typeof(GlobalTestClass).Assembly;

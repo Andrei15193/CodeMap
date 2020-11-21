@@ -2,7 +2,7 @@
   "profiles": {
     "CodeMap.Tests.Data.Documentation": {
       "commandName": "Project",
-      "commandLineArgs": "-OutputPath test -TargetSubdirectory testData"
+      "commandLineArgs": "-OutputPath ./docs -TargetSubdirectory dev/test-data"
     }
   }
 }

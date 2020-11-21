@@ -3,7 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - master
+      - dev
       - releases/*
 
 jobs:
@@ -17,13 +17,10 @@ jobs:
     - name: Copy Project Site for Updates
       shell: pwsh
       run: |
+        git config user.name "$(git log -1 --pretty=format:'%an')"
+        git config user.email "$(git log -1 --pretty=format:'%ae')"
         git fetch origin gh-pages
-        git checkout gh-pages
-        New-Item -ItemType directory -Name project-site | Out-Null
-        Get-ChildItem -Exclude @(".*", "project-site") |
-          Where-Object { ($_ -is [System.IO.DirectoryInfo] -and -not $_.Name.StartsWith("CodeMap")) -or $_ -is [System.IO.FileInfo] } |
-          Move-Item -Destination project-site
-        git checkout ($env:GITHUB_REF.Substring("refs/heads/".Length))
+        git rebase origin/gh-pages
 
     - name: Generate Package Info
       id: package_info
@@ -134,10 +131,23 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore -property:SignAssembly=True -property:AssemblyOriginatorKeyFile=../CodeMap.snk -property:DisableStrongNamer=False
+      shell: pwsh
+      run: |
+        dotnet build `
+          --configuration Release `
+          --no-restore `
+          -property:Version=${{ steps.package_info.outputs.assembly_version }} `
+          -property:SignAssembly=True `
+          -property:AssemblyOriginatorKeyFile=../CodeMap.snk `
+          -property:DisableStrongNamer=False
 
     - name: Test
-      run: dotnet test --configuration Release --no-restore --verbosity normal
+      shell: pwsh
+      run: |
+        dotnet test `
+          --configuration Release `
+          --no-build `
+          --verbosity normal
 
     - name: Pack
       if: startsWith(github.ref, 'refs/heads/releases/')
@@ -146,12 +156,9 @@ jobs:
         dotnet pack `
           --configuration Release `
           --output publish `
-          -property:Version=${{ steps.package_info.outputs.assembly_version }} `
+          --no-build `
           -property:PackageVersion=${{ steps.package_info.outputs.package_version }} `
-          -property:RepositoryCommit=$env:GITHUB_SHA `
-          -property:SignAssembly=True `
-          -property:AssemblyOriginatorKeyFile=../CodeMap.snk `
-          -property:DisableStrongNamer=False
+          -property:RepositoryCommit=$env:GITHUB_SHA
 
     - name: Create Release
       uses: actions/create-release@v1
@@ -210,14 +217,20 @@ jobs:
           dotnet run --configuration Release --no-build -OutputPath '../project-site' -TargetSubdirectory 'dev'
         }
 
-    - name: Build Test Data Site
+    - name: Generate Project Site
       shell: pwsh
-      working-directory: ./CodeMap.Tests.Data.Documentation
       run: |
-        dotnet run --configuration Release --no-build -OutputPath '../project-site/CodeMap' -TargetSubdirectory 'test-data'
+        $projectDirectoryPath = "";
+        if (-not ($env:GITHUB_REF -imatch "^refs/heads/releases/\d+\.\d+(-(alpha|beta|rc))?$"))
+        {
+          $projectDirectoryPath = $env:GITHUB_REF.Substring("refs/heads/".Length)
+          dotnet ./CodeMap.Tests.Data.Documentation/bin/Release/netcoreapp3.1/CodeMap.Tests.Data.Documentation.dll -OutputPath "./docs" -TargetSubdirectory "$($projectDirectoryPath)/test-data"
+        }
+        dotnet ./CodeMap.Documentation/bin/Release/netcoreapp3.1/CodeMap.Documentation.dll -OutputPath "./docs" -TargetSubdirectory $projectDirectoryPath
 
     - name: Publish Project Site
-      uses: peaceiris/actions-gh-pages@v3.6.1
+      uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./project-site
+        publish_dir: ./docs
+        destination_dir: docs

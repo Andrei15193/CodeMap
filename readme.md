@@ -1,4 +1,4 @@
-![.NET Core](https://github.com/Andrei15193/CodeMap/workflows/.NET%20Core/badge.svg?branch=master&event=push)
+![Build and Deploy](https://github.com/Andrei15193/CodeMap/workflows/Build%20and%20Deploy/badge.svg)
 
 Visual Studio enables developers to write comprehensive documentation inside
 their code using XML in three slashed comments,

@@ -7,12 +7,16 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CodeMap.DeclarationNodes;
 using CodeMap.Handlebars;
+using EmbeddedResourceBrowser;
 using HtmlAgilityPack;
 
 namespace CodeMap.Documentation
 {
     internal static class Program
     {
+        private const string CodeMapDirectoryName = "CodeMap";
+        private const string CodeMapHandlebarsDirectoryName = "CodeMap.Handlebars";
+
         internal static void Main(params string[] args)
         {
             var arguments = Arguments.GetFrom(args);
@@ -20,8 +24,8 @@ namespace CodeMap.Documentation
                 throw new ArgumentException("Expected -OutputPath", nameof(args));
 
             WriteHomePage(arguments);
-            WriteDocumentation(arguments, typeof(DeclarationNode).Assembly, new DocumentationAdditions.Version1_0.CodeMapAssemblyDocumentationAddition());
-            WriteDocumentation(arguments, typeof(HandlebarsTemplateWriter).Assembly, new DocumentationAdditions.Version1_0.CodeMapHandlerbarsAssemblyDocumentationAddition());
+            WriteDocumentation(arguments, CodeMapDirectoryName, typeof(DeclarationNode).Assembly, new DocumentationAdditions.Version1_0.CodeMapAssemblyDocumentationAddition());
+            WriteDocumentation(arguments, CodeMapHandlebarsDirectoryName, typeof(HandlebarsTemplateWriter).Assembly, new DocumentationAdditions.Version1_0.CodeMapHandlerbarsAssemblyDocumentationAddition());
 
             _UpdateFiles(arguments);
         }
@@ -37,9 +41,11 @@ namespace CodeMap.Documentation
 
             using (var indexFileStreamWriter = new StreamWriter(new FileStream(Path.Combine(outputDirectory.FullName, "index.html"), FileMode.Create, FileAccess.Write, FileShare.Read)))
                 templateWriter.Write(indexFileStreamWriter, "Home", codeMapAssemblyDeclaration);
+
+            templateWriter.Assets.CopyTo(outputDirectory);
         }
 
-        private static void WriteDocumentation(Arguments arguments, Assembly assembly, params AssemblyDocumentationAddition[] assemblyDocumentationAdditions)
+        private static void WriteDocumentation(Arguments arguments, string documentationDirectoryName, Assembly assembly, params AssemblyDocumentationAddition[] assemblyDocumentationAdditions)
         {
             var assemblyDeclaration = DeclarationNode
                 .Create(assembly)
@@ -48,8 +54,9 @@ namespace CodeMap.Documentation
             var memberFileNameResolver = new DefaultMemberReferenceResolver(assembly, "netstandard-2.1");
             var templateWriter = new HandlebarsTemplateWriter(memberFileNameResolver);
 
-            var documentationDirectory = new DirectoryInfo(arguments.OutputPath).CreateSubdirectory(assemblyDeclaration.Name);
-            var targetDirectory = documentationDirectory.CreateSubdirectory(!string.IsNullOrWhiteSpace(arguments.TargetSubdirectory) ? arguments.TargetSubdirectory : assemblyDeclaration.Version.ToSemver());
+            var targetDirectory = new DirectoryInfo(arguments.OutputPath)
+                .CreateSubdirectory(!string.IsNullOrWhiteSpace(arguments.TargetSubdirectory) ? arguments.TargetSubdirectory : assemblyDeclaration.Version.ToSemver())
+                .CreateSubdirectory(documentationDirectoryName);
 
             targetDirectory.Delete(true);
             targetDirectory.Create();
@@ -64,12 +71,11 @@ namespace CodeMap.Documentation
             var templateWriter = new HandlebarsTemplateWriter(new DefaultMemberReferenceResolver(codeMapAssembly, "netstandard-2.1"));
 
             var outputDirectory = new DirectoryInfo(arguments.OutputPath);
-            var codeMapDirectory = outputDirectory.CreateSubdirectory("CodeMap");
-            var codeMapHandlebarsDirectory = outputDirectory.CreateSubdirectory("CodeMap.Handlebars");
+            var versions = _GetVersions(outputDirectory);
 
-            var directories = codeMapDirectory
+            var directories = outputDirectory
                 .GetDirectories()
-                .Concat(codeMapHandlebarsDirectory.GetDirectories())
+                .SelectMany(versionDirectory => versionDirectory.GetDirectories())
                 .Concat(Enumerable.Repeat(outputDirectory, 1));
 
             Parallel.ForEach(directories, _WriteAssets);
@@ -84,20 +90,20 @@ namespace CodeMap.Documentation
                     var navigationHtmlNode = htmlDocument.GetElementbyId("navigation");
                     if (navigationHtmlNode != null)
                         navigationHtmlNode.ParentNode.ReplaceChild(
-                            htmlDocument.CreateTextNode(ApplyNavigation(htmlFile, codeMapDirectory, codeMapHandlebarsDirectory)),
+                            htmlDocument.CreateTextNode(ApplyNavigation(htmlFile, versions)),
                             navigationHtmlNode
                         );
 
                     var deprecationNoticeHtmlNode = htmlDocument.GetElementbyId("deprecationNotice");
                     if (deprecationNoticeHtmlNode != null)
-                        if (_IsDocumentationSelected(codeMapDirectory, htmlFile))
+                        if (_IsDocumentationSelected(CodeMapDirectoryName, htmlFile))
                             deprecationNoticeHtmlNode.ParentNode.ReplaceChild(
-                                htmlDocument.CreateTextNode(ApplyDeprecationNotice(codeMapDirectory, htmlFile, _GetVersions(codeMapDirectory).LastOrDefault())),
+                                htmlDocument.CreateTextNode(ApplyDeprecationNotice(CodeMapDirectoryName, htmlFile, versions.LastOrDefault())),
                                 deprecationNoticeHtmlNode
                             );
-                        else if (_IsDocumentationSelected(codeMapHandlebarsDirectory, htmlFile))
+                        else if (_IsDocumentationSelected(CodeMapHandlebarsDirectoryName, htmlFile))
                             deprecationNoticeHtmlNode.ParentNode.ReplaceChild(
-                                htmlDocument.CreateTextNode(ApplyDeprecationNotice(codeMapHandlebarsDirectory, htmlFile, _GetVersions(codeMapHandlebarsDirectory).LastOrDefault())),
+                                htmlDocument.CreateTextNode(ApplyDeprecationNotice(CodeMapHandlebarsDirectoryName, htmlFile, versions.LastOrDefault())),
                                 deprecationNoticeHtmlNode
                             );
 
@@ -105,7 +111,7 @@ namespace CodeMap.Documentation
                 }
             );
 
-            string ApplyNavigation(FileInfo htmlFile, DirectoryInfo codeMapDirectory, DirectoryInfo codeMapHandlebarsDirectory)
+            string ApplyNavigation(FileInfo htmlFile, IEnumerable<string> versions)
             {
                 var isHomePageSelected = string.Equals(htmlFile.Directory.FullName, outputDirectory.FullName, StringComparison.OrdinalIgnoreCase) && string.Equals("index.html", htmlFile.Name);
                 return templateWriter.Apply(
@@ -118,41 +124,41 @@ namespace CodeMap.Documentation
                             Path = isHomePageSelected ? "index.html" : "../../index.html",
                             Label = "Home"
                         },
-                        CodeMapVersions = from codeMapVersion in _GetVersions(codeMapDirectory).Reverse()
+                        CodeMapVersions = from codeMapVersion in versions.Reverse()
                                           select new
                                           {
-                                              IsSelected = _IsSelectedVersion(codeMapDirectory, htmlFile, codeMapVersion),
+                                              IsSelected = _IsSelectedVersion(CodeMapDirectoryName, htmlFile, codeMapVersion),
                                               Label = codeMapVersion,
                                               Path = isHomePageSelected
-                                                  ? $"{codeMapDirectory.Name}/{codeMapVersion}/index.html"
-                                                  : $"../../{codeMapDirectory.Name}/{codeMapVersion}/index.html"
+                                                  ? $"{codeMapVersion}/{CodeMapDirectoryName}/index.html"
+                                                  : $"../../{codeMapVersion}/{CodeMapDirectoryName}/index.html"
                                           },
-                        IsCodeMapSelected = _IsDocumentationSelected(codeMapDirectory, htmlFile),
-                        CodeMapHandlebarsVersions = from codeMapHandlebarsVersion in _GetVersions(codeMapHandlebarsDirectory).Reverse()
+                        IsCodeMapSelected = _IsDocumentationSelected(CodeMapDirectoryName, htmlFile),
+                        CodeMapHandlebarsVersions = from codeMapHandlebarsVersion in versions.Reverse()
                                                     select new
                                                     {
-                                                        IsSelected = _IsSelectedVersion(codeMapHandlebarsDirectory, htmlFile, codeMapHandlebarsVersion),
+                                                        IsSelected = _IsSelectedVersion(CodeMapHandlebarsDirectoryName, htmlFile, codeMapHandlebarsVersion),
                                                         Label = codeMapHandlebarsVersion,
                                                         Path = isHomePageSelected
-                                                            ? $"{codeMapHandlebarsDirectory.Name}/{codeMapHandlebarsVersion}/index.html"
-                                                            : $"../../{codeMapHandlebarsDirectory.Name}/{codeMapHandlebarsVersion}/index.html"
+                                                            ? $"{codeMapHandlebarsVersion}/{CodeMapHandlebarsDirectoryName}/index.html"
+                                                            : $"../../{codeMapHandlebarsVersion}/{CodeMapHandlebarsDirectoryName}/index.html"
                                                     },
-                        IsCodeMapHandlebarsSelected = _IsDocumentationSelected(codeMapHandlebarsDirectory, htmlFile)
+                        IsCodeMapHandlebarsSelected = _IsDocumentationSelected(CodeMapHandlebarsDirectoryName, htmlFile)
                     });
             }
 
-            string ApplyDeprecationNotice(DirectoryInfo documentationDirectory, FileInfo htmlFile, string latestVersion)
+            string ApplyDeprecationNotice(string documentationDirectoryName, FileInfo htmlFile, string latestVersion)
                 => templateWriter.Apply(
                     "DeprecationNotice",
                     new
                     {
-                        IsLatest = latestVersion is null || _IsSelectedVersion(documentationDirectory, htmlFile, latestVersion),
-                        PathToLatest = $"../{latestVersion}/index.html"
+                        IsLatest = latestVersion is null || _IsSelectedVersion(documentationDirectoryName, htmlFile, latestVersion),
+                        PathToLatest = $"../../{latestVersion}/{documentationDirectoryName}/index.html"
                     });
         }
 
-        private static IEnumerable<string> _GetVersions(DirectoryInfo documentationDirectory)
-            => documentationDirectory
+        private static IEnumerable<string> _GetVersions(DirectoryInfo outputDirectory)
+            => outputDirectory
                 .GetDirectories()
                 .Where(_IsVersionDirectory)
                 .OrderBy(directory => directory.Name, Comparer<string>.Create(_VersionComparison))
@@ -193,11 +199,11 @@ namespace CodeMap.Documentation
                 return baseComparation;
         }
 
-        private static bool _IsSelectedVersion(DirectoryInfo documentationFolder, FileInfo htmlFile, string version)
-            => string.Equals(version, htmlFile.Directory.Name, StringComparison.OrdinalIgnoreCase)
-            && _IsDocumentationSelected(documentationFolder, htmlFile);
+        private static bool _IsSelectedVersion(string documentationDirectoryName, FileInfo htmlFile, string version)
+            => string.Equals(version, htmlFile.Directory.Parent.Name, StringComparison.OrdinalIgnoreCase)
+            && _IsDocumentationSelected(documentationDirectoryName, htmlFile);
 
-        private static bool _IsDocumentationSelected(DirectoryInfo documentationFolder, FileInfo htmlFile)
-            => string.Equals(documentationFolder.FullName, htmlFile.Directory.Parent.FullName, StringComparison.OrdinalIgnoreCase);
+        private static bool _IsDocumentationSelected(string documentationDirectoryName, FileInfo htmlFile)
+            => string.Equals(documentationDirectoryName, htmlFile.Directory.Name, StringComparison.OrdinalIgnoreCase);
     }
 }
