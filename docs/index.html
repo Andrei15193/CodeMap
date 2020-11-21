@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body class="d-flex flex-column">
+    
+<nav id="navigation" class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand active" href="index.html">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap</a>
+                    <div class="dropdown-menu">
+                        
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap.Handlebars</a>
+                    <div class="dropdown-menu">
+                        
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/Andrei15193/CodeMap">View on GitHub</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.nuget.org/packages/CodeMap">View on NuGet</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="flex-grow-1 flex-shrink-1">
+
+        <div class="d-flex flex-column container px-2 pt-2">
+<h2>Home</h2>
+<p>
+    CodeMap is a library for generating complete documentation out of compiled source code.
+</p>
+<p>
+    The C# compiler comes with the option to output documentation declared on members to a separate XML file, this can be enabled in Visual Studio
+    per project. Generally, the documentation file has the same name as the assembly name, but instead of the <code>.dll</code> extension it is
+    <code>.xml</code> in order to associate the two. This reference is also made in the generated XML file itself, however this library uses the
+    name matching convention by default.
+</p>
+<p>
+    The aim is to generate a graph of objects that represent the assembly and the associated documentation in a way that is closest to the
+    source code itself. For instance, when you declare a method, it is implicitly <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a>
+    unless you use the <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/virtual">virtual</a> keyword (for classes and structs).
+    The library will not set the <code>IsSealed</code> flag to <code>true</code> for non-virtual methods, it will only do so when a method is
+    <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/override">overriden</a> and <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a>.
+</p>
+<p>
+    The aim in this regard is to provide a model from which the declaration inside one assembly can be recreated just by using the flags directly.
+    If the <code>IsSealed</code> flag is set to <code>true</code>, then that keyword was used. This applies to all flags.
+</p>
+<p>
+    A second area that this library covers is the associated XML documentation by representing elements in a specific model that can be easily traversed.
+    This model covers the XML documentation elements described in this article <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments">XML Documentation Comments (C# Programming Guide)</a>.
+    To check the full list of supported elements and any additions see the CodeMap documentation page, remarks section.
+</p>
+<p>
+    The third, and final area, that this library covers is member references. Both when declaring types and when writing documentation we reference
+    other members (e.g.: method parameter types reference other types, the <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see">see</a>
+    XML element is used to reference a member). The aim is to provide enough information to be able to generate a hyperlink to the referenced member
+    (even if it is part of .NET, like core types such as <code>string</code> and <code>int</code>).
+</p>
+<p>
+    Each area is represented by a separate model, member declarations for an assembly are represented by DeclarationNodes, documentation that is
+    associated to a declaration is represented by DocumentationElements and, finally, memeber references are represented by ReferenceData.
+    Each of these models have their own namespace and one references the other unidirectionally. Declaration Nodes depend on Documentation Elements and
+    Reference Data; Documentation Elements depends on Reference Data. There are no other dependencies between these models.
+</p>
+<p>
+    Each of these models come with their own visitors (see <a href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor pattern</a>
+    for more information) to ease traversing these object graphs. The CodeMap.Handlebars implementation exposes concrete visitors for generating
+    documentation based on Handlebars templates, the implementation itself is based on <a href="https://github.com/Handlebars-Net/Handlebars.Net">Handlebars.NET</a>
+    (check it out, you can use it for a whole bunch of things, and it's a Handlebars engine implemented in .NET, not a JavaScript wrapper).
+</p>
+<p>
+    For more information check the documentation pages. For a demo, the documentation for this site is generated using this library. You can
+    have almost anything related to what you would expect from a documentation page. From a simple summary at the top to complex examples containing
+    highlighed code snippets (see <a href="https://github.com/akatakritos/PygmentSharp">PygmentSharp</a>, it's used by CodeMap.Handlebars to give you
+    syntax coloring out of the box).
+</p>
+<p>
+    To see what CodeMap.Handlebars provides out of the box, you can check the test data site which is generated from the test data assembly containing
+    declarations and documentation for covering most, if not all, cases: <a href="CodeMap/test-data">CodeMap/test-data</a>.
+</p>
+<p>
+    For suggestions and issues, create GitHub issues. Looking forward to hearing from you.
+</p>
+        </div>
+    </div>
+
+    <div>
+        <hr>
+
+        <div class="d-flex flex-column container px-2">
+            <p class="text-center">
+                <a href="https://github.com/Andrei15193/CodeMap/releases/tag/2.0.0">CodeMap 2.0.0</a>
+                -
+                <a href="https://github.com/Andrei15193/CodeMap">View on GitHub</a>
+                -
+                <a href="https://www.nuget.org/packages/CodeMap/2.0.0">View on NuGet</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>

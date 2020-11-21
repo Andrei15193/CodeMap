@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>CodeMap.Handlebars - HandlebarsTemplateWriter Class</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+    <link rel="stylesheet" href="Style.css" />
+</head>
+<body class="d-flex flex-column">
+    <div id="navigation"></div>
+
+    <div class="flex-grow-1 flex-shrink-1">
+
+        <div class="d-flex flex-column container px-2 pt-2">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+
+
+<li class="breadcrumb-item" aria-current="page">
+    <a href="index.html">CodeMap.Handlebars</a>
+</li>
+<li class="breadcrumb-item" aria-current="page">
+    <a href="CodeMap.Handlebars.html">CodeMap.Handlebars</a>
+</li>
+        <li class="breadcrumb-item active" aria-current="page">HandlebarsTemplateWriter</li>
+    </ol>
+</nav>
+            <div id="deprecationNotice"></div>
+<h2>HandlebarsTemplateWriter Class</h2>
+
+<p>A <a href="https://github.com/Handlebars-Net/Handlebars.Net">Handlebars.NET</a> based template writer providing the default templates, partials and helpers.
+</p>
+
+<p>
+    Base type: <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Object?view=netstandard-2.1">object</a>.
+</p>
+
+
+
+<h3>Constructors</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Access Modifier</th>
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="CodeMap.Handlebars.HandlebarsTemplateWriter.HandlebarsTemplateWriter.html">HandlebarsTemplateWriter(IMemberReferenceResolver)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Initializes a new instance of the <a href="CodeMap.HandlebarsHandlebarsTemplateWriter.html">HandlebarsTemplateWriter</a> class.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.Handlebars.HandlebarsTemplateWriter.HandlebarsTemplateWriter-2.html">HandlebarsTemplateWriter(IMemberReferenceResolver, IEnumerable&lt;Assembly&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Initializes a new instance of the <a href="CodeMap.HandlebarsHandlebarsTemplateWriter.html">HandlebarsTemplateWriter</a> class.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.Handlebars.HandlebarsTemplateWriter.HandlebarsTemplateWriter-3.html">HandlebarsTemplateWriter(IMemberReferenceResolver, Assembly[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Initializes a new instance of the <a href="CodeMap.HandlebarsHandlebarsTemplateWriter.html">HandlebarsTemplateWriter</a> class.
+</p>
+</td>
+        </tr>
+    </tbody>
+</table>
+<h3>Properties</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Access Modifier</th>
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="CodeMap.Handlebars.HandlebarsTemplateWriter.Assets.html">Assets</a></td>
+            <td class="text-left text-nowrap"><code>public get</code></td>
+            <td><p>Gets the <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.EmbeddedDirectory?view=netstandard-2.1">EmbeddedDirectory</a> containing assets.
+</p>
+</td>
+        </tr>
+    </tbody>
+</table>
+<h3>Methods</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Access Modifier</th>
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="CodeMap.Handlebars.HandlebarsTemplateWriter.Apply.html">Apply(String, Object)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Applies the template with the given <em>templateName</em> in the given <em>context</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.Handlebars.HandlebarsTemplateWriter.GetBlockHelpers.html">GetBlockHelpers(IMemberReferenceResolver)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Gets a collection of block helpers that are available in each template.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.Handlebars.HandlebarsTemplateWriter.GetHelpers.html">GetHelpers(IMemberReferenceResolver)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Gets a collection of inline helpers that are available in each template.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.Handlebars.HandlebarsTemplateWriter.Write.html">Write(TextWriter, String, Object)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Writes the provided <em>templateName</em> with in the given <em>context</em> to the provided <em>textWriter</em>.
+</p>
+</td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+<h3>Remarks</h3>
+<p>The Handlebars resources are loaded using the <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.EmbeddedDirectory.Merge?view=netstandard-2.1">Merge</a>(<a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.IEnumerable-1?view=netstandard-2.1">IEnumerable</a>&lt;<a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Assembly?view=netstandard-2.1">Assembly</a>&gt;) method from the provided assemblies, the default assemblies from where resources are <code>CodeMap.Handlebars</code> and the entry assembly (<a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Assembly.GetEntryAssembly?view=netstandard-2.1">GetEntryAssembly</a>()). This should suffice for most cases as the intended way of using this library is to define a .NET Core Console application that generates the documenation and add new or modified handlebars templates and assets as embedded resources in the console application assembly.
+</p>
+<p>Embedded resources are loaded from 3 base directories: <code>Assets</code>, made available through the <a href="CodeMap.HandlebarsHandlebarsTemplateWriter.Assets.html">Assets</a> property, <code>Partials</code> and <code>Templates</code>. Assets are provided as an <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.EmbeddedDirectory?view=netstandard-2.1">EmbeddedDirectory</a> in order to allow copying them in various ways and different directories. On the other hand, the handlebars templates are loaded automatically from their respective directories after their structures have been flattened.
+</p>
+<p>Overriding templates or assets is rather easy, simply define an embedded resource respecting the directory structure.
+</p>
+<pre><code>MyDocumentationGeneratorApp/
+    Assets/
+        favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
+    Partials/
+        Layout.hbs (overrides the layout partial, this can be a copy of the default layout to which one can add extra tags, such as one for the favicon)
+    Templates/
+        Class.hbs (this will override the default handlebars template for class declarations)
+        Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)</pre></code>
+<p>To view all default templates simply browse them on the repository page, generally when making changes to them it is a good option to start by copying the default one and modify it. At the same time one can create a new layout from the ground up using different theming libraries.
+</p>
+<p>Generally, the library aims to provide as much out of the box that is possible. Generating project documentation should be really easy and quick to configure.
+</p>
+
+        </div>
+    </div>
+
+    <div>
+        <hr />
+
+        <div class="d-flex flex-column container px-2">
+            <p class="text-center">
+                <a href="https://github.com/Andrei15193/CodeMap/releases/tag/2.0.0">CodeMap.Handlebars 2.0.0</a>
+                -
+                <a href="https://github.com/Andrei15193/CodeMap">View on GitHub</a>
+                -
+                <a href="https://www.nuget.org/packages/CodeMap.Handlebars/2.0.0">View on NuGet</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
