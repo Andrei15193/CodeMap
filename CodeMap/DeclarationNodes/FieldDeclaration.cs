@@ -5,7 +5,8 @@ namespace CodeMap.DeclarationNodes
     /// <summary>Represents a documented constant declared by a type.</summary>
     public class FieldDeclaration : MemberDeclaration
     {
-        internal FieldDeclaration()
+        internal FieldDeclaration(FieldReference fieldReference)
+            : base(fieldReference)
         {
         }
 

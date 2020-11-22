@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using static CodeMap.Extensions;
 
 namespace CodeMap.ReferenceData
 {
@@ -12,6 +13,7 @@ namespace CodeMap.ReferenceData
         private readonly IDictionary<AssemblyName, AssemblyReference> _cachedAssemblyReferences;
         private readonly IDictionary<MemberInfo, MemberReference> _cachedMemberReferences;
         private readonly IDictionary<NamespaceCacheKey, NamespaceReference> _cachedNamespaceReferences;
+        private readonly IDictionary<Type, ConstructorReference> _cachedDefaultConstructorReferences;
 
         /// <summary>Initializes a new instance of the <see cref="MemberReferenceFactory"/> class.</summary>
         public MemberReferenceFactory()
@@ -22,6 +24,7 @@ namespace CodeMap.ReferenceData
             _cachedAssemblyReferences = new Dictionary<AssemblyName, AssemblyReference>(assemblyNameEqualityComparer);
             _cachedMemberReferences = new Dictionary<MemberInfo, MemberReference>();
             _cachedNamespaceReferences = new Dictionary<NamespaceCacheKey, NamespaceReference>(new NamespaceCacheKeyEqualityComparer(assemblyNameEqualityComparer));
+            _cachedDefaultConstructorReferences = new Dictionary<Type, ConstructorReference>();
         }
 
         /// <summary>Creates an <see cref="MemberReference"/> for the provided <paramref name="memberInfo"/>.</summary>
@@ -41,6 +44,30 @@ namespace CodeMap.ReferenceData
                 circularReferenceSetter();
             }
             return memberReference;
+        }
+
+        /// <summary>Creates a <see cref="ConstructorReference"/> for the default constructor of the given <paramref name="type"/>.</summary>
+        /// <param name="type">The <see cref="Type"/> for which to create a <see cref="ConstructorReference"/>, must be a <c>struct</c> (value type).</param>
+        /// <returns>Returns a <see cref="ConstructorReference"/> for the default constructor of the given <paramref name="type"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="type"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="type"/> is not a <c>struct</c> (value type).</exception>
+        public ConstructorReference CreateDefaultConstructor(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+            if (!type.IsValueType || type.IsEnum)
+                throw new ArgumentException("Default constructor references can only be created for structs (value types).", nameof(type));
+
+            if (!_cachedDefaultConstructorReferences.TryGetValue(type, out var constructorReference))
+            {
+                constructorReference = new ConstructorReference
+                {
+                    DeclaringType = (TypeReference)Create(type),
+                    ParameterTypes = EmptyReadOnlyList<BaseTypeReference>()
+                };
+                _cachedDefaultConstructorReferences.Add(type, constructorReference);
+            }
+            return constructorReference;
         }
 
         /// <summary>Creates a <see cref="BaseTypeReference"/> for the provided <paramref name="type"/>.</summary>

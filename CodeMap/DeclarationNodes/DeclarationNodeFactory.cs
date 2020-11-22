@@ -23,7 +23,7 @@ namespace CodeMap.DeclarationNodes
         public AssemblyDeclaration Create(Assembly assembly)
         {
             var assemblyName = assembly.GetName();
-            var assemblyDocumentationElement = new AssemblyDeclaration
+            var assemblyDocumentationElement = new AssemblyDeclaration(_memberReferenceFactory.Create(assemblyName))
             {
                 Name = assemblyName.Name,
                 Version = assemblyName.Version,
@@ -51,8 +51,8 @@ namespace CodeMap.DeclarationNodes
                     typesByNamespace =>
                     {
                         var @namespace = string.IsNullOrWhiteSpace(typesByNamespace.Key)
-                            ? new GlobalNamespaceDeclaration { Name = string.Empty }
-                            : new NamespaceDeclaration { Name = typesByNamespace.Key };
+                            ? new GlobalNamespaceDeclaration(_memberReferenceFactory.CreateNamespace(string.Empty, assembly)) { Name = string.Empty }
+                            : new NamespaceDeclaration(_memberReferenceFactory.CreateNamespace(typesByNamespace.Key, assembly)) { Name = typesByNamespace.Key };
                         @namespace.Assembly = assemblyDocumentationElement;
                         @namespace.Summary = DocumentationElement.Summary();
                         @namespace.Remarks = DocumentationElement.Remarks();
@@ -125,7 +125,7 @@ namespace CodeMap.DeclarationNodes
         private EnumDeclaration _GetEnum(Type enumType)
         {
             var memberDocumentation = _GetMemberDocumentationFor(enumType);
-            var enumDocumentationElement = new EnumDeclaration
+            var enumDocumentationElement = new EnumDeclaration((TypeReference)_memberReferenceFactory.Create(enumType))
             {
                 Name = _GetTypeNameFor(enumType),
                 AccessModifier = _GetAccessModifierFrom(enumType),
@@ -149,7 +149,7 @@ namespace CodeMap.DeclarationNodes
         {
             var memberDocumentation = _GetMemberDocumentationFor(delegateType);
             var invokeMethodInfo = delegateType.GetMethod(nameof(Action.Invoke), BindingFlags.Public | BindingFlags.Instance);
-            var delegateDocumentationElement = new DelegateDeclaration
+            var delegateDocumentationElement = new DelegateDeclaration((TypeReference)_memberReferenceFactory.Create(delegateType))
             {
                 Name = _GetTypeNameFor(delegateType),
                 AccessModifier = _GetAccessModifierFrom(delegateType),
@@ -181,7 +181,7 @@ namespace CodeMap.DeclarationNodes
         private TypeDeclaration _GetInterface(Type interfaceType)
         {
             var memberDocumentation = _GetMemberDocumentationFor(interfaceType);
-            var interfaceDocumentationElement = new InterfaceDeclaration
+            var interfaceDocumentationElement = new InterfaceDeclaration((TypeReference)_memberReferenceFactory.Create(interfaceType))
             {
                 Name = _GetTypeNameFor(interfaceType),
                 AccessModifier = _GetAccessModifierFrom(interfaceType),
@@ -216,7 +216,7 @@ namespace CodeMap.DeclarationNodes
         private ClassDeclaration _GetClass(Type classType, NamespaceDeclaration @namespace)
         {
             var memberDocumentation = _GetMemberDocumentationFor(classType);
-            var classDocumentationElement = new ClassDeclaration
+            var classDocumentationElement = new ClassDeclaration((TypeReference)_memberReferenceFactory.Create(classType))
             {
                 Name = _GetTypeNameFor(classType),
                 AccessModifier = _GetAccessModifierFrom(classType),
@@ -272,7 +272,7 @@ namespace CodeMap.DeclarationNodes
         private TypeDeclaration _GetStruct(Type structType, NamespaceDeclaration @namespace)
         {
             var memberDocumentation = _GetMemberDocumentationFor(structType);
-            var structDocumentationElement = new StructDeclaration
+            var structDocumentationElement = new StructDeclaration((TypeReference)_memberReferenceFactory.Create(structType))
             {
                 Name = _GetTypeNameFor(structType),
                 AccessModifier = _GetAccessModifierFrom(structType),
@@ -372,7 +372,7 @@ namespace CodeMap.DeclarationNodes
                 .OrderBy(property => property.Name, StringComparer.OrdinalIgnoreCase)
                 .ThenBy(property => property.GetIndexParameters().Length)
                 .Select(property => _GetProperty(property, declaringDocumentationElement))
-                .Where(property => property != null)
+                .Where(property => property is object)
                 .ToReadOnlyList();
 
         private IReadOnlyCollection<MethodDeclaration> _GetMethods(Type declaringType, TypeDeclaration declaringDocumentationElement)
@@ -387,7 +387,7 @@ namespace CodeMap.DeclarationNodes
         private ConstantDeclaration _GetConstant(FieldInfo field, TypeDeclaration declaringType)
         {
             var memberDocumentation = _GetMemberDocumentationFor(field);
-            return new ConstantDeclaration
+            return new ConstantDeclaration((ConstantReference)_memberReferenceFactory.Create(field))
             {
                 Name = field.Name,
                 AccessModifier = _GetAccessModifierFrom(field),
@@ -408,7 +408,7 @@ namespace CodeMap.DeclarationNodes
         private FieldDeclaration _GetField(FieldInfo field, TypeDeclaration declaringType)
         {
             var memberDocumentation = _GetMemberDocumentationFor(field);
-            return new FieldDeclaration
+            return new FieldDeclaration((FieldReference)_memberReferenceFactory.Create(field))
             {
                 Name = field.Name,
                 AccessModifier = _GetAccessModifierFrom(field),
@@ -431,7 +431,7 @@ namespace CodeMap.DeclarationNodes
         {
             var memberDocumentation = _GetMemberDocumentationFor(constructor);
 
-            return new ConstructorDeclaration
+            return new ConstructorDeclaration((ConstructorReference)_memberReferenceFactory.Create(constructor))
             {
                 Name = declaringType.Name,
                 AccessModifier = _GetAccessModifierFrom(constructor),
@@ -453,7 +453,7 @@ namespace CodeMap.DeclarationNodes
         {
             var memberDocumentation = _GetDefaultConstructorMemberDocumentationFor(type);
 
-            return new ConstructorDeclaration
+            return new ConstructorDeclaration((ConstructorReference)_memberReferenceFactory.CreateDefaultConstructor(type))
             {
                 Name = declaringType.Name,
                 AccessModifier = AccessModifier.Public,
@@ -472,7 +472,7 @@ namespace CodeMap.DeclarationNodes
         {
             var memberDocumentation = _GetMemberDocumentationFor(@event);
             var methodInfo = (@event.AddMethod ?? @event.RemoveMethod ?? @event.RaiseMethod);
-            return new EventDeclaration
+            return new EventDeclaration((EventReference)_memberReferenceFactory.Create(@event))
             {
                 Name = @event.Name,
                 AccessModifier = _GetAccessModifierFrom(@event),
@@ -512,7 +512,7 @@ namespace CodeMap.DeclarationNodes
             {
                 var memberDocumentation = _GetMemberDocumentationFor(property);
                 var methodInfo = (property.GetMethod ?? property.SetMethod);
-                return new PropertyDeclaration
+                return new PropertyDeclaration((PropertyReference)_memberReferenceFactory.Create(property))
                 {
                     Name = property.Name,
                     AccessModifier = setterInfo == null || (getterInfo != null && getterInfo.AccessModifier >= setterInfo.AccessModifier)
@@ -560,7 +560,7 @@ namespace CodeMap.DeclarationNodes
         {
             var memberDocumentation = _GetMemberDocumentationFor(method);
 
-            var methodDocumentationElement = new MethodDeclaration
+            var methodDocumentationElement = new MethodDeclaration((MethodReference)_memberReferenceFactory.Create(method))
             {
                 Name = method.Name,
                 AccessModifier = _GetAccessModifierFrom(method),

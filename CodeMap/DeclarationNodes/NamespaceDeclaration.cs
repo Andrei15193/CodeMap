@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeMap.DocumentationElements;
+using CodeMap.ReferenceData;
 
 namespace CodeMap.DeclarationNodes
 {
     /// <summary>Represents a documented namespace.</summary>
     public class NamespaceDeclaration : DeclarationNode
     {
-        internal NamespaceDeclaration()
+        internal NamespaceDeclaration(NamespaceReference namespaceReference)
+            : base(namespaceReference)
         {
         }
 

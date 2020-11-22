@@ -46,7 +46,7 @@ namespace CodeMap.ReferenceData
                && !type.IsByRef
                && !type.IsGenericParameter
                && Name.Equals(type.GetTypeName(), StringComparison.OrdinalIgnoreCase)
-               && Namespace.Name.Equals(type.Namespace, StringComparison.OrdinalIgnoreCase)
+               && Namespace.Name.Equals(type.Namespace ?? string.Empty, StringComparison.OrdinalIgnoreCase)
                && (DeclaringType is null ? type.DeclaringType is null : DeclaringType.Equals(type.GetDeclaringType(), originator, originatorMatch))
                && GenericArguments.Count == type.GetCurrentGenericArguments().Count()
                && (

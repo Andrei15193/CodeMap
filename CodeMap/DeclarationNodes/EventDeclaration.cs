@@ -7,7 +7,8 @@ namespace CodeMap.DeclarationNodes
     /// <summary>Represents a documented event declared by a type.</summary>
     public sealed class EventDeclaration : MemberDeclaration
     {
-        internal EventDeclaration()
+        internal EventDeclaration(EventReference eventReference)
+            : base(eventReference)
         {
         }
 

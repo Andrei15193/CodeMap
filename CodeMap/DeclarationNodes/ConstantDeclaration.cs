@@ -5,7 +5,8 @@ namespace CodeMap.DeclarationNodes
     /// <summary>Represents a documented constant declared by a type.</summary>
     public class ConstantDeclaration : MemberDeclaration
     {
-        internal ConstantDeclaration()
+        internal ConstantDeclaration(ConstantReference constantReference)
+            : base(constantReference)
         {
         }
 

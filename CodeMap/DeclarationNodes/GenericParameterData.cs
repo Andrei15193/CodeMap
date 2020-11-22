@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
-#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-using System;
+﻿using System;
 using System.Collections.Generic;
 using CodeMap.DocumentationElements;
 using CodeMap.ReferenceData;
@@ -85,12 +83,16 @@ namespace CodeMap.DeclarationNodes
         /// determining whether the current instance actually maps to the provided <see cref="Type"/>. Otherwise the equality is determined
         /// by comparing references.
         /// </remarks>
-        public override bool Equals(object obj)
-        {
-            if (obj is Type type)
-                return Equals(type);
-            else
-                return base.Equals(obj);
-        }
+        public sealed override bool Equals(object obj)
+            => obj switch
+            {
+                Type type => Equals(type),
+                _ => base.Equals(obj)
+            };
+
+        /// <summary>Gets the hash code for the current instance.</summary>
+        /// <returns>Returns the hash code for the current instance.</returns>
+        public sealed override int GetHashCode()
+            => base.GetHashCode();
     }
 }
