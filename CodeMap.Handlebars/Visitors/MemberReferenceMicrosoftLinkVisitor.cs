@@ -37,7 +37,7 @@ namespace CodeMap.Handlebars.Visitors
 
         protected override void VisitType(TypeReference type)
         {
-            if (type.DeclaringType != null)
+            if (type.DeclaringType is object)
             {
                 type.DeclaringType.Accept(this);
                 _linkBuilder.Append('.');

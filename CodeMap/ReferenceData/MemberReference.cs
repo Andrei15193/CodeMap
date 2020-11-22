@@ -1,11 +1,9 @@
-﻿#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
-#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-using System;
+﻿using System;
 using System.Reflection;
 
 namespace CodeMap.ReferenceData
 {
-    /// <summary>Represents an Assembly member reference.</summary>
+    /// <summary>Represents a .NET Assembly member reference.</summary>
     public abstract class MemberReference : IEquatable<MemberInfo>, IEquatable<Assembly>, IEquatable<AssemblyName>
     {
         /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="memberInfo"/> are equal.</summary>
@@ -15,6 +13,13 @@ namespace CodeMap.ReferenceData
         public static bool operator ==(MemberReference memberReference, MemberInfo memberInfo)
             => Equals(memberReference, memberInfo);
 
+        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="memberInfo"/> are not equal.</summary>
+        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
+        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
+        public static bool operator !=(MemberReference memberReference, MemberInfo memberInfo)
+            => !Equals(memberReference, memberInfo);
+
         /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="memberInfo"/> are equal.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
         /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
@@ -23,18 +28,67 @@ namespace CodeMap.ReferenceData
             => Equals(memberReference, memberInfo);
 
         /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="memberInfo"/> are not equal.</summary>
-        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
-        /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
-        public static bool operator !=(MemberReference memberReference, MemberInfo memberInfo)
-            => !Equals(memberReference, memberInfo);
-
-        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="memberInfo"/> are not equal.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
         /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
         /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
         public static bool operator !=(MemberInfo memberInfo, MemberReference memberReference)
             => !Equals(memberReference, memberInfo);
+
+        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="assembly"/> are equal.</summary>
+        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
+        /// <param name="assembly">The <see cref="Assembly"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
+        public static bool operator ==(MemberReference memberReference, Assembly assembly)
+            => Equals(memberReference, assembly);
+
+        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="assembly"/> are not equal.</summary>
+        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
+        /// <param name="assembly">The <see cref="Assembly"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
+        public static bool operator !=(MemberReference memberReference, Assembly assembly)
+            => !Equals(memberReference, assembly);
+
+        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="assembly"/> are equal.</summary>
+        /// <param name="assembly">The <see cref="Assembly"/> to compare.</param>
+        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
+        public static bool operator ==(Assembly assembly, MemberReference memberReference)
+            => Equals(memberReference, assembly);
+
+        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="assembly"/> are not equal.</summary>
+        /// <param name="assembly">The <see cref="Assembly"/> to compare.</param>
+        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
+        public static bool operator !=(Assembly assembly, MemberReference memberReference)
+            => !Equals(memberReference, assembly);
+
+        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="assemblyName"/> are equal.</summary>
+        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
+        public static bool operator ==(MemberReference memberReference, AssemblyName assemblyName)
+            => Equals(memberReference, assemblyName);
+
+        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="assemblyName"/> are not equal.</summary>
+        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
+        public static bool operator !=(MemberReference memberReference, AssemblyName assemblyName)
+            => !Equals(memberReference, assemblyName);
+
+        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="assemblyName"/> are equal.</summary>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare.</param>
+        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
+        public static bool operator ==(AssemblyName assemblyName, MemberReference memberReference)
+            => Equals(memberReference, assemblyName);
+
+        /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="assemblyName"/> are not equal.</summary>
+        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare.</param>
+        /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
+        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
+        public static bool operator !=(AssemblyName assemblyName, MemberReference memberReference)
+            => !Equals(memberReference, assemblyName);
 
         internal MemberReference()
         {
@@ -64,6 +118,11 @@ namespace CodeMap.ReferenceData
                 AssemblyName assemblyName => Equals(assemblyName),
                 _ => base.Equals(obj)
             };
+
+        /// <summary>Gets the hash code for the current instance.</summary>
+        /// <returns>Returns the hash code for the current instance.</returns>
+        public sealed override int GetHashCode()
+            => base.GetHashCode();
 
         /// <summary>Determines whether the current <see cref="MemberReference"/> is equal to the provided <paramref name="memberInfo"/>.</summary>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare to.</param>

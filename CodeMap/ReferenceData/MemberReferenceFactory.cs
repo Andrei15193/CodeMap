@@ -86,11 +86,11 @@ namespace CodeMap.ReferenceData
         /// <returns>Returns a <see cref="DynamicTypeReference"/>.</returns>
         public DynamicTypeReference CreateDynamic()
         {
-            if (_dynamicTypeReference == null)
+            if (_dynamicTypeReference is null)
             {
                 _dynamicTypeReference = new DynamicTypeReference
                 {
-                    GenericArguments = CodeMap.Extensions.EmptyReadOnlyList<GenericTypeParameterReference>()
+                    GenericArguments = EmptyReadOnlyList<GenericTypeParameterReference>()
                 };
                 _InitializeTypeReference(typeof(object), _dynamicTypeReference);
             }

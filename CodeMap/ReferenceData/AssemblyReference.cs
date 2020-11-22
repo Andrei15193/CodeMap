@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
-#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-using System;
+﻿using System;
 using System.Reflection;
 
 namespace CodeMap.ReferenceData
@@ -8,62 +6,6 @@ namespace CodeMap.ReferenceData
     /// <summary>Represents a documented .NET assembly reference.</summary>
     public sealed class AssemblyReference : MemberReference
     {
-        /// <summary>Determines whether the provided <paramref name="assemblyReference"/> and <paramref name="assembly"/> are equal.</summary>
-        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
-        /// <param name="assembly">The <see cref="Assembly"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
-        public static bool operator ==(AssemblyReference assemblyReference, Assembly assembly)
-            => Equals(assemblyReference, assembly);
-
-        /// <summary>Determines whether the provided <paramref name="assemblyReference"/> and <paramref name="assembly"/> are not equal.</summary>
-        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
-        /// <param name="assembly">The <see cref="Assembly"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
-        public static bool operator !=(AssemblyReference assemblyReference, Assembly assembly)
-            => !Equals(assemblyReference, assembly);
-
-        /// <summary>Determines whether the provided <paramref name="assemblyReference"/> and <paramref name="assembly"/> are equal.</summary>
-        /// <param name="assembly">The <see cref="Assembly"/> to compare.</param>
-        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
-        public static bool operator ==(Assembly assembly, AssemblyReference assemblyReference)
-            => Equals(assemblyReference, assembly);
-
-        /// <summary>Determines whether the provided <paramref name="assemblyReference"/> and <paramref name="assembly"/> are not equal.</summary>
-        /// <param name="assembly">The <see cref="Assembly"/> to compare.</param>
-        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
-        public static bool operator !=(Assembly assembly, AssemblyReference assemblyReference)
-            => !Equals(assemblyReference, assembly);
-
-        /// <summary>Determines whether the provided <paramref name="assemblyReference"/> and <paramref name="assemblyName"/> are equal.</summary>
-        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
-        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
-        public static bool operator ==(AssemblyReference assemblyReference, AssemblyName assemblyName)
-            => Equals(assemblyReference, assemblyName);
-
-        /// <summary>Determines whether the provided <paramref name="assemblyReference"/> and <paramref name="assemblyName"/> are not equal.</summary>
-        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
-        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
-        public static bool operator !=(AssemblyReference assemblyReference, AssemblyName assemblyName)
-            => !Equals(assemblyReference, assemblyName);
-
-        /// <summary>Determines whether the provided <paramref name="assemblyReference"/> and <paramref name="assemblyName"/> are equal.</summary>
-        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare.</param>
-        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are equal; <c>false</c> otherwise.</returns>
-        public static bool operator ==(AssemblyName assemblyName, AssemblyReference assemblyReference)
-            => Equals(assemblyReference, assemblyName);
-
-        /// <summary>Determines whether the provided <paramref name="assemblyReference"/> and <paramref name="assemblyName"/> are not equal.</summary>
-        /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare.</param>
-        /// <param name="assemblyReference">The <see cref="AssemblyReference"/> to compare.</param>
-        /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
-        public static bool operator !=(AssemblyName assemblyName, AssemblyReference assemblyReference)
-            => !Equals(assemblyReference, assemblyName);
-
         internal AssemblyReference()
         {
         }
