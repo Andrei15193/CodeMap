@@ -73,6 +73,14 @@
 
 <p>
     Base type: <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Object?view=netstandard-2.1">object</a>.
+<br>Implemented interfaces:
+    <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.IEquatable-1?view=netstandard-2.1">IEquatable</a>&lt;<a href="CodeMap.ReferenceDataMemberReference.html">MemberReference</a>&gt;
+,
+    <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.IEquatable-1?view=netstandard-2.1">IEquatable</a>&lt;<a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.MemberInfo?view=netstandard-2.1">MemberInfo</a>&gt;
+,
+    <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.IEquatable-1?view=netstandard-2.1">IEquatable</a>&lt;<a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Assembly?view=netstandard-2.1">Assembly</a>&gt;
+,
+    <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.IEquatable-1?view=netstandard-2.1">IEquatable</a>&lt;<a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.AssemblyName?view=netstandard-2.1">AssemblyName</a>&gt;.
 </p>
 
 <p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> class.</p>
@@ -96,6 +104,13 @@
 </td>
         </tr>
         <tr>
+            <td><a href="CodeMap.DeclarationNodes.DeclarationNode.AsMeberReference.html">AsMeberReference()</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Gets the current instance as a <a href="CodeMap.ReferenceDataMemberReference.html">MemberReference</a>.
+</p>
+</td>
+        </tr>
+        <tr>
             <td><a href="CodeMap.DeclarationNodes.DeclarationNode.Create.html">Create(Assembly)</a></td>
             <td class="text-left text-nowrap"><code>public</code></td>
             <td><p>Creates an <a href="CodeMap.DeclarationNodesAssemblyDeclaration.html">AssemblyDeclaration</a> from the provided <em>assembly</em>.
@@ -113,6 +128,48 @@
             <td><a href="CodeMap.DeclarationNodes.DeclarationNode.Create-3.html">Create(Assembly, MemberDocumentationCollection, DeclarationFilter)</a></td>
             <td class="text-left text-nowrap"><code>public</code></td>
             <td><p>Creates an <a href="CodeMap.DeclarationNodesAssemblyDeclaration.html">AssemblyDeclaration</a> from the provided <em>assembly</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DeclarationNodes.DeclarationNode.Equals.html">Equals(Object)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Determines whether the current <a href="CodeMap.DeclarationNodesTypeDeclaration.html">TypeDeclaration</a> is equal to the provided <em>obj</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DeclarationNodes.DeclarationNode.Equals-2.html">Equals(MemberReference)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Determines whether the current <a href="CodeMap.DeclarationNodesDeclarationNode.html">DeclarationNode</a> is equal to the provided <em>memberReference</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DeclarationNodes.DeclarationNode.Equals-3.html">Equals(MemberInfo)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Determines whether the current <a href="CodeMap.DeclarationNodesDeclarationNode.html">DeclarationNode</a> is equal to the provided <em>memberInfo</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DeclarationNodes.DeclarationNode.Equals-4.html">Equals(Assembly)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Determines whether the current <a href="CodeMap.DeclarationNodesDeclarationNode.html">DeclarationNode</a> is equal to the provided <em>assembly</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DeclarationNodes.DeclarationNode.Equals-5.html">Equals(AssemblyName)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Determines whether the current <a href="CodeMap.DeclarationNodesDeclarationNode.html">DeclarationNode</a> is equal to the provided <em>assemblyName</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DeclarationNodes.DeclarationNode.GetHashCode.html">GetHashCode()</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Gets the hash code for the current instance.
 </p>
 </td>
         </tr>
