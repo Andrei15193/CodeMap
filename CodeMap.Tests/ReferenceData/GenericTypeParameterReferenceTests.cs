@@ -18,6 +18,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.Equal(0, genericParameterReference.Position);
             Assert.True(genericParameterReference.DeclaringType == typeof(IEnumerable<>));
             Assert.True(genericParameterReference == _GetGenericTypeParameter());
+            Assert.True(genericParameterReference.Assembly == typeof(IEnumerable<>).Assembly);
 
             genericParameterReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

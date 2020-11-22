@@ -126,11 +126,7 @@ namespace CodeMap.ReferenceData
             var cacheKey = new NamespaceCacheKey(namespaceName, assemblyName);
             if (!_cachedNamespaceReferences.TryGetValue(cacheKey, out var namespaceReference))
             {
-                namespaceReference = new NamespaceReference
-                {
-                    Name = namespaceName,
-                    Assembly = Create(assemblyName)
-                };
+                namespaceReference = new NamespaceReference(namespaceName, Create(assemblyName));
                 _cachedNamespaceReferences.Add(cacheKey, namespaceReference);
             }
             return namespaceReference;

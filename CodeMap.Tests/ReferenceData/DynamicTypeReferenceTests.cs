@@ -17,6 +17,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.True(typeReference == typeof(IDynamicMetaObjectProvider));
             Assert.True(typeReference == typeof(DynamicObject));
             Assert.True(typeReference != typeof(int));
+            Assert.True(typeReference.Assembly == typeof(object).Assembly);
 
             typeReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

@@ -35,6 +35,7 @@ namespace CodeMap.Tests.ReferenceData
 #else
             Assert.Equal("4919ac5af74d53e8", assemblyReference.PublicKeyToken);
 #endif
+            Assert.Same(assemblyReference, assemblyReference.Assembly);
 
             assemblyReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);
@@ -54,6 +55,7 @@ namespace CodeMap.Tests.ReferenceData
 #else
             Assert.Equal("4919ac5af74d53e8", assemblyReference.PublicKeyToken);
 #endif
+            Assert.Same(assemblyReference, assemblyReference.Assembly);
 
             assemblyReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

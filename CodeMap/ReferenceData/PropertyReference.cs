@@ -21,6 +21,10 @@ namespace CodeMap.ReferenceData
         /// <summary>The property parameter types.</summary>
         public IReadOnlyList<BaseTypeReference> ParameterTypes { get; internal set; }
 
+        /// <summary>The declaring assembly.</summary>
+        public override AssemblyReference Assembly
+            => DeclaringType.Assembly;
+
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>
         /// <exception cref="NullReferenceException">Thrown when <paramref name="visitor"/> is <c>null</c>.</exception>

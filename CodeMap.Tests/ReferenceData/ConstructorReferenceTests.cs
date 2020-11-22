@@ -21,6 +21,7 @@ namespace CodeMap.Tests.ReferenceData
                 .SequenceEqual(new[] { typeof(char), typeof(int) })
             );
             Assert.True(constructorReference == _GetConstructorInfo());
+            Assert.True(constructorReference.Assembly == typeof(string).Assembly);
 
             constructorReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

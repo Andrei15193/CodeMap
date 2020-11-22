@@ -23,6 +23,7 @@ namespace CodeMap.Tests.ReferenceData
                 .SequenceEqual(new[] { typeof(string) })
             );
             Assert.True(propertyReference == _GetPropertyInfo());
+            Assert.True(propertyReference.Assembly == typeof(IDictionary<string, string>).Assembly);
 
             propertyReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

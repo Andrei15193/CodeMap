@@ -24,7 +24,7 @@ namespace CodeMap.ReferenceData
         public TypeReference DeclaringType { get; internal set; }
 
         /// <summary>The declaring assembly.</summary>
-        public AssemblyReference Assembly
+        public override AssemblyReference Assembly
             => Namespace.Assembly;
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>

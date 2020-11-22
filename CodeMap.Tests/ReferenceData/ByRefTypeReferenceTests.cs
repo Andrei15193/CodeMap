@@ -14,6 +14,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.True(byRefTypeReference.ReferentType == typeof(int));
             Assert.True(byRefTypeReference == typeof(int).MakeByRefType());
             Assert.True(byRefTypeReference != typeof(int));
+            Assert.True(byRefTypeReference.Assembly == typeof(int).Assembly);
 
             byRefTypeReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

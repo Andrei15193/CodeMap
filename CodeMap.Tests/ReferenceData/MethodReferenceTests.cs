@@ -21,6 +21,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.Empty(methodReference.ParameterTypes);
             Assert.True(methodReference == _GetToStringMethodInfo());
             Assert.True(methodReference != _GetGetHashCodeMethodInfo());
+            Assert.True(methodReference.Assembly == typeof(object).Assembly);
 
             methodReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

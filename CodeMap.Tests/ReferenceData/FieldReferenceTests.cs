@@ -15,6 +15,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.Equal("Empty", fieldReference.Name);
             Assert.True(fieldReference.DeclaringType == typeof(string));
             Assert.True(fieldReference == _GetFieldInfo());
+            Assert.True(fieldReference.Assembly == typeof(string).Assembly);
 
             fieldReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

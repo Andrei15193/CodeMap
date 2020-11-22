@@ -14,6 +14,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.IsType<VoidTypeReference>(typeReference);
             Assert.True(typeReference == typeof(void));
             Assert.True(typeReference != typeof(int));
+            Assert.True(typeReference.Assembly == typeof(void).Assembly);
 
             typeReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

@@ -40,10 +40,7 @@ namespace CodeMap.Handlebars
         /// <returns>Returns the URL for the provided <see cref="MemberReference"/>. If it points to a member of the documented library then an URL for that page is returned; otherwise an MS doc reference is created.</returns>
         public string GetUrl(MemberReference memberReference)
         {
-            var librarySelectorVisitor = new LibrarySelectorVisitor();
-            memberReference.Accept(librarySelectorVisitor);
-
-            if (librarySelectorVisitor.Library == _library)
+            if (memberReference.Assembly == _library)
             {
                 var memberReferenceFullNameVisitor = new MemberReferenceFullNameVisitor(excludeParameters: false);
                 memberReference.Accept(memberReferenceFullNameVisitor);

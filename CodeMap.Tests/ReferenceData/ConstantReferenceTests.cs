@@ -16,6 +16,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.Equal(int.MaxValue, constantReference.Value);
             Assert.True(constantReference.DeclaringType == typeof(int));
             Assert.True(constantReference == _GetFieldInfo());
+            Assert.True(constantReference.Assembly == typeof(int).Assembly);
 
             constantReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

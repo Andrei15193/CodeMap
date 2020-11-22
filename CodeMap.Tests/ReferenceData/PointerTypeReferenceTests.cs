@@ -17,6 +17,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.True(referentPointerTypeReference != typeof(int));
             Assert.True(pointerTypeReference == typeof(int**));
             Assert.True(pointerTypeReference != typeof(int*));
+            Assert.True(pointerTypeReference.Assembly == typeof(int**).Assembly);
 
             pointerTypeReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

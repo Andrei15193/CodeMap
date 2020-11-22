@@ -16,6 +16,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.Equal("PropertyChanged", eventReference.Name);
             Assert.True(eventReference.DeclaringType == typeof(INotifyPropertyChanged));
             Assert.True(eventReference == _GetEventInfo());
+            Assert.True(eventReference.Assembly == typeof(INotifyPropertyChanged).Assembly);
 
             eventReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

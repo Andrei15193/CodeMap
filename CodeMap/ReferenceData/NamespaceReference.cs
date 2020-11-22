@@ -6,15 +6,14 @@ namespace CodeMap.ReferenceData
     /// <summary>Represents a namespace reference.</summary>
     public class NamespaceReference : MemberReference
     {
-        internal NamespaceReference()
-        {
-        }
+        internal NamespaceReference(string name, AssemblyReference declaringAssembly)
+            => (Name, Assembly) = (name, declaringAssembly);
 
         /// <summary>The namespace name, or <see cref="string.Empty"/> for the global namespace.</summary>
-        public string Name { get; internal set; }
+        public string Name { get; }
 
         /// <summary>The declaring assembly.</summary>
-        public AssemblyReference Assembly { get; internal set; }
+        public override AssemblyReference Assembly { get; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for selecting a concrete instance method.</summary>
         /// <param name="visitor">The <see cref="MemberReferenceVisitor"/> interpreting the reference data.</param>

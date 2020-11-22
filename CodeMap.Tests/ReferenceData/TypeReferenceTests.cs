@@ -32,7 +32,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.Equal("System", typeReference.Namespace.Name);
             Assert.Empty(typeReference.GenericArguments);
             Assert.Null(typeReference.DeclaringType);
-            Assert.True(typeReference.Assembly == typeof(int).Assembly.GetName());
+            Assert.True(typeReference.Assembly == typeof(int).Assembly);
 
             typeReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);
@@ -54,6 +54,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.True(typeof(TestClass<int>) == typeReference.DeclaringType);
             Assert.True(typeReference.DeclaringType != typeof(TestClass<>));
             Assert.True(typeof(TestClass<>) != typeReference.DeclaringType);
+            Assert.True(typeReference.Assembly == typeof(TestClass<int>.NestedTestClass<IEnumerable<string>, IDictionary<long, decimal>>).Assembly);
 
             typeReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);
@@ -76,6 +77,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.True(typeof(TestClass<>) == typeReference.DeclaringType);
             Assert.True(typeReference.DeclaringType != typeof(TestClass<int>));
             Assert.True(typeof(TestClass<int>) != typeReference.DeclaringType);
+            Assert.True(typeReference.Assembly == typeof(TestClass<int>.NestedTestClass<IEnumerable<string>, IDictionary<long, decimal>>).Assembly);
 
             typeReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

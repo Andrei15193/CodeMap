@@ -17,6 +17,7 @@ namespace CodeMap.Tests.ReferenceData
             Assert.True(itemArrayTypeReference.ItemType == typeof(decimal));
             Assert.True(arrayTypeReference == typeof(decimal[][,]));
             Assert.True(arrayTypeReference != typeof(decimal[,][]));
+            Assert.True(arrayTypeReference.Assembly == typeof(decimal[][,]).Assembly);
 
             arrayTypeReference.Accept(visitor);
             Assert.Equal(1, visitor.VisitCount);

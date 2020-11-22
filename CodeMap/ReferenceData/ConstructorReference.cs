@@ -12,6 +12,10 @@ namespace CodeMap.ReferenceData
         {
         }
 
+        /// <summary>The declaring assembly.</summary>
+        public override AssemblyReference Assembly
+            => DeclaringType.Assembly;
+
         /// <summary>The constructor declaring type.</summary>
         public TypeReference DeclaringType { get; internal set; }
 
