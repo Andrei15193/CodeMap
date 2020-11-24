@@ -1,0 +1,665 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>CodeMap - DocumentationElement Class</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body class="d-flex flex-column">
+    
+<nav id="navigation" class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="../../index.html">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="../../1.0.0-beta1/CodeMap/index.html">1.0.0-beta1</a>
+
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap.Handlebars</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="../../1.0.0-beta1/CodeMap.Handlebars/index.html">1.0.0-beta1</a>
+
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/Andrei15193/CodeMap">View on GitHub</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.nuget.org/packages/CodeMap">View on NuGet</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="flex-grow-1 flex-shrink-1">
+
+        <div class="d-flex flex-column container px-2 pt-2">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+
+
+<li class="breadcrumb-item" aria-current="page">
+    <a href="index.html">CodeMap</a>
+</li>
+<li class="breadcrumb-item" aria-current="page">
+    <a href="CodeMap.DocumentationElements.html">CodeMap.DocumentationElements</a>
+</li>
+        <li class="breadcrumb-item active" aria-current="page">DocumentationElement</li>
+    </ol>
+</nav>
+            <div id="deprecationNotice">
+    <div class="alert alert-warning" role="alert">
+        You are viewing an older version of the library. Checkout the latest version <a href="../../1.0.0-beta1/CodeMap/index.html" class="alert-link">here</a>!
+    </div>
+</div>
+<h2>DocumentationElement Class</h2>
+
+<p>A documentation element that is part of the documentation tree for an <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Assembly?view=netstandard-2.1">Assembly</a> and associated XML documentation.
+</p>
+
+<p>
+    Base type: <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Object?view=netstandard-2.1">object</a>.
+</p>
+
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> class.</p>
+
+
+<h3>Methods</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Access Modifier</th>
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Accept.html">DocumentationElement.Accept(DocumentationVisitor)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Accepts the provided <em>visitor</em> for traversing the documentation tree.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.BlockDescription.html">DocumentationElement.BlockDescription(IEnumerable&lt;BlockDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsBlockDescriptionDocumentationElement.html">BlockDescriptionDocumentationElement</a> with the provided <em>blockElements</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.BlockDescription-2.html">DocumentationElement.BlockDescription(BlockDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsBlockDescriptionDocumentationElement.html">BlockDescriptionDocumentationElement</a> with the provided <em>blockElements</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.BlockDescription-3.html">DocumentationElement.BlockDescription(IEnumerable&lt;BlockDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsBlockDescriptionDocumentationElement.html">BlockDescriptionDocumentationElement</a> with the provided <em>blockElements</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.CodeBlock.html">DocumentationElement.CodeBlock(string)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsCodeBlockDocumentationElement.html">CodeBlockDocumentationElement</a> for the provided <em>code</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.CodeBlock-2.html">DocumentationElement.CodeBlock(string, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsCodeBlockDocumentationElement.html">CodeBlockDocumentationElement</a> for the provided <em>code</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionList.html">DocumentationElement.DefinitionList(IEnumerable&lt;DefinitionListItemDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListDocumentationElement.html">DefinitionListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionList-2.html">DocumentationElement.DefinitionList(DefinitionListItemDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListDocumentationElement.html">DefinitionListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionList-3.html">DocumentationElement.DefinitionList(IEnumerable&lt;DefinitionListItemDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListDocumentationElement.html">DefinitionListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionList-4.html">DocumentationElement.DefinitionList(DefinitionListTitleDocumentationElement, IEnumerable&lt;DefinitionListItemDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListDocumentationElement.html">DefinitionListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionList-5.html">DocumentationElement.DefinitionList(DefinitionListTitleDocumentationElement, DefinitionListItemDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListDocumentationElement.html">DefinitionListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionList-6.html">DocumentationElement.DefinitionList(DefinitionListTitleDocumentationElement, IEnumerable&lt;DefinitionListItemDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListDocumentationElement.html">DefinitionListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionListItem.html">DocumentationElement.DefinitionListItem(DefinitionListItemTermDocumentationElement, DefinitionListItemDescriptionDocumentationElement)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListItemDocumentationElement.html">DefinitionListItemDocumentationElement</a> with the provided <em>term</em> and <em>description</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionListItem-2.html">DocumentationElement.DefinitionListItem(DefinitionListItemTermDocumentationElement, DefinitionListItemDescriptionDocumentationElement, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListItemDocumentationElement.html">DefinitionListItemDocumentationElement</a> with the provided <em>term</em> and <em>description</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionListItemDescription.html">DocumentationElement.DefinitionListItemDescription(IEnumerable&lt;InlineDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListItemDescriptionDocumentationElement.html">DefinitionListItemDescriptionDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionListItemDescription-2.html">DocumentationElement.DefinitionListItemDescription(InlineDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListItemDescriptionDocumentationElement.html">DefinitionListItemDescriptionDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionListItemDescription-3.html">DocumentationElement.DefinitionListItemDescription(IEnumerable&lt;InlineDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListItemDescriptionDocumentationElement.html">DefinitionListItemDescriptionDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionListItemTerm.html">DocumentationElement.DefinitionListItemTerm(IEnumerable&lt;InlineDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListItemTermDocumentationElement.html">DefinitionListItemTermDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionListItemTerm-2.html">DocumentationElement.DefinitionListItemTerm(InlineDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListItemTermDocumentationElement.html">DefinitionListItemTermDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionListItemTerm-3.html">DocumentationElement.DefinitionListItemTerm(IEnumerable&lt;InlineDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListItemTermDocumentationElement.html">DefinitionListItemTermDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionListTitle.html">DocumentationElement.DefinitionListTitle(IEnumerable&lt;InlineDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListTitleDocumentationElement.html">DefinitionListTitleDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionListTitle-2.html">DocumentationElement.DefinitionListTitle(InlineDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListTitleDocumentationElement.html">DefinitionListTitleDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.DefinitionListTitle-3.html">DocumentationElement.DefinitionListTitle(IEnumerable&lt;InlineDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsDefinitionListItemTermDocumentationElement.html">DefinitionListItemTermDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Example.html">DocumentationElement.Example(IEnumerable&lt;BlockDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsExampleDocumentationElement.html">ExampleDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Example-2.html">DocumentationElement.Example(BlockDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsExampleDocumentationElement.html">ExampleDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Example-3.html">DocumentationElement.Example(IEnumerable&lt;BlockDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsExampleDocumentationElement.html">ExampleDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Exception.html">DocumentationElement.Exception(MemberReferenceDocumentationElement, IEnumerable&lt;BlockDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsExceptionDocumentationElement.html">ExceptionDocumentationElement</a> with the provided <em>description</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Exception-2.html">DocumentationElement.Exception(MemberReferenceDocumentationElement, BlockDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsExceptionDocumentationElement.html">ExceptionDocumentationElement</a> with the provided <em>description</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Exception-3.html">DocumentationElement.Exception(MemberReferenceDocumentationElement, IEnumerable&lt;BlockDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsExceptionDocumentationElement.html">ExceptionDocumentationElement</a> with the provided <em>description</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.GenericParameterReference.html">DocumentationElement.GenericParameterReference(string)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsGenericParameterReferenceDocumentationElement.html">GenericParameterReferenceDocumentationElement</a> with the provided <em>genericParameterName</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.GenericParameterReference-2.html">DocumentationElement.GenericParameterReference(string, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsGenericParameterReferenceDocumentationElement.html">GenericParameterReferenceDocumentationElement</a> with the provided <em>genericParameterName</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Hyperlink.html">DocumentationElement.Hyperlink(string, string)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsHyperlinkDocumentationElement.html">HyperlinkDocumentationElement</a> with the provided <em>destination</em> and <em>text</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Hyperlink-2.html">DocumentationElement.Hyperlink(string, string, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsHyperlinkDocumentationElement.html">HyperlinkDocumentationElement</a> with the provided <em>destination</em> and <em>text</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.InlineCode.html">DocumentationElement.InlineCode(string)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsInlineCodeDocumentationElement.html">InlineCodeDocumentationElement</a> with the provided <em>code</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.InlineCode-2.html">DocumentationElement.InlineCode(string, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsInlineCodeDocumentationElement.html">InlineCodeDocumentationElement</a> with the provided <em>code</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.ListItem.html">DocumentationElement.ListItem(IEnumerable&lt;InlineDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsListItemDocumentationElement.html">ListItemDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.ListItem-2.html">DocumentationElement.ListItem(InlineDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsListItemDocumentationElement.html">ListItemDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.ListItem-3.html">DocumentationElement.ListItem(IEnumerable&lt;InlineDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsListItemDocumentationElement.html">ListItemDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.MemberReference.html">DocumentationElement.MemberReference(MemberReference)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsReferenceDataDocumentationElement.html">ReferenceDataDocumentationElement</a> with the provided <em>referredMember</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.MemberReference-2.html">DocumentationElement.MemberReference(string)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsMemberNameReferenceDocumentationElement.html">MemberNameReferenceDocumentationElement</a> with the provided <em>canonicalName</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.MemberReference-3.html">DocumentationElement.MemberReference(MemberReference, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsReferenceDataDocumentationElement.html">ReferenceDataDocumentationElement</a> with the provided <em>referredMember</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.MemberReference-4.html">DocumentationElement.MemberReference(string, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsMemberNameReferenceDocumentationElement.html">MemberNameReferenceDocumentationElement</a> with the provided <em>canonicalName</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.OrderedList.html">DocumentationElement.OrderedList(IEnumerable&lt;ListItemDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsOrderedListDocumentationElement.html">OrderedListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.OrderedList-2.html">DocumentationElement.OrderedList(ListItemDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsOrderedListDocumentationElement.html">OrderedListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.OrderedList-3.html">DocumentationElement.OrderedList(IEnumerable&lt;ListItemDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsOrderedListDocumentationElement.html">OrderedListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Paragraph.html">DocumentationElement.Paragraph(IEnumerable&lt;InlineDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsParagraphDocumentationElement.html">ParagraphDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Paragraph-2.html">DocumentationElement.Paragraph(InlineDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsParagraphDocumentationElement.html">ParagraphDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Paragraph-3.html">DocumentationElement.Paragraph(IEnumerable&lt;InlineDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsParagraphDocumentationElement.html">ParagraphDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.ParameterReference.html">DocumentationElement.ParameterReference(string)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsParameterReferenceDocumentationElement.html">ParameterReferenceDocumentationElement</a> with the provided <em>parameterName</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.ParameterReference-2.html">DocumentationElement.ParameterReference(string, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsParameterReferenceDocumentationElement.html">ParameterReferenceDocumentationElement</a> with the provided <em>parameterName</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Remarks.html">DocumentationElement.Remarks(IEnumerable&lt;BlockDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsRemarksDocumentationElement.html">RemarksDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Remarks-2.html">DocumentationElement.Remarks(BlockDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsRemarksDocumentationElement.html">RemarksDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Remarks-3.html">DocumentationElement.Remarks(IEnumerable&lt;BlockDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsRemarksDocumentationElement.html">RemarksDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Summary.html">DocumentationElement.Summary(IEnumerable&lt;BlockDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsSummaryDocumentationElement.html">SummaryDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Summary-2.html">DocumentationElement.Summary(BlockDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsSummaryDocumentationElement.html">SummaryDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Summary-3.html">DocumentationElement.Summary(IEnumerable&lt;BlockDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsSummaryDocumentationElement.html">SummaryDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Table.html">DocumentationElement.Table(IEnumerable&lt;TableRowDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableDocumentationElement.html">TableDocumentationElement</a> with the provided <em>rows</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Table-2.html">DocumentationElement.Table(TableRowDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableDocumentationElement.html">TableDocumentationElement</a> with the provided <em>rows</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Table-3.html">DocumentationElement.Table(IEnumerable&lt;TableColumnDocumentationElement&gt;, IEnumerable&lt;TableRowDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableDocumentationElement.html">TableDocumentationElement</a> with the provided <em>columns</em> and <em>rows</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Table-4.html">DocumentationElement.Table(IEnumerable&lt;TableColumnDocumentationElement&gt;, TableRowDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableDocumentationElement.html">TableDocumentationElement</a> with the provided <em>columns</em> and <em>rows</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Table-5.html">DocumentationElement.Table(IEnumerable&lt;TableRowDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableDocumentationElement.html">TableDocumentationElement</a> with the provided <em>rows</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Table-6.html">DocumentationElement.Table(IEnumerable&lt;TableColumnDocumentationElement&gt;, IEnumerable&lt;TableRowDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableDocumentationElement.html">TableDocumentationElement</a> with the provided <em>columns</em> and <em>rows</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.TableCell.html">DocumentationElement.TableCell(IEnumerable&lt;InlineDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableCellDocumentationElement.html">TableCellDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.TableCell-2.html">DocumentationElement.TableCell(InlineDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableCellDocumentationElement.html">TableCellDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.TableCell-3.html">DocumentationElement.TableCell(IEnumerable&lt;InlineDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableCellDocumentationElement.html">TableCellDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.TableColumn.html">DocumentationElement.TableColumn(IEnumerable&lt;InlineDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Cretes a <a href="CodeMap.DocumentationElementsTableCellDocumentationElement.html">TableCellDocumentationElement</a> for the provided <em>name</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.TableColumn-2.html">DocumentationElement.TableColumn(InlineDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Cretes a <a href="CodeMap.DocumentationElementsTableCellDocumentationElement.html">TableCellDocumentationElement</a> for the provided <em>name</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.TableColumn-3.html">DocumentationElement.TableColumn(IEnumerable&lt;InlineDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Cretes a <a href="CodeMap.DocumentationElementsTableCellDocumentationElement.html">TableCellDocumentationElement</a> for the provided <em>name</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.TableRow.html">DocumentationElement.TableRow(IEnumerable&lt;TableCellDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableRowDocumentationElement.html">TableRowDocumentationElement</a> for the provided <em>cells</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.TableRow-2.html">DocumentationElement.TableRow(TableCellDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableRowDocumentationElement.html">TableRowDocumentationElement</a> for the provided <em>cells</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.TableRow-3.html">DocumentationElement.TableRow(IEnumerable&lt;TableCellDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTableRowDocumentationElement.html">TableRowDocumentationElement</a> for the provided <em>cells</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Text.html">DocumentationElement.Text(string)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsTextDocumentationElement.html">TextDocumentationElement</a> with the provided <em>text</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.UnorderedList.html">DocumentationElement.UnorderedList(IEnumerable&lt;ListItemDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsUnorderedListDocumentationElement.html">UnorderedListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.UnorderedList-2.html">DocumentationElement.UnorderedList(ListItemDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsUnorderedListDocumentationElement.html">UnorderedListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.UnorderedList-3.html">DocumentationElement.UnorderedList(IEnumerable&lt;ListItemDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates an <a href="CodeMap.DocumentationElementsUnorderedListDocumentationElement.html">UnorderedListDocumentationElement</a> with the provided <em>items</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Value.html">DocumentationElement.Value(IEnumerable&lt;BlockDocumentationElement&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsValueDocumentationElement.html">ValueDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Value-2.html">DocumentationElement.Value(BlockDocumentationElement[])</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsValueDocumentationElement.html">ValueDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="CodeMap.DocumentationElementsDocumentationElement.Value-3.html">DocumentationElement.Value(IEnumerable&lt;BlockDocumentationElement&gt;, IReadOnlyDictionary&lt;string, string&gt;)</a></td>
+            <td class="text-left text-nowrap"><code>public</code></td>
+            <td><p>Creates a <a href="CodeMap.DocumentationElementsValueDocumentationElement.html">ValueDocumentationElement</a> with the provided <em>content</em>.
+</p>
+</td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+
+
+        </div>
+    </div>
+
+    <div>
+        <hr>
+
+        <div class="d-flex flex-column container px-2">
+            <p class="text-center">
+                <a href="https://github.com/Andrei15193/CodeMap/releases/tag/2.0.0">CodeMap 2.0.0</a>
+                -
+                <a href="https://github.com/Andrei15193/CodeMap">View on GitHub</a>
+                -
+                <a href="https://www.nuget.org/packages/CodeMap/2.0.0">View on NuGet</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
