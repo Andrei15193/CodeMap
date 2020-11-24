@@ -24,11 +24,11 @@ namespace CodeMap.Handlebars.Visitors
             => _nameBuilder.Append(assembly.Name);
 
         protected override void VisitNamespace(NamespaceReference @namespace)
-            => _nameBuilder.Append(@namespace.Name);
+            => _nameBuilder.Append(string.IsNullOrWhiteSpace(@namespace.Name) ? "global-namespace" : @namespace.Name);
 
         protected override void VisitType(TypeReference type)
         {
-            _nameBuilder.Append(type.Name);
+            _nameBuilder.Append(_GetTypeName(type));
             if (type.GenericArguments.Any())
             {
                 _nameBuilder.Append('<');
@@ -72,7 +72,7 @@ namespace CodeMap.Handlebars.Visitors
         protected override void VisitConstructor(ConstructorReference constructor)
         {
             constructor.DeclaringType.Accept(this);
-            _nameBuilder.Append('.').Append(constructor.DeclaringType.Name);
+            _nameBuilder.Append('.').Append(_GetTypeName(constructor.DeclaringType));
             _nameBuilder.Append('(');
             var isFirst = true;
             foreach (var parameterType in constructor.ParameterTypes)
@@ -146,5 +146,43 @@ namespace CodeMap.Handlebars.Visitors
 
         protected override void VisitGenericMethodParameter(GenericMethodParameterReference genericMethodParameter)
             => _nameBuilder.Append(genericMethodParameter.Name);
+
+        private static string _GetTypeName(TypeReference typeReference)
+        {
+            if (typeReference == typeof(void))
+                return "void";
+            else if (typeReference == typeof(object))
+                return "object";
+            else if (typeReference == typeof(bool))
+                return "bool";
+            else if (typeReference == typeof(byte))
+                return "byte";
+            else if (typeReference == typeof(sbyte))
+                return "sbyte";
+            else if (typeReference == typeof(short))
+                return "short";
+            else if (typeReference == typeof(ushort))
+                return "ushort";
+            else if (typeReference == typeof(int))
+                return "int";
+            else if (typeReference == typeof(uint))
+                return "uint";
+            else if (typeReference == typeof(long))
+                return "long";
+            else if (typeReference == typeof(float))
+                return "float";
+            else if (typeReference == typeof(double))
+                return "double";
+            else if (typeReference == typeof(decimal))
+                return "decimal";
+            else if (typeReference == typeof(char))
+                return "char";
+            else if (typeReference == typeof(string))
+                return "string";
+            else if (typeReference is DynamicTypeReference)
+                return "dynamic";
+            else
+                return typeReference.Name;
+        }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeMap.DeclarationNodes;
 using CodeMap.Handlebars.Visitors;
 using CodeMap.ReferenceData;
 
@@ -20,20 +19,6 @@ namespace CodeMap.Handlebars
         /// <param name="microsoftDocsView">The view query string parameter when generating MS docs links, this corresponds to the target version.</param>
         public DefaultMemberReferenceResolver(Assembly library, string microsoftDocsView)
             => (_library, _microsoftDocsView, _cache) = (library, microsoftDocsView, new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
-
-        /// <summary>Gets the HTML file name for the provided <paramref name="declarationNode"/>.</summary>
-        /// <param name="declarationNode">The <see cref="DeclarationNode"/> for which to generate a file name.</param>
-        /// <returns>Returns the HTML file name where the documentation for the provided <paramref name="declarationNode"/> should be saved.</returns>
-        public string GetFileName(DeclarationNode declarationNode)
-        {
-            var memberDeclarationFullNameVisitor = new MemberDeclarationFullNameVisitor(excludeParameters: false);
-            declarationNode.Accept(memberDeclarationFullNameVisitor);
-
-            var memberDeclarationBaseNameVisitor = new MemberDeclarationFullNameVisitor(excludeParameters: true);
-            declarationNode.Accept(memberDeclarationBaseNameVisitor);
-
-            return _GetEntry(memberDeclarationFullNameVisitor.Result, memberDeclarationBaseNameVisitor.Result);
-        }
 
         /// <summary>Gets the URL for the provided <paramref name="memberReference"/>.</summary>
         /// <param name="memberReference">The <see cref="MemberReference"/> for which to generate the URL.</param>

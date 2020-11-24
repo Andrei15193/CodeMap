@@ -116,7 +116,7 @@ namespace CodeMap.Handlebars
 
         private void _ApplyTempalte(string templateName, DeclarationNode declarationNode)
         {
-            using var fileStream = new FileStream(Path.Combine(_directoryInfo.FullName, _memberReferenceResolver.GetFileName(declarationNode)), FileMode.Create, FileAccess.Write, FileShare.Read);
+            using var fileStream = new FileStream(Path.Combine(_directoryInfo.FullName, _memberReferenceResolver.GetUrl(declarationNode.AsMeberReference())), FileMode.Create, FileAccess.Write, FileShare.Read);
             using var fileStreamWriter = new StreamWriter(fileStream);
             _handlebarsTemplateWriter.Write(fileStreamWriter, templateName, declarationNode);
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using CodeMap.DeclarationNodes;
 using CodeMap.Handlebars.Visitors;
 using HandlebarsDotNet;
@@ -42,12 +43,13 @@ namespace CodeMap.Handlebars.Helpers
         public void Apply(TextWriter writer, object context, params object[] parameters)
         {
             var parameter = parameters.DefaultIfEmpty(context).First();
+
             switch (parameter)
             {
                 case DeclarationNode declarationNode:
-                    var memberDeclarationNameVisitor = new MemberDeclarationNameVisitor();
-                    declarationNode.Accept(memberDeclarationNameVisitor);
-                    WriteHyperlink(writer, _memberReferenceResolver.GetFileName(declarationNode), memberDeclarationNameVisitor.Result);
+                    var nameBuilder = new StringBuilder();
+                    declarationNode.AsMeberReference().Accept(new MemberReferenceNameBuilderVisitor(nameBuilder));
+                    WriteHyperlink(writer, _memberReferenceResolver.GetUrl(declarationNode.AsMeberReference()), nameBuilder.ToString());
                     break;
 
                 case ReferenceData.MemberReference memberReference:

@@ -16,10 +16,10 @@ namespace CodeMap.Handlebars.Visitors
             => (_writer, _memberReferenceResolver, _writeHyperlink) = (writer, memberReferenceResolver, writeHyperlink);
 
         protected override void VisitAssembly(AssemblyReference assembly)
-            => throw new NotImplementedException("Assembly references are not handled.");
+            => _writeHyperlink(_writer, _memberReferenceResolver.GetUrl(assembly), assembly.Name);
 
         protected override void VisitNamespace(NamespaceReference @namespace)
-            => throw new NotImplementedException("Namespace references are not handled.");
+            => _writeHyperlink(_writer, _memberReferenceResolver.GetUrl(@namespace), string.IsNullOrWhiteSpace(@namespace.Name) ? "global-namespace" : @namespace.Name);
 
         protected override void VisitType(TypeReference type)
         {

@@ -56,19 +56,19 @@
     <EmbeddedResource Include="Partials\Layout.hbs" />
     <EmbeddedResource Include="Partials\GenericParametersDocumentation.hbs" />
     <EmbeddedResource Include="Partials\MembersDeclaraction.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Assembly.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Class.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Constant.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Constructor.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Delegate.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Enum.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Event.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Field.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Interface.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Method.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Namespace.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Property.hbs" />
-    <EmbeddedResource Include="Templates\Declarations\Struct.hbs" />
+    <EmbeddedResource Include="Templates\Assembly.hbs" />
+    <EmbeddedResource Include="Templates\Class.hbs" />
+    <EmbeddedResource Include="Templates\Constant.hbs" />
+    <EmbeddedResource Include="Templates\Constructor.hbs" />
+    <EmbeddedResource Include="Templates\Delegate.hbs" />
+    <EmbeddedResource Include="Templates\Enum.hbs" />
+    <EmbeddedResource Include="Templates\Event.hbs" />
+    <EmbeddedResource Include="Templates\Field.hbs" />
+    <EmbeddedResource Include="Templates\Interface.hbs" />
+    <EmbeddedResource Include="Templates\Method.hbs" />
+    <EmbeddedResource Include="Templates\Namespace.hbs" />
+    <EmbeddedResource Include="Templates\Property.hbs" />
+    <EmbeddedResource Include="Templates\Struct.hbs" />
   </ItemGroup>
 
   <ItemGroup>
