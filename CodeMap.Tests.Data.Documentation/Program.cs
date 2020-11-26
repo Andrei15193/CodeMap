@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using CodeMap.DeclarationNodes;
 using CodeMap.Documentation;
 using CodeMap.Handlebars;
@@ -17,18 +19,23 @@ namespace CodeMap.Tests.Data.Documentation
             if (string.IsNullOrWhiteSpace(arguments.TargetSubdirectory))
                 throw new ArgumentException("Expected -TargetSubdirectory", nameof(args));
 
-            var library = typeof(GlobalTestClass).Assembly;
-            var documentation = DeclarationNode.Create(library, DeclarationFilter.All).Apply(new TestDataAssemblyDocumentationAddition());
-
-            var outputDirectory = new DirectoryInfo(arguments.OutputPath);
-            outputDirectory.Create();
-
-            var targetDirectory = outputDirectory.CreateSubdirectory(arguments.TargetSubdirectory);
-
-            var memberFileNameResolver = new MicrosoftDocsMemberReferenceResolver(library, "netcore-3.1");
-            var templateWriter = new HandlebarsTemplateWriter(memberFileNameResolver);
-
-            documentation.Accept(new HandlebarsWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));
+            DeclarationNode
+                .Create(typeof(GlobalTestClass).Assembly, DeclarationFilter.All)
+                .Apply(new TestDataAssemblyDocumentationAddition())
+                .Accept(
+                    new HandlebarsWriterDeclarationNodeVisitor(
+                        Directory.CreateDirectory(arguments.OutputPath).CreateSubdirectory(arguments.TargetSubdirectory),
+                        new HandlebarsTemplateWriter(
+                            new MemberReferenceResolver(
+                                new Dictionary<Assembly, IMemberReferenceResolver>
+                                {
+                                    { typeof(GlobalTestClass).Assembly, new CodeMapMemberReferenceResolver() }
+                                },
+                                new MicrosoftDocsMemberReferenceResolver("netcore-3.1")
+                            )
+                        )
+                )
+            );
         }
     }
 }
