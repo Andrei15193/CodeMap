@@ -11,7 +11,7 @@
 </head>
 <body class="d-flex flex-column">
     
-<nav id="navigation" class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+<nav id="navigation" class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="../../index.html">Home</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,10 +53,10 @@
 
 
 <li class="breadcrumb-item" aria-current="page">
-    <a href="index.html">CodeMap.Handlebars</a>
+    <a href="../../dev/CodeMap.Handlebars/index.html">CodeMap.Handlebars</a>
 </li>
 <li class="breadcrumb-item" aria-current="page">
-    <a href="CodeMap.Handlebars.Helpers.html">CodeMap.Handlebars.Helpers</a>
+    <a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.Helpers.html">CodeMap.Handlebars.Helpers</a>
 </li>
         <li class="breadcrumb-item active" aria-current="page">MemberReference</li>
     </ol>
@@ -68,13 +68,13 @@
 </div>
 <h2>MemberReference Class</h2>
 
-<p>A helper used to generate hyperlinks for a <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.DeclarationNode?view=netstandard-2.1">DeclarationNode</a> or a <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.MemberReference?view=netstandard-2.1">MemberReference</a>.
+<p>A helper used to generate hyperlinks for a <a href="../../dev/CodeMap/CodeMap.DeclarationNodesDeclarationNode.html">DeclarationNode</a> or a <a href="../../dev/CodeMap/CodeMap.ReferenceDataMemberReference.html">MemberReference</a>.
 </p>
 
 <p>
-    Base type: <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Object?view=netstandard-2.1">object</a>.
+    Base type: <a href="https://docs.microsoft.com/dotnet/api/System.Object?view=netstandard-2.1">object</a>.
 <br>Implemented interfaces:
-    <a href="CodeMap.Handlebars.HelpersIHandlebarsHelper.html">IHandlebarsHelper</a>.
+    <a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersIHandlebarsHelper.html">IHandlebarsHelper</a>.
 </p>
 
 
@@ -90,9 +90,9 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.Handlebars.HelpersMemberReference.MemberReference.html">MemberReference.MemberReference(IMemberReferenceResolver)</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersMemberReference.MemberReference(-730FF434FE8BDEF9E420FE65DA4F86B8.html">MemberReference(IMemberReferenceResolver)</a></td>
             <td class="text-left text-nowrap"><code>public</code></td>
-            <td><p>Initializes a new instance of the <a href="CodeMap.Handlebars.HelpersMemberReference.html">MemberReference</a> class.
+            <td><p>Initializes a new instance of the <a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersMemberReference.html">MemberReference</a> class.
 </p>
 </td>
         </tr>
@@ -109,7 +109,7 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.Handlebars.HelpersMemberReference.Name.html">MemberReference.Name</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersMemberReference.Name.html">Name</a></td>
             <td class="text-left text-nowrap"><code>public get</code></td>
             <td><p>Gets the name of the helper.
 </p>
@@ -128,14 +128,14 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.Handlebars.HelpersMemberReference.Apply.html">MemberReference.Apply(TextWriter, object, object[])</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersMemberReference.Apply(-E230C0B78E7387AC5A62250906DEC293.html">Apply(TextWriter, object, object[])</a></td>
             <td class="text-left text-nowrap"><code>public</code></td>
             <td><p>Writes a hyperlink (or multiple in case of generic types) for the provided first parameter or context.
 </p>
 </td>
         </tr>
         <tr>
-            <td><a href="CodeMap.Handlebars.HelpersMemberReference.WriteHyperlink.html">MemberReference.WriteHyperlink(TextWriter, string, string)</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersMemberReference.WriteHyperlink(-33FCFAEC4A6D14F0E5863CD4881F94D8.html">WriteHyperlink(TextWriter, string, string)</a></td>
             <td class="text-left text-nowrap"><code>protected</code></td>
             <td><p>Writes a hyperlink to the provided <em>textWriter</em>.
 </p>
@@ -151,7 +151,7 @@
 <p>The following template will generate a paragraph containing a hyperlink to the given parameter.
 </p><div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">{{MemberReference declaringType}}</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
 </pre></div>
-<p>If the current context exposes a <code>declaringType</code> property that is a <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.ClassDeclaration?view=netstandard-2.1">ClassDeclaration</a> named <code>CustomType</code>, the output will be as follows:
+<p>If the current context exposes a <code>declaringType</code> property that is a <a href="../../dev/CodeMap/CodeMap.DeclarationNodesClassDeclaration.html">ClassDeclaration</a> named <code>CustomType</code>, the output will be as follows:
 </p><div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;&lt;</span><span class=""></span><span class="nt">a</span><span class=""> </span><span class="na">href</span><span class="o">=</span><span class=""></span><span class="s">&quot;CustomType.html&quot;</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">CustomType</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">a</span><span class=""></span><span class="p">&gt;&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
 </pre></div>
 

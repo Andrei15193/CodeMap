@@ -11,7 +11,7 @@
 </head>
 <body class="d-flex flex-column">
     
-<nav id="navigation" class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+<nav id="navigation" class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="../../index.html">Home</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@
     <ol class="breadcrumb">
 
 <li class="breadcrumb-item" aria-current="page">
-    <a href="index.html">CodeMap.Handlebars</a>
+    <a href="../../dev/CodeMap.Handlebars/index.html">CodeMap.Handlebars</a>
 </li>
         <li class="breadcrumb-item active" aria-current="page">CodeMap.Handlebars</li>
     </ol>
@@ -76,8 +76,8 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.HandlebarsIMemberReferenceResolver.html">IMemberReferenceResolver</a></td>
-            <td><p>Exposes the interface of an object that resolves <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.DeclarationNode?view=netstandard-2.1">DeclarationNode</a>s and <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.MemberReference?view=netstandard-2.1">MemberReference</a>s.
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.HandlebarsIMemberReferenceResolver.html">IMemberReferenceResolver</a></td>
+            <td><p>Exposes the interface for generating URLs for <a href="../../dev/CodeMap/CodeMap.ReferenceDataMemberReference.html">MemberReference</a>s.
 </p>
 </td>
         </tr>
@@ -93,32 +93,44 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.HandlebarsDefaultMemberReferenceResolver.html">DefaultMemberReferenceResolver</a></td>
-            <td><p>A default implementation for resolving member references.
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.HandlebarsCodeMapMemberReferenceResolver.html">CodeMapMemberReferenceResolver</a></td>
+            <td><p>Exposes the interface for generating URLs for <a href="../../dev/CodeMap/CodeMap.ReferenceDataMemberReference.html">MemberReference</a>s generated with <a href="https://andrei15193.github.io/CodeMap">CodeMap</a>.
 </p>
 </td>
         </tr>
         <tr>
-            <td><a href="CodeMap.HandlebarsDocumentationPartialNames.html">DocumentationPartialNames</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.HandlebarsDocumentationPartialNames.html">DocumentationPartialNames</a></td>
             <td><p>Contains the names of the documentation element partials.
 </p>
 </td>
         </tr>
         <tr>
-            <td><a href="CodeMap.HandlebarsDocumentationTemplateNames.html">DocumentationTemplateNames</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.HandlebarsDocumentationTemplateNames.html">DocumentationTemplateNames</a></td>
             <td><p>Contains the names of the declaration node templates.
 </p>
 </td>
         </tr>
         <tr>
-            <td><a href="CodeMap.HandlebarsHandlebarsTemplateWriter.html">HandlebarsTemplateWriter</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.HandlebarsHandlebarsTemplateWriter.html">HandlebarsTemplateWriter</a></td>
             <td><p>A <a href="https://github.com/Handlebars-Net/Handlebars.Net">Handlebars.NET</a> based template writer providing the default templates, partials and helpers.
 </p>
 </td>
         </tr>
         <tr>
-            <td><a href="CodeMap.HandlebarsHandlebarsWriterDeclarationNodeVisitor.html">HandlebarsWriterDeclarationNodeVisitor</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.HandlebarsHandlebarsWriterDeclarationNodeVisitor.html">HandlebarsWriterDeclarationNodeVisitor</a></td>
             <td><p>Represents a <a href="https://github.com/Handlebars-Net/Handlebars.Net">Handlebars.NET</a> based writer for generating documentation.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.HandlebarsMemberReferenceResolver.html">MemberReferenceResolver</a></td>
+            <td><p>A member reference resolver composed of multiple <a href="../../dev/CodeMap.Handlebars/CodeMap.HandlebarsIMemberReferenceResolver.html">IMemberReferenceResolver</a>s for generating different URLs based on the library towards which the reference was made.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.HandlebarsMicrosoftDocsMemberReferenceResolver.html">MicrosoftDocsMemberReferenceResolver</a></td>
+            <td><p>A default implementation for resolving member references.
 </p>
 </td>
         </tr>

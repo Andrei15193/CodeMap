@@ -11,7 +11,7 @@
 </head>
 <body class="d-flex flex-column">
     
-<nav id="navigation" class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+<nav id="navigation" class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="../../index.html">Home</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,10 +53,10 @@
 
 
 <li class="breadcrumb-item" aria-current="page">
-    <a href="index.html">CodeMap</a>
+    <a href="../../dev/CodeMap/index.html">CodeMap</a>
 </li>
 <li class="breadcrumb-item" aria-current="page">
-    <a href="CodeMap.DocumentationElements.html">CodeMap.DocumentationElements</a>
+    <a href="../../dev/CodeMap/CodeMap.DocumentationElements.html">CodeMap.DocumentationElements</a>
 </li>
         <li class="breadcrumb-item active" aria-current="page">MemberDocumentationCollection</li>
     </ol>
@@ -68,13 +68,13 @@
 </div>
 <h2>MemberDocumentationCollection Class</h2>
 
-<p>Represents a lookup collection for <a href="CodeMap.DocumentationElementsMemberDocumentation.html">MemberDocumentation</a> objects.
+<p>Represents a lookup collection for <a href="../../dev/CodeMap/CodeMap.DocumentationElementsMemberDocumentation.html">MemberDocumentation</a> objects.
 </p>
 
 <p>
-    Base type: <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Object?view=netstandard-2.1">object</a>.
+    Base type: <a href="https://docs.microsoft.com/dotnet/api/System.Object?view=netstandard-2.1">object</a>.
 <br>Implemented interfaces:
-    <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.IReadOnlyCollection-1?view=netstandard-2.1">IReadOnlyCollection</a>&lt;<a href="CodeMap.DocumentationElementsMemberDocumentation.html">MemberDocumentation</a>&gt;.
+    <a href="https://docs.microsoft.com/dotnet/api/System.Collections.Generic.IReadOnlyCollection-1?view=netstandard-2.1">IReadOnlyCollection</a>&lt;<a href="../../dev/CodeMap/CodeMap.DocumentationElementsMemberDocumentation.html">MemberDocumentation</a>&gt;.
 </p>
 
 
@@ -90,9 +90,9 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.DocumentationElementsMemberDocumentationCollection.MemberDocumentationCollection.html">MemberDocumentationCollection.MemberDocumentationCollection(IEnumerable&lt;MemberDocumentation&gt;)</a></td>
+            <td><a href="../../dev/CodeMap/CodeMap.DocumentationElementsMemberDocumentationCollection.MemberDocumentationCollection(-A0345635DD17F2939A06001708AD7DD3.html">MemberDocumentationCollection(IEnumerable&lt;MemberDocumentation&gt;)</a></td>
             <td class="text-left text-nowrap"><code>public</code></td>
-            <td><p>Initializes a new instance of the <a href="CodeMap.DocumentationElementsMemberDocumentationCollection.html">MemberDocumentationCollection</a> class.
+            <td><p>Initializes a new instance of the <a href="../../dev/CodeMap/CodeMap.DocumentationElementsMemberDocumentationCollection.html">MemberDocumentationCollection</a> class.
 </p>
 </td>
         </tr>
@@ -109,9 +109,9 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.DocumentationElementsMemberDocumentationCollection.Count.html">MemberDocumentationCollection.Count</a></td>
+            <td><a href="../../dev/CodeMap/CodeMap.DocumentationElementsMemberDocumentationCollection.Count.html">Count</a></td>
             <td class="text-left text-nowrap"><code>public get</code></td>
-            <td><p>Gets the total number of <a href="CodeMap.DocumentationElementsMemberDocumentation.html">MemberDocumentation</a> items in the collection.
+            <td><p>Gets the total number of <a href="../../dev/CodeMap/CodeMap.DocumentationElementsMemberDocumentation.html">MemberDocumentation</a> items in the collection.
 </p>
 </td>
         </tr>
@@ -128,16 +128,16 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.DocumentationElementsMemberDocumentationCollection.GetEnumerator.html">MemberDocumentationCollection.GetEnumerator()</a></td>
+            <td><a href="../../dev/CodeMap/CodeMap.DocumentationElementsMemberDocumentationCollection.GetEnumerator(-BCD8B0C2EB1FCE714EAB6CEF0D771ACC.html">GetEnumerator()</a></td>
             <td class="text-left text-nowrap"><code>public</code></td>
             <td><p>Creates an enumerator that iterates through the collection.
 </p>
 </td>
         </tr>
         <tr>
-            <td><a href="CodeMap.DocumentationElementsMemberDocumentationCollection.TryFind.html">MemberDocumentationCollection.TryFind(string, MemberDocumentation)</a></td>
+            <td><a href="../../dev/CodeMap/CodeMap.DocumentationElementsMemberDocumentationCollection.TryFind(-E0562A9A17C77905C5F1B3191B5B0958.html">TryFind(string, MemberDocumentation)</a></td>
             <td class="text-left text-nowrap"><code>public</code></td>
-            <td><p>Attempts to find a <a href="CodeMap.DocumentationElementsMemberDocumentation.html">MemberDocumentation</a> for the provided <em>canonicalName</em>.
+            <td><p>Attempts to find a <a href="../../dev/CodeMap/CodeMap.DocumentationElementsMemberDocumentation.html">MemberDocumentation</a> for the provided <em>canonicalName</em>.
 </p>
 </td>
         </tr>
@@ -147,7 +147,7 @@
 
 
 <h3>Remarks</h3>
-<p>The lookup is done by searching for the canonical name of a <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.MemberInfo?view=netstandard-2.1">MemberInfo</a>, if a case sensitive (best match) is found then the <a href="CodeMap.DocumentationElementsMemberDocumentation.html">MemberDocumentation</a> of that member is returned. Otherwsie the first case insensitive match is returned.
+<p>The lookup is done by searching for the canonical name of a <a href="https://docs.microsoft.com/dotnet/api/System.Reflection.MemberInfo?view=netstandard-2.1">MemberInfo</a>, if a case sensitive (best match) is found then the <a href="../../dev/CodeMap/CodeMap.DocumentationElementsMemberDocumentation.html">MemberDocumentation</a> of that member is returned. Otherwsie the first case insensitive match is returned.
 </p>
 
         </div>

@@ -11,7 +11,7 @@
 </head>
 <body class="d-flex flex-column">
     
-<nav id="navigation" class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+<nav id="navigation" class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="../../index.html">Home</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,10 +53,10 @@
 
 
 <li class="breadcrumb-item" aria-current="page">
-    <a href="index.html">CodeMap.Handlebars</a>
+    <a href="../../dev/CodeMap.Handlebars/index.html">CodeMap.Handlebars</a>
 </li>
 <li class="breadcrumb-item" aria-current="page">
-    <a href="CodeMap.Handlebars.Helpers.html">CodeMap.Handlebars.Helpers</a>
+    <a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.Helpers.html">CodeMap.Handlebars.Helpers</a>
 </li>
         <li class="breadcrumb-item active" aria-current="page">GetAssemblyCompany</li>
     </ol>
@@ -68,13 +68,13 @@
 </div>
 <h2>GetAssemblyCompany Class</h2>
 
-<p>A helper used to get the company name from an <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.AssemblyDeclaration?view=netstandard-2.1">AssemblyDeclaration</a>.
+<p>A helper used to get the company name from an <a href="../../dev/CodeMap/CodeMap.DeclarationNodesAssemblyDeclaration.html">AssemblyDeclaration</a>.
 </p>
 
 <p>
-    Base type: <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Object?view=netstandard-2.1">object</a>.
+    Base type: <a href="https://docs.microsoft.com/dotnet/api/System.Object?view=netstandard-2.1">object</a>.
 <br>Implemented interfaces:
-    <a href="CodeMap.Handlebars.HelpersIHandlebarsHelper.html">IHandlebarsHelper</a>.
+    <a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersIHandlebarsHelper.html">IHandlebarsHelper</a>.
 </p>
 
 
@@ -90,7 +90,7 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.Handlebars.HelpersGetAssemblyCompany.GetAssemblyCompany.html">GetAssemblyCompany.GetAssemblyCompany()</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersGetAssemblyCompany.GetAssemblyCompany(-BCD8B0C2EB1FCE714EAB6CEF0D771ACC.html">GetAssemblyCompany()</a></td>
             <td class="text-left text-nowrap"><code>public</code></td>
             <td>
 </td>
@@ -108,7 +108,7 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.Handlebars.HelpersGetAssemblyCompany.Name.html">GetAssemblyCompany.Name</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersGetAssemblyCompany.Name.html">Name</a></td>
             <td class="text-left text-nowrap"><code>public get</code></td>
             <td><p>Gets the name of the helper.
 </p>
@@ -127,7 +127,7 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.Handlebars.HelpersGetAssemblyCompany.Apply.html">GetAssemblyCompany.Apply(TextWriter, object, object[])</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersGetAssemblyCompany.Apply(-E230C0B78E7387AC5A62250906DEC293.html">Apply(TextWriter, object, object[])</a></td>
             <td class="text-left text-nowrap"><code>public</code></td>
             <td><p>Gets the assembly company attribute value from the first parameter or current context.
 </p>
@@ -143,7 +143,7 @@
 <p>The following template will generate a paragraph containing the company name.
 </p><div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">{{GetAssemblyCompany}}</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
 </pre></div>
-<p>If the current context is an <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.AssemblyDeclaration?view=netstandard-2.1">AssemblyDeclaration</a> with the company name set to <code>MyAwesomeCompany</code>, the output would be:
+<p>If the current context is an <a href="../../dev/CodeMap/CodeMap.DeclarationNodesAssemblyDeclaration.html">AssemblyDeclaration</a> with the company name set to <code>MyAwesomeCompany</code>, the output would be:
 </p><div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">MyAwesomeCompany</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
 </pre></div>
 

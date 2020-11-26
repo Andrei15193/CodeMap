@@ -11,7 +11,7 @@
 </head>
 <body class="d-flex flex-column">
     
-<nav id="navigation" class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+<nav id="navigation" class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="../../index.html">Home</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,10 +53,10 @@
 
 
 <li class="breadcrumb-item" aria-current="page">
-    <a href="index.html">CodeMap.Handlebars</a>
+    <a href="../../dev/CodeMap.Handlebars/index.html">CodeMap.Handlebars</a>
 </li>
 <li class="breadcrumb-item" aria-current="page">
-    <a href="CodeMap.Handlebars.Helpers.html">CodeMap.Handlebars.Helpers</a>
+    <a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.Helpers.html">CodeMap.Handlebars.Helpers</a>
 </li>
         <li class="breadcrumb-item active" aria-current="page">MemberAccessModifier</li>
     </ol>
@@ -68,13 +68,13 @@
 </div>
 <h2>MemberAccessModifier Class</h2>
 
-<p>A helper used to get the access modifier textual description for a <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.DeclarationNode?view=netstandard-2.1">DeclarationNode</a>. Most useful for properties where the access modifier can be changed for one of the accessors.
+<p>A helper used to get the access modifier textual description for a <a href="../../dev/CodeMap/CodeMap.DeclarationNodesDeclarationNode.html">DeclarationNode</a>. Most useful for properties where the access modifier can be changed for one of the accessors.
 </p>
 
 <p>
-    Base type: <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.Object?view=netstandard-2.1">object</a>.
+    Base type: <a href="https://docs.microsoft.com/dotnet/api/System.Object?view=netstandard-2.1">object</a>.
 <br>Implemented interfaces:
-    <a href="CodeMap.Handlebars.HelpersIHandlebarsHelper.html">IHandlebarsHelper</a>.
+    <a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersIHandlebarsHelper.html">IHandlebarsHelper</a>.
 </p>
 
 
@@ -90,7 +90,7 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.Handlebars.HelpersMemberAccessModifier.MemberAccessModifier.html">MemberAccessModifier.MemberAccessModifier()</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersMemberAccessModifier.MemberAccessModifier(-BCD8B0C2EB1FCE714EAB6CEF0D771ACC.html">MemberAccessModifier()</a></td>
             <td class="text-left text-nowrap"><code>public</code></td>
             <td>
 </td>
@@ -108,7 +108,7 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.Handlebars.HelpersMemberAccessModifier.Name.html">MemberAccessModifier.Name</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersMemberAccessModifier.Name.html">Name</a></td>
             <td class="text-left text-nowrap"><code>public get</code></td>
             <td><p>Gets the name of the helper.
 </p>
@@ -127,14 +127,14 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="CodeMap.Handlebars.HelpersMemberAccessModifier.Apply.html">MemberAccessModifier.Apply(TextWriter, object, object[])</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersMemberAccessModifier.Apply(-E230C0B78E7387AC5A62250906DEC293.html">Apply(TextWriter, object, object[])</a></td>
             <td class="text-left text-nowrap"><code>public</code></td>
             <td><p>Writes the access modifier to the provided <em>writer</em> for the first parameter or current context.
 </p>
 </td>
         </tr>
         <tr>
-            <td><a href="CodeMap.Handlebars.HelpersMemberAccessModifier.GetAccessModifierLabel.html">MemberAccessModifier.GetAccessModifierLabel(AccessModifier)</a></td>
+            <td><a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.HelpersMemberAccessModifier.GetAccessModifierLabel(-ADB8AE09F014DEF9E2A755A91FE3584A.html">GetAccessModifierLabel(AccessModifier)</a></td>
             <td class="text-left text-nowrap"><code>protected</code></td>
             <td><p>Gets the display label for the provided <em>accessModifier</em>.
 </p>
@@ -150,7 +150,7 @@
 <p>The following template will generate a paragraph containing the access modifier of the given parameter.
 </p><div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">{{MemberAccessModifier declaration}}</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
 </pre></div>
-<p>If the current context exposes a <code>declaration</code> property that is a public property with a private setter <a href="https://docs.microsoft.com/dotnet/api/CodeMap.ReferenceData.NamespaceReference.PropertyDeclaration?view=netstandard-2.1">PropertyDeclaration</a>, the output will be as follows:
+<p>If the current context exposes a <code>declaration</code> property that is a public property with a private setter <a href="../../dev/CodeMap/CodeMap.DeclarationNodesPropertyDeclaration.html">PropertyDeclaration</a>, the output will be as follows:
 </p><div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">public get; private set</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
 </pre></div>
 
