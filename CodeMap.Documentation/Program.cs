@@ -20,24 +20,41 @@ namespace CodeMap.Documentation
         internal static void Main(params string[] args)
         {
             var arguments = Arguments.GetFrom(args);
-            if (arguments.OutputPath == null)
+            if (string.IsNullOrWhiteSpace(arguments.OutputPath))
                 throw new ArgumentException("Expected -OutputPath", nameof(args));
+            if (string.IsNullOrWhiteSpace(arguments.TargetSubdirectory))
+                throw new ArgumentException("Expected -TargetSubdirectory", nameof(args));
 
-            WriteHomePage(arguments);
-            WriteDocumentation(arguments, CodeMapDirectoryName, typeof(DeclarationNode).Assembly, new DocumentationAdditions.Version1_0.CodeMapAssemblyDocumentationAddition());
-            WriteDocumentation(arguments, CodeMapHandlebarsDirectoryName, typeof(HandlebarsTemplateWriter).Assembly, new DocumentationAdditions.Version1_0.CodeMapHandlerbarsAssemblyDocumentationAddition());
+            var templateWriter = new HandlebarsTemplateWriter(
+                new MemberReferenceResolver(
+                    new Dictionary<Assembly, IMemberReferenceResolver>
+                    {
+                        { typeof(DeclarationNode).Assembly, new CodeMapMemberReferenceResolver($"../../{arguments.TargetSubdirectory}/{CodeMapDirectoryName}/") },
+                        { typeof(HandlebarsTemplateWriter).Assembly, new CodeMapMemberReferenceResolver($"../../{arguments.TargetSubdirectory}/{CodeMapHandlebarsDirectoryName}/") }
+                    },
+                    new MicrosoftDocsMemberReferenceResolver("netstandard-2.1")
+                )
+            );
 
-            _UpdateFiles(arguments);
+            var codeMapAssemblyDeclaration = DeclarationNode
+                .Create(typeof(DeclarationNode).Assembly)
+                .Apply(new DocumentationAdditions.Version1_0.CodeMapAssemblyDocumentationAddition());
+
+            WriteHomePage(arguments, templateWriter, codeMapAssemblyDeclaration);
+            codeMapAssemblyDeclaration
+                .Accept(new HandlebarsWriterDeclarationNodeVisitor(_GetTargetDirectory(arguments, CodeMapDirectoryName), templateWriter));
+            DeclarationNode
+                .Create(typeof(HandlebarsTemplateWriter).Assembly)
+                .Apply(new DocumentationAdditions.Version1_0.CodeMapHandlerbarsAssemblyDocumentationAddition())
+                .Accept(new HandlebarsWriterDeclarationNodeVisitor(_GetTargetDirectory(arguments, CodeMapHandlebarsDirectoryName), templateWriter));
+
+            _UpdateFiles(arguments, templateWriter);
         }
 
-        private static void WriteHomePage(Arguments arguments)
+        private static void WriteHomePage(Arguments arguments, HandlebarsTemplateWriter templateWriter, AssemblyDeclaration codeMapAssemblyDeclaration)
         {
             var outputDirectory = new DirectoryInfo(arguments.OutputPath);
             outputDirectory.Create();
-
-            var codeMapAssembly = typeof(DeclarationNode).Assembly;
-            var codeMapAssemblyDeclaration = DeclarationNode.Create(codeMapAssembly);
-            var templateWriter = new HandlebarsTemplateWriter(new DefaultMemberReferenceResolver(codeMapAssembly, "netstandard-2.1"));
 
             using (var indexFileStreamWriter = new StreamWriter(new FileStream(Path.Combine(outputDirectory.FullName, "index.html"), FileMode.Create, FileAccess.Write, FileShare.Read)))
                 templateWriter.Write(indexFileStreamWriter, "Home", codeMapAssemblyDeclaration);
@@ -45,31 +62,20 @@ namespace CodeMap.Documentation
             templateWriter.Assets.CopyTo(outputDirectory);
         }
 
-        private static void WriteDocumentation(Arguments arguments, string documentationDirectoryName, Assembly assembly, params AssemblyDocumentationAddition[] assemblyDocumentationAdditions)
+        private static DirectoryInfo _GetTargetDirectory(Arguments arguments, string documentationDirectoryName)
         {
-            var assemblyDeclaration = DeclarationNode
-                .Create(assembly)
-                .Apply(assemblyDocumentationAdditions);
-
-            var memberFileNameResolver = new DefaultMemberReferenceResolver(assembly, "netstandard-2.1");
-            var templateWriter = new HandlebarsTemplateWriter(memberFileNameResolver);
-
             var targetDirectory = new DirectoryInfo(arguments.OutputPath)
-                .CreateSubdirectory(!string.IsNullOrWhiteSpace(arguments.TargetSubdirectory) ? arguments.TargetSubdirectory : assemblyDeclaration.Version.ToSemver())
+                .CreateSubdirectory(arguments.TargetSubdirectory)
                 .CreateSubdirectory(documentationDirectoryName);
 
             targetDirectory.Delete(true);
             targetDirectory.Create();
 
-            assemblyDeclaration.Accept(new HandlebarsWriterDeclarationNodeVisitor(targetDirectory, memberFileNameResolver, templateWriter));
+            return targetDirectory;
         }
 
-        private static void _UpdateFiles(Arguments arguments)
+        private static void _UpdateFiles(Arguments arguments, HandlebarsTemplateWriter templateWriter)
         {
-            var codeMapAssembly = typeof(DeclarationNode).Assembly;
-            var codeMapAssemblyDeclaration = DeclarationNode.Create(codeMapAssembly);
-            var templateWriter = new HandlebarsTemplateWriter(new DefaultMemberReferenceResolver(codeMapAssembly, "netstandard-2.1"));
-
             var outputDirectory = new DirectoryInfo(arguments.OutputPath);
             var versions = _GetVersions(outputDirectory);
 

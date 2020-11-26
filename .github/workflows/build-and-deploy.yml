@@ -220,7 +220,7 @@ jobs:
     - name: Generate Project Site
       shell: pwsh
       run: |
-        $projectDirectoryPath = "";
+        $projectDirectoryPath = "${{ steps.package_info.outputs.package_version }}";
         if (-not ($env:GITHUB_REF -imatch "^refs/heads/releases/\d+\.\d+(-(alpha|beta|rc))?$"))
         {
           $projectDirectoryPath = $env:GITHUB_REF.Substring("refs/heads/".Length)

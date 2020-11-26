@@ -7,17 +7,16 @@ namespace CodeMap.Handlebars
     /// <summary>Represents a <a href="https://github.com/Handlebars-Net/Handlebars.Net">Handlebars.NET</a> based writer for generating documentation.</summary>
     public class HandlebarsWriterDeclarationNodeVisitor : DeclarationNodeVisitor
     {
-        private readonly IMemberReferenceResolver _memberReferenceResolver;
+        private readonly IMemberReferenceResolver _memberReferenceResolver = new CodeMapMemberReferenceResolver();
         private readonly DirectoryInfo _directoryInfo;
         private readonly HandlebarsTemplateWriter _handlebarsTemplateWriter;
 
         /// <summary>Initialzies a new instance of the <see cref="HandlebarsWriterDeclarationNodeVisitor"/> class.</summary>
         /// <param name="directoryInfo">The directory to write the documentation files to.</param>
-        /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used to generate documentation file names.</param>
         /// <param name="handlebarsTemplateWriter">The <see cref="HandlebarsTemplateWriter"/> used for generating documentation files.</param>
-        public HandlebarsWriterDeclarationNodeVisitor(DirectoryInfo directoryInfo, IMemberReferenceResolver memberReferenceResolver, HandlebarsTemplateWriter handlebarsTemplateWriter)
+        public HandlebarsWriterDeclarationNodeVisitor(DirectoryInfo directoryInfo, HandlebarsTemplateWriter handlebarsTemplateWriter)
         {
-            _memberReferenceResolver = memberReferenceResolver;
+            _memberReferenceResolver = new CodeMapMemberReferenceResolver();
             _directoryInfo = directoryInfo;
             _handlebarsTemplateWriter = handlebarsTemplateWriter;
         }

@@ -58,21 +58,14 @@ namespace CodeMap.Handlebars.Visitors
             => _nameBuilder.Append(genericTypeParameter.Name);
 
         protected override void VisitConstant(ConstantReference constant)
-        {
-            constant.DeclaringType.Accept(this);
-            _nameBuilder.Append('.').Append(constant.Name);
-        }
+            => _nameBuilder.Append(constant.Name);
 
         protected override void VisitField(FieldReference field)
-        {
-            field.DeclaringType.Accept(this);
-            _nameBuilder.Append('.').Append(field.Name);
-        }
+            => _nameBuilder.Append(field.Name);
 
         protected override void VisitConstructor(ConstructorReference constructor)
         {
-            constructor.DeclaringType.Accept(this);
-            _nameBuilder.Append('.').Append(_GetTypeName(constructor.DeclaringType));
+            _nameBuilder.Append(_GetTypeName(constructor.DeclaringType));
             _nameBuilder.Append('(');
             var isFirst = true;
             foreach (var parameterType in constructor.ParameterTypes)
@@ -87,15 +80,11 @@ namespace CodeMap.Handlebars.Visitors
         }
 
         protected override void VisitEvent(EventReference @event)
-        {
-            @event.DeclaringType.Accept(this);
-            _nameBuilder.Append('.').Append(@event.Name);
-        }
+            => _nameBuilder.Append(@event.Name);
 
         protected override void VisitProperty(PropertyReference property)
         {
-            property.DeclaringType.Accept(this);
-            _nameBuilder.Append('.').Append(property.Name);
+            _nameBuilder.Append(property.Name);
             if (property.ParameterTypes.Any())
             {
                 _nameBuilder.Append('[');
@@ -114,8 +103,7 @@ namespace CodeMap.Handlebars.Visitors
 
         protected override void VisitMethod(MethodReference method)
         {
-            method.DeclaringType.Accept(this);
-            _nameBuilder.Append('.').Append(method.Name);
+            _nameBuilder.Append(method.Name);
             if (method.GenericArguments.Any())
             {
                 _nameBuilder.Append('<');
