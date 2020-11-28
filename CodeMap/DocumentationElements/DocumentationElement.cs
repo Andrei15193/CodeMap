@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using CodeMap.ReferenceData;
 
 namespace CodeMap.DocumentationElements
@@ -643,6 +644,22 @@ namespace CodeMap.DocumentationElements
         /// <exception cref="ArgumentException">Thrown when <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
         public static ReferenceDataDocumentationElement MemberReference(MemberReference referredMember, IReadOnlyDictionary<string, string> xmlAttributes)
             => new ReferenceDataDocumentationElement(referredMember, xmlAttributes);
+
+        /// <summary>Creates a <see cref="MemberInfo"/> with the provided <paramref name="memberInfo"/>.</summary>
+        /// <param name="memberInfo">The resolved <see cref="MemberInfo"/> referred by a canonical name using a <c>see</c> XML element.</param>
+        /// <returns>Returns a <see cref="MemberInfo"/> with the provided <paramref name="memberInfo"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="memberInfo"/> is <c>null</c>.</exception>
+        public static ReferenceDataDocumentationElement MemberReference(MemberInfo memberInfo)
+            => new ReferenceDataDocumentationElement(ReferenceData.MemberReference.Create(memberInfo), null);
+
+        /// <summary>Creates a <see cref="ReferenceDataDocumentationElement"/> with the provided <paramref name="memberInfo"/>.</summary>
+        /// <param name="memberInfo">The resolved <see cref="MemberInfo"/> referred by a canonical name using a <c>see</c> XML element.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the member reference element.</param>
+        /// <returns>Returns a <see cref="ReferenceDataDocumentationElement"/> with the provided <paramref name="memberInfo"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="memberInfo"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
+        public static ReferenceDataDocumentationElement MemberReference(MemberInfo memberInfo, IReadOnlyDictionary<string, string> xmlAttributes)
+            => new ReferenceDataDocumentationElement(ReferenceData.MemberReference.Create(memberInfo), xmlAttributes);
 
         /// <summary>Creates a <see cref="MemberNameReferenceDocumentationElement"/> with the provided <paramref name="canonicalName"/>.</summary>
         /// <param name="canonicalName">The canonical name for a member referred using a <c>see</c> XML element.</param>

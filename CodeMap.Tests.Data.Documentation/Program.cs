@@ -34,8 +34,8 @@ namespace CodeMap.Tests.Data.Documentation
                                 new MicrosoftDocsMemberReferenceResolver("netcore-3.1")
                             )
                         )
-                )
-            );
+                    )
+                );
         }
     }
 }

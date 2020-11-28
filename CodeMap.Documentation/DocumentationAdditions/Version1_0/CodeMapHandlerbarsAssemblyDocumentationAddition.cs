@@ -4,7 +4,6 @@ using System.Reflection;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
 using CodeMap.Handlebars;
-using CodeMap.ReferenceData;
 
 namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
 {
@@ -30,8 +29,7 @@ namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
 
         public override IEnumerable<MemberReferenceDocumentationElement> GetRelatedMembers(AssemblyDeclaration assembly)
         {
-            var memberReferenceFactory = new MemberReferenceFactory();
-            yield return DocumentationElement.MemberReference(memberReferenceFactory.Create(typeof(HandlebarsTemplateWriter)));
+            yield return DocumentationElement.MemberReference(typeof(HandlebarsTemplateWriter));
         }
 
         public override IEnumerable<NamespaceDocumentationAddition> GetNamespaceAdditions(AssemblyDeclaration assembly)

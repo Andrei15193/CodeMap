@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
 using CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests.Mocks;
 using Xunit;
 using static System.Diagnostics.DebuggableAttribute;
@@ -250,11 +249,10 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         [Fact]
         public void ApplyRelatedMembersDocumenationAddition()
         {
-            var memberReferenceFactory = new MemberReferenceFactory();
-            var relatedMembers = new[] { DocumentationElement.MemberReference(memberReferenceFactory.Create(typeof(object))) };
+            var relatedMembers = new[] { DocumentationElement.MemberReference(typeof(object)) };
 
             DeclarationNode.Apply(
-                new AssemblyDocumentationAdditionMock { Skip = true, RelatedMembers = new[] { DocumentationElement.MemberReference(memberReferenceFactory.Create(typeof(object))) } },
+                new AssemblyDocumentationAdditionMock { Skip = true, RelatedMembers = new[] { DocumentationElement.MemberReference(typeof(object)) } },
                 new AssemblyDocumentationAdditionMock { RelatedMembers = relatedMembers }
             );
 

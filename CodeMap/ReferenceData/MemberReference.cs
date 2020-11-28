@@ -6,6 +6,8 @@ namespace CodeMap.ReferenceData
     /// <summary>Represents a .NET Assembly member reference.</summary>
     public abstract class MemberReference : IEquatable<MemberInfo>, IEquatable<Assembly>, IEquatable<AssemblyName>
     {
+        private static readonly MemberReferenceFactory _memberReferenceFactory = new MemberReferenceFactory();
+
         /// <summary>Determines whether the provided <paramref name="memberReference"/> and <paramref name="memberInfo"/> are equal.</summary>
         /// <param name="memberReference">The <see cref="MemberReference"/> to compare.</param>
         /// <param name="memberInfo">The <see cref="MemberInfo"/> to compare.</param>
@@ -89,6 +91,27 @@ namespace CodeMap.ReferenceData
         /// <returns>Returns <c>true</c> if the two provided instances are not equal; <c>false</c> otherwise.</returns>
         public static bool operator !=(AssemblyName assemblyName, MemberReference memberReference)
             => !Equals(memberReference, assemblyName);
+
+        /// <summary>Creates a <see cref="MemberReference"/> for the provided <paramref name="memberInfo"/>.</summary>
+        /// <param name="memberInfo">The <see cref="MemberInfo"/> from which to create a <see cref="MemberReference"/>.</param>
+        /// <returns>Returns a <see cref="MemberReference"/> for the provided <paramref name="memberInfo"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="memberInfo"/> is <c>null</c>.</exception>
+        public static MemberReference Create(MemberInfo memberInfo)
+            => _memberReferenceFactory.Create(memberInfo);
+
+        /// <summary>Creates an <see cref="AssemblyReference"/> for the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="Assembly"/> from which to create a <see cref="AssemblyReference"/>.</param>
+        /// <returns>Returns an <see cref="AssemblyReference"/> for the provided <paramref name="assembly"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
+        public static AssemblyReference Create(Assembly assembly)
+            => _memberReferenceFactory.Create(assembly);
+
+        /// <summary>Creates an <see cref="AssemblyReference"/> for the provided <paramref name="assemblyName"/>.</summary>
+        /// <param name="assemblyName">The <see cref="Assembly"/> from which to create a <see cref="AssemblyReference"/>.</param>
+        /// <returns>Returns an <see cref="AssemblyReference"/> for the provided <paramref name="assemblyName"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="assemblyName"/> is <c>null</c>.</exception>
+        public static AssemblyReference Create(AssemblyName assemblyName)
+            => _memberReferenceFactory.Create(assemblyName);
 
         internal MemberReference()
         {

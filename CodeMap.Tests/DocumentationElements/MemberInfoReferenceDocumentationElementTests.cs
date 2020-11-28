@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using CodeMap.DocumentationElements;
-using CodeMap.ReferenceData;
 using Xunit;
 
 namespace CodeMap.Tests.DocumentationElements
@@ -19,8 +18,7 @@ namespace CodeMap.Tests.DocumentationElements
         [Fact]
         public void InlineMemberInfoReferenceElementCallsVisitorMethod()
         {
-            var memberReferenceFactory = new MemberReferenceFactory();
-            var memberReference = DocumentationElement.MemberReference(memberReferenceFactory.Create(GetType().GetMembers().First()));
+            var memberReference = DocumentationElement.MemberReference(GetType().GetMembers().First());
             var visitor = new DocumentationVisitorMock<ReferenceDataDocumentationElement>(memberReference);
 
             memberReference.Accept(visitor);
