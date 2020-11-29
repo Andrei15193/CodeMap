@@ -1,0 +1,421 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>CodeMap 1.0.0-beta2</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body class="d-flex flex-column">
+    
+<nav id="navigation" class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="../../index.html">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item active" href="../../1.0.0-beta2/CodeMap/index.html">1.0.0-beta2</a>
+<a class="dropdown-item" href="../../1.0.0-beta1/CodeMap/index.html">1.0.0-beta1</a>
+
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap.Handlebars</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="../../1.0.0-beta2/CodeMap.Handlebars/index.html">1.0.0-beta2</a>
+<a class="dropdown-item" href="../../1.0.0-beta1/CodeMap.Handlebars/index.html">1.0.0-beta1</a>
+
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/Andrei15193/CodeMap">View on GitHub</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.nuget.org/packages/CodeMap">View on NuGet</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="flex-grow-1 flex-shrink-1">
+
+        <div class="d-flex flex-column container px-2 pt-2">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">CodeMap</li>
+    </ol>
+</nav>
+            <div id="deprecationNotice">
+</div>
+<h2>CodeMap</h2>
+
+<p>An extensible tool for generating documentation for your .NET libraries. Generate HTML, Markdown or in any other format, customise the documentation at your discretion.
+</p>
+
+<h3>Namespaces</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="../../1.0.0-beta2/CodeMap/CodeMap.DeclarationNodes.html">CodeMap.DeclarationNodes</a></td>
+            <td><p>Contains the declaration node definitions corresponding to declarations of assembly members (classes, properties, methods and so on). This is the entry point for generating documentation.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../1.0.0-beta2/CodeMap/CodeMap.DocumentationElements.html">CodeMap.DocumentationElements</a></td>
+            <td><p>Contains the documentation element definitions corresponding to XML elements that are extracted from a documentation XML file associated to an assembly.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../1.0.0-beta2/CodeMap/CodeMap.ReferenceData.html">CodeMap.ReferenceData</a></td>
+            <td><p>Contains member reference definitions that can be used to create hyperlinks to referred members defined both in the documented library and dependent assemblies.
+</p>
+</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Remarks</h3>
+<p>Visual Studio enables developers to write comprehensive documentation inside their code using XML in three slashed comments, see <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments">XML Documentation Comments (C# Programming Guide)</a> for more details about supported tags.
+</p>
+<p>When we build a project that has been configured to generate XML documentation files (simply specify the output path where resulting files should be saved) Visual Studio will look for this file and display the respective documentation in IntelliSense.
+</p>
+<p>This is great and all library owners should be writing documentation like this in their code, however there aren't that many tools out there that allow us to transform the XML generated documentation into something else, say JSON or custom HTML, to display the exact same documentation on the project's website.
+</p>
+<p>Having a single source for documentation is the best way to ensure consistency, what you see in code is what you see on the project's website. There are no discrepancies. Writing all documentation in code may upset developers, but after all they know best what the code they are writing is all about.
+</p>
+<p>CodeMap aims to bring a tool into the developers hands that allows them to generate any output format they wish from a given assembly and associated XML documentation.
+</p>
+<p>This is done following the visitor design pattern, an assembly is being visited and all elements that make up an assembly get their turn. When you want to generate a specific output (say Markdown or Creole) you simply implement your own visitor.
+</p>
+<p>There are some elements that do not have XML documentation correspondents, such as assemblies, modules and namespaces. You cannot write documentation for neither in code and have it generated in the resulting XML document.
+</p>
+<p>This tool does not work directly on the XML file but rather on a representation of the file (XDocument), this allows for the document to be loaded, updated if necessary and only then processed. This enables the tool to support additions to the standard XML document format allowing for extra documentation to be manually added. If you want to add specific documentation to a namespace, you can, but you have to do it manually which means you follow the XML document structure as well.
+</p>
+<p>This project exposes an XML Schema (.xsd) that is used for validating an XML document containing documentation to ensure that it is being correctly processed.
+</p>
+<h4>Exceptions</h4>
+
+
+<p>Some elements are ignored when processing the XML document because they either are complex to use or there is little support for them.
+</p>
+<ul><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/include">include</a> is being ignored because its usage is rather complex and can be misleading. The documentation is being kept separate from the source code which can easily lead to discrepancies when changes to code occur.
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/permission">permission</a> is being ignored because its usage is more of an edge case and code permissions are not supported in .NET Core making this element obsolete in this case.
+</li>
+</ul>
+<h4>Interpretations</h4>
+
+
+<p>There are XML elements defined for various sections and limited markup support. The main sections for documentation are the following:
+</p>
+<ul><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/summary">summary</a>
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/typeparam">typeparam</a> (available only for types and methods) in .NET Core making this element obsolete in this case.
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/param">param</a> (available only for delegates, constructors, methods, properties with parameters)
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/returns">returns</a> (available only for delegates and methods with result)
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/exception">exception</a> (available only for delegates, constructors, methods and properties)
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/remarks">remarks</a>
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/example">example</a>
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/value">value</a> (available only for properties)
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/seealso">seealso</a>
+</li>
+</ul>
+<p>All of the above sections can contain documentation made out of blocks, text and limited markup. seealso does not contain any content and are interpreted as references.
+</p>
+<p>The content blocks are made using the following tags:
+</p>
+<ul><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para">para</a>
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code">code</a>
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list">list</a>
+</li>
+</ul>
+<p>It is not mandatory to specify the <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para">para</a> element because it is inferred. It is mandatory to do so only when you want to distinguish two paragraphs that are one after the other, but if there is plain text that has a <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code">code</a> or a <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list">list</a> element then the text before the respective tag is considered a paragraph and the text afterwards is considered a separate paragraph.
+</p>
+<p>For instance, the following <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/returns">returns</a> section contains three paragraphs, a code block and a list.
+</p>
+<div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">remarks</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">This is my first paragraph.</span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="nt">code</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">This is a code block</span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">code</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">This is my second paragraph.</span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="nt">list</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Item 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Item 2</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Item 3</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">list</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">This is my third paragraph.</span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">remarks</span><span class=""></span><span class="p">&gt;</span>
+</pre></div>
+
+<p>To distinguish two paragraphs one after the other you need to use the para tag.
+</p>
+<div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">remarks</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="nt">para</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    This is my first paragraph.</span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">para</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="nt">para</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    This is my second paragraph.</span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">para</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">remarks</span><span class=""></span><span class="p">&gt;</span>
+</pre></div>
+
+<p>Each content block can contain plain text and limited markup using the following tags:
+</p>
+<ul><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code-inline">c</a>
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see">see</a>
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/paramref">paramref</a>
+</li><li><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/typeparamref">typeparamref</a>
+</li>
+</ul>
+<p>Some XML elements lack a proper documentation and are not properly interpreted by Visual Studio.
+</p>
+<p><a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list">List</a> is one of these elements, regardless of how you define the list element, Visual Studio will display the contents as plain text. This is understandable, there should not be such complex markup in the summary of a method or parameter description.
+</p>
+<p>One the other hand, the lack of documentation for this element and the lack of proper interpretation allows for more flexibility when it comes to parsing lists. This tool parses lists as follows:
+</p>
+
+<h5>Simple Lists</h5>
+
+<p>This corresponds to list type <code>bullet</code> and <code>number</code> that have no <code>listheader</code> element.
+</p>
+<p>To define a list simply use the <code>list</code> element, specify a type (the default is <code>bullet</code>) and then define each item using an <code>item</code> element. Optionally include a <code>description</code> subelement (this is more for compliance with the documentation, having a <code>description</code> element or not makes no difference).
+</p>
+
+
+<h6>Examples</h6>
+<p>Bullet (unordered) list:
+</p>
+<div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">list</span><span class=""> </span><span class="na">type</span><span class="o">=</span><span class=""></span><span class="s">&quot;bullet&quot;</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">this is an item</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">this is an item using description, it is the same as the first one</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">the description element is optional, use at your discretion</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">list</span><span class=""></span><span class="p">&gt;</span>
+</pre></div>
+
+<p>Number (ordered) list:
+</p>
+<div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">list</span><span class=""> </span><span class="na">type</span><span class="o">=</span><span class=""></span><span class="s">&quot;number&quot;</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">first item</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">second item</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">third item</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">list</span><span class=""></span><span class="p">&gt;</span>
+</pre></div>
+
+
+<h5>Definition Lists</h5>
+
+<p>This is where it can get a bit confusing. The definition list is inferred by the given list type (<code>bullet</code> or <code>number</code>) or lack of this attribute. Definition lists cannot be ordered or unordered, they define a list of terms. This makes the type attribute rather useless in this case, it can be safely omitted since the default is <code>bullet</code> and alligns with the interpretation.
+</p>
+<p>To create a definition list it must either have a title or one of its items to contain the <code>term</code> element. The title is optional, however if the <code>list</code> element is empty it will not be inferred as a definition list!
+</p>
+<p>Optionally, a definition list can have a title which is defined using the <code>listheader</code> element. The title can be written directly in the element or can be wrapped in a <code>term</code> element.
+</p>
+
+
+<h6>Examples</h6>
+<p>Simple definition list:
+</p>
+<div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">list</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Exception</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Describes an abnormal behaviour</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Logging</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Something we should be doing</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">HTTP</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">HyperText Transfer Protocol, today&#39;s standard for communication</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">list</span><span class=""></span><span class="p">&gt;</span>
+</pre></div>
+
+<p>Definition list with title:
+</p>
+<div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">list</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">listheader</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Music Genres</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">listheader</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Pop</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Very popular (hence the name) genre, mostly singing nonsence.</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Rock</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Experiences with depth that are very musical with some grotesque exceptions that seem more like yelling than singing.</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">EDM</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Electronic Dance Music, less singing mostly used for background noise or to help get into a specific mood.</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">list</span><span class=""></span><span class="p">&gt;</span>
+</pre></div>
+
+<p>Same definition list, we can wrap the title in a <code>term</code> element to conform with the documentation:
+</p>
+<div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">list</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">listheader</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Music Genres</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">listheader</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Pop</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Very popular (hence the name) genre, mostly singing nonsence.</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Rock</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Experiences with depth that are very musical with some grotesque exceptions that seem more like yelling than singing.</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">EDM</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Electronic Dance Music, less singing mostly used for background noise or to help get into a specific mood.</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">list</span><span class=""></span><span class="p">&gt;</span>
+</pre></div>
+
+<p>A definition list without a term for its second item:
+</p>
+<div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">list</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">LOL</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Usually meaning laughing out loud, can be confused with League of Legends, a very popular video game.</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">For some reason I forgot to mention the term I am currently describing, Infer this!</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">list</span><span class=""></span><span class="p">&gt;</span>
+</pre></div>
+
+
+<h5>Tables</h5>
+
+<p>This is where things will get a bit interesting. Tables are useful in a lot of scenarios, however there is no explicit syntax for them.
+</p>
+<p>To define a table specify the <code>type</code> of a <code>list</code> to <code>table</code>. To define the header rows (if any) use the <code>listheader</code> element, to define each column header specify multiple <code>term</code> elements.
+</p>
+<p>To define each row use the <code>item</code> element and for each column use a <code>description</code> element.
+</p>
+<p>The number of columns is determined by the maximum number of <code>term</code> or <code>description</code> elements found in an enclosing element (<code>listheader</code> or <code>item</code>). If there are missing values for a column header or row then they will be filled with blank.
+</p>
+
+
+<h6>Examples</h6>
+<p>Simple table:
+</p>
+<div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">list</span><span class=""> </span><span class="na">type</span><span class="o">=</span><span class=""></span><span class="s">&quot;table&quot;</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">listheader</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Column 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Column 2</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">listheader</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 1, Column 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 1, Column 2</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 2, Column 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 2, Column 2</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 3, Column 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 3, Column 2</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">list</span><span class=""></span><span class="p">&gt;</span>
+</pre></div>
+
+<p>Table without heading:
+</p>
+<div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">list</span><span class=""> </span><span class="na">type</span><span class="o">=</span><span class=""></span><span class="s">&quot;table&quot;</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 1, Column 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 1, Column 2</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 2, Column 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 2, Column 2</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 3, Column 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 3, Column 2</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">list</span><span class=""></span><span class="p">&gt;</span>
+</pre></div>
+
+<p>Table with missing values for last column:
+</p>
+<div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">list</span><span class=""> </span><span class="na">type</span><span class="o">=</span><span class=""></span><span class="s">&quot;table&quot;</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">listheader</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">term</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Column 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">term</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">listheader</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 1, Column 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 2, Column 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 2, Column 2</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="nt">item</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">        </span><span class="p">&lt;</span><span class=""></span><span class="nt">description</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Row 3, Column 1</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">description</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class="">    </span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">item</span><span class=""></span><span class="p">&gt;</span><span class=""></span>
+<span class=""></span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">list</span><span class=""></span><span class="p">&gt;</span>
+</pre></div>
+
+<h4>Additions</h4>
+
+
+<p>There are no additions at this moment.
+</p>
+
+<h5>Hyperlinks (#29)</h5>
+
+<p>Anchor elements can be used in documentation to generate custom hyperlinks.
+This is useful to reference different pages, repositories and so on that
+cannot be done through the <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see">see</a> and <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/seealso">seealso</a> elements.
+</p>
+
+
+<h6>Example</h6>
+<p>The following will generate a hyperlink towards GitHub.
+</p>
+<div class="highlight"><pre style="; "><span class="">This is a </span><span class="p">&lt;</span><span class=""></span><span class="nt">a</span><span class=""> </span><span class="na">href</span><span class="o">=</span><span class=""></span><span class="s">&quot;http://github.com&quot;</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">hyperlink</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">a</span><span class=""></span><span class="p">&gt;</span><span class=""> example.</span>
+</pre></div>
+
+
+        </div>
+    </div>
+
+    <div>
+        <hr>
+
+        <div class="d-flex flex-column container px-2">
+            <p class="text-center">
+                <a href="https://github.com/Andrei15193/CodeMap/releases/tag/1.0.0-beta2">CodeMap 1.0.0-beta2</a>
+                -
+                <a href="https://github.com/Andrei15193/CodeMap">View on GitHub</a>
+                -
+                <a href="https://www.nuget.org/packages/CodeMap/1.0.0-beta2">View on NuGet</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
