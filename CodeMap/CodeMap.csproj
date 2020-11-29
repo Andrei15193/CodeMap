@@ -14,7 +14,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Andrei15193/CodeMap.git</RepositoryUrl>
     <PackageReleaseNotes>* Added code documentation models and visitors.</PackageReleaseNotes>
-    <PackageTags>common reusable infrastructure</PackageTags>
+    <PackageTags>code documentation browser</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
