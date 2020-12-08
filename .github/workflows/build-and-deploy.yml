@@ -20,7 +20,7 @@ jobs:
         git config user.name "$(git log -1 --pretty=format:'%an')"
         git config user.email "$(git log -1 --pretty=format:'%ae')"
         git fetch origin gh-pages
-        git rebase origin/gh-pages
+        git merge origin/gh-pages --no-commit --allow-unrelated-histories
 
     - name: Generate Package Info
       id: package_info
