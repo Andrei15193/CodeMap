@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>CodeMap - MemberReferenceVisitor Class</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body class="d-flex flex-column">
+    
+<nav id="navigation" class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="../../index.html">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="../../1.0.0-beta2/CodeMap/index.html">1.0.0-beta2</a>
+<a class="dropdown-item" href="../../1.0.0-beta1/CodeMap/index.html">1.0.0-beta1</a>
+
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap.Handlebars</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="../../1.0.0-beta2/CodeMap.Handlebars/index.html">1.0.0-beta2</a>
+<a class="dropdown-item" href="../../1.0.0-beta1/CodeMap.Handlebars/index.html">1.0.0-beta1</a>
+
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/Andrei15193/CodeMap">View on GitHub</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.nuget.org/packages/CodeMap">View on NuGet</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="flex-grow-1 flex-shrink-1">
+
+        <div class="d-flex flex-column container px-2 pt-2">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+
+
+<li class="breadcrumb-item" aria-current="page">
+    <a href="../../dev/CodeMap/index.html">CodeMap</a>
+</li>
+<li class="breadcrumb-item" aria-current="page">
+    <a href="../../dev/CodeMap/CodeMap.ReferenceData.html">CodeMap.ReferenceData</a>
+</li>
+        <li class="breadcrumb-item active" aria-current="page">MemberReferenceVisitor</li>
+    </ol>
+</nav>
+            <div id="deprecationNotice">
+    <div class="alert alert-warning" role="alert">
+        You are viewing an older version of the library. Checkout the latest version <a href="../../1.0.0-beta2/CodeMap/index.html" class="alert-link">here</a>!
+    </div>
+</div>
+<h2>MemberReferenceVisitor Class</h2>
+
+<p>Represents a visitor for <a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReference.html">MemberReference</a> instances.
+</p>
+
+<p>
+    Base type: <a href="https://docs.microsoft.com/dotnet/api/System.Object?view=netstandard-2.1">object</a>.
+</p>
+
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> class.</p>
+
+
+<h3>Constructors</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Access Modifier</th>
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.MemberReferenceVisitor-BCD8B0C2EB1FCE714EAB6CEF0D771ACC.html">MemberReferenceVisitor()</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td>
+</td>
+        </tr>
+    </tbody>
+</table>
+<h3>Methods</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Access Modifier</th>
+            <th class="w-75">Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitArray-4B40A3C781B80FE9BA0C0266D141D7F4.html">VisitArray(ArrayTypeReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>array</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitAssembly-ACE1BB28B4F03E440253577F1C54F0DE.html">VisitAssembly(AssemblyReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>assembly</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitByRef-40F51F4CF270BE9AF6B49AF536DE6C22.html">VisitByRef(ByRefTypeReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>byRef</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitConstant-F4595507FC931C8488F8B221B76268CF.html">VisitConstant(ConstantReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>constant</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitConstructor-E8019152329E561FEC01AC289BBBFD94.html">VisitConstructor(ConstructorReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>constructor</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitEvent-30B330D19256B12F72230033F9839C8B.html">VisitEvent(EventReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>event</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitField-68958E42441E0B753D0FB2F006617A0E.html">VisitField(FieldReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>field</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitGenericMethodParameter-51FA7D9D5522E0CEEE40796B28770407.html">VisitGenericMethodParameter(GenericMethodParameterReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>genericMethodParameter</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitGenericTypeParameter-F6BB8CC6F7313809CE24A35432DE438B.html">VisitGenericTypeParameter(GenericTypeParameterReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>genericTypeParameter</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitMethod-9AD07D2F7D9EDBEA91AD99B6DBD3BE8C.html">VisitMethod(MethodReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>method</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitNamespace-F0E9A5E75F91ED58B3EF264D09DEA7E8.html">VisitNamespace(NamespaceReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>namespace</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitPointer-38CDA1ADDFAFB25E928EDEADC2E59531.html">VisitPointer(PointerTypeReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>pointer</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitProperty-527975E3B7ACD211055838ECA0F6F60E.html">VisitProperty(PropertyReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>property</em>.
+</p>
+</td>
+        </tr>
+        <tr>
+            <td><a href="../../dev/CodeMap/CodeMap.ReferenceData.MemberReferenceVisitor.VisitType-5D9E6AE57BEA93EFBC075AAB19DFA553.html">VisitType(TypeReference)</a></td>
+            <td class="text-left text-nowrap"><code>protected</code></td>
+            <td><p>Visits the given <em>type</em>.
+</p>
+</td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+
+
+        </div>
+    </div>
+
+    <div>
+        <hr>
+
+        <div class="d-flex flex-column container px-2">
+            <p class="text-center">
+                <a href="https://github.com/Andrei15193/CodeMap/releases/tag/2.0.0">CodeMap 2.0.0</a>
+                -
+                <a href="https://github.com/Andrei15193/CodeMap">View on GitHub</a>
+                -
+                <a href="https://www.nuget.org/packages/CodeMap/2.0.0">View on NuGet</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
