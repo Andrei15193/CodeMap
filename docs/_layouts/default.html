@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="Style.css" />
 </head>
 <body class="d-flex flex-column">
-    <nav id="navigation" class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
+    <nav class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand{% if page.path === 'index.html' %} active{% endit %}" href="{{ site.baseurl }}">Home</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,19 @@
 
     <div class="d-flex flex-column flex-grow-1 flex-shrink-1">
         <div class="d-flex flex-column flex-grow-1 flex-shrink-1 container px-2 pt-2">
+            {% if page.version and page.version !== versions.current %}
+            {% if page.path contains 'CodeMap/' %}
+            <div class="alert alert-warning" role="alert">
+                You are viewing an older version of CodeMap, checkout the latest version <a href="{{ site.baseurl }}/{{versions.current}}/CodeMap" class="alert-link">here</a>!
+            </div>
+            {% endit %}
+            {% if page.path contains 'CodeMap.Handlebars/' %}
+            <div class="alert alert-warning" role="alert">
+                You are viewing an older version of CodeMap.Handlebars, checkout the latest version <a href="{{ site.baseurl }}/{{versions.current}}/CodeMap.Handlebars" class="alert-link">here</a>!
+            </div>
+            {% endif %}
+            {% endif %}
+
             {{ content }}
         </div>
     </div>

@@ -23,7 +23,7 @@ version: 2.0.0
 
 <p>
     Base type: <a href="https://docs.microsoft.com/dotnet/api/System.Object?view=netstandard-2.1">object</a>.
-<br>Implemented interfaces:
+<br />Implemented interfaces:
     <a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.Helpers.IHandlebarsHelper.html">IHandlebarsHelper</a>.
 </p>
 
@@ -91,13 +91,13 @@ version: 2.0.0
 
 <h3>Example</h3>
 <p>The following template will generate a paragraph containing the partial name for a <a href="../../dev/CodeMap/CodeMap.DocumentationElements.DocumentationElement.html">DocumentationElement</a>.
-</p><div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">{{GetDocumentationPartialName}}</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
+</p><div class="highlight" ><pre style="; " ><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">{{GetDocumentationPartialName}}</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
 </pre></div>
 <p>If the current context is an <a href="../../dev/CodeMap/CodeMap.DocumentationElements.SummaryDocumentationElement.html">SummaryDocumentationElement</a>, the output would be equal to <a href="../../dev/CodeMap.Handlebars/CodeMap.Handlebars.DocumentationPartialNames.Summary.html">Summary</a> (<code>Summary</code>):
-</p><div class="highlight"><pre style="; "><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Summary</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
+</p><div class="highlight" ><pre style="; " ><span class="p">&lt;</span><span class=""></span><span class="nt">p</span><span class="p"></span><span class=""></span><span class="p">&gt;</span><span class="">Summary</span><span class="p">&lt;</span><span class=""></span><span class="p">/</span><span class=""></span><span class="nt">p</span><span class=""></span><span class="p">&gt;</span>
 </pre></div>
 <p>While it may not be useful to display this information like this, it is useful to use this helper as a selector for a specific partial. For instance, the <code>Documentation</code> partial is defined like this:
-</p><div class="highlight"><pre style="; "><span class="">{{#if (IsCollection node)}}</span>
+</p><div class="highlight" ><pre style="; " ><span class="">{{#if (IsCollection node)}}</span>
 <span class="">{{#if asList}}</span>
 <span class="">{{#each node}}</span>
 <span class="">{{#if @first}}</span>

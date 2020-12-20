@@ -2,6 +2,6 @@
   - scope:
       path: "*/test-data/Bootstrap_Jekyll"
     values:
-        layout: "Bootstrap_Jekyll/default"
+      layout: "Bootstrap_Jekyll/default"
   - values:
       layout: "default"

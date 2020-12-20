@@ -46,7 +46,7 @@ version: 2.0.0
 <h3>Remarks</h3>
 <p>If there are multiple helpers that have the same name, only the latest will be registered in the Handlebars engine. This enables easy overriding of helpers as such:
 </p>
-<div class="highlight"><pre style="; "><span class=""> </span><span class="k">public</span><span class=""> </span><span class="k">class</span><span class=""> </span><span class="nc">MyCustomHandlebarsTemplateWriter</span><span class=""> </span><span class="p">:</span><span class=""> </span><span class="n">HandlebarsTemplateWriter</span><span class=""></span>
+<div class="highlight" ><pre style="; " ><span class=""> </span><span class="k">public</span><span class=""> </span><span class="k">class</span><span class=""> </span><span class="nc">MyCustomHandlebarsTemplateWriter</span><span class=""> </span><span class="p">:</span><span class=""> </span><span class="n">HandlebarsTemplateWriter</span><span class=""></span>
 <span class=""> </span><span class="p">{</span><span class=""></span>
 <span class="">     </span><span class="k">public</span><span class=""> </span><span class="n">MyCustomHandlebarsTemplateWriter</span><span class="p">(</span><span class="n">IMemberReferenceResolver</span><span class=""> </span><span class="n">memberReferenceResolver</span><span class="p">)</span><span class=""></span>
 <span class="">         </span><span class="p">:</span><span class=""> </span><span class="k">base</span><span class="p">(</span><span class="n">memberReferenceResolver</span><span class="p">)</span><span class=""></span>
