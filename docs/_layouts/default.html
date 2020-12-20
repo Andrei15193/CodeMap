@@ -70,11 +70,11 @@
 
         <div class="d-flex flex-column container px-2">
             <p class="text-center">
-                <a href="{{site.github.repository_url}}/releases/tag/{{ page.version }}">{{ site.github.repository_name }} {{ page.version }}</a>
+                <a href="{{site.github.repository_url}}/releases/tag/{% if page.version %}{{ page.version }}{% else %}{{ versions.current }}{% endif %}">{{ site.github.repository_name }} {% if page.version %}{{ page.version }}{% else %}{{ versions.current }}{% endif %}</a>
                 -
                 <a href="{{site.github.repository_url}}">View on GitHub</a>
                 -
-                <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{{ page.version }}">View on NuGet</a>
+                <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{% if page.version %}{{ page.version }}{% else %}{{ versions.current }}{% endif %}">View on NuGet</a>
             </p>
         </div>
     </div>
