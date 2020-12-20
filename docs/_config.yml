@@ -3,7 +3,5 @@
       path: "*/test-data/Bootstrap_Jekyll"
     values:
       layout: "Bootstrap_Jekyll/default"
-  - scope:
-      path: ""
-    values:
+  - values:
       layout: "default"
