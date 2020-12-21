@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -19,20 +19,20 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
-                    {% if versions.all %}
+                    {% if site.data.versions.all %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle{% if page.path contains 'CodeMap/' %} active{% endif %}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap</a>
                         <div class="dropdown-menu">
-                            {% for version in versions.all %}
-                            <a class="dropdown-item{% if versions.current == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap">{{ version }}</a>
+                            {% for version in site.data.versions.all %}
+                            <a class="dropdown-item{% if site.data.versions.current == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap">{{ version }}</a>
                             {% endfor %}
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle{% if page.path contains 'CodeMap.Handlebars/' %} active{% endif %}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap.Handlebars</a>
                         <div class="dropdown-menu">
-                            {% for version in versions.all %}
-                            <a class="dropdown-item{% if versions.current == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap.Handlebars">{{ version }}</a>
+                            {% for version in site.data.versions.all %}
+                            <a class="dropdown-item{% if site.data.versions.current == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap.Handlebars">{{ version }}</a>
                             {% endfor %}
                         </div>
                     </li>
@@ -50,15 +50,15 @@
 
     <div class="d-flex flex-column flex-grow-1 flex-shrink-1">
         <div class="d-flex flex-column flex-grow-1 flex-shrink-1 container px-2 pt-2">
-            {% if page.version and page.version != versions.current %}
+            {% if page.version and page.version != site.data.versions.current %}
             {% if page.path contains 'CodeMap/' %}
             <div class="alert alert-warning" role="alert">
-                You are viewing an older version of CodeMap, checkout the latest version <a href="{{ site.baseurl }}/{{versions.current}}/CodeMap" class="alert-link">here</a>!
+                You are viewing an older version of CodeMap, checkout the latest version <a href="{{ site.baseurl }}/{{ site.data.versions.current }}/CodeMap" class="alert-link">here</a>!
             </div>
             {% endif %}
             {% if page.path contains 'CodeMap.Handlebars/' %}
             <div class="alert alert-warning" role="alert">
-                You are viewing an older version of CodeMap.Handlebars, checkout the latest version <a href="{{ site.baseurl }}/{{versions.current}}/CodeMap.Handlebars" class="alert-link">here</a>!
+                You are viewing an older version of CodeMap.Handlebars, checkout the latest version <a href="{{ site.baseurl }}/{{ site.data.versions.current }}/CodeMap.Handlebars" class="alert-link">here</a>!
             </div>
             {% endif %}
             {% endif %}
@@ -72,11 +72,11 @@
 
         <div class="d-flex flex-column container px-2">
             <p class="text-center">
-                <a href="{{site.github.repository_url}}/releases/tag/{% if page.version %}{{ page.version }}{% else %}{{ versions.current }}{% endif %}">{{ site.github.repository_name }} {% if page.version %}{{ page.version }}{% else %}{{ versions.current }}{% endif %}</a>
+                <a href="{{site.github.repository_url}}/releases/tag/{% if page.version %}{{ page.version }}{% else %}{{ site.data.versions.current }}{% endif %}">{{ site.github.repository_name }} {% if page.version %}{{ page.version }}{% else %}{{ site.data.versions.current }}{% endif %}</a>
                 -
                 <a href="{{site.github.repository_url}}">View on GitHub</a>
                 -
-                <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{% if page.version %}{{ page.version }}{% else %}{{ versions.current }}{% endif %}">View on NuGet</a>
+                <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{% if page.version %}{{ page.version }}{% else %}{{ site.data.versions.current }}{% endif %}">View on NuGet</a>
             </p>
         </div>
     </div>
