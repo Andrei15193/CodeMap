@@ -1,0 +1,17 @@
+{{#>Layout node=this assembly=assembly title=(Concat assembly.name ' - ' name ' Namepsace')}}
+{{> Breadcrumbs this}}
+
+<h2>{{#if name}}{{name}}{{else}}global{{/if}} Namespace</h2>
+
+{{> Documentation summary}}
+
+{{> MembersDeclaraction members=enums title='Enums'}}
+{{> MembersDeclaraction members=delegates title='Delegates'}}
+{{> MembersDeclaraction members=interfaces title='Interfaces'}}
+{{> MembersDeclaraction members=classes title='Classes'}}
+{{> MembersDeclaraction members=structs title='Structs'}}
+
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation examples}}
+{{> Documentation node=relatedMembers title='Related Members' asList=1}}
+{{/Layout}}

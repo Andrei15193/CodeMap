@@ -40,7 +40,7 @@ namespace CodeMap.Handlebars
                 return fullName;
             else
             {
-                var basePart = fullName.Substring(0, hashPartStartIndex + 1);
+                var basePart = fullName.Substring(0, hashPartStartIndex);
                 var hashPart = _hashAlgorithm
                     .ComputeHash(Encoding.Default.GetBytes(fullName, hashPartStartIndex, fullName.Length - hashPartStartIndex))
                     .Aggregate(new StringBuilder(), (builder, @char) => builder.AppendFormat("{0:X2}", @char))
@@ -68,14 +68,11 @@ namespace CodeMap.Handlebars
             protected override void VisitType(TypeReference type)
             {
                 if (type.DeclaringType is object)
-                {
                     type.DeclaringType.Accept(this);
-                    _fullNameBuilder.Append('.');
-                }
                 else
                     type.Namespace.Accept(this);
 
-                _fullNameBuilder.Append(_GetTypeName(type));
+                _fullNameBuilder.Append('.').Append(_GetTypeName(type));
                 if (type.GenericArguments.Any())
                     _fullNameBuilder.Append('`').Append(type.GenericArguments.Count);
             }

@@ -1,0 +1,25 @@
+{{#unless node}}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        {{#if declaringType}}
+        {{> Breadcrumbs node=declaringType}}
+        {{else if namespace}}
+        {{> Breadcrumbs node=namespace}}
+        {{else if assembly}}
+        {{> Breadcrumbs node=assembly}}
+        {{/if}}
+        <li class="breadcrumb-item active" aria-current="page">{{#if name}}{{name}}{{else}}global{{/if}}</li>
+    </ol>
+</nav>
+{{else}}{{#with node}}
+{{#if declaringType}}
+{{> Breadcrumbs node=declaringType}}
+{{else if namespace}}
+{{> Breadcrumbs node=namespace}}
+{{else if assembly}}
+{{> Breadcrumbs node=assembly}}
+{{/if}}
+<li class="breadcrumb-item" aria-current="page">
+    {{MemberReference}}
+</li>
+{{/with}}{{/unless}}

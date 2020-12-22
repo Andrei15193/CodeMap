@@ -1,0 +1,17 @@
+---
+title: {{name}}
+version: {{Semver version}}
+---
+{% raw %}
+{{> Breadcrumbs this}}
+
+<h2>{{name}}</h2>
+
+{{> Documentation summary}}
+
+{{> MembersDeclaraction members=namespaces title='Namespaces'}}
+
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation examples}}
+{{> Documentation node=relatedMembers title='Related Members' asList=1}}
+{% endraw %}

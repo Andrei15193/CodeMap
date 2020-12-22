@@ -1,0 +1,25 @@
+{{#>Layout node=this assembly=assembly title=(Concat assembly.name ' - ' name ' Interface')}}
+{{> Breadcrumbs this}}
+
+<h2>{{name}} Interface</h2>
+
+{{> Documentation summary}}
+
+<p>
+    {{#each implementedInterfaces}}
+    {{~#if @first}}<br />Inherited interfaces:{{else}},{{/if}}
+    {{MemberReference ~}}
+    {{~#if @last}}.{{/if}}
+    {{/each}}
+</p>
+
+{{> GenericParametersDocumentation genericParameters}}
+
+{{> MembersDeclaraction members=events title='Events'}}
+{{> MembersDeclaraction members=properties title='Properties'}}
+{{> MembersDeclaraction members=methods title='Methods'}}
+
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation examples}}
+{{> Documentation node=relatedMembers title='Related Members' asList=1}}
+{{/Layout}}

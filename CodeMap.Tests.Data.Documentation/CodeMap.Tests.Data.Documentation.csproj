@@ -1,14 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Templates\Index.hbs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CodeMap.Documentation\CodeMap.Documentation.csproj" />
     <ProjectReference Include="..\CodeMap.Tests.Data\CodeMap.Tests.Data.csproj" />
     <ProjectReference Include="..\CodeMap\CodeMap.csproj" />
   </ItemGroup>
-
 </Project>

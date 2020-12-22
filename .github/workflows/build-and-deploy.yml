@@ -14,14 +14,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Copy Project Site for Updates
-      shell: pwsh
-      run: |
-        git config user.name "$(git log -1 --pretty=format:'%an')"
-        git config user.email "$(git log -1 --pretty=format:'%ae')"
-        git fetch origin gh-pages
-        git merge origin/gh-pages --no-commit --allow-unrelated-histories
-
     - name: Generate Package Info
       id: package_info
       shell: pwsh
@@ -208,12 +200,48 @@ jobs:
       shell: pwsh
       run: |
         $projectDirectoryPath = "${{ steps.package_info.outputs.package_version }}"
-        if (-not ($env:GITHUB_REF -imatch "^refs/heads/releases/\d+\.\d+(-(alpha|beta|rc))?$"))
+        if ($env:GITHUB_REF -imatch "^refs/heads/releases/\d+\.\d+(-(alpha|beta|rc))?$")
+        {
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+        }
+        else
         {
           $projectDirectoryPath = $env:GITHUB_REF.Substring("refs/heads/".Length)
           dotnet ./CodeMap.Tests.Data.Documentation/bin/Release/netcoreapp3.1/CodeMap.Tests.Data.Documentation.dll -OutputPath "./docs" -TargetSubdirectory "$($projectDirectoryPath)/test-data"
         }
         dotnet ./CodeMap.Documentation/bin/Release/netcoreapp3.1/CodeMap.Documentation.dll -OutputPath "./docs" -TargetSubdirectory $projectDirectoryPath
+        
+        mkdir ./docs/_data
+        (git tag) |
+          Where-Object { $_ -imatch "^\d+\.\d+\.\d+(-\w+\d*)?$" } |
+          ForEach-Object {
+            $parts = $_.Split('-')
+            $version_parts = $parts.Split('.')
+            @{
+              Major = [int]$version_parts[0];
+              Minor = [int]$version_parts[1];
+              Patch = [int]$version_parts[2];
+              Prerelease = if ($parts[1]) { '-' + $parts[1] } }
+          } |
+          Sort-Object -Property `
+            @{
+              Expression = "Major";
+              Descending = $true
+            }, `
+            @{
+              Expression = "Major";
+              Descending = $true
+            }, `
+            @{
+              Expression = "Patch";
+              Descending = $true
+            }, `
+            @{
+              Expression = { $_.Prerelease ?? 'zzzz' };
+              Descending = $true
+            } |
+          ForEach-Object { "- $($_.Major).$($_.Minor).$($_.Patch)$($_.Prerelease)" } |
+          Set-Content -Path "./docs/_data/versions.yml" -Encoding utf8
 
     - name: Publish Project Site
       uses: peaceiris/actions-gh-pages@v3
@@ -221,3 +249,5 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs
         destination_dir: docs
+        enable_jekyll: true
+        keep_files: true

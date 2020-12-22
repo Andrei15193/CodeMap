@@ -25,7 +25,7 @@ namespace CodeMap.Handlebars
         /// <param name="assembly">The <see cref="AssemblyDeclaration"/> to visit.</param>
         protected override void VisitAssembly(AssemblyDeclaration assembly)
         {
-            _handlebarsTemplateWriter.Assets.CopyTo(_directoryInfo);
+            _handlebarsTemplateWriter.Assets?.CopyToRecursively(_directoryInfo);
 
             _ApplyTempalte(DocumentationTemplateNames.Assembly, assembly);
 
