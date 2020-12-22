@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>CodeMap.Tests.Data - ITestGenericParameter Interface</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+    <link rel="stylesheet" href="Style.css" />
+</head>
+<body class="d-flex flex-column">
+    <div>
+        <div class="d-flex flex-row align-items-center container px-2 pt-2">
+            <h1 class="flex-grow-1 flex-shrink-1">CodeMap.Tests.Data <small>1.2.4</small></h1>
+            <a class="btn btn-link" href="https://github.com//CodeMap.Tests.Data">View on GitHub</a>
+            <a class="btn btn-link" href="https://www.nuget.org/packages/CodeMap.Tests.Data/1.2.4">View on NuGet</a>
+        </div>
+
+        <hr />
+    </div>
+
+    <div class="d-flex flex-column flex-grow-1 flex-shrink-1">
+        <div class="d-flex flex-column flex-grow-1 flex-shrink-1 container px-2 pt-2">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+
+
+<li class="breadcrumb-item" aria-current="page">
+    <a href="index.html">CodeMap.Tests.Data</a>
+</li>
+<li class="breadcrumb-item" aria-current="page">
+    <a href="CodeMap.Tests.Data.html">CodeMap.Tests.Data</a>
+</li>
+        <li class="breadcrumb-item active" aria-current="page">ITestGenericParameter</li>
+    </ol>
+</nav>
+
+<h2>ITestGenericParameter Interface</h2>
+
+<p>This is an interface with a number of generic parameters, used as an example for documenting generic parameters and their constraints.
+</p>
+
+<p>
+</p>
+
+<h3>Generic Parameters</h3>
+<ul>
+    <li>
+        <h5>TParam1</h5>
+        <p>This generic parameter is <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/concepts/covariance-contravariance">covariant</a>.</p>
+        
+        
+        
+        
+        
+        
+<p>No constraints, can be any type, is covariant.
+</p>
+    </li>
+    <li>
+        <h5>TParam2</h5>
+        
+        <p>This generic parameter is <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/concepts/covariance-contravariance">contravariant</a>.</p>
+        <p>This generic parameter is constrained to <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters">reference types</a>.</p>
+        
+        
+        
+        
+<p>Must be a reference type, is contravariant.
+</p>
+    </li>
+    <li>
+        <h5>TParam3</h5>
+        
+        
+        
+        <p>This generic parameter is constrained to <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters">value types</a>.</p>
+        
+        
+        
+<p>Must be a value type (nullables do not count).
+</p>
+    </li>
+    <li>
+        <h5>TParam4</h5>
+        
+        
+        
+        
+        
+        <p>This generic parameter is constrained to having <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters">a public parameterless constructor</a>.</p>
+        
+<p>Must have a public parameterless constructor.
+</p>
+    </li>
+    <li>
+        <h5>TParam5</h5>
+        
+        
+        
+        
+        
+        
+        <p>This generic parameter has the following type constraints: TParam1.</p>
+<p>Must be of same type as <em>TParam1</em> or a subtype of <em>TParam1</em>.
+</p>
+    </li>
+    <li>
+        <h5>TParam6</h5>
+        
+        
+        
+        
+        
+        
+        <p>This generic parameter has the following type constraints: TParam1, <a href="https://docs.microsoft.com/dotnet/api/System.IComparable-1?view=netcore-3.1">IComparable</a>&lt;TParam1&gt;.</p>
+<p>Must be of same type as <em>TParam1</em> or a subtype of <em>TParam1</em> and implement <a href="https://docs.microsoft.com/dotnet/api/System.IComparable-1?view=netcore-3.1">IComparable</a>&lt;T&gt; or be <a href="https://docs.microsoft.com/dotnet/api/System.IComparable-1?view=netcore-3.1">IComparable</a>&lt;T&gt;.
+</p>
+    </li>
+    <li>
+        <h5>TParam7</h5>
+        
+        
+        
+        
+        <p>This generic parameter is constrained to <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters">unamanged types</a>.</p>
+        
+        
+<p>Must be an unmanaged type.
+</p>
+    </li>
+</ul>
+
+
+
+<h3>Example</h3>
+<p>For <em>TParam6</em> the following configuration is valid, <a href="https://docs.microsoft.com/dotnet/api/System.Int32?view=netcore-3.1">int</a> implements <a href="https://docs.microsoft.com/dotnet/api/System.IComparable-1?view=netcore-3.1">IComparable</a>&lt;T&gt;.
+</p><div class="highlight" ><pre style="; " ><span class="n">ITestGenericParameter</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class=""> </span><span class="kt">object</span><span class="p">,</span><span class=""> </span><span class="kt">int</span><span class="p">,</span><span class=""> </span><span class="kt">object</span><span class="p">,</span><span class=""> </span><span class="kt">int</span><span class="p">,</span><span class=""> </span><span class="kt">int</span><span class="p">&gt;</span>
+</pre></div>
+
+
+        </div>
+    </div>
+
+    <div>
+        <hr />
+
+        <div class="d-flex flex-column container px-2">
+            <p class="text-center">
+                <a href="https://github.com//CodeMap.Tests.Data/releases/tag/1.2.4">CodeMap.Tests.Data 1.2.4</a>
+                -
+                <a href="https://github.com//CodeMap.Tests.Data">View on GitHub</a>
+                -
+                <a href="https://www.nuget.org/packages/CodeMap.Tests.Data/1.2.4">View on NuGet</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
