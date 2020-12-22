@@ -8,7 +8,6 @@
     <title>{{ site.github.repository_name }} - {{ page.title }} {{ page.version }}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
     <link rel="stylesheet" href="Style.css" />
-    {% assign versions = site.data.versions | reverse %}
 </head>
 <body class="d-flex flex-column">
     <nav class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
@@ -20,20 +19,20 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
-                    {% if versions and versions.first %}
+                    {% if site.data.versions and site.data.versions.first %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle{% if page.path contains 'CodeMap/' %} active{% endif %}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap</a>
                         <div class="dropdown-menu">
-                            {% for version in versions %}
-                            <a class="dropdown-item{% if versions.first == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap">{{ version }}</a>
+                            {% for version in site.data.versions %}
+                            <a class="dropdown-item{% if site.data.versions.first == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap">{{ version }}</a>
                             {% endfor %}
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle{% if page.path contains 'CodeMap.Handlebars/' %} active{% endif %}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap.Handlebars</a>
                         <div class="dropdown-menu">
-                            {% for version in versions %}
-                            <a class="dropdown-item{% if versions.first == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap.Handlebars">{{ version }}</a>
+                            {% for version in site.data.versions %}
+                            <a class="dropdown-item{% if site.data.versions.first == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap.Handlebars">{{ version }}</a>
                             {% endfor %}
                         </div>
                     </li>
@@ -51,15 +50,15 @@
 
     <div class="d-flex flex-column flex-grow-1 flex-shrink-1">
         <div class="d-flex flex-column flex-grow-1 flex-shrink-1 container px-2 pt-2">
-            {% if page.version and page.version != versions.first %}
+            {% if page.version and page.version != site.data.versions.first %}
             {% if page.path contains 'CodeMap/' %}
             <div class="alert alert-warning" role="alert">
-                You are viewing an older version of CodeMap, checkout the latest version <a href="{{ site.baseurl }}/{{ versions.first }}/CodeMap" class="alert-link">here</a>!
+                You are viewing an older version of CodeMap, checkout the latest version <a href="{{ site.baseurl }}/{{ site.data.versions.first }}/CodeMap" class="alert-link">here</a>!
             </div>
             {% endif %}
             {% if page.path contains 'CodeMap.Handlebars/' %}
             <div class="alert alert-warning" role="alert">
-                You are viewing an older version of CodeMap.Handlebars, checkout the latest version <a href="{{ site.baseurl }}/{{ versions.first }}/CodeMap.Handlebars" class="alert-link">here</a>!
+                You are viewing an older version of CodeMap.Handlebars, checkout the latest version <a href="{{ site.baseurl }}/{{ site.data.versions.first }}/CodeMap.Handlebars" class="alert-link">here</a>!
             </div>
             {% endif %}
             {% endif %}
@@ -73,11 +72,11 @@
 
         <div class="d-flex flex-column container px-2">
             <p class="text-center">
-                <a href="{{site.github.repository_url}}/releases/tag/{% if page.version and page.version.first %}{{ page.version }}{% else %}{{ versions }}{% endif %}">{{ site.github.repository_name }} {% if page.version %}{{ page.version }}{% else %}{{ versions.first }}{% endif %}</a>
+                <a href="{{ site.github.repository_url }}/releases/tag/{% if page.version and page.version.first %}{{ page.version }}{% else %}{{ site.data.versions }}{% endif %}">{{ site.github.repository_name }} {% if page.version %}{{ page.version }}{% else %}{{ site.data.versions.first }}{% endif %}</a>
                 -
-                <a href="{{site.github.repository_url}}">View on GitHub</a>
+                <a href="{{ site.github.repository_url }}">View on GitHub</a>
                 -
-                <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{% if page.version %}{{ page.version }}{% else %}{{ versions.first }}{% endif %}">View on NuGet</a>
+                <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{% if page.version %}{{ page.version }}{% else %}{{ site.data.versions.first }}{% endif %}">View on NuGet</a>
             </p>
         </div>
     </div>
