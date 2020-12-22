@@ -22,19 +22,21 @@
                     {% if site.data.versions and site.data.versions.first %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle{% if page.path contains 'CodeMap/' %} active{% endif %}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap</a>
-                        <div class="dropdown-menu">
+                        <ul class="dropdown-menu">
                             {% for version in site.data.versions %}
-                            <a class="dropdown-item{% if site.data.versions.first == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap">{{ version }}</a>
+                            <li><a class="dropdown-item{% if site.data.versions.first == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap">{{ version }}</a></li>
                             {% endfor %}
-                        </div>
+                        </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle{% if page.path contains 'CodeMap.Handlebars/' %} active{% endif %}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CodeMap.Handlebars</a>
-                        <div class="dropdown-menu">
+                        <ul class="dropdown-menu">
                             {% for version in site.data.versions %}
-                            <a class="dropdown-item{% if site.data.versions.first == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap.Handlebars">{{ version }}</a>
+                            <li><a class="dropdown-item{% if site.data.versions.first == page.version %} active{% endif %}" href="{{ site.baseurl }}/{{ version }}/CodeMap.Handlebars">{{ version }}</a></li>
                             {% endfor %}
-                        </div>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item{% if page.path contains 'dev/test-data/index.html' %} active{% endif %}" href="{{ site.baseurl }}/dev/test-data">Themes</a></li>
+                        </ul>
                     </li>
                     {% endif %}
                     <li class="nav-item">
