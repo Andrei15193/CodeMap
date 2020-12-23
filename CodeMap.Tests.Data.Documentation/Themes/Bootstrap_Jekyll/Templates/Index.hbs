@@ -1,9 +1,33 @@
 ---
 title: Themes
 ---
-<h2>Browse Different Themes for CodeMap</h2>
-<ul>
+<h2>CodeMap.Handlebars Themes</h2>
+
+<p>
+    Browse different themese that come with CodeMap.Handlebars! The test data assembly was used to generate a documentation site using each theme.
+    The used assembly covers most, if not all, cases of various declarations and references, it is used for unit testing the library itself.
+</p>
+
+<p>
+    Themes generally come in two variants, that is using a UI library/framework, such as <a href="https://getbootstrap.com/">Bootstrap</a>,
+    and generates the site containing the final HTML pages and then there is the Jekyll variant which generates the site containing pages that will
+    later need to be compiled with <a href="https://jekyllrb.com/">Jekyll</a>. The advantage with the latter is that it allows for advanced scenarios
+    where a site blog can be included or support multiple versions of the documentation while automatically updating the navigation and deprecation
+    notices as the project website is actually generated each time. The documentation is stored in HTML files with front matter, this does not change
+    over time (unless it is actually updated), while the dynamic parts are handled in a layout file which can read data from files that are generated
+    during the build process. This approach is useful if you are using <a href="https://pages.github.com/">GitHub Pages</a> to host your project site
+    as it has built-in support for this.
+</p>
+
+<div class="d-flex flex-wrap">
     {{#each this}}
-    <li><a href="{{this}}">{{this}}</a></li>
+    <div class="card mr-5 mb-4" style="width: 18rem;">
+        <img src="{{banner}}" class="card-img-top" alt="{{name}} banner">
+        <div class="card-body">
+            <h5 class="card-title">{{name}}</h5>
+            <p class="card-text text-left">{{description}}</p>
+            <div class="text-center"><a href="{{name}}" class="btn btn-primary">Preview</a></div>
+        </div>
+    </div>
     {{/each}}
-</ul>
+</div>

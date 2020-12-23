@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Assets\Bootstrap.png" />
+    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Assets\Bootstrap_Jekyll.png" />
     <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Templates\Index.hbs" />
   </ItemGroup>
 
