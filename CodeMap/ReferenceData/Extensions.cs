@@ -17,7 +17,7 @@ namespace CodeMap.ReferenceData
 
         public static Type GetDeclaringType(this Type type)
         {
-            if (type.DeclaringType == null)
+            if (type.DeclaringType is null)
                 return null;
 
             var genericArgumentsOffset = type.DeclaringType.GetGenericArguments().Length;
@@ -29,7 +29,7 @@ namespace CodeMap.ReferenceData
 
         public static IEnumerable<Type> GetCurrentGenericArguments(this Type type)
         {
-            if (type.DeclaringType == null)
+            if (type.DeclaringType is null)
                 return type.GetGenericArguments();
             else
                 return type.GetGenericArguments().Skip(type.DeclaringType.GetGenericArguments().Length);

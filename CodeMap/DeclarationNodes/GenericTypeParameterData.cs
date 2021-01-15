@@ -17,7 +17,7 @@ namespace CodeMap.DeclarationNodes
         /// <returns>Returns <c>true</c> if the current <see cref="GenericTypeParameterData"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(Type type)
         {
-            if (type == null || !type.IsGenericTypeParameter)
+            if (type is null || !type.IsGenericTypeParameter)
                 return false;
 
             return string.Equals(Name, type.Name, StringComparison.OrdinalIgnoreCase)

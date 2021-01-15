@@ -43,7 +43,7 @@ namespace CodeMap.ReferenceData
         /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="AssemblyReference"/> references the provided <paramref name="assemblyName"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(AssemblyName assemblyName)
-            => assemblyName != null
+            => assemblyName is object
                 && string.Equals(Name, assemblyName.Name, StringComparison.OrdinalIgnoreCase)
                 && Version == assemblyName.Version
                 && string.Equals(Culture, assemblyName.CultureName, StringComparison.OrdinalIgnoreCase)

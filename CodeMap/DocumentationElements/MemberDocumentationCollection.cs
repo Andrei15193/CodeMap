@@ -60,7 +60,7 @@ namespace CodeMap.DocumentationElements
                 while (memberDocumentation.MoveNext() && !foundBestMatch);
             }
 
-            return result != null;
+            return result is object;
         }
 
         /// <summary>Gets the total number of <see cref="MemberDocumentation"/> items in the collection.</summary>

@@ -60,6 +60,6 @@ namespace CodeMap.DeclarationNodes
             => ShouldMap(memberInfo: methodInfo) && _IsPublicProtectedOrProtectedInternal(methodInfo);
 
         private static bool _IsPublicProtectedOrProtectedInternal(MethodBase methodBase)
-            => methodBase != null && (methodBase.IsPublic || methodBase.IsFamily || methodBase.IsFamilyOrAssembly);
+            => methodBase is object && (methodBase.IsPublic || methodBase.IsFamily || methodBase.IsFamilyOrAssembly);
     }
 }

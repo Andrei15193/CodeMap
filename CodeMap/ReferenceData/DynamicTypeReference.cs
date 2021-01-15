@@ -14,6 +14,6 @@ namespace CodeMap.ReferenceData
         /// <param name="type">The <see cref="Type"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="DynamicTypeReference"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(Type type)
-            => type != null && (type == typeof(object) || typeof(IDynamicMetaObjectProvider).IsAssignableFrom(type));
+            => type is object && (type == typeof(object) || typeof(IDynamicMetaObjectProvider).IsAssignableFrom(type));
     }
 }

@@ -26,7 +26,7 @@ namespace CodeMap.ReferenceData
         /// <param name="type">The <see cref="Type"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="GenericMethodParameterReference"/> references the provided <paramref name="type"/>; <c>false</c> otherwise.</returns>
         public override bool Equals(Type type)
-            => type != null
+            => type is object
                && type.IsGenericMethodParameter
                && Position == type.GenericParameterPosition
                && DeclaringMethod.Equals(type.DeclaringMethod, this, type);

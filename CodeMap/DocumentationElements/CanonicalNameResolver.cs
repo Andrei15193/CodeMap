@@ -84,7 +84,7 @@ namespace CodeMap.DocumentationElements
             {
                 case 't':
                 case 'T':
-                    return _TryFindType(memberFullName, Enumerable.Empty<Type>().ToReadOnlyList());
+                    return _TryFindType(memberFullName, Array.Empty<Type>());
 
                 case 'f':
                 case 'F':
@@ -286,7 +286,7 @@ namespace CodeMap.DocumentationElements
                     baseInterface = _TryGetInterfaceIfExplicitImplementation(eventInfo.AddMethod ?? eventInfo.RemoveMethod);
                     break;
             }
-            if (baseInterface != null)
+            if (baseInterface is object)
             {
                 var memberNameStartIndex = memberInfo.Name.LastIndexOf('.') + 1;
                 _AppendTypeName(stringBuilder, baseInterface, '#')
@@ -377,7 +377,7 @@ namespace CodeMap.DocumentationElements
                                 result = type.Current;
                                 foundBestMatch = true;
                             }
-                            else if (result == null && string.Equals(currentTypeFullName, typeConstructionInfo.TypeDefinitionFullName, StringComparison.OrdinalIgnoreCase))
+                            else if (result is null && string.Equals(currentTypeFullName, typeConstructionInfo.TypeDefinitionFullName, StringComparison.OrdinalIgnoreCase))
                                 result = type.Current;
                         }
 
@@ -467,8 +467,8 @@ namespace CodeMap.DocumentationElements
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, Extensions.EmptyReadOnlyList<Type>());
-            if (declaringType == null)
+            var declaringType = _TryFindType(declaringTypeFullName, Array.Empty<Type>());
+            if (declaringType is null)
                 return null;
 
             var fieldName = match.Groups["fieldName"].Value;
@@ -486,8 +486,8 @@ namespace CodeMap.DocumentationElements
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, Extensions.EmptyReadOnlyList<Type>());
-            if (declaringType == null)
+            var declaringType = _TryFindType(declaringTypeFullName, Array.Empty<Type>());
+            if (declaringType is null)
                 return null;
 
             var eventName = match.Groups["eventName"].Value.Replace('#', '.');
@@ -515,8 +515,8 @@ namespace CodeMap.DocumentationElements
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, Extensions.EmptyReadOnlyList<Type>());
-            if (declaringType == null)
+            var declaringType = _TryFindType(declaringTypeFullName, Array.Empty<Type>());
+            if (declaringType is null)
                 return null;
 
             var propertyParameterTypes = match
@@ -524,7 +524,7 @@ namespace CodeMap.DocumentationElements
                 .Captures
                 .Select(parameterTypeFullName => _TryFindType(parameterTypeFullName.Value, declaringType.GetGenericArguments()))
                 .ToArray();
-            if (propertyParameterTypes.Any(propertyParameterType => propertyParameterType == null))
+            if (propertyParameterTypes.Any(propertyParameterType => propertyParameterType is null))
                 return null;
 
             var propertyName = match.Groups["propertyName"].Value.Replace('#', '.');
@@ -552,8 +552,8 @@ namespace CodeMap.DocumentationElements
                 return null;
 
             var declaringTypeFullName = match.Groups["declaringTypeFullName"].Value;
-            var declaringType = _TryFindType(declaringTypeFullName, Extensions.EmptyReadOnlyList<Type>());
-            if (declaringType == null)
+            var declaringType = _TryFindType(declaringTypeFullName, Array.Empty<Type>());
+            if (declaringType is null)
                 return null;
 
             var methodParameterTypes = match
@@ -561,7 +561,7 @@ namespace CodeMap.DocumentationElements
                 .Captures
                 .Select(parameterTypeFullName => _TryFindType(parameterTypeFullName.Value, declaringType.GetGenericArguments()))
                 .ToArray();
-            if (methodParameterTypes.Any(propertyParameterType => propertyParameterType == null))
+            if (methodParameterTypes.Any(propertyParameterType => propertyParameterType is null))
                 return null;
 
             var methodName = match.Groups["methodName"].Value;

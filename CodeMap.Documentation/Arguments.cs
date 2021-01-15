@@ -12,10 +12,10 @@ namespace CodeMap.Documentation
             foreach (var arg in args)
                 if (arg.StartsWith('-'))
                     name = arg.Substring(1);
-                else if (name != null)
+                else if (name is object)
                 {
                     var property = typeof(Arguments).GetRuntimeProperty(name);
-                    if (property != null)
+                    if (property is object)
                         property.SetValue(result, arg);
                     name = null;
                 }

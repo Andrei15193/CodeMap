@@ -36,7 +36,7 @@ namespace CodeMap.ReferenceData
         /// <param name="eventInfo">The <see cref="EventInfo"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="EventReference"/> references the provided <paramref name="eventInfo"/>; <c>false</c> otherwise.</returns>
         public bool Equals(EventInfo eventInfo)
-            => eventInfo != null
+            => eventInfo is object
                && Name.Equals(eventInfo.Name, StringComparison.OrdinalIgnoreCase)
                && DeclaringType.Equals(eventInfo.DeclaringType);
 

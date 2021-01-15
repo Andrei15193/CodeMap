@@ -71,7 +71,7 @@ namespace CodeMap.DeclarationNodes
                 throw new ArgumentNullException(nameof(additions));
 
             var addition = additions.FirstOrDefault(addition => addition.CanApply(this));
-            if (addition != null)
+            if (addition is object)
             {
                 Summary = addition.GetSummary(this) ?? Summary;
                 Remarks = addition.GetRemarks(this) ?? Remarks;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace CodeMap.DocumentationElements
 {
@@ -40,15 +39,15 @@ namespace CodeMap.DocumentationElements
             IEnumerable<MemberReferenceDocumentationElement> relatedMembers)
         {
             CanonicalName = canonicalName ?? throw new ArgumentNullException(nameof(canonicalName));
-            Summary = summary ?? DocumentationElement.Summary(Enumerable.Empty<BlockDocumentationElement>());
+            Summary = summary ?? DocumentationElement.Summary(Array.Empty<BlockDocumentationElement>());
             GenericParameters = genericParameters ?? Extensions.EmptyDictionary<string, BlockDescriptionDocumentationElement>();
             Parameters = parameters ?? Extensions.EmptyDictionary<string, BlockDescriptionDocumentationElement>();
-            Returns = returns ?? DocumentationElement.BlockDescription(Enumerable.Empty<BlockDocumentationElement>());
-            Exceptions = exceptions ?? Extensions.EmptyReadOnlyList<ExceptionDocumentationElement>();
-            Remarks = remarks ?? DocumentationElement.Remarks(Enumerable.Empty<BlockDocumentationElement>());
-            Examples = examples.ToReadOnlyList() ?? Enumerable.Empty<ExampleDocumentationElement>().ToReadOnlyList();
-            Value = value ?? DocumentationElement.Value(Enumerable.Empty<BlockDocumentationElement>());
-            RelatedMembers = relatedMembers.ToReadOnlyList() ?? Enumerable.Empty<MemberReferenceDocumentationElement>().ToReadOnlyList();
+            Returns = returns ?? DocumentationElement.BlockDescription(Array.Empty<BlockDocumentationElement>());
+            Exceptions = exceptions ?? Array.Empty<ExceptionDocumentationElement>();
+            Remarks = remarks ?? DocumentationElement.Remarks(Array.Empty<BlockDocumentationElement>());
+            Examples = examples.ToReadOnlyList() ?? Array.Empty<ExampleDocumentationElement>();
+            Value = value ?? DocumentationElement.Value(Array.Empty<BlockDocumentationElement>());
+            RelatedMembers = relatedMembers.ToReadOnlyList() ?? Array.Empty<MemberReferenceDocumentationElement>();
         }
 
         /// <summary>The canonical name of the documented member.</summary>

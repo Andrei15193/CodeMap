@@ -51,7 +51,7 @@ namespace CodeMap.DocumentationElements
                     .Root
                     .Element("members")
                     .Elements("member")
-                    .Where(member => member.Attribute("name") != null)
+                    .Where(member => member.Attribute("name") is object)
                     .Select(_ReadMemberDocumentation)
                 );
         }
@@ -73,7 +73,7 @@ namespace CodeMap.DocumentationElements
         private SummaryDocumentationElement _ReadSummary(XElement memberDocumentationXmlElement)
         {
             var summaryXmlElement = memberDocumentationXmlElement.Element("summary");
-            if (summaryXmlElement == null)
+            if (summaryXmlElement is null)
                 return null;
 
             return DocumentationElement.Summary(
@@ -86,7 +86,7 @@ namespace CodeMap.DocumentationElements
             => (
                 from typeParamXmlElement in memberDocumentationXmlElement.Elements("typeparam")
                 let typeParamNameAttribute = typeParamXmlElement.Attribute("name")
-                where typeParamNameAttribute != null
+                where typeParamNameAttribute is object
                 group typeParamXmlElement by typeParamNameAttribute.Value into typeParamXmlElementsByName
                 let blockDocumentationElements = typeParamXmlElementsByName.SelectMany(_ReadBlocks)
                 let xmlAttributes = _ReadXmlAttributesExcept(typeParamXmlElementsByName, "name")
@@ -106,7 +106,7 @@ namespace CodeMap.DocumentationElements
             => (
                 from paramXmlElement in memberDocumentationXmlElement.Elements("param")
                 let paramNameAttribute = paramXmlElement.Attribute("name")
-                where paramNameAttribute != null
+                where paramNameAttribute is object
                 group paramXmlElement by paramNameAttribute.Value into paramXmlElementsByName
                 let blockDocumentationElements = paramXmlElementsByName.SelectMany(_ReadBlocks)
                 let xmlAttributes = _ReadXmlAttributesExcept(paramXmlElementsByName, "name")
@@ -125,7 +125,7 @@ namespace CodeMap.DocumentationElements
         private BlockDescriptionDocumentationElement _ReadReturns(XElement memberDocumentationXmlElement)
         {
             var returnsXmlElement = memberDocumentationXmlElement.Element("returns");
-            if (returnsXmlElement == null)
+            if (returnsXmlElement is null)
                 return null;
 
             return DocumentationElement.BlockDescription(
@@ -138,7 +138,7 @@ namespace CodeMap.DocumentationElements
             => (
                 from exceptionXmlElement in memberDocumentationXmlElement.Elements("exception")
                 let exceptionCrefAttribute = exceptionXmlElement.Attribute("cref")
-                where exceptionCrefAttribute != null
+                where exceptionCrefAttribute is object
                 group exceptionXmlElement by exceptionCrefAttribute.Value into exceptionXmlElementsByType
                 let exceptionType = _canonicalNameResolver?.TryFindMemberInfoFor(exceptionXmlElementsByType.Key)
                 let blockDocumentationElements = exceptionXmlElementsByType.SelectMany(_ReadBlocks)
@@ -152,7 +152,7 @@ namespace CodeMap.DocumentationElements
         private RemarksDocumentationElement _ReadRemarks(XElement memberDocumentationXmlElement)
         {
             var remarksXmlElement = memberDocumentationXmlElement.Element("remarks");
-            if (remarksXmlElement == null)
+            if (remarksXmlElement is null)
                 return null;
 
             return DocumentationElement.Remarks(_ReadBlocks(remarksXmlElement), _ReadXmlAttributes(remarksXmlElement));
@@ -167,7 +167,7 @@ namespace CodeMap.DocumentationElements
         private ValueDocumentationElement _ReadValue(XElement memberDocumentationXmlElement)
         {
             var valueXmlElement = memberDocumentationXmlElement.Element("value");
-            if (valueXmlElement == null)
+            if (valueXmlElement is null)
                 return null;
 
             return DocumentationElement.Value(_ReadBlocks(valueXmlElement), _ReadXmlAttributes(valueXmlElement));
@@ -177,9 +177,9 @@ namespace CodeMap.DocumentationElements
             => (
                 from relatedMemberXmlElement in memberDocumentationXmlElement.Elements("seealso")
                 let relatedMemberCrefAttribute = relatedMemberXmlElement.Attribute("cref")
-                where relatedMemberCrefAttribute != null
+                where relatedMemberCrefAttribute is object
                 let referencedMember = _canonicalNameResolver?.TryFindMemberInfoFor(relatedMemberCrefAttribute.Value)
-                select referencedMember != null
+                select referencedMember is object
                     ? DocumentationElement.MemberReference(_memberReferenceFactory.Create(referencedMember), _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
                     : DocumentationElement.MemberReference(relatedMemberCrefAttribute.Value, _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
                 as MemberReferenceDocumentationElement
@@ -309,7 +309,7 @@ namespace CodeMap.DocumentationElements
         private BlockDocumentationElement _ReadListOrTable(XElement xmlElement)
         {
             var listTypeAttribute = xmlElement.Attribute("type");
-            if (listTypeAttribute != null)
+            if (listTypeAttribute is object)
                 if (listTypeAttribute.Value.Equals("table", StringComparison.Ordinal))
                     return _ReadTable(xmlElement);
                 else if (_IsDefinitionList())
@@ -324,7 +324,7 @@ namespace CodeMap.DocumentationElements
                 return _ReadUnorederedList(xmlElement);
 
             bool _IsDefinitionList()
-                => xmlElement.Element("listheader") != null || xmlElement.Elements("item").Any(itemXmlElement => itemXmlElement.Element("term") != null);
+                => xmlElement.Element("listheader") is object || xmlElement.Elements("item").Any(itemXmlElement => itemXmlElement.Element("term") is object);
         }
 
         private UnorderedListDocumentationElement _ReadUnorederedList(XElement xmlElement)
@@ -344,7 +344,7 @@ namespace CodeMap.DocumentationElements
             var descriptionElement = xmlElement.Element("description");
             return DocumentationElement.ListItem(
                 _ReadContent((descriptionElement ?? xmlElement).Nodes()),
-                _ReadXmlAttributes(descriptionElement != null ? new[] { descriptionElement, xmlElement } : new[] { xmlElement })
+                _ReadXmlAttributes(descriptionElement is object ? new[] { descriptionElement, xmlElement } : new[] { xmlElement })
             );
         }
 
@@ -360,11 +360,11 @@ namespace CodeMap.DocumentationElements
                         return DocumentationElement.DefinitionListItem(
                             DocumentationElement.DefinitionListItemTerm(
                                 _ReadContent(termElement?.Nodes() ?? Enumerable.Empty<XNode>()),
-                                termElement != null ? _ReadXmlAttributes(termElement) : null
+                                termElement is object ? _ReadXmlAttributes(termElement) : null
                             ),
                             DocumentationElement.DefinitionListItemDescription(
                                 _ReadContent(itemXmlElement.Element("description")?.Nodes() ?? Enumerable.Empty<XNode>()),
-                                descriptionElement != null ? _ReadXmlAttributes(descriptionElement) : null
+                                descriptionElement is object ? _ReadXmlAttributes(descriptionElement) : null
                             ),
                             _ReadXmlAttributes(itemXmlElement)
                         );
@@ -373,7 +373,7 @@ namespace CodeMap.DocumentationElements
 
             var listTitleXmlElement = xmlElement.Element("listheader");
             var listTitleNodes = (listTitleXmlElement?.Element("term") ?? listTitleXmlElement)?.Nodes();
-            var listTile = listTitleNodes == null ? null : DocumentationElement.DefinitionListTitle(_ReadContent(listTitleNodes), _ReadXmlAttributes(listTitleXmlElement));
+            var listTile = listTitleNodes is null ? null : DocumentationElement.DefinitionListTitle(_ReadContent(listTitleNodes), _ReadXmlAttributes(listTitleXmlElement));
             return DocumentationElement.DefinitionList(
                 listTile,
                 definitionListItems,
@@ -401,7 +401,7 @@ namespace CodeMap.DocumentationElements
                 .ToReadOnlyList();
 
             var tableHeaderXmlElement = xmlElement.Element("listheader");
-            if (tableHeaderXmlElement != null)
+            if (tableHeaderXmlElement is object)
             {
                 var termElements = tableHeaderXmlElement
                     .Elements("term");
@@ -414,7 +414,7 @@ namespace CodeMap.DocumentationElements
                     )
                     .Concat(
                         Enumerable.Repeat(
-                            DocumentationElement.TableColumn(Enumerable.Empty<InlineDocumentationElement>(), _ReadXmlAttributes(tableHeaderXmlElement)),
+                            DocumentationElement.TableColumn(Array.Empty<InlineDocumentationElement>(), _ReadXmlAttributes(tableHeaderXmlElement)),
                             Math.Max(0, (rows.Max(row => (int?)row.Cells.Count) ?? 0) - termElements.Count())
                         )
                     );
@@ -438,11 +438,11 @@ namespace CodeMap.DocumentationElements
 
                     case XElement xmlElement when xmlElement.Name.LocalName.Equals("see", StringComparison.Ordinal):
                         var memberReferenceCrefAttribute = xmlElement.Attribute("cref");
-                        if (memberReferenceCrefAttribute != null)
+                        if (memberReferenceCrefAttribute is object)
                         {
                             _AddTextElementIfExists();
                             var referencedMember = _canonicalNameResolver?.TryFindMemberInfoFor(memberReferenceCrefAttribute.Value);
-                            inlineElements.Add(referencedMember != null
+                            inlineElements.Add(referencedMember is object
                                 ? DocumentationElement.MemberReference(_memberReferenceFactory.Create(referencedMember), _ReadXmlAttributesExcept(xmlElement, "cref"))
                                 : DocumentationElement.MemberReference(memberReferenceCrefAttribute.Value, _ReadXmlAttributesExcept(xmlElement, "cref"))
                                 as MemberReferenceDocumentationElement
@@ -452,7 +452,7 @@ namespace CodeMap.DocumentationElements
 
                     case XElement xmlElement when xmlElement.Name.LocalName.Equals("a", StringComparison.Ordinal):
                         var hyperlinkHrefAttribute = xmlElement.Attribute("href");
-                        if (hyperlinkHrefAttribute != null)
+                        if (hyperlinkHrefAttribute is object)
                         {
                             _AddTextElementIfExists();
                             inlineElements.Add(DocumentationElement.Hyperlink(hyperlinkHrefAttribute.Value, xmlElement.Value, _ReadXmlAttributesExcept(xmlElement, "href")));
@@ -461,7 +461,7 @@ namespace CodeMap.DocumentationElements
 
                     case XElement xmlElement when xmlElement.Name.LocalName.Equals("paramref", StringComparison.Ordinal):
                         var parameterReferenceNameAttribute = xmlElement.Attribute("name");
-                        if (parameterReferenceNameAttribute != null)
+                        if (parameterReferenceNameAttribute is object)
                         {
                             _AddTextElementIfExists();
                             inlineElements.Add(DocumentationElement.ParameterReference(parameterReferenceNameAttribute.Value, _ReadXmlAttributesExcept(xmlElement, "name")));
@@ -470,7 +470,7 @@ namespace CodeMap.DocumentationElements
 
                     case XElement xmlElement when xmlElement.Name.LocalName.Equals("typeparamref", StringComparison.Ordinal):
                         var typeParameterReferenceNameAttribute = xmlElement.Attribute("name");
-                        if (typeParameterReferenceNameAttribute != null)
+                        if (typeParameterReferenceNameAttribute is object)
                         {
                             _AddTextElementIfExists();
                             inlineElements.Add(DocumentationElement.GenericParameterReference(typeParameterReferenceNameAttribute.Value, _ReadXmlAttributesExcept(xmlElement, "name")));

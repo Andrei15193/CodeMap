@@ -8,45 +8,26 @@ namespace CodeMap
 {
     internal static class Extensions
     {
-        private static class Cache<TItem>
-        {
-            public static readonly IReadOnlyList<TItem> Empty = Enumerable.Empty<TItem>() as IReadOnlyList<TItem> ?? Enumerable.Empty<TItem>().ToList();
-        }
-
         private static class Cache<TKey, TValue>
         {
             public static readonly IReadOnlyDictionary<TKey, TValue> Empty = new Dictionary<TKey, TValue>();
         }
 
-        public static IReadOnlyList<TItem> EmptyReadOnlyList<TItem>()
-            => Cache<TItem>.Empty;
-
         public static IReadOnlyDictionary<TKey, TValue> EmptyDictionary<TKey, TValue>()
             => Cache<TKey, TValue>.Empty;
 
         public static IReadOnlyList<TItem> ToReadOnlyList<TItem>(this IEnumerable<TItem> items)
-        {
-            var result = items as IReadOnlyList<TItem>;
-
-            if (result == null && items != null)
-                using (var item = items.GetEnumerator())
-                    if (item.MoveNext())
-                    {
-                        var itemsList = new List<TItem>();
-                        do
-                            itemsList.Add(item.Current);
-                        while (item.MoveNext());
-                        result = itemsList;
-                    }
-                    else
-                        result = Cache<TItem>.Empty;
-
-            return result;
-        }
+            => items is null
+            ? null
+            : items is IReadOnlyList<TItem> readOnlyList
+            ? readOnlyList
+            : items.Any()
+            ? items.ToArray()
+            : Array.Empty<TItem>();
 
         public static string ToBase16String(this IEnumerable<byte> bytes)
         {
-            if (bytes == null)
+            if (bytes is null)
                 return null;
 
             var result = (bytes is IReadOnlyCollection<byte> byteCollection)
@@ -80,13 +61,13 @@ namespace CodeMap
             {
                 declaringTypes.AddFirst(currentType);
                 currentType = currentType.DeclaringType;
-            } while (currentType != null);
+            } while (currentType is object);
             return declaringTypes;
         }
 
         public static IEnumerable<Type> GetAllDefinedTypes(this Assembly assembly)
         {
-            var toVisit = new Queue<Type>(assembly.DefinedTypes.Where(type => type.DeclaringType == null));
+            var toVisit = new Queue<Type>(assembly.DefinedTypes.Where(type => type.DeclaringType is null));
             while (toVisit.Count > 0)
             {
                 var type = toVisit.Dequeue();
@@ -98,7 +79,7 @@ namespace CodeMap
 
         public static IEnumerable<Type> GetAllForwardedTypes(this Assembly assembly)
         {
-            var toVisit = new Queue<Type>(assembly.GetForwardedTypes().Where(type => type.DeclaringType == null));
+            var toVisit = new Queue<Type>(assembly.GetForwardedTypes().Where(type => type.DeclaringType is null));
             while (toVisit.Count > 0)
             {
                 var type = toVisit.Dequeue();

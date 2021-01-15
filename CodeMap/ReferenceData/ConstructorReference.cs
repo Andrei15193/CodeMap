@@ -38,7 +38,7 @@ namespace CodeMap.ReferenceData
         /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="ConstructorReference"/> references the provided <paramref name="constructorInfo"/>; <c>false</c> otherwise.</returns>
         public bool Equals(ConstructorInfo constructorInfo)
-            => constructorInfo != null
+            => constructorInfo is object
                && DeclaringType.Equals(constructorInfo.DeclaringType)
                && ParameterTypes.Count == constructorInfo.GetParameters().Length
                && ParameterTypes

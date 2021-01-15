@@ -1879,7 +1879,7 @@ fourth line
 
         private static void _AssertAreEqual(DefinitionListDocumentationElement expected, DefinitionListDocumentationElement actual)
         {
-            if (expected.ListTitle == null)
+            if (expected.ListTitle is null)
                 Assert.Null(actual.ListTitle);
             else
                 _AssertAreEqual(expected.ListTitle.Content, actual.ListTitle.Content);

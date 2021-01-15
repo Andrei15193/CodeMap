@@ -32,6 +32,6 @@ namespace CodeMap.ReferenceData
             => Equals(type, null, null);
 
         internal override bool Equals(Type type, GenericMethodParameterReference originator, Type originatorMatch)
-            => type != null && type.IsArray && Rank == type.GetArrayRank() && ItemType.Equals(type.GetElementType(), originator, originatorMatch);
+            => type is object && type.IsArray && Rank == type.GetArrayRank() && ItemType.Equals(type.GetElementType(), originator, originatorMatch);
     }
 }

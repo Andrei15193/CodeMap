@@ -24,7 +24,7 @@ namespace CodeMap.DocumentationElements
                 throw new ArgumentException("Cannot contain 'null' rows.", nameof(rows));
 
             XmlAttributes = xmlAttributes ?? Extensions.EmptyDictionary<string, string>();
-            if (XmlAttributes.Any(pair => pair.Value == null))
+            if (XmlAttributes.Any(pair => pair.Value is null))
                 throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
 
             var actualColumnCount = Math.Max(columnsList.Count, rowsList.Max(row => (int?)row.Cells.Count) ?? 0);
@@ -34,7 +34,7 @@ namespace CodeMap.DocumentationElements
                 : columnsList
                     .Concat(
                         Enumerable.Repeat(
-                            TableColumn(Enumerable.Empty<InlineDocumentationElement>()),
+                            TableColumn(Array.Empty<InlineDocumentationElement>()),
                             actualColumnCount - columnsList.Count
                         )
                     )
@@ -49,17 +49,17 @@ namespace CodeMap.DocumentationElements
                 throw new ArgumentException("Cannot contain 'null' rows.", nameof(rows));
 
             XmlAttributes = xmlAttributes ?? Extensions.EmptyDictionary<string, string>();
-            if (XmlAttributes.Any(pair => pair.Value == null))
+            if (XmlAttributes.Any(pair => pair.Value is null))
                 throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
 
             var actualColumnCount = rowsList.Max(row => (int?)row.Cells.Count) ?? 0;
-            Columns = Extensions.EmptyReadOnlyList<TableColumnDocumentationElement>();
+            Columns = Array.Empty<TableColumnDocumentationElement>();
             Rows = _EnsureRowCellsCount(rowsList, actualColumnCount);
         }
 
         private static IReadOnlyList<TableRowDocumentationElement> _EnsureRowCellsCount(IReadOnlyList<TableRowDocumentationElement> rowsList, int columnCount)
         {
-            var emptyCell = TableCell(Enumerable.Empty<InlineDocumentationElement>());
+            var emptyCell = TableCell(Array.Empty<InlineDocumentationElement>());
             return rowsList
                 .Select(
                     row => row.Cells.Count >= columnCount

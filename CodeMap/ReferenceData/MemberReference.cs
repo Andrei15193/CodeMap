@@ -156,7 +156,7 @@ namespace CodeMap.ReferenceData
         /// <param name="assembly">The <see cref="Assembly"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="MemberReference"/> references the provided <paramref name="assembly"/>; <c>false</c> otherwise.</returns>
         public bool Equals(Assembly assembly)
-            => assembly != null && Equals(assembly.GetName());
+            => assembly is object && Equals(assembly.GetName());
 
         /// <summary>Determines whether the current <see cref="MemberReference"/> is equal to the provided <paramref name="assemblyName"/>.</summary>
         /// <param name="assemblyName">The <see cref="AssemblyName"/> to compare to.</param>

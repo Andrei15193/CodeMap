@@ -12,7 +12,7 @@ namespace CodeMap.DeclarationNodes
     {
         private readonly MemberReferenceFactory _memberReferenceFactory = new MemberReferenceFactory();
         private readonly MemberDocumentation _emptyMemberDocumentation = new MemberDocumentation(string.Empty);
-        private readonly BlockDescriptionDocumentationElement _emptyBlockDocumentationElementCollection = DocumentationElement.BlockDescription(Enumerable.Empty<BlockDocumentationElement>());
+        private readonly BlockDescriptionDocumentationElement _emptyBlockDocumentationElementCollection = DocumentationElement.BlockDescription(Array.Empty<BlockDocumentationElement>());
         private readonly CanonicalNameResolver _canonicalNameResolver;
         private readonly MemberDocumentationCollection _membersDocumentation;
         private readonly DeclarationFilter _declarationFilter;
@@ -38,13 +38,13 @@ namespace CodeMap.DeclarationNodes
                 Attributes = _MapAttributesDataFrom(assembly.CustomAttributes),
                 Summary = DocumentationElement.Summary(),
                 Remarks = DocumentationElement.Remarks(),
-                Examples = Extensions.EmptyReadOnlyList<ExampleDocumentationElement>(),
-                RelatedMembers = Extensions.EmptyReadOnlyList<MemberReferenceDocumentationElement>()
+                Examples = Array.Empty<ExampleDocumentationElement>(),
+                RelatedMembers = Array.Empty<MemberReferenceDocumentationElement>()
             };
 
             assemblyDocumentationElement.Namespaces = assembly
                 .DefinedTypes
-                .Where(type => type.DeclaringType == null && _declarationFilter.ShouldMap(type))
+                .Where(type => type.DeclaringType is null && _declarationFilter.ShouldMap(type))
                 .OrderBy(type => type.Namespace, StringComparer.OrdinalIgnoreCase)
                 .GroupBy(type => type.Namespace, StringComparer.OrdinalIgnoreCase)
                 .Select(
@@ -56,8 +56,8 @@ namespace CodeMap.DeclarationNodes
                         @namespace.Assembly = assemblyDocumentationElement;
                         @namespace.Summary = DocumentationElement.Summary();
                         @namespace.Remarks = DocumentationElement.Remarks();
-                        @namespace.Examples = Extensions.EmptyReadOnlyList<ExampleDocumentationElement>();
-                        @namespace.RelatedMembers = Extensions.EmptyReadOnlyList<MemberReferenceDocumentationElement>();
+                        @namespace.Examples = Array.Empty<ExampleDocumentationElement>();
+                        @namespace.RelatedMembers = Array.Empty<MemberReferenceDocumentationElement>();
 
                         var declaredTypes = _GetTypes(typesByNamespace, @namespace, null);
                         @namespace.DeclaredTypes = declaredTypes;
@@ -160,7 +160,7 @@ namespace CodeMap.DeclarationNodes
                     .ToReadOnlyList(),
                 Return = new MethodReturnData
                 {
-                    Type = invokeMethodInfo.ReturnType == typeof(object) && invokeMethodInfo.ReturnParameter.GetCustomAttribute<DynamicAttribute>() != null
+                    Type = invokeMethodInfo.ReturnType == typeof(object) && invokeMethodInfo.ReturnParameter.GetCustomAttribute<DynamicAttribute>() is object
                         ? _memberReferenceFactory.CreateDynamic()
                         : _memberReferenceFactory.Create(invokeMethodInfo.ReturnType),
                     Description = memberDocumentation.Returns,
@@ -393,7 +393,7 @@ namespace CodeMap.DeclarationNodes
                 AccessModifier = _GetAccessModifierFrom(field),
                 IsShadowing = _IsShadowing(field),
                 Value = field.GetValue(null),
-                Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() != null
+                Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() is object
                     ? _memberReferenceFactory.CreateDynamic()
                     : _memberReferenceFactory.Create(field.FieldType),
                 Attributes = _MapAttributesDataFrom(field.CustomAttributes),
@@ -415,7 +415,7 @@ namespace CodeMap.DeclarationNodes
                 IsReadOnly = field.IsInitOnly,
                 IsStatic = field.IsStatic,
                 IsShadowing = _IsShadowing(field),
-                Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() != null
+                Type = field.FieldType == typeof(object) && field.GetCustomAttribute<DynamicAttribute>() is object
                     ? _memberReferenceFactory.CreateDynamic()
                     : _memberReferenceFactory.Create(field.FieldType),
                 Attributes = _MapAttributesDataFrom(field.CustomAttributes),
@@ -457,9 +457,9 @@ namespace CodeMap.DeclarationNodes
             {
                 Name = declaringType.Name,
                 AccessModifier = AccessModifier.Public,
-                Attributes = Extensions.EmptyReadOnlyList<AttributeData>(),
+                Attributes = Array.Empty<AttributeData>(),
                 DeclaringType = declaringType,
-                Parameters = Extensions.EmptyReadOnlyList<ParameterData>(),
+                Parameters = Array.Empty<ParameterData>(),
                 Summary = memberDocumentation.Summary,
                 Exceptions = memberDocumentation.Exceptions,
                 Remarks = memberDocumentation.Remarks,
@@ -515,7 +515,7 @@ namespace CodeMap.DeclarationNodes
                 return new PropertyDeclaration((PropertyReference)_memberReferenceFactory.Create(property))
                 {
                     Name = property.Name,
-                    AccessModifier = setterInfo == null || (getterInfo != null && getterInfo.AccessModifier >= setterInfo.AccessModifier)
+                    AccessModifier = setterInfo is null || (getterInfo is object && getterInfo.AccessModifier >= setterInfo.AccessModifier)
                         ? getterInfo.AccessModifier
                         : setterInfo.AccessModifier,
                     Type = _memberReferenceFactory.Create(property.PropertyType),
@@ -578,7 +578,7 @@ namespace CodeMap.DeclarationNodes
                     .ToReadOnlyList(),
                 Return = new MethodReturnData
                 {
-                    Type = method.ReturnType == typeof(object) && method.ReturnParameter.GetCustomAttribute<DynamicAttribute>() != null
+                    Type = method.ReturnType == typeof(object) && method.ReturnParameter.GetCustomAttribute<DynamicAttribute>() is object
                         ? _memberReferenceFactory.CreateDynamic()
                         : _memberReferenceFactory.Create(method.ReturnType),
                     Description = memberDocumentation.Returns,
@@ -782,7 +782,7 @@ namespace CodeMap.DeclarationNodes
             var parameterData = new ParameterData
             {
                 Name = parameter.Name,
-                Type = _UnwrapeByRef(parameter.ParameterType) == typeof(object) && parameter.GetCustomAttribute<DynamicAttribute>() != null
+                Type = _UnwrapeByRef(parameter.ParameterType) == typeof(object) && parameter.GetCustomAttribute<DynamicAttribute>() is object
                     ? _memberReferenceFactory.CreateDynamic()
                     : _memberReferenceFactory.Create(_UnwrapeByRef(parameter.ParameterType)),
                 Attributes = _MapAttributesDataFrom(parameter.CustomAttributes),
@@ -843,7 +843,7 @@ namespace CodeMap.DeclarationNodes
 
         private object _GetAttributeValue(Type type, CustomAttributeTypedArgument argument)
         {
-            if (argument.Value == null)
+            if (argument.Value is null)
                 return null;
             if (argument.ArgumentType.IsArray)
                 return _GetAttributeValues(type, (IEnumerable<CustomAttributeTypedArgument>)argument.Value);

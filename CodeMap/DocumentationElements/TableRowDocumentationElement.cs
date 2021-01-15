@@ -14,7 +14,7 @@ namespace CodeMap.DocumentationElements
                 throw new ArgumentException("Cannot contain 'null' cells.", nameof(cells));
 
             XmlAttributes = xmlAttributes ?? Extensions.EmptyDictionary<string, string>();
-            if (XmlAttributes.Any(pair => pair.Value == null))
+            if (XmlAttributes.Any(pair => pair.Value is null))
                 throw new ArgumentException("Cannot contain 'null' values.", nameof(xmlAttributes));
         }
 

@@ -36,7 +36,7 @@ namespace CodeMap.ReferenceData
         /// <param name="fieldInfo">The <see cref="FieldInfo"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="FieldReference"/> references the provided <paramref name="fieldInfo"/>; <c>false</c> otherwise.</returns>
         public bool Equals(FieldInfo fieldInfo)
-            => fieldInfo != null
+            => fieldInfo is object
                && Name.Equals(fieldInfo.Name, StringComparison.OrdinalIgnoreCase)
                && DeclaringType.Equals(fieldInfo.DeclaringType);
 

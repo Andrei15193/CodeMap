@@ -39,7 +39,7 @@ namespace CodeMap.Handlebars.Helpers
             switch (declarationNode)
             {
                 case PropertyDeclaration propertyDeclaration:
-                    if (propertyDeclaration.Getter != null && propertyDeclaration.Setter != null)
+                    if (propertyDeclaration.Getter is object && propertyDeclaration.Setter is object)
                         if (propertyDeclaration.Getter.AccessModifier == propertyDeclaration.Setter.AccessModifier)
                         {
                             writer.Write(GetAccessModifierLabel(propertyDeclaration.AccessModifier));
@@ -52,7 +52,7 @@ namespace CodeMap.Handlebars.Helpers
                             writer.Write(GetAccessModifierLabel(propertyDeclaration.Setter.AccessModifier));
                             writer.Write(" set");
                         }
-                    else if (propertyDeclaration.Getter != null)
+                    else if (propertyDeclaration.Getter is object)
                     {
                         writer.Write(GetAccessModifierLabel(propertyDeclaration.Getter.AccessModifier));
                         writer.Write(" get");

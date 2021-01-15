@@ -41,7 +41,7 @@ namespace CodeMap.ReferenceData
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> to compare to.</param>
         /// <returns>Returns <c>true</c> if the current <see cref="PropertyReference"/> references the provided <paramref name="propertyInfo"/>; <c>false</c> otherwise.</returns>
         public bool Equals(PropertyInfo propertyInfo)
-            => propertyInfo != null
+            => propertyInfo is object
                && propertyInfo.DeclaringType == DeclaringType
                && string.Equals(propertyInfo.Name, Name, StringComparison.OrdinalIgnoreCase)
                && ParameterTypes.Count == propertyInfo.GetIndexParameters().Length

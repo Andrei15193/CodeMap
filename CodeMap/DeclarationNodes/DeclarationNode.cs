@@ -134,7 +134,7 @@ namespace CodeMap.DeclarationNodes
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
         public static AssemblyDeclaration Create(Assembly assembly)
         {
-            if (assembly == null)
+            if (assembly is null)
                 throw new ArgumentNullException(nameof(assembly));
 
             var xmlDocumentationFileInfo = new FileInfo(Path.ChangeExtension(assembly.Location, ".xml"));
@@ -159,7 +159,7 @@ namespace CodeMap.DeclarationNodes
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
         public static AssemblyDeclaration Create(Assembly assembly, DeclarationFilter declarationFilter)
         {
-            if (assembly == null)
+            if (assembly is null)
                 throw new ArgumentNullException(nameof(assembly));
 
             var xmlDocumentationFileInfo = new FileInfo(Path.ChangeExtension(assembly.Location, ".xml"));
@@ -188,9 +188,9 @@ namespace CodeMap.DeclarationNodes
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> or <paramref name="membersDocumentation"/> are <c>null</c>.</exception>
         public static AssemblyDeclaration Create(Assembly assembly, MemberDocumentationCollection membersDocumentation, DeclarationFilter declarationFilter)
         {
-            if (assembly == null)
+            if (assembly is null)
                 throw new ArgumentNullException(nameof(assembly));
-            if (membersDocumentation == null)
+            if (membersDocumentation is null)
                 throw new ArgumentNullException(nameof(membersDocumentation));
 
             return new DeclarationNodeFactory(

@@ -40,7 +40,7 @@ namespace CodeMap.ReferenceData
             => Equals(type, null, null);
 
         internal override bool Equals(Type type, GenericMethodParameterReference originator, Type originatorMatch)
-            => type != null
+            => type is object
                && !type.IsPointer
                && !type.IsArray
                && !type.IsByRef

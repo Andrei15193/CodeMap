@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using static CodeMap.Extensions;
 
 namespace CodeMap.ReferenceData
 {
@@ -33,7 +32,7 @@ namespace CodeMap.ReferenceData
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="memberInfo"/> is <c>null</c>.</exception>
         public MemberReference Create(MemberInfo memberInfo)
         {
-            if (memberInfo == null)
+            if (memberInfo is null)
                 throw new ArgumentNullException(nameof(memberInfo));
 
             if (!_cachedMemberReferences.TryGetValue(memberInfo, out var memberReference))
@@ -53,7 +52,7 @@ namespace CodeMap.ReferenceData
         /// <exception cref="ArgumentException">Thrown when <paramref name="type"/> is not a <c>struct</c> (value type).</exception>
         public ConstructorReference CreateDefaultConstructor(Type type)
         {
-            if (type == null)
+            if (type is null)
                 throw new ArgumentNullException(nameof(type));
             if (!type.IsValueType || type.IsEnum)
                 throw new ArgumentException("Default constructor references can only be created for structs (value types).", nameof(type));
@@ -63,7 +62,7 @@ namespace CodeMap.ReferenceData
                 constructorReference = new ConstructorReference
                 {
                     DeclaringType = (TypeReference)Create(type),
-                    ParameterTypes = EmptyReadOnlyList<BaseTypeReference>()
+                    ParameterTypes = Array.Empty<BaseTypeReference>()
                 };
                 _cachedDefaultConstructorReferences.Add(type, constructorReference);
             }
@@ -76,7 +75,7 @@ namespace CodeMap.ReferenceData
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="type"/> is <c>null</c>.</exception>
         public BaseTypeReference Create(Type type)
         {
-            if (type == null)
+            if (type is null)
                 throw new ArgumentNullException(nameof(type));
 
             return (BaseTypeReference)Create(memberInfo: type);
@@ -90,7 +89,7 @@ namespace CodeMap.ReferenceData
             {
                 _dynamicTypeReference = new DynamicTypeReference
                 {
-                    GenericArguments = EmptyReadOnlyList<GenericTypeParameterReference>()
+                    GenericArguments = Array.Empty<GenericTypeParameterReference>()
                 };
                 _InitializeTypeReference(typeof(object), _dynamicTypeReference);
             }
@@ -103,7 +102,7 @@ namespace CodeMap.ReferenceData
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
         public AssemblyReference Create(Assembly assembly)
         {
-            if (assembly == null)
+            if (assembly is null)
                 throw new ArgumentNullException(nameof(assembly));
 
             return Create(assembly.GetName());
@@ -115,7 +114,7 @@ namespace CodeMap.ReferenceData
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="assemblyName"/> is <c>null</c>.</exception>
         public AssemblyReference Create(AssemblyName assemblyName)
         {
-            if (assemblyName == null)
+            if (assemblyName is null)
                 throw new ArgumentNullException(nameof(assemblyName));
 
             if (!_cachedAssemblyReferences.TryGetValue(assemblyName, out var assemblyReference))
@@ -133,7 +132,7 @@ namespace CodeMap.ReferenceData
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="assembly"/> is <c>null</c>.</exception>
         public NamespaceReference CreateNamespace(string name, Assembly assembly)
         {
-            if (assembly == null)
+            if (assembly is null)
                 throw new ArgumentNullException(nameof(assembly));
 
             return CreateNamespace(name, assembly.GetName());
@@ -146,7 +145,7 @@ namespace CodeMap.ReferenceData
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="assemblyName"/> is <c>null</c>.</exception>
         public NamespaceReference CreateNamespace(string name, AssemblyName assemblyName)
         {
-            if (assemblyName == null)
+            if (assemblyName is null)
                 throw new ArgumentNullException(nameof(assemblyName));
 
             var namespaceName = string.IsNullOrWhiteSpace(name) ? string.Empty : name;
@@ -215,7 +214,7 @@ namespace CodeMap.ReferenceData
                 () =>
                 {
                     var declaringType = type.GetDeclaringType();
-                    typeReference.DeclaringType = declaringType != null
+                    typeReference.DeclaringType = declaringType is object
                        ? (TypeReference)Create(declaringType)
                        : null;
                     typeReference.GenericArguments = type
@@ -410,10 +409,10 @@ namespace CodeMap.ReferenceData
         {
             public bool Equals(AssemblyName left, AssemblyName right)
             {
-                if (left == null)
-                    return right == null;
+                if (left is null)
+                    return right is null;
 
-                return right != null
+                return right is object
                     && AssemblyName.ReferenceMatchesDefinition(left, right)
                     && string.Equals(left.Name, right.Name, StringComparison.OrdinalIgnoreCase)
                     && left.Version == right.Version
@@ -422,7 +421,7 @@ namespace CodeMap.ReferenceData
             }
 
             public int GetHashCode(AssemblyName asseblyName)
-                => asseblyName != null
+                => asseblyName is object
                     ? new
                     {
                         Name = asseblyName.Name?.ToLowerInvariant(),
