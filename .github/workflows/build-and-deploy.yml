@@ -117,7 +117,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: 5.0.404
 
     - name: Install dependencies
       run: dotnet restore
@@ -207,9 +207,9 @@ jobs:
         else
         {
           $projectDirectoryPath = $env:GITHUB_REF.Substring("refs/heads/".Length)
-          dotnet ./CodeMap.Tests.Data.Documentation/bin/Release/netcoreapp3.1/CodeMap.Tests.Data.Documentation.dll -OutputPath "./docs" -TargetSubdirectory "$($projectDirectoryPath)/test-data"
+          dotnet ./CodeMap.Tests.Data.Documentation/bin/Release/net5.0/CodeMap.Tests.Data.Documentation.dll -OutputPath "./docs" -TargetSubdirectory "$($projectDirectoryPath)/test-data"
         }
-        dotnet ./CodeMap.Documentation/bin/Release/netcoreapp3.1/CodeMap.Documentation.dll -OutputPath "./docs" -TargetSubdirectory $projectDirectoryPath
+        dotnet ./CodeMap.Documentation/bin/Release/net5.0/CodeMap.Documentation.dll -OutputPath "./docs" -TargetSubdirectory $projectDirectoryPath
         
         mkdir ./docs/_data
         (git tag) |
