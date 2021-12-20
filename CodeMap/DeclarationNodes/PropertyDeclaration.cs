@@ -34,10 +34,10 @@ namespace CodeMap.DeclarationNodes
         public bool IsShadowing { get; internal set; }
 
         /// <summary>Information about the getter accessor.</summary>
-        public PropertyAccessorData Getter { get; internal set; }
+        public PropertyGetterData Getter { get; internal set; }
 
         /// <summary>Information about the setter accessor.</summary>
-        public PropertyAccessorData Setter { get; internal set; }
+        public PropertySetterData Setter { get; internal set; }
 
         /// <summary>The method parameters.</summary>
         public IReadOnlyList<ParameterData> Parameters { get; internal set; }

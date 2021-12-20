@@ -504,8 +504,8 @@ namespace CodeMap.DeclarationNodes
 
         private PropertyDeclaration _GetProperty(PropertyInfo property, TypeDeclaration declaringType)
         {
-            var getterInfo = _GetPropertyAccessorData(property.GetMethod);
-            var setterInfo = _GetPropertyAccessorData(property.SetMethod);
+            var getterInfo = _GetPropertyGetterData(property);
+            var setterInfo = _GetPropertySetterData(property);
             if (getterInfo is null && setterInfo is null)
                 return null;
             else
@@ -543,16 +543,34 @@ namespace CodeMap.DeclarationNodes
             }
         }
 
-        private PropertyAccessorData _GetPropertyAccessorData(MethodInfo accessorMethod)
+        private PropertyGetterData _GetPropertyGetterData(PropertyInfo property)
         {
-            if (accessorMethod is null || !_declarationFilter.ShouldMapPropertyAccessor(accessorMethod))
+            if (property.GetMethod is null || !_declarationFilter.ShouldMapPropertyAccessor(property.GetMethod))
                 return null;
 
-            return new PropertyAccessorData
+            return new PropertyGetterData
             {
-                AccessModifier = _GetAccessModifierFrom(accessorMethod),
-                Attributes = _MapAttributesDataFrom(accessorMethod.CustomAttributes),
-                ReturnAttributes = _MapAttributesDataFrom(accessorMethod.ReturnParameter.CustomAttributes)
+                AccessModifier = _GetAccessModifierFrom(property.GetMethod),
+                Attributes = _MapAttributesDataFrom(property.GetMethod.CustomAttributes),
+                ReturnAttributes = _MapAttributesDataFrom(property.GetMethod.ReturnParameter.CustomAttributes)
+            };
+        }
+
+        private PropertySetterData _GetPropertySetterData(PropertyInfo property)
+        {
+            if (property.SetMethod is null || !_declarationFilter.ShouldMapPropertyAccessor(property.SetMethod))
+                return null;
+
+            return new PropertySetterData
+            {
+                IsInitOnly = property
+                    .SetMethod
+                    .ReturnParameter
+                    .GetRequiredCustomModifiers()
+                    .Any(modifier => modifier.Namespace == "System.Runtime.CompilerServices" && modifier.Name == "IsExternalInit"),
+                AccessModifier = _GetAccessModifierFrom(property.SetMethod),
+                Attributes = _MapAttributesDataFrom(property.SetMethod.CustomAttributes),
+                ReturnAttributes = _MapAttributesDataFrom(property.SetMethod.ReturnParameter.CustomAttributes)
             };
         }
 

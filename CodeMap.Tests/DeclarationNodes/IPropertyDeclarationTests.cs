@@ -36,6 +36,8 @@
 
         void HasSetterAccessModifierSet();
 
+        void HasSetterIsInitOnlySet();
+
         void HasSetterAttributesSet();
 
         void HasSetterReturnAttributesSet();

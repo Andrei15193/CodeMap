@@ -92,6 +92,10 @@ namespace CodeMap.Tests.DeclarationNodes.TestBaseClassTests
             => Assert.Equal(AccessModifier.Public, DeclarationNode.Setter.AccessModifier);
 
         [Fact]
+        public void HasSetterIsInitOnlySet()
+            => Assert.False(DeclarationNode.Setter.IsInitOnly);
+
+        [Fact]
         public void HasSetterAttributesSet()
             => Assert.Empty(DeclarationNode.Setter.Attributes);
 

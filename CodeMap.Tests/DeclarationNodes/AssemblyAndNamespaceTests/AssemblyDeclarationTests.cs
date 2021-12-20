@@ -110,7 +110,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasTargetFrameworkAttribute()
             => AssertAttribute<TargetFrameworkAttribute>(
                 DeclarationNode.Attributes,
-                new (string, object, Type)[] { ("frameworkName", ".NETCoreApp,Version=v3.1", typeof(string)) },
+                new (string, object, Type)[] { ("frameworkName", ".NETCoreApp,Version=v5.0", typeof(string)) },
                 new (string, object, Type)[] { ("FrameworkDisplayName", "", typeof(string)) }
             );
 
@@ -118,31 +118,15 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasNamespacesSet()
             => Assert.Equal(2, DeclarationNode.Namespaces.Count);
 
-#if DEBUG
         [Fact]
         public void HasDependenciesSet()
-            => Assert.Equal(6, DeclarationNode.Dependencies.Count);
-#else
-        [Fact]
-        public void HasDependenciesSet()
-            => Assert.Equal(5, DeclarationNode.Dependencies.Count);
-#endif
-
-#if DEBUG
-        [Fact]
-        public void HasSystemDiagnosticsDependencySet()
-            => Assert.Single(DeclarationNode.Dependencies, dependency =>
-                dependency.Name == "System.Diagnostics.Debug"
-                && dependency.Version == new Version(4, 1, 2, 0)
-                && dependency.Culture == string.Empty
-                && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
-#endif
+            => Assert.Equal(4, DeclarationNode.Dependencies.Count);
 
         [Fact]
         public void HasSystemLinqExpressionsDependencySet()
             => Assert.Single(DeclarationNode.Dependencies, dependency =>
                 dependency.Name == "System.Linq.Expressions"
-                && dependency.Version == new Version(4, 2, 2, 0)
+                && dependency.Version == new Version(5, 0, 0, 0)
                 && dependency.Culture == string.Empty
                 && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
 
@@ -150,15 +134,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasSystemRuntimeDependencySet()
             => Assert.Single(DeclarationNode.Dependencies, dependency =>
                 dependency.Name == "System.Runtime"
-                && dependency.Version == new Version(4, 2, 2, 0)
-                && dependency.Culture == string.Empty
-                && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
-
-        [Fact]
-        public void HasSystemRuntimeExtensionsSet()
-            => Assert.Single(DeclarationNode.Dependencies, dependency =>
-                dependency.Name == "System.Runtime.Extensions"
-                && dependency.Version == new Version(4, 2, 2, 0)
+                && dependency.Version == new Version(5, 0, 0, 0)
                 && dependency.Culture == string.Empty
                 && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
 
@@ -166,7 +142,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasSystemRuntimegInteropServicesSet()
             => Assert.Single(DeclarationNode.Dependencies, dependency =>
                 dependency.Name == "System.Runtime.InteropServices"
-                && dependency.Version == new Version(4, 2, 2, 0)
+                && dependency.Version == new Version(5, 0, 0, 0)
                 && dependency.Culture == string.Empty
                 && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
 
@@ -174,7 +150,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasSystemThreadingSet()
             => Assert.Single(DeclarationNode.Dependencies, dependency =>
                 dependency.Name == "System.Threading"
-                && dependency.Version == new Version(4, 1, 2, 0)
+                && dependency.Version == new Version(5, 0, 0, 0)
                 && dependency.Culture == string.Empty
                 && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
 

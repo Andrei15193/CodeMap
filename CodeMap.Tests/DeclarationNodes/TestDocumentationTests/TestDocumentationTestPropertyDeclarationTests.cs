@@ -89,18 +89,18 @@ namespace CodeMap.Tests.DeclarationNodes.TestDocumentationTests
 
         [Fact]
         public void HasSetterAccessModifierSet()
-            => Assert.Equal(AccessModifier.Public, DeclarationNode.Getter.AccessModifier);
+            => Assert.Null(DeclarationNode.Setter);
+
+        [Fact]
+        public void HasSetterIsInitOnlySet()
+            => Assert.Null(DeclarationNode.Setter);
 
         [Fact]
         public void HasSetterAttributesSet()
-            => Assert.Empty(DeclarationNode.Getter.Attributes);
+            => Assert.Null(DeclarationNode.Setter);
 
         [Fact]
         public void HasSetterReturnAttributesSet()
-            => Assert.Empty(DeclarationNode.Getter.ReturnAttributes);
-
-        [Fact]
-        public void HasNoSetter()
             => Assert.Null(DeclarationNode.Setter);
 
         [Fact]

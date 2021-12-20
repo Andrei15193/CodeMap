@@ -92,6 +92,10 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
             => Assert.Null(DeclarationNode.Setter);
 
         [Fact]
+        public void HasSetterIsInitOnlySet()
+            => Assert.Null(DeclarationNode.Setter);
+
+        [Fact]
         public void HasSetterAttributesSet()
             => Assert.Null(DeclarationNode.Setter);
 

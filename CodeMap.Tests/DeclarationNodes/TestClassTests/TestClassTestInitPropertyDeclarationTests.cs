@@ -4,17 +4,17 @@ using CodeMap.DeclarationNodes;
 using CodeMap.Tests.Data;
 using Xunit;
 
-namespace CodeMap.Tests.DeclarationNodes.TestStructTests
+namespace CodeMap.Tests.DeclarationNodes.TestClassTests
 {
-    public class TestStructIndexerDeclarationTests : DeclarationNodeTests<PropertyDeclaration>, IPropertyDeclarationTests
+    public class TestClassTestInitPropertyDeclarationTests : DeclarationNodeTests<PropertyDeclaration>, IPropertyDeclarationTests
     {
         protected override bool DeclarationNodePredicate(PropertyDeclaration propertyDeclaration)
-            => propertyDeclaration.Name == "Item" && propertyDeclaration.DeclaringType.Name == nameof(TestStruct<int>);
+            => propertyDeclaration.Name == nameof(TestClass<int>.TestInitProperty) && propertyDeclaration.DeclaringType.Name == nameof(TestClass<int>);
 
         [Fact]
         public void MemberEqualityComparison()
         {
-            var propertyInfo = typeof(TestStruct<>).GetRuntimeProperty("Item");
+            var propertyInfo = typeof(TestClass<>).GetRuntimeProperty(nameof(TestClass<int>.TestInitProperty));
             Assert.True(DeclarationNode.Equals(propertyInfo));
             Assert.True(DeclarationNode.Equals(propertyInfo as object));
             Assert.True(propertyInfo == DeclarationNode);
@@ -29,7 +29,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests
 
         [Fact]
         public void HasNameSet()
-            => Assert.Equal("Item", DeclarationNode.Name);
+            => Assert.Equal("TestInitProperty", DeclarationNode.Name);
 
         [Fact]
         public void HasAccessModifierSet()
@@ -37,23 +37,15 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests
 
         [Fact]
         public void HasDeclartingTypeSet()
-            => Assert.True(typeof(TestStruct<>) == DeclarationNode.DeclaringType);
+            => Assert.True(typeof(TestClass<>) == DeclarationNode.DeclaringType);
 
         [Fact]
         public void HasCircularReferenceSet()
-            => Assert.Single(Assert.IsType<StructDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
+            => Assert.Single(Assert.IsType<ClassDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
         public void HasAttributesSet()
-            => Assert.Single(DeclarationNode.Attributes);
-
-        [Fact]
-        public void HasTestAttribute()
-            => AssertAttribute<TestAttribute>(
-                DeclarationNode.Attributes,
-                new (string, object, Type)[] { ("value1", "struct indexer test 1", typeof(object)) },
-                new (string, object, Type)[] { ("Value2", "struct indexer test 2", typeof(object)), ("Value3", "struct indexer test 3", typeof(object)) }
-            );
+            => Assert.Empty(DeclarationNode.Attributes);
 
         [Fact]
         public void HasIsAbstractSet()
@@ -81,7 +73,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests
 
         [Fact]
         public void HasParametersSet()
-            => Assert.Single(DeclarationNode.Parameters);
+            => Assert.Empty(DeclarationNode.Parameters);
 
         [Fact]
         public void HasGetterAccessModifierSet()
@@ -89,27 +81,11 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests
 
         [Fact]
         public void HasGetterAttributesSet()
-            => Assert.Single(DeclarationNode.Getter.Attributes);
-
-        [Fact]
-        public void HasGetterTestAttribute()
-            => AssertAttribute<TestAttribute>(
-                DeclarationNode.Getter.Attributes,
-                new (string, object, Type)[] { ("value1", "struct indexer getter test 1", typeof(object)) },
-                new (string, object, Type)[] { ("Value2", "struct indexer getter test 2", typeof(object)), ("Value3", "struct indexer getter test 3", typeof(object)) }
-            );
+            => Assert.Empty(DeclarationNode.Getter.Attributes);
 
         [Fact]
         public void HasGetterReturnAttributesSet()
-            => Assert.Single(DeclarationNode.Getter.ReturnAttributes);
-
-        [Fact]
-        public void HasGetterReturnTestAttribute()
-            => AssertAttribute<TestAttribute>(
-                DeclarationNode.Getter.ReturnAttributes,
-                new (string, object, Type)[] { ("value1", "struct indexer getter return test 1", typeof(object)) },
-                new (string, object, Type)[] { ("Value2", "struct indexer getter return test 2", typeof(object)), ("Value3", "struct indexer getter return test 3", typeof(object)) }
-            );
+            => Assert.Empty(DeclarationNode.Getter.ReturnAttributes);
 
         [Fact]
         public void HasSetterAccessModifierSet()
@@ -117,7 +93,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests
 
         [Fact]
         public void HasSetterIsInitOnlySet()
-            => Assert.False(DeclarationNode.Setter.IsInitOnly);
+            => Assert.True(DeclarationNode.Setter.IsInitOnly);
 
         [Fact]
         public void HasSetterAttributesSet()
@@ -127,8 +103,8 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests
         public void HasSetterTestAttribute()
             => AssertAttribute<TestAttribute>(
                 DeclarationNode.Setter.Attributes,
-                new (string, object, Type)[] { ("value1", "struct indexer setter test 1", typeof(object)) },
-                new (string, object, Type)[] { ("Value2", "struct indexer setter test 2", typeof(object)), ("Value3", "struct indexer setter test 3", typeof(object)) }
+                new (string, object, Type)[] { ("value1", "class property setter test 1", typeof(object)) },
+                new (string, object, Type)[] { ("Value2", "class property setter test 2", typeof(object)), ("Value3", "class property setter test 3", typeof(object)) }
             );
 
         [Fact]
@@ -139,13 +115,13 @@ namespace CodeMap.Tests.DeclarationNodes.TestStructTests
         public void HasSetterReturnTestAttribute()
             => AssertAttribute<TestAttribute>(
                 DeclarationNode.Setter.ReturnAttributes,
-                new (string, object, Type)[] { ("value1", "struct indexer setter return test 1", typeof(object)) },
-                new (string, object, Type)[] { ("Value2", "struct indexer setter return test 2", typeof(object)), ("Value3", "struct indexer setter return test 3", typeof(object)) }
+                new (string, object, Type)[] { ("value1", "class property setter return test 1", typeof(object)) },
+                new (string, object, Type)[] { ("Value2", "class property setter return test 2", typeof(object)), ("Value3", "class property setter return test 3", typeof(object)) }
             );
 
         [Fact]
         public void HasTypeSet()
-            => Assert.True(typeof(int) == DeclarationNode.Type);
+            => Assert.True(typeof(string) == DeclarationNode.Type);
 
         [Fact]
         public void HasSummarySet()

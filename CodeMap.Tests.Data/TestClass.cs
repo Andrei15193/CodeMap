@@ -230,6 +230,15 @@ namespace CodeMap.Tests.Data
         /// <summary>A write-only property.</summary>
         public string TestWriteOnlyProperty { set { } }
 
+        /// <summary>An init property.</summary>
+        public string TestInitProperty
+        {
+            get;
+            [Test("class property setter test 1", Value2 = "class property setter test 2", Value3 = "class property setter test 3")]
+            [return: Test("class property setter return test 1", Value2 = "class property setter return test 2", Value3 = "class property setter return test 3")]
+            init;
+        }
+
         /// <summary>A read-only property, with private setter.</summary>
         public string TestPublicReadPrivateWriteProperty { get; private set; }
 

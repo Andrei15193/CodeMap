@@ -120,7 +120,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestClassTests
 
         [Fact]
         public void HasPropertiesSet()
-            => Assert.Equal(9, DeclarationNode.Properties.Count);
+            => Assert.Equal(10, DeclarationNode.Properties.Count);
 
         [Fact]
         public void HasMethodsSet()
