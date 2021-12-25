@@ -23,7 +23,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         [Fact]
         public void HasDeclaredMembersSet()
             => Assert.Equal(
-                DeclarationNode.Enums.AsEnumerable<TypeDeclaration>().Concat(DeclarationNode.Delegates).Concat(DeclarationNode.Interfaces).Concat(DeclarationNode.Classes).Concat(DeclarationNode.Structs),
+                DeclarationNode.Enums.AsEnumerable<TypeDeclaration>().Concat(DeclarationNode.Delegates).Concat(DeclarationNode.Interfaces).Concat(DeclarationNode.Records).Concat(DeclarationNode.Classes).Concat(DeclarationNode.Structs),
                 DeclarationNode.DeclaredTypes
             );
 
@@ -38,6 +38,10 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         [Fact]
         public void HasInterfacesSet()
             => Assert.Empty(DeclarationNode.Interfaces);
+
+        [Fact]
+        public void HasRecordsSet()
+            => Assert.Empty(DeclarationNode.Records);
 
         [Fact]
         public void HasClassesSet()

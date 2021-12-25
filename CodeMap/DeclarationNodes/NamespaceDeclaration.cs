@@ -38,6 +38,9 @@ namespace CodeMap.DeclarationNodes
         /// <summary>The declared  structs in this namespace.</summary>
         public IReadOnlyCollection<StructDeclaration> Structs { get; internal set; }
 
+        /// <summary>The declared records in this namespace.</summary>
+        public IReadOnlyCollection<RecordDeclaration> Records { get; internal set; }
+
         /// <summary>The namespace summary.</summary>
         public SummaryDocumentationElement Summary { get; internal set; }
 

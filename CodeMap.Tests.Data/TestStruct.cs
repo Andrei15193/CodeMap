@@ -53,6 +53,11 @@ namespace CodeMap.Tests.Data
         {
         }
 
+        /// <summary>A nested record.</summary>
+        private record NestedTestRecord
+        {
+        }
+
         /// <summary>A constant, with attributes.</summary>
         [Test("struct constant test 1", Value2 = "struct constant test 2", Value3 = "struct constant test 3")]
         private const double TestConstant = 1;

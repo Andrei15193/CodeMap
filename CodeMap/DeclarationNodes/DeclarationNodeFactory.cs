@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using CodeMap.DocumentationElements;
 using CodeMap.ReferenceData;
 
@@ -67,6 +68,7 @@ namespace CodeMap.DeclarationNodes
                         @namespace.Interfaces = declaredTypes.OfType<InterfaceDeclaration>().ToReadOnlyList();
                         @namespace.Classes = declaredTypes.OfType<ClassDeclaration>().ToReadOnlyList();
                         @namespace.Structs = declaredTypes.OfType<StructDeclaration>().ToReadOnlyList();
+                        @namespace.Records = declaredTypes.OfType<RecordDeclaration>().ToReadOnlyList();
 
                         return @namespace;
                     }
@@ -74,27 +76,6 @@ namespace CodeMap.DeclarationNodes
                 .ToReadOnlyList();
 
             return assemblyDocumentationElement;
-        }
-
-        private TypeDeclaration _GetType(Type type, NamespaceDeclaration @namespace, TypeDeclaration declaringType)
-        {
-            TypeDeclaration typeDocumentationElement;
-            if (type.IsEnum)
-                typeDocumentationElement = _GetEnum(type);
-            else if (typeof(Delegate).IsAssignableFrom(type))
-                typeDocumentationElement = _GetDelegate(type);
-            else if (type.IsInterface)
-                typeDocumentationElement = _GetInterface(type);
-            else if (type.IsClass)
-                typeDocumentationElement = _GetClass(type, @namespace);
-            else if (type.IsValueType)
-                typeDocumentationElement = _GetStruct(type, @namespace);
-            else
-                throw new ArgumentException($"Unknown type: '{type.Name}'.", nameof(type));
-
-            typeDocumentationElement.Namespace = @namespace;
-            typeDocumentationElement.DeclaringType = declaringType;
-            return typeDocumentationElement;
         }
 
         private IReadOnlyCollection<TypeDeclaration> _GetTypes(IEnumerable<Type> types, NamespaceDeclaration @namespace, TypeDeclaration declaringType)
@@ -113,12 +94,129 @@ namespace CodeMap.DeclarationNodes
                     return 1;
                 else if (type.IsInterface)
                     return 2;
-                else if (type.IsClass)
+                else if (_IsRecordType(type))
                     return 3;
-                else if (type.IsValueType)
+                else if (type.IsClass)
                     return 4;
-                else
+                else if (type.IsValueType)
                     return 5;
+                else
+                    return 6;
+            }
+        }
+
+        private TypeDeclaration _GetType(Type type, NamespaceDeclaration @namespace, TypeDeclaration declaringType)
+        {
+            TypeDeclaration typeDocumentationElement;
+            if (type.IsEnum)
+                typeDocumentationElement = _GetEnum(type);
+            else if (typeof(Delegate).IsAssignableFrom(type))
+                typeDocumentationElement = _GetDelegate(type);
+            else if (type.IsInterface)
+                typeDocumentationElement = _GetInterface(type);
+            else if (_IsRecordType(type))
+                typeDocumentationElement = _GetRecord(type, @namespace);
+            else if (type.IsClass)
+                typeDocumentationElement = _GetClass(type, @namespace);
+            else if (type.IsValueType)
+                typeDocumentationElement = _GetStruct(type, @namespace);
+            else
+                throw new ArgumentException($"Unknown type: '{type.Name}'.", nameof(type));
+
+            typeDocumentationElement.Namespace = @namespace;
+            typeDocumentationElement.DeclaringType = declaringType;
+            return typeDocumentationElement;
+        }
+
+        /// <summary>
+        /// <para>
+        /// For reasons unknown, there is no official way of detecting whether a type is a class or a record.
+        /// I wonder how the compiler does since we have specific operators that are only available to records instances.
+        /// </para>
+        /// 
+        /// <para>
+        /// More info here: <a href="https://github.com/dotnet/roslyn/issues/45777">GH-45777 Annotate records and primary constructors with marker attributes</a>.
+        /// </para>
+        /// </summary>
+        private static bool _IsRecordType(Type type)
+            => _GetRecordMembers(type).Any();
+
+        private static IEnumerable<MemberInfo> _GetRecordMembers(Type type)
+        {
+            var unspeakableCloneMethod = type.GetMethod("<Clone>$", BindingFlags.Public | BindingFlags.Instance);
+
+            if (unspeakableCloneMethod is null || !unspeakableCloneMethod.ReturnType.IsAssignableFrom(type))
+                yield break;
+
+            yield return unspeakableCloneMethod;
+
+            // This is a record
+            var equalsMethod = type.GetMethod(nameof(object.Equals), BindingFlags.Public | BindingFlags.Instance, Type.DefaultBinder, new[] { typeof(object) }, null);
+            if (GetBaseDefinition(equalsMethod) == typeof(object).GetMethod(nameof(object.Equals), BindingFlags.Public | BindingFlags.Instance))
+                yield return equalsMethod;
+
+            var getHashCodeMethod = type.GetMethod(nameof(object.GetHashCode), BindingFlags.Public | BindingFlags.Instance, Type.DefaultBinder, Type.EmptyTypes, null);
+            if (GetBaseDefinition(getHashCodeMethod) == typeof(object).GetMethod(nameof(object.GetHashCode), BindingFlags.Public | BindingFlags.Instance))
+                yield return getHashCodeMethod;
+
+            var toStringMethod = type.GetMethod(nameof(object.ToString), BindingFlags.Public | BindingFlags.Instance, Type.DefaultBinder, Type.EmptyTypes, null);
+            if (GetBaseDefinition(toStringMethod) == typeof(object).GetMethod(nameof(object.ToString), BindingFlags.Public | BindingFlags.Instance))
+                yield return toStringMethod;
+
+            var deconstructMethods = type
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(method => method.Name == "Deconstruct" && method.GetParameters().All(parameter => parameter.IsOut));
+            foreach (var deconstructMethod in deconstructMethods)
+                yield return deconstructMethod;
+
+            var printMembersMethod = type.GetMethod("PrintMembers", BindingFlags.NonPublic | BindingFlags.Instance, Type.DefaultBinder, new[] { typeof(StringBuilder) }, null);
+            if (printMembersMethod is object)
+                yield return printMembersMethod;
+
+            var baseRecordType = type;
+            while (baseRecordType != typeof(object))
+            {
+                foreach (var equatableMethod in type.GetInterfaceMap(typeof(IEquatable<>).MakeGenericType(baseRecordType)).TargetMethods)
+                    yield return equatableMethod;
+                baseRecordType = baseRecordType.BaseType;
+            }
+
+            var equalityContractProperty = type.GetProperty("EqualityContract", BindingFlags.NonPublic | BindingFlags.Instance, Type.DefaultBinder, typeof(Type), Type.EmptyTypes, null);
+            if (equalityContractProperty is object)
+                yield return equalityContractProperty;
+
+            var constructors = type
+                .GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(constructor =>
+                {
+                    var constructorParameters = constructor.GetParameters();
+                    if (constructorParameters.Length == 1)
+                    {
+                        var constructorParameter = constructorParameters.Single();
+                        var constructorParameterCustomAttributes = constructorParameter.GetCustomAttributes();
+                        return constructorParameter.ParameterType == type
+                            && (type.IsSealed
+                                || (constructorParameterCustomAttributes.Count() == 1
+                                    && constructorParameterCustomAttributes
+                                        .Select(attribute => attribute.GetType())
+                                        .Count(attributeType => attributeType.Namespace == "System.Runtime.CompilerServices" && attributeType.Name == "NullableAttribute") == 1));
+                    }
+                    else
+                        return false;
+                });
+            foreach (var constructor in constructors)
+                yield return constructor;
+
+            static MethodInfo GetBaseDefinition(MethodInfo method)
+            {
+                var previous = default(MethodInfo);
+                var baseDefinition = method;
+                do
+                {
+                    previous = baseDefinition;
+                    baseDefinition = baseDefinition.GetBaseDefinition();
+                } while (previous != baseDefinition);
+                return baseDefinition;
             }
         }
 
@@ -265,6 +363,7 @@ namespace CodeMap.DeclarationNodes
             classDocumentationElement.NestedInterfaces = nestedTypes.OfType<InterfaceDeclaration>().ToReadOnlyList();
             classDocumentationElement.NestedClasses = nestedTypes.OfType<ClassDeclaration>().ToReadOnlyList();
             classDocumentationElement.NestedStructs = nestedTypes.OfType<StructDeclaration>().ToReadOnlyList();
+            classDocumentationElement.NestedRecords = nestedTypes.OfType<RecordDeclaration>().ToReadOnlyList();
 
             return classDocumentationElement;
         }
@@ -329,8 +428,69 @@ namespace CodeMap.DeclarationNodes
             structDocumentationElement.NestedInterfaces = nestedTypes.OfType<InterfaceDeclaration>().ToReadOnlyList();
             structDocumentationElement.NestedClasses = nestedTypes.OfType<ClassDeclaration>().ToReadOnlyList();
             structDocumentationElement.NestedStructs = nestedTypes.OfType<StructDeclaration>().ToReadOnlyList();
+            structDocumentationElement.NestedRecords = nestedTypes.OfType<RecordDeclaration>().ToReadOnlyList();
 
             return structDocumentationElement;
+        }
+
+        private RecordDeclaration _GetRecord(Type recordType, NamespaceDeclaration @namespace)
+        {
+            var memberDocumentation = _GetMemberDocumentationFor(recordType);
+
+            var recordDocumentationElement = new RecordDeclaration((TypeReference)_memberReferenceFactory.Create(recordType))
+            {
+                Name = _GetTypeNameFor(recordType),
+                AccessModifier = _GetAccessModifierFrom(recordType),
+                Attributes = _MapAttributesDataFrom(recordType
+                    .CustomAttributes
+                    .Where(customAttribute => customAttribute.AttributeType.Namespace != "System.Runtime.CompilerServices" || (customAttribute.AttributeType.Name != "NullableAttribute" && customAttribute.AttributeType.Name != "NullableContextAttribute"))),
+                IsAbstract = recordType.IsAbstract,
+                IsSealed = recordType.IsSealed,
+                BaseRecord = (TypeReference)_memberReferenceFactory.Create(recordType.BaseType),
+                ImplementedInterfaces = recordType
+                    .GetInterfaces()
+                    .Except(recordType.BaseType.GetInterfaces())
+                    .Except(recordType.GetInterfaces().SelectMany(baseInterface => baseInterface.GetInterfaces()))
+                    .Except(Enumerable.Repeat(typeof(IEquatable<>).MakeGenericType(recordType), 1))
+                    .OrderBy(implementedInterface => implementedInterface.Namespace)
+                    .ThenBy(implementedInterface => implementedInterface.Name)
+                    .ThenBy(implementedInterface => implementedInterface.GetGenericArguments().Length)
+                    .Select(implementedInterface => (TypeReference)_memberReferenceFactory.Create(implementedInterface))
+                    .ToReadOnlyList(),
+                Summary = memberDocumentation.Summary,
+                Remarks = memberDocumentation.Remarks,
+                Examples = memberDocumentation.Examples,
+                RelatedMembers = memberDocumentation.RelatedMembers
+            };
+
+            recordDocumentationElement.GenericParameters = _MapTypeGenericParameters(recordType, recordDocumentationElement, memberDocumentation);
+            recordDocumentationElement.Constants = _GetConstants(recordType, recordDocumentationElement);
+            recordDocumentationElement.Fields = _GetFields(recordType, recordDocumentationElement);
+            recordDocumentationElement.Constructors = _GetConstructors(recordType, recordDocumentationElement);
+            recordDocumentationElement.Events = _GetEvents(recordType, recordDocumentationElement);
+            recordDocumentationElement.Properties = _GetProperties(recordType, recordDocumentationElement);
+            recordDocumentationElement.Methods = _GetMethods(recordType, recordDocumentationElement);
+            recordDocumentationElement.Members = recordDocumentationElement
+                .Constants
+                .AsEnumerable<MemberDeclaration>()
+                .Concat(recordDocumentationElement.Fields)
+                .Concat(recordDocumentationElement.Constructors)
+                .Concat(recordDocumentationElement.Events)
+                .Concat(recordDocumentationElement.Properties)
+                .Concat(recordDocumentationElement.Methods)
+                .ToReadOnlyList();
+
+            var nestedTypes = _GetTypes(recordType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic).Where(_declarationFilter.ShouldMap), @namespace, recordDocumentationElement);
+            recordDocumentationElement.NestedTypes = nestedTypes;
+
+            recordDocumentationElement.NestedEnums = nestedTypes.OfType<EnumDeclaration>().ToReadOnlyList();
+            recordDocumentationElement.NestedDelegates = nestedTypes.OfType<DelegateDeclaration>().ToReadOnlyList();
+            recordDocumentationElement.NestedInterfaces = nestedTypes.OfType<InterfaceDeclaration>().ToReadOnlyList();
+            recordDocumentationElement.NestedClasses = nestedTypes.OfType<ClassDeclaration>().ToReadOnlyList();
+            recordDocumentationElement.NestedStructs = nestedTypes.OfType<StructDeclaration>().ToReadOnlyList();
+            recordDocumentationElement.NestedRecords = nestedTypes.OfType<RecordDeclaration>().ToReadOnlyList();
+
+            return recordDocumentationElement;
         }
 
         private IReadOnlyCollection<ConstantDeclaration> _GetConstants(Type declaringType, TypeDeclaration declaringDocumentationElement)
@@ -350,12 +510,15 @@ namespace CodeMap.DeclarationNodes
                 .ToReadOnlyList();
 
         private IReadOnlyCollection<ConstructorDeclaration> _GetConstructors(Type declaringType, TypeDeclaration declaringDocumentationElement)
-            => declaringType
+        {
+            var excludedMembers = _GetRecordMembers(declaringType).ToArray();
+            return declaringType
                 .GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                .Where(_declarationFilter.ShouldMap)
+                .Where(constructor => !excludedMembers.Contains(constructor) && _declarationFilter.ShouldMap(constructor))
                 .OrderBy(constructor => constructor.GetParameters().Length)
                 .Select(constructor => _GetConstructor(constructor, declaringDocumentationElement))
                 .ToReadOnlyList();
+        }
 
         private IReadOnlyCollection<EventDeclaration> _GetEvents(Type declaringType, TypeDeclaration declaringDocumentationElement)
             => declaringType
@@ -366,23 +529,29 @@ namespace CodeMap.DeclarationNodes
                 .ToReadOnlyList();
 
         private IReadOnlyCollection<PropertyDeclaration> _GetProperties(Type declaringType, TypeDeclaration declaringDocumentationElement)
-            => declaringType
+        {
+            var excludedMembers = _GetRecordMembers(declaringType).ToArray();
+            return declaringType
                 .GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                .Where(_declarationFilter.ShouldMap)
+                .Where(property => !excludedMembers.Contains(property) && _declarationFilter.ShouldMap(property))
                 .OrderBy(property => property.Name, StringComparer.OrdinalIgnoreCase)
                 .ThenBy(property => property.GetIndexParameters().Length)
                 .Select(property => _GetProperty(property, declaringDocumentationElement))
                 .Where(property => property is object)
                 .ToReadOnlyList();
+        }
 
         private IReadOnlyCollection<MethodDeclaration> _GetMethods(Type declaringType, TypeDeclaration declaringDocumentationElement)
-            => declaringType
+        {
+            var excludedMembers = _GetRecordMembers(declaringType).ToArray();
+            return declaringType
                 .GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                .Where(method => !method.IsSpecialName && _declarationFilter.ShouldMap(method))
+                .Where(method => !method.IsSpecialName && !excludedMembers.Contains(method) && _declarationFilter.ShouldMap(method))
                 .OrderBy(method => method.Name, StringComparer.OrdinalIgnoreCase)
                 .ThenBy(method => method.GetParameters().Length)
                 .Select(method => _GetMethod(method, declaringDocumentationElement))
                 .ToReadOnlyList();
+        }
 
         private ConstantDeclaration _GetConstant(FieldInfo field, TypeDeclaration declaringType)
         {

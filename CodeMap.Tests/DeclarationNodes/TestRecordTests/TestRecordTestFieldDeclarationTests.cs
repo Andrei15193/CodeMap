@@ -4,17 +4,17 @@ using CodeMap.DeclarationNodes;
 using CodeMap.Tests.Data;
 using Xunit;
 
-namespace CodeMap.Tests.DeclarationNodes.TestBaseClassTests
+namespace CodeMap.Tests.DeclarationNodes.TestRecordTests
 {
-    public class TestBaseClassShadowedTestConstantDeclarationTests : DeclarationNodeTests<ConstantDeclaration>, IConstantDeclarationTests
+    public class TestRecordTestFieldDeclarationTests : DeclarationNodeTests<FieldDeclaration>, IFieldDeclarationTests
     {
-        protected override bool DeclarationNodePredicate(ConstantDeclaration constantDeclaration)
-            => constantDeclaration.Name == nameof(TestBaseClass.ClassShadowedTestConstant) && constantDeclaration.DeclaringType.Name == nameof(TestBaseClass);
+        protected override bool DeclarationNodePredicate(FieldDeclaration fieldDeclaration)
+            => fieldDeclaration.Name == "TestField" && fieldDeclaration.DeclaringType.Name == nameof(TestRecord<int>);
 
         [Fact]
         public void MemberEqualityComparison()
         {
-            var fieldInfo = typeof(TestBaseClass).GetField("ClassShadowedTestConstant", BindingFlags.Public | BindingFlags.Static);
+            var fieldInfo = typeof(TestRecord<>).GetField("TestField", BindingFlags.NonPublic | BindingFlags.Instance);
             Assert.True(DeclarationNode.Equals(fieldInfo));
             Assert.True(DeclarationNode.Equals(fieldInfo as object));
             Assert.True(fieldInfo == DeclarationNode);
@@ -29,35 +29,47 @@ namespace CodeMap.Tests.DeclarationNodes.TestBaseClassTests
 
         [Fact]
         public void HasNameSet()
-            => Assert.Equal("ClassShadowedTestConstant", DeclarationNode.Name);
+            => Assert.Equal("TestField", DeclarationNode.Name);
 
         [Fact]
         public void HasDeclartingTypeSet()
-            => Assert.True(typeof(TestBaseClass) == DeclarationNode.DeclaringType);
+            => Assert.True(typeof(TestRecord<>) == DeclarationNode.DeclaringType);
 
         [Fact]
         public void HasCircularReferenceSet()
-            => Assert.Single(Assert.IsType<ClassDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
+            => Assert.Single(Assert.IsType<RecordDeclaration>(DeclarationNode.DeclaringType).Members, member => ReferenceEquals(member, DeclarationNode));
 
         [Fact]
         public void HasAttributesSet()
-            => Assert.Empty(DeclarationNode.Attributes);
+            => Assert.Single(DeclarationNode.Attributes);
+
+        [Fact]
+        public void HasTestAttribute()
+            => AssertAttribute<TestAttribute>(
+                DeclarationNode.Attributes,
+                new (string, object, Type)[] { ("value1", "record field test 1", typeof(object)) },
+                new (string, object, Type)[] { ("Value2", "record field test 2", typeof(object)), ("Value3", "record field test 3", typeof(object)) }
+            );
 
         [Fact]
         public void HasAccessModifierSet()
-            => Assert.Equal(AccessModifier.Public, DeclarationNode.AccessModifier);
+            => Assert.Equal(AccessModifier.FamilyAndAssembly, DeclarationNode.AccessModifier);
 
         [Fact]
         public void HasIsShadowingSet()
             => Assert.False(DeclarationNode.IsShadowing);
 
         [Fact]
-        public void HasTypeSet()
-            => Assert.True(typeof(float) == DeclarationNode.Type);
+        public void HasIsReadOnlySet()
+            => Assert.False(DeclarationNode.IsReadOnly);
 
         [Fact]
-        public void HasValueSet()
-            => Assert.Equal(1f, DeclarationNode.Value);
+        public void HasIsStaticSet()
+            => Assert.False(DeclarationNode.IsStatic);
+
+        [Fact]
+        public void HasTypeSet()
+            => Assert.True(typeof(byte) == DeclarationNode.Type);
 
         [Fact]
         public void HasSummarySet()
@@ -65,11 +77,11 @@ namespace CodeMap.Tests.DeclarationNodes.TestBaseClassTests
 
         [Fact]
         public void HasRemarksSet()
-            => Assert.Empty(DeclarationNode.Remarks.Content);
+            => Assert.NotEmpty(DeclarationNode.Remarks.Content);
 
         [Fact]
         public void HasExamplesSet()
-            => Assert.Empty(DeclarationNode.Examples);
+            => Assert.NotEmpty(DeclarationNode.Examples);
 
         [Fact]
         public void HasRelatedMembersSet()

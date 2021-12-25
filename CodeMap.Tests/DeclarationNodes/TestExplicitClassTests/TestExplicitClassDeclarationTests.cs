@@ -111,7 +111,7 @@ namespace CodeMap.Tests.DeclarationNodes.TestExplicitClassTests
         [Fact]
         public void HasNestedTypesSet()
             => Assert.Equal(
-                DeclarationNode.NestedEnums.AsEnumerable<TypeDeclaration>().Concat(DeclarationNode.NestedDelegates).Concat(DeclarationNode.NestedInterfaces).Concat(DeclarationNode.NestedClasses).Concat(DeclarationNode.NestedStructs),
+                DeclarationNode.NestedEnums.AsEnumerable<TypeDeclaration>().Concat(DeclarationNode.NestedDelegates).Concat(DeclarationNode.NestedInterfaces).Concat(DeclarationNode.NestedRecords).Concat(DeclarationNode.NestedClasses).Concat(DeclarationNode.NestedStructs),
                 DeclarationNode.NestedTypes
             );
 
@@ -126,6 +126,10 @@ namespace CodeMap.Tests.DeclarationNodes.TestExplicitClassTests
         [Fact]
         public void HasNestedInterfacesSet()
             => Assert.Empty(DeclarationNode.NestedInterfaces);
+
+        [Fact]
+        public void HasNestedRecordsSet()
+            => Assert.Empty(DeclarationNode.NestedRecords);
 
         [Fact]
         public void HasNestedClassesSet()

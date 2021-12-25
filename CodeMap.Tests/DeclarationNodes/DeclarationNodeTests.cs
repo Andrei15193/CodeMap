@@ -28,6 +28,7 @@ namespace CodeMap.Tests.DeclarationNodes
                 .Concat(_GetTypeDeclarations())
                 .Concat(_GetEnumMemberDeclarations())
                 .Concat(_GetInterfaceMemberDeclarations())
+                .Concat(_GetRecordMemberDeclarations())
                 .Concat(_GetClassMemberDeclarations())
                 .Concat(_GetStructMemberDeclarations());
 
@@ -42,11 +43,13 @@ namespace CodeMap.Tests.DeclarationNodes
                 return _GetNamespaceDeclarations().SelectMany(namespaceDeclaration => namespaceDeclaration.DeclaredTypes.SelectMany(_ExpandWithNestedTypes));
 
                 IEnumerable<TypeDeclaration> _ExpandWithNestedTypes(TypeDeclaration typeDeclaration)
-                    => typeDeclaration is ClassDeclaration classDeclaration
-                        ? Enumerable.Repeat(typeDeclaration, 1).Concat(classDeclaration.NestedTypes.SelectMany(_ExpandWithNestedTypes))
-                        : typeDeclaration is StructDeclaration structDeclaration
-                        ? Enumerable.Repeat(typeDeclaration, 1).Concat(structDeclaration.NestedTypes.SelectMany(_ExpandWithNestedTypes))
-                        : Enumerable.Repeat(typeDeclaration, 1);
+                    => typeDeclaration switch
+                    {
+                        RecordDeclaration recordDeclaration => Enumerable.Repeat(typeDeclaration, 1).Concat(recordDeclaration.NestedTypes.SelectMany(_ExpandWithNestedTypes)),
+                        ClassDeclaration classDeclaration => Enumerable.Repeat(typeDeclaration, 1).Concat(classDeclaration.NestedTypes.SelectMany(_ExpandWithNestedTypes)),
+                        StructDeclaration structDeclaration => Enumerable.Repeat(typeDeclaration, 1).Concat(structDeclaration.NestedTypes.SelectMany(_ExpandWithNestedTypes)),
+                        _ => Enumerable.Repeat(typeDeclaration, 1)
+                    };
             }
 
             IEnumerable<MemberDeclaration> _GetEnumMemberDeclarations()
@@ -54,6 +57,9 @@ namespace CodeMap.Tests.DeclarationNodes
 
             IEnumerable<MemberDeclaration> _GetInterfaceMemberDeclarations()
                 => _GetTypeDeclarations().OfType<InterfaceDeclaration>().SelectMany(interfaceDeclaration => interfaceDeclaration.Members);
+
+            IEnumerable<MemberDeclaration> _GetRecordMemberDeclarations()
+                => _GetTypeDeclarations().OfType<RecordDeclaration>().SelectMany(recordDeclaration => recordDeclaration.Members);
 
             IEnumerable<MemberDeclaration> _GetClassMemberDeclarations()
                 => _GetTypeDeclarations().OfType<ClassDeclaration>().SelectMany(classDeclaration => classDeclaration.Members);
@@ -124,6 +130,9 @@ namespace CodeMap.Tests.DeclarationNodes
 
             protected override void VisitInterface(InterfaceDeclaration @interface)
                 => _InvokeCallback(@interface);
+
+            protected override void VisitRecord(RecordDeclaration record)
+                => _InvokeCallback(record);
 
             protected override void VisitClass(ClassDeclaration @class)
                 => _InvokeCallback(@class);

@@ -57,6 +57,7 @@
     <EmbeddedResource Include="Themes\Bootstrap\Partials\GenericParametersDocumentation.hbs" />
     <EmbeddedResource Include="Themes\Bootstrap\Partials\MembersDeclaraction.hbs" />
     <EmbeddedResource Include="Themes\Bootstrap\Templates\Assembly.hbs" />
+    <EmbeddedResource Include="Themes\Bootstrap\Templates\Record.hbs" />
     <EmbeddedResource Include="Themes\Bootstrap\Templates\Class.hbs" />
     <EmbeddedResource Include="Themes\Bootstrap\Templates\Constant.hbs" />
     <EmbeddedResource Include="Themes\Bootstrap\Templates\Constructor.hbs" />
@@ -105,6 +106,7 @@
     <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Partials\GenericParametersDocumentation.hbs" />
     <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Partials\MembersDeclaraction.hbs" />
     <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Templates\Assembly.hbs" />
+    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Templates\Record.hbs" />
     <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Templates\Class.hbs" />
     <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Templates\Constant.hbs" />
     <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Templates\Constructor.hbs" />

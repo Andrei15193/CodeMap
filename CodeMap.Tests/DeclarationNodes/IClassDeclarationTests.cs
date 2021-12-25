@@ -54,6 +54,8 @@
 
         void HasNestedStructsSet();
 
+        void HasNestedRecordsSet();
+
         void HasSummarySet();
 
         void HasRemarksSet();

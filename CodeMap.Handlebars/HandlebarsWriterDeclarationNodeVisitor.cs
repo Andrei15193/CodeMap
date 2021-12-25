@@ -63,6 +63,19 @@ namespace CodeMap.Handlebars
                 member.Accept(this);
         }
 
+        /// <summary>Visits a <see cref="RecordDeclaration"/>.</summary>
+        /// <param name="record">The <see cref="RecordDeclaration"/> to visit.</param>
+        protected override void VisitRecord(RecordDeclaration record)
+        {
+            _ApplyTempalte(DocumentationTemplateNames.Record, record);
+
+            foreach (var member in record.Members)
+                member.Accept(this);
+
+            foreach (var nestedType in record.NestedTypes)
+                nestedType.Accept(this);
+        }
+
         /// <summary>Visits a <see cref="ClassDeclaration"/>.</summary>
         /// <param name="class">The <see cref="ClassDeclaration"/> to visit.</param>
         protected override void VisitClass(ClassDeclaration @class)
@@ -71,6 +84,9 @@ namespace CodeMap.Handlebars
 
             foreach (var member in @class.Members)
                 member.Accept(this);
+
+            foreach (var nestedType in @class.NestedTypes)
+                nestedType.Accept(this);
         }
 
         /// <summary>Visits a <see cref="StructDeclaration"/>.</summary>
@@ -81,6 +97,9 @@ namespace CodeMap.Handlebars
 
             foreach (var member in @struct.Members)
                 member.Accept(this);
+
+            foreach (var nestedType in @struct.NestedTypes)
+                nestedType.Accept(this);
         }
 
         /// <summary>Visits a <see cref="ConstantDeclaration"/>.</summary>

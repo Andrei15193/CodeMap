@@ -18,6 +18,8 @@
 
         void HasStructsSet();
 
+        void HasRecordsSet();
+
         void HasCircularReferenceSet();
 
         void HasSummarySet();

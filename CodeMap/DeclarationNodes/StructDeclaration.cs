@@ -56,6 +56,9 @@ namespace CodeMap.DeclarationNodes
         /// <summary>The declared nested structs.</summary>
         public IReadOnlyCollection<StructDeclaration> NestedStructs { get; internal set; }
 
+        /// <summary>The declared nested records.</summary>
+        public IReadOnlyCollection<RecordDeclaration> NestedRecords { get; internal set; }
+
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>
         public override void Accept(DeclarationNodeVisitor visitor)

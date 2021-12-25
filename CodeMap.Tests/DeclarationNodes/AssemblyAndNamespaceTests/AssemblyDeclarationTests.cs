@@ -120,7 +120,15 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
 
         [Fact]
         public void HasDependenciesSet()
-            => Assert.Equal(4, DeclarationNode.Dependencies.Count);
+            => Assert.Equal(5, DeclarationNode.Dependencies.Count);
+
+        [Fact]
+        public void HasSystemCollectionsDependencySet()
+            => Assert.Single(DeclarationNode.Dependencies, dependency =>
+                dependency.Name == "System.Collections"
+                && dependency.Version == new Version(5, 0, 0, 0)
+                && dependency.Culture == string.Empty
+                && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
 
         [Fact]
         public void HasSystemLinqExpressionsDependencySet()

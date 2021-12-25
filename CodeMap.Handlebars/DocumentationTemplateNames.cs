@@ -24,6 +24,9 @@
         /// <summary>The struct declaration template name.</summary>
         public const string Struct = "Struct";
 
+        /// <summary>The record declaration template name.</summary>
+        public const string Record = "Record";
+
         /// <summary>The constant declaration template name.</summary>
         public const string Constant = "Constant";
 

@@ -62,6 +62,11 @@ namespace CodeMap.Tests.Data
         {
         }
 
+        /// <summary>A nested record.</summary>
+        public record NestedTestRecord
+        {
+        }
+
         /// <summary>A test constant, with attributes.</summary>
         /// <example>
         /// This is an example, where you usually have an use case with some sample code to illustrate how the defined type is useful.

@@ -24,7 +24,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         [Fact]
         public void HasDeclaredMembersSet()
             => Assert.Equal(
-                DeclarationNode.Enums.AsEnumerable<TypeDeclaration>().Concat(DeclarationNode.Delegates).Concat(DeclarationNode.Interfaces).Concat(DeclarationNode.Classes).Concat(DeclarationNode.Structs),
+                DeclarationNode.Enums.AsEnumerable<TypeDeclaration>().Concat(DeclarationNode.Delegates).Concat(DeclarationNode.Interfaces).Concat(DeclarationNode.Records).Concat(DeclarationNode.Classes).Concat(DeclarationNode.Structs),
                 DeclarationNode.DeclaredTypes
             );
 
@@ -47,6 +47,22 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         [Fact]
         public void HasInterfacesSet()
             => Assert.Equal(5, DeclarationNode.Interfaces.Count);
+
+        [Fact]
+        public void HasRecordsSet()
+            => Assert.Equal(3, DeclarationNode.Records.Count);
+
+        [Fact]
+        public void HasTestBaseRecord()
+            => Assert.Single(DeclarationNode.Records, record => record == typeof(TestBaseRecord));
+
+        [Fact]
+        public void HasTestRecord()
+            => Assert.Single(DeclarationNode.Records, record => record == typeof(TestRecord<>));
+
+        [Fact]
+        public void HasSealedRecord()
+            => Assert.Single(DeclarationNode.Records, record => record == typeof(TestSealedRecord));
 
         [Fact]
         public void HasITestBaseInterface()
