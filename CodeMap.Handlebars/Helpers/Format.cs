@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
-using System.Linq;
+using HandlebarsDotNet;
+using HandlebarsDotNet.Helpers;
+using HandlebarsDotNet.PathStructure;
 
 namespace CodeMap.Handlebars.Helpers
 {
@@ -16,25 +17,36 @@ namespace CodeMap.Handlebars.Helpers
     /// &lt;p&gt;123.00&lt;/p&gt;
     /// </code>
     /// </example>
-    public class Format : IHandlebarsHelper
+    public class Format : IHelperDescriptor<HelperOptions>
     {
         /// <summary>Gets the name of the helper.</summary>
-        /// <value>The value of this property is <c>Format</c>. It is a constant.</value>
-        public string Name
+        /// <value>The value of this property is <c>Format</c>.</value>
+        public PathInfo Name
             => nameof(Format);
 
-        /// <summary>Formats the first parameter which is expected to be an <see cref="IFormattable"/> by applying the format string provided through the second parameter which is expected to be a <see cref="string"/>.</summary>
-        /// <param name="writer">The <see cref="TextWriter"/> to write the result to.</param>
+        /// <summary>Formats the first argument which is expected to be an <see cref="IFormattable"/> by applying the format string provided through the second argument which is expected to be a <see cref="string"/>.</summary>
+        /// <param name="options">The helper options.</param>
         /// <param name="context">The context in which this helper is called.</param>
-        /// <param name="parameters">The parameter with which this helper has been called.</param>
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
         /// <exception cref="ArgumentException">
-        /// Thrown when the first parameter does not implement <see cref="IFormattable"/> or when the second parameter is not a <see cref="string"/>.
+        /// Thrown when the first argument does not implement <see cref="IFormattable"/> or when the second argument is not a <see cref="string"/>.
         /// </exception>
-        public void Apply(TextWriter writer, object context, params object[] parameters)
+        public object Invoke(in HelperOptions options, in Context context, in Arguments arguments)
         {
-            var formattable = parameters.ElementAtOrDefault(0) as IFormattable ?? throw new ArgumentException("Expected a " + nameof(IFormattable) + " as the first parameter.");
-            var format = parameters.ElementAtOrDefault(1) as string ?? throw new ArgumentException("Expected a format string as the second parameter.");
-            writer.Write(formattable.ToString(format, CultureInfo.InvariantCulture));
+            var formattable = arguments.At<IFormattable>(0) ?? throw new ArgumentException("Expected an " + nameof(IFormattable) + " as the first argument.");
+            var format = arguments.At<string>(1) ?? throw new ArgumentException("Expected a format string as the second argument.");
+            return formattable.ToString(format, CultureInfo.InvariantCulture);
         }
+
+        /// <summary>Formats the first argument which is expected to be an <see cref="IFormattable"/> by applying the format string provided through the second argument which is expected to be a <see cref="string"/>.</summary>
+        /// <param name="output">The <see cref="EncodedTextWriter"/> to write the result to.</param>
+        /// <param name="options">The helper options.</param>
+        /// <param name="context">The context in which this helper is called.</param>
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the first argument does not implement <see cref="IFormattable"/> or when the second argument is not a <see cref="string"/>.
+        /// </exception>
+        public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
+            => output.WriteSafeString(Invoke(options, context, arguments));
     }
 }

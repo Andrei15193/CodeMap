@@ -1,8 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using CodeMap.DeclarationNodes;
+using HandlebarsDotNet;
+using HandlebarsDotNet.Helpers;
+using HandlebarsDotNet.PathStructure;
 
 namespace CodeMap.Handlebars.Helpers
 {
@@ -17,32 +19,43 @@ namespace CodeMap.Handlebars.Helpers
     /// &lt;p&gt;MyAwesomeCompany&lt;/p&gt;
     /// </code>
     /// </example>
-    public class GetAssemblyCompany : IHandlebarsHelper
+    public class GetAssemblyCompany : IHelperDescriptor<HelperOptions>
     {
         /// <summary>Gets the name of the helper.</summary>
-        /// <value>The value of this property is <c>GetAssemblyCompany</c>. It is a constant.</value>
-        public string Name
+        /// <value>The value of this property is <c>GetAssemblyCompany</c>.</value>
+        public PathInfo Name
             => nameof(GetAssemblyCompany);
 
-        /// <summary>Gets the assembly company attribute value from the first parameter or current context.</summary>
-        /// <param name="writer">The <see cref="TextWriter"/> to write the result to.</param>
+        /// <summary>Gets the assembly company attribute value from the first argument or current context.</summary>
+        /// <param name="options">The helper options.</param>
         /// <param name="context">The context in which this helper is called.</param>
-        /// <param name="parameters">The parameter with which this helper has been called.</param>
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
+        /// <returns>Returns the assembly company attribute value from the first argument or current context.</returns>
         /// <exception cref="ArgumentException">
-        /// Thrown when the first parameter is not an <see cref="AssemblyDeclaration"/> or when not provided and the given <paramref name="context"/> is not an <see cref="AssemblyDeclaration"/>.
+        /// Thrown when the first argument is not an <see cref="AssemblyDeclaration"/> or when not provided and the given <paramref name="context"/> is not an <see cref="AssemblyDeclaration"/>.
         /// </exception>
-        public void Apply(TextWriter writer, object context, params object[] parameters)
+        public object Invoke(in HelperOptions options, in Context context, in Arguments arguments)
         {
-            var assemblyDeclaraction = parameters.DefaultIfEmpty(context).First() as AssemblyDeclaration;
-            if (assemblyDeclaraction is null)
-                throw new ArgumentException("Expected a " + nameof(AssemblyDeclaration) + " provided as the first parameter or context.");
+            var assemblyDeclaraction = arguments.At<AssemblyDeclaration>(0) ?? throw new ArgumentException("Expected an " + nameof(AssemblyDeclaration) + " provided as the first argument or context.");
 
             var companyName = assemblyDeclaraction
                 .Attributes
                 .Where(attribute => attribute.Type == typeof(AssemblyCompanyAttribute))
                 .Select(attribute => (string)attribute.PositionalParameters[0].Value)
                 .FirstOrDefault();
-            writer.Write(companyName);
+            return companyName;
         }
+
+        /// <summary>Writes the assembly company attribute value from the first argument or current context to the provided <paramref name="output"/>.</summary>
+        /// <param name="output">The <see cref="EncodedTextWriter"/> to write the result to.</param>
+        /// <param name="options">The helper options.</param>
+        /// <param name="context">The context in which this helper is called.</param>
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
+        /// <returns>Returns the assembly company attribute value from the first argument or current context.</returns>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the first argument is not an <see cref="AssemblyDeclaration"/> or when not provided and the given <paramref name="context"/> is not an <see cref="AssemblyDeclaration"/>.
+        /// </exception>
+        public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
+            => output.WriteSafeString(Invoke(options, context, arguments));
     }
 }

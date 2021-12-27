@@ -1,6 +1,7 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
+using HandlebarsDotNet;
+using HandlebarsDotNet.Helpers;
+using HandlebarsDotNet.PathStructure;
 
 namespace CodeMap.Handlebars.Helpers
 {
@@ -31,7 +32,7 @@ namespace CodeMap.Handlebars.Helpers
     /// </list>
     /// </remarks>
     /// <example>
-    /// The following template will generate the Semver expression for the given parameter.
+    /// The following template will generate the Semver expression for the given argument.
     /// <code language="html">
     /// &lt;p&gt;{{Semver version}}&lt;/p&gt;
     /// </code>
@@ -40,28 +41,37 @@ namespace CodeMap.Handlebars.Helpers
     /// &lt;p&gt;1.0.0&lt;/p&gt;
     /// </code>
     /// </example>
-    public class Semver : IHandlebarsHelper
+    public class Semver : IHelperDescriptor<HelperOptions>
     {
         /// <summary>Gets the name of the helper.</summary>
-        /// <value>The value of this property is <c>Semver</c>. It is a constant.</value>
-        public string Name
+        /// <value>The value of this property is <c>Semver</c>.</value>
+        public PathInfo Name
             => nameof(Semver);
 
-        /// <summary>Writes a <a href="https://semver.org/">Semver</a> expression for the provided first parameter or context.</summary>
-        /// <param name="writer">The <see cref="TextWriter"/> to write the result to.</param>
+        /// <summary>Gets a <a href="https://semver.org/">Semver</a> expression for the provided first argument or context.</summary>
+        /// <param name="options">The helper options.</param>
         /// <param name="context">The context in which this helper is called.</param>
-        /// <param name="parameters">The parameter with which this helper has been called.</param>
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
+        /// <returns>Returns a <a href="https://semver.org/">Semver</a> expression for the provided first argument or context.</returns>
         /// <exception cref="ArgumentException">
-        /// Thrown when the first parameter is not a <see cref="Version"/> or when not provided and the given <paramref name="context"/> is not a <see cref="Version"/>.
+        /// Thrown when the first argument is not a <see cref="Version"/> or when not provided and the given <paramref name="context"/> is not a <see cref="Version"/>.
         /// </exception>
-        public void Apply(TextWriter writer, object context, params object[] parameters)
+        public object Invoke(in HelperOptions options, in Context context, in Arguments arguments)
         {
-            var version = parameters.DefaultIfEmpty(context).First() as Version;
-            if (version is null)
-                throw new ArgumentException("Expected a " + nameof(Version) + " provided as the first parameter or context.");
-
-            writer.Write(ToSemver(version));
+            var version = arguments.At<Version>(0) ?? throw new ArgumentException("Expected a " + nameof(Version) + " provided as the first argument or context.");
+            return ToSemver(version);
         }
+
+        /// <summary>Writes a <a href="https://semver.org/">Semver</a> expression for the provided first argument or context to the provided <paramref name="output"/>.</summary>
+        /// <param name="output">The <see cref="EncodedTextWriter"/> to write the result to.</param>
+        /// <param name="options">The helper options.</param>
+        /// <param name="context">The context in which this helper is called.</param>
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the first argument is not a <see cref="Version"/> or when not provided and the given <paramref name="context"/> is not a <see cref="Version"/>.
+        /// </exception>
+        public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
+            => output.WriteSafeString(Invoke(options, context, arguments));
 
         /// <summary>Gets the Semver expression for the givem <paramref name="version"/>.</summary>
         /// <param name="version">The <see cref="Version"/> to convert to a Semver expression.</param>

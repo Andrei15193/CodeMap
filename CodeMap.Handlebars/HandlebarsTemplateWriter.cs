@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Text;
 using CodeMap.Handlebars.Helpers;
 using EmbeddedResourceBrowser;
+using HandlebarsDotNet;
+using HandlebarsDotNet.Helpers;
 
 namespace CodeMap.Handlebars
 {
@@ -51,7 +53,7 @@ namespace CodeMap.Handlebars
     {
         private readonly IMemberReferenceResolver _memberReferenceResolver;
         private readonly EmbeddedDirectory _themeResources;
-        private readonly Lazy<IReadOnlyDictionary<string, Action<TextWriter, object>>> _templates;
+        private readonly Lazy<IReadOnlyDictionary<string, HandlebarsTemplate<TextWriter, object, object>>> _templates;
 
         /// <summary>Initializes a new instance of the <see cref="HandlebarsTemplateWriter"/> class.</summary>
         /// <param name="theme">The theme name to apply.</param>
@@ -67,7 +69,7 @@ namespace CodeMap.Handlebars
 
             _memberReferenceResolver = memberReferenceResolver;
             _themeResources = themeDirectory;
-            _templates = new Lazy<IReadOnlyDictionary<string, Action<TextWriter, object>>>(_GetTemplates);
+            _templates = new Lazy<IReadOnlyDictionary<string, HandlebarsTemplate<TextWriter, object, object>>>(_GetTemplates);
         }
 
         /// <summary>Initializes a new instance of the <see cref="HandlebarsTemplateWriter"/> class.</summary>
@@ -137,7 +139,7 @@ namespace CodeMap.Handlebars
         /// </code>
         /// If <c>MyCustomSemver</c> has the same helper name as <see cref="Semver"/> then <c>MyCustomSemver</c> will override the <see cref="Semver"/> helper.
         /// </remarks>
-        protected virtual IEnumerable<IHandlebarsHelper> GetHelpers(IMemberReferenceResolver memberReferenceResolver)
+        protected virtual IEnumerable<IHelperDescriptor<HelperOptions>> GetHelpers(IMemberReferenceResolver memberReferenceResolver)
         {
             yield return new IsCollection();
             yield return new Concat();
@@ -154,22 +156,28 @@ namespace CodeMap.Handlebars
         /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used to resolve <see cref="ReferenceData.MemberReference"/>s.</param>
         /// <returns>Returns a collection of block helpers to use in templates.</returns>
         /// <remarks>If there are multiple helpers that have the same name, only the latest will be registered in the Handlebars engine.</remarks>
-        protected virtual IEnumerable<IHandlebarsBlockHelper> GetBlockHelpers(IMemberReferenceResolver memberReferenceResolver)
-            => Enumerable.Empty<IHandlebarsBlockHelper>();
+        protected virtual IEnumerable<IHelperDescriptor<BlockHelperOptions>> GetBlockHelpers(IMemberReferenceResolver memberReferenceResolver)
+            => Enumerable.Empty<IHelperDescriptor<BlockHelperOptions>>();
 
-        private IReadOnlyDictionary<string, Action<TextWriter, object>> _GetTemplates()
+        private IReadOnlyDictionary<string, HandlebarsTemplate<TextWriter, object, object>> _GetTemplates()
         {
             var handlerbars = HandlebarsDotNet.Handlebars.Create();
 
-            var helpers = (GetHelpers(_memberReferenceResolver) ?? Enumerable.Empty<IHandlebarsHelper>())
-                .GroupBy(helper => helper.Name, (helperName, matchedHelpers) => matchedHelpers.Last(), StringComparer.OrdinalIgnoreCase);
-            foreach (var helper in helpers)
-                handlerbars.RegisterHelper(helper.Name, helper.Apply);
+            var helpers = (GetHelpers(_memberReferenceResolver) ?? Enumerable.Empty<IHelperDescriptor>())
+                .Concat(GetBlockHelpers(_memberReferenceResolver) ?? Enumerable.Empty<IHelperDescriptor>())
+                .GroupBy(helper => helper.Name.ToString(), (helperName, matchedHelpers) => matchedHelpers.Last(), StringComparer.OrdinalIgnoreCase);
 
-            var blockHelpers = (GetBlockHelpers(_memberReferenceResolver) ?? Enumerable.Empty<IHandlebarsBlockHelper>())
-                .GroupBy(helper => helper.Name, (helperName, matchedHelpers) => matchedHelpers.Last(), StringComparer.OrdinalIgnoreCase);
-            foreach (var helper in blockHelpers)
-                handlerbars.RegisterHelper(helper.Name, helper.Apply);
+            foreach (var helper in helpers)
+                switch (helper)
+                {
+                    case IHelperDescriptor<HelperOptions> inlineHelper:
+                        handlerbars.RegisterHelper(inlineHelper);
+                        break;
+
+                    case IHelperDescriptor<BlockHelperOptions> blockHelper:
+                        handlerbars.RegisterHelper(blockHelper);
+                        break;
+                }
 
             var partials = _themeResources
                 .Subdirectories["partials"]

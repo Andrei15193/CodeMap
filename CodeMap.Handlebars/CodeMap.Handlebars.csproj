@@ -123,7 +123,7 @@
 
   <ItemGroup>
     <PackageReference Include="EmbeddedResourceBrowser" Version="1.1.0" />
-    <PackageReference Include="Handlebars.Net" Version="1.11.5" />
+    <PackageReference Include="Handlebars.Net" Version="2.0.10" />
     <PackageReference Include="PygmentSharp.Core" Version="0.3.0" />
     <PackageReference Include="StrongNamer" Version="0.2.5" />
   </ItemGroup>

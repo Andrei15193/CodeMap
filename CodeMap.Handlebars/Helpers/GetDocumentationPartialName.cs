@@ -1,7 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using CodeMap.DocumentationElements;
+using HandlebarsDotNet;
+using HandlebarsDotNet.Helpers;
+using HandlebarsDotNet.PathStructure;
 
 namespace CodeMap.Handlebars.Helpers
 {
@@ -47,30 +48,41 @@ namespace CodeMap.Handlebars.Helpers
     /// As you can see, the specific <see cref="DocumentationElement"/> partial name is selected using this helper, it's like determining the name
     /// of the function you want to call dynamically.
     /// </example>
-    public class GetDocumentationPartialName : IHandlebarsHelper
+    public class GetDocumentationPartialName : IHelperDescriptor<HelperOptions>
     {
         /// <summary>Gets the name of the helper.</summary>
-        /// <value>The value of this property is <c>GetDocumentationPartialName</c>. It is a constant.</value>
-        public string Name
+        /// <value>The value of this property is <c>GetDocumentationPartialName</c>.</value>
+        public PathInfo Name
             => nameof(GetDocumentationPartialName);
 
-        /// <summary>Gets the assembly company attribute value from the first parameter or current context.</summary>
-        /// <param name="writer">The <see cref="TextWriter"/> to write the result to.</param>
+        /// <summary>Gets the documentation partial name of the first argument or current context.</summary>
+        /// <param name="options">The helper options.</param>
         /// <param name="context">The context in which this helper is called.</param>
-        /// <param name="parameters">The parameter with which this helper has been called.</param>
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
+        /// <returns>Returns the documentation partial name of the first argument or current context.</returns>
         /// <exception cref="ArgumentException">
-        /// Thrown when the first parameter is not an <see cref="DocumentationElement"/> or when not provided and the given <paramref name="context"/> is not an <see cref="DocumentationElement"/>.
+        /// Thrown when the first argument is not an <see cref="DocumentationElement"/> or when not provided and the given <paramref name="context"/> is not an <see cref="DocumentationElement"/>.
         /// </exception>
-        public void Apply(TextWriter writer, object context, params object[] parameters)
+        public object Invoke(in HelperOptions options, in Context context, in Arguments arguments)
         {
-            var documentationElement = parameters.DefaultIfEmpty(context).First() as DocumentationElement;
-            if (documentationElement is null)
-                throw new ArgumentException("Expected a " + nameof(DocumentationElement) + " provided as the first parameter or context.");
+            var documentationElement = arguments.At<DocumentationElement>(0) ?? throw new ArgumentException("Expected a " + nameof(DocumentationElement) + " provided as the first argument or context.");
 
             var visitor = new PartialNameSelector();
             documentationElement.Accept(visitor);
-            writer.Write(visitor.PartialName);
+            return visitor.PartialName;
         }
+
+        /// <summary>Writes the documentation partial name of the first argument or current context to the provided <paramref name="output"/>.</summary>
+        /// <param name="output">The <see cref="EncodedTextWriter"/> to write the result to.</param>
+        /// <param name="options">The helper options.</param>
+        /// <param name="context">The context in which this helper is called.</param>
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
+        /// <returns>Returns the documentation partial name of the first argument or current context.</returns>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the first argument is not an <see cref="DocumentationElement"/> or when not provided and the given <paramref name="context"/> is not an <see cref="DocumentationElement"/>.
+        /// </exception>
+        public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
+            => output.Write(Invoke(options, context, arguments));
 
         private sealed class PartialNameSelector : DocumentationVisitor
         {

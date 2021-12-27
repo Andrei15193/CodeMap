@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using CodeMap.ReferenceData;
+using HandlebarsDotNet;
 
 namespace CodeMap.Handlebars.Visitors
 {
     internal sealed class MemberReferenceHyperlinkVisitor : MemberReferenceVisitor
     {
-        private readonly TextWriter _writer;
+        private readonly EncodedTextWriter _writer;
         private readonly IMemberReferenceResolver _memberReferenceResolver;
-        private readonly Action<TextWriter, string, string> _writeHyperlink;
+        private readonly Action<EncodedTextWriter, string, string> _writeHyperlink;
 
-        public MemberReferenceHyperlinkVisitor(TextWriter writer, IMemberReferenceResolver memberReferenceResolver, Action<TextWriter, string, string> writeHyperlink)
+        public MemberReferenceHyperlinkVisitor(EncodedTextWriter writer, IMemberReferenceResolver memberReferenceResolver, Action<EncodedTextWriter, string, string> writeHyperlink)
             => (_writer, _memberReferenceResolver, _writeHyperlink) = (writer, memberReferenceResolver, writeHyperlink);
 
         protected override void VisitAssembly(AssemblyReference assembly)

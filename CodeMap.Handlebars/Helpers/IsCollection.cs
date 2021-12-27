@@ -1,6 +1,8 @@
 ﻿using System.Collections;
-using System.IO;
 using System.Linq;
+using HandlebarsDotNet;
+using HandlebarsDotNet.Helpers;
+using HandlebarsDotNet.PathStructure;
 
 namespace CodeMap.Handlebars.Helpers
 {
@@ -11,21 +13,30 @@ namespace CodeMap.Handlebars.Helpers
     /// {{#if (IsCollection this)}}&lt;p&gt;A collection&lt;/p&gt;{{/if}}
     /// </code>
     /// </example>
-    public class IsCollection : IHandlebarsHelper
+    public class IsCollection : IHelperDescriptor<HelperOptions>
     {
         /// <summary>Gets the name of the helper.</summary>
-        /// <value>The value of this property is <c>IsCollection</c>. It is a constant.</value>
-        public string Name
+        /// <value>The value of this property is <c>IsCollection</c>.</value>
+        public PathInfo Name
             => nameof(IsCollection);
 
-        /// <summary>Writes <c>true</c> to the provided <paramref name="writer"/> if the first parameter (when provided) is an <see cref="IEnumerable"/>. When there are no parameters provided then the current <paramref name="context"/> is checked whether it is an <see cref="IEnumerable"/>.</summary>
-        /// <param name="writer">The <see cref="TextWriter"/> to write the result to.</param>
+        /// <summary>Returns <c>true</c> to the provided <paramref name="options"/> if the first argument (when provided) is an <see cref="IEnumerable"/>. When there are no arguments provided then the current <paramref name="context"/> is checked whether it is an <see cref="IEnumerable"/>.</summary>
+        /// <param name="options">The helper options.</param>
         /// <param name="context">The context in which this helper is called.</param>
-        /// <param name="parameters">The parameter with which this helper has been called.</param>
-        public void Apply(TextWriter writer, object context, params object[] parameters)
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
+        /// <returns>Returns <c>true</c> if the first argument (when missing, the context) is an <see cref="IEnumerable"/>; otherwise <c>false</c>.</returns>
+        public object Invoke(in HelperOptions options, in Context context, in Arguments arguments)
+            => arguments.DefaultIfEmpty(context).First() is IEnumerable;
+
+        /// <summary>Writes <c>true</c> to the provided <paramref name="output"/> if the first argument (when provided) is an <see cref="IEnumerable"/>. When there are no arguments provided then the current <paramref name="context"/> is checked whether it is an <see cref="IEnumerable"/>.</summary>
+        /// <param name="output">The <see cref="EncodedTextWriter"/> to write the result to.</param>
+        /// <param name="options">The helper options.</param>
+        /// <param name="context">The context in which this helper is called.</param>
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
+        public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
         {
-            if (parameters.DefaultIfEmpty(context).First() is IEnumerable)
-                writer.Write(true);
+            if (arguments.DefaultIfEmpty(context).First() is IEnumerable)
+                output.Write(true);
         }
     }
 }

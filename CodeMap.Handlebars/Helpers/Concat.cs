@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using HandlebarsDotNet;
+using HandlebarsDotNet.Helpers;
+using HandlebarsDotNet.PathStructure;
 
 namespace CodeMap.Handlebars.Helpers
 {
-    /// <summary>A concatenation helper, concatenates each provided parameter.</summary>
+    /// <summary>A concatenation helper, concatenates each provided argument.</summary>
     /// <example>
     /// The following template will generate a paragraph containing the concatenated values.
     /// <code language="html">
@@ -13,21 +15,30 @@ namespace CodeMap.Handlebars.Helpers
     /// &lt;p&gt;Is this your 5 value?&lt;/p&gt;
     /// </code>
     /// </example>
-    public class Concat : IHandlebarsHelper
+    public class Concat : IHelperDescriptor<HelperOptions>
     {
         /// <summary>Gets the name of the helper.</summary>
-        /// <value>The value of this property is <c>Concat</c>. It is a constant.</value>
-        public string Name
+        /// <value>The value of this property is <c>Concat</c>.</value>
+        public PathInfo Name
             => nameof(Concat);
 
-        /// <summary>Applies the concatenation by writing each parameter to the provided <paramref name="writer"/>.</summary>
-        /// <param name="writer">The <see cref="TextWriter"/> to write the result to.</param>
+        /// <summary>Returns the concatenated <paramref name="arguments"/>.</summary>
+        /// <param name="options">The helper options.</param>
         /// <param name="context">The context in which this helper is called.</param>
-        /// <param name="parameters">The parameter with which this helper has been called.</param>
-        public void Apply(TextWriter writer, object context, params object[] parameters)
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
+        /// <returns>Returns the concatenated <paramref name="arguments"/>.</returns>
+        public object Invoke(in HelperOptions options, in Context context, in Arguments arguments)
+            => string.Join(string.Empty, arguments.AsEnumerable());
+
+        /// <summary>Writes the concatenated <paramref name="arguments"/> to the provided <paramref name="output"/>.</summary>
+        /// <param name="output">The <see cref="EncodedTextWriter"/> to write the result to.</param>
+        /// <param name="options">The helper options.</param>
+        /// <param name="context">The context in which this helper is called.</param>
+        /// <param name="arguments">The arguments with which this helper has been called.</param>
+        public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
         {
-            foreach (var parameter in parameters)
-                writer.Write(parameter);
+            foreach (var argument in arguments)
+                output.WriteSafeString(argument);
         }
     }
 }
