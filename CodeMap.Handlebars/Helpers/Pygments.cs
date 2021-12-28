@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers;
 using HandlebarsDotNet.IO;
@@ -74,8 +75,8 @@ namespace CodeMap.Handlebars.Helpers
         /// </remarks>
         public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
         {
-            var code = arguments.At<string>(0) ?? string.Empty;
-            var language = arguments.At<string>(1);
+            var code = arguments.ElementAtOrDefault(0) as string ?? string.Empty;
+            var language = arguments.ElementAtOrDefault(1) as string;
 
             var lexer = language is null ? null : GetLexer(language.ToLowerInvariant());
             if (lexer is null)

@@ -8,7 +8,7 @@ version: {{Semver declaringType.assembly.version}}
 <h2>{{name}} Event</h2>
 
 <p>Event type: {{MemberReference type}}.</p>
-{{> Documentation summary}}
+{{> Documentation node=summary}}
 
 {{#if isStatic}}
 <p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/static">static</a> event.</p>
@@ -29,13 +29,13 @@ version: {{Semver declaringType.assembly.version}}
 <h3>Exceptions</h3>
 <ul>
     {{/if}}
-    <li>{{> Documentation}}</li>
+    <li>{{> Documentation node=this}}</li>
     {{#if @last}}
 </ul>
 {{/if}}
 {{/each}}
 
 {{> Documentation node=remarks title='Remarks'}}
-{{> Documentation examples}}
+{{> Documentation node=examples}}
 {{> Documentation node=relatedMembers title='Related Members' asList=1}}
 {% endraw %}

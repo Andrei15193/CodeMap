@@ -7,7 +7,7 @@ version: {{Semver assembly.version}}
 
 <h2>{{name}} Enum</h2>
 
-{{> Documentation summary}}
+{{> Documentation node=summary}}
 
 <h3>Members</h3>
 <table class="table table-hover">
@@ -23,13 +23,13 @@ version: {{Semver assembly.version}}
         <tr>
             <td>{{name}}</td>
             <td><code>{{Format value 'D'}}</code></td>
-            <td>{{> Documentation summary}}</td>
+            <td>{{> Documentation node=summary}}</td>
         </tr>
         {{/each}}
     </tbody>
 </table>
 
 {{> Documentation node=remarks title='Remarks'}}
-{{> Documentation examples}}
+{{> Documentation node=examples}}
 {{> Documentation node=relatedMembers title='Related Members' asList=1}}
 {% endraw %}

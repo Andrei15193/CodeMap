@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers;
 using HandlebarsDotNet.PathStructure;
@@ -33,8 +34,8 @@ namespace CodeMap.Handlebars.Helpers
         /// </exception>
         public object Invoke(in HelperOptions options, in Context context, in Arguments arguments)
         {
-            var formattable = arguments.At<IFormattable>(0) ?? throw new ArgumentException("Expected an " + nameof(IFormattable) + " as the first argument.");
-            var format = arguments.At<string>(1) ?? throw new ArgumentException("Expected a format string as the second argument.");
+            var formattable = arguments.ElementAtOrDefault(0) as IFormattable ?? throw new ArgumentException("Expected an " + nameof(IFormattable) + " as the first argument.");
+            var format = arguments.ElementAtOrDefault(1) as string ?? throw new ArgumentException("Expected a format string as the second argument.");
             return formattable.ToString(format, CultureInfo.InvariantCulture);
         }
 

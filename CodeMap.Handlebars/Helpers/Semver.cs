@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers;
 using HandlebarsDotNet.PathStructure;
@@ -58,7 +59,7 @@ namespace CodeMap.Handlebars.Helpers
         /// </exception>
         public object Invoke(in HelperOptions options, in Context context, in Arguments arguments)
         {
-            var version = arguments.At<Version>(0) ?? throw new ArgumentException("Expected a " + nameof(Version) + " provided as the first argument or context.");
+            var version = arguments.ElementAtOrDefault(0) as Version ?? throw new ArgumentException("Expected a " + nameof(Version) + " provided as the first argument or context.");
             return ToSemver(version);
         }
 

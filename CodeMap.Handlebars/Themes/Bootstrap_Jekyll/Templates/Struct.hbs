@@ -7,7 +7,7 @@ version: {{Semver assembly.version}}
 
 <h2>{{name}} Struct</h2>
 
-{{> Documentation summary}}
+{{> Documentation node=summary}}
 
 <p>
     {{#each implementedInterfaces}}
@@ -34,6 +34,6 @@ version: {{Semver assembly.version}}
 {{> MembersDeclaraction members=nestedStructs title='Nested Structs' includeAccessor=1}}
 
 {{> Documentation node=remarks title='Remarks'}}
-{{> Documentation examples}}
+{{> Documentation node=examples}}
 {{> Documentation node=relatedMembers title='Related Members' asList=1}}
 {% endraw %}

@@ -8,7 +8,7 @@ version: {{Semver declaringType.assembly.version}}
 <h2>{{name}} Constant</h2>
 
 <p>Constant type: {{MemberReference type}}.</p>
-{{> Documentation summary}}
+{{> Documentation node=summary}}
 
 {{#if isStatic}}
 <p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/static">static</a> constant.</p>
@@ -17,6 +17,6 @@ version: {{Semver declaringType.assembly.version}}
 {{/if}}
 
 {{> Documentation node=remarks title='Remarks'}}
-{{> Documentation examples}}
+{{> Documentation node=examples}}
 {{> Documentation node=relatedMembers title='Related Members' asList=1}}
 {% endraw %}

@@ -141,7 +141,6 @@ namespace CodeMap.Handlebars
         /// </remarks>
         protected virtual IEnumerable<IHelperDescriptor<HelperOptions>> GetHelpers(IMemberReferenceResolver memberReferenceResolver)
         {
-            yield return new IsCollection();
             yield return new Concat();
             yield return new Format();
             yield return new Semver();

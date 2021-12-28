@@ -7,7 +7,7 @@ version: {{Semver assembly.version}}
 
 <h2>{{#if name}}{{name}}{{else}}global{{/if}} Namespace</h2>
 
-{{> Documentation summary}}
+{{> Documentation node=summary}}
 
 {{> MembersDeclaraction members=enums title='Enums'}}
 {{> MembersDeclaraction members=delegates title='Delegates'}}
@@ -17,6 +17,6 @@ version: {{Semver assembly.version}}
 {{> MembersDeclaraction members=structs title='Structs'}}
 
 {{> Documentation node=remarks title='Remarks'}}
-{{> Documentation examples}}
+{{> Documentation node=examples}}
 {{> Documentation node=relatedMembers title='Related Members' asList=1}}
 {% endraw %}

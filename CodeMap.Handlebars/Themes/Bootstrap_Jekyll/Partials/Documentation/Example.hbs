@@ -1,2 +1,2 @@
-{{#unless @root.xmlAttributes.title}}<h3>Example</h3>{{else}}<h3>Example: {{@root.xmlAttributes.title}}</h3>{{/unless}}{{/if}}
-{{> Documentation content}}
+{{#unless xmlAttributes.title}}<h3>Example</h3>{{else}}<h3>Example: {{xmlAttributes.title}}</h3>{{/unless}}
+{{> Documentation node=content}}

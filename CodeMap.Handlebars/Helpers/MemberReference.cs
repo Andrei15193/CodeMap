@@ -65,7 +65,7 @@ namespace CodeMap.Handlebars.Helpers
         /// </exception>
         public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
         {
-            var argument = arguments.DefaultIfEmpty(context).First();
+            var argument = arguments.DefaultIfEmpty(context.Value).First();
 
             switch (argument)
             {

@@ -7,7 +7,7 @@ version: {{Semver assembly.version}}
 
 <h2>{{name}} Interface</h2>
 
-{{> Documentation summary}}
+{{> Documentation node=summary}}
 
 <p>
     {{#each implementedInterfaces}}
@@ -24,6 +24,6 @@ version: {{Semver assembly.version}}
 {{> MembersDeclaraction members=methods title='Methods'}}
 
 {{> Documentation node=remarks title='Remarks'}}
-{{> Documentation examples}}
+{{> Documentation node=examples}}
 {{> Documentation node=relatedMembers title='Related Members' asList=1}}
 {% endraw %}

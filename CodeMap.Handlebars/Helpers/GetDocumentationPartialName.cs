@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using CodeMap.DocumentationElements;
 using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers;
@@ -19,30 +21,17 @@ namespace CodeMap.Handlebars.Helpers
     /// While it may not be useful to display this information like this, it is useful to use this helper as a selector for a specific partial.
     /// For instance, the <c>Documentation</c> partial is defined like this:
     /// <code language="html">
-    /// {{#if (IsCollection node)}}
+    /// {{#if title}}<h3>{{title}}</h3>{{/if}}
     /// {{#if asList}}
-    /// {{#each node}}
-    /// {{#if @first}}
-    /// {{#if ../title}}&lt;h3&gt;{{../title}}&lt;/h3&gt;{{/if}}
-    /// &lt;ul&gt;
-    ///     {{/if}}
-    ///     &lt;li&gt;{{&gt; (GetDocumentationPartialName this)}}&lt;/li&gt;
-    ///     {{#if @last}}
-    /// &lt;/ul&gt;
-    /// {{/if}}
-    /// {{/each}}
+    ///     {{#node}}
+    ///         {{#if @first}}<ul>{{/if}}
+    ///             <li>{{> (GetDocumentationPartialName)}}</li>
+    ///         {{#if @last}}</ul>{{/if}}
+    ///     {{/node}}
     /// {{else}}
-    /// {{#each node}}
-    /// {{#if @first}}{{#if ../title}}&lt;h3&gt;{{../title}}&lt;/h3&gt;{{/if}}{{/if}}
-    /// {{&gt; (GetDocumentationPartialName this)}}
-    /// {{/each}}
-    /// {{/if}}
-    /// {{else if node}}
-    /// {{#with node}}{{&gt; (GetDocumentationPartialName) title=../title}}{{/with}}
-    /// {{else if (IsCollection this)}}
-    /// {{#each this}}{{&gt; (GetDocumentationPartialName)}}{{/each}}
-    /// {{else}}
-    /// {{&gt; (GetDocumentationPartialName)}}
+    ///     {{#node}}
+    ///         {{> (GetDocumentationPartialName)}}
+    ///     {{/node}}
     /// {{/if}}
     /// </code>
     /// As you can see, the specific <see cref="DocumentationElement"/> partial name is selected using this helper, it's like determining the name
@@ -65,10 +54,11 @@ namespace CodeMap.Handlebars.Helpers
         /// </exception>
         public object Invoke(in HelperOptions options, in Context context, in Arguments arguments)
         {
-            var documentationElement = arguments.At<DocumentationElement>(0) ?? throw new ArgumentException("Expected a " + nameof(DocumentationElement) + " provided as the first argument or context.");
+            var documentationElement = arguments.DefaultIfEmpty(context.Value).First() as DocumentationElement ?? throw new ArgumentException("Expected a " + nameof(DocumentationElement) + " provided as the first argument or context.");
 
             var visitor = new PartialNameSelector();
             documentationElement.Accept(visitor);
+            Debug.WriteLine(visitor.PartialName);
             return visitor.PartialName;
         }
 

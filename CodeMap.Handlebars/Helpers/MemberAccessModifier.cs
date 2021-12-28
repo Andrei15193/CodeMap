@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CodeMap.DeclarationNodes;
 using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers;
@@ -34,7 +35,7 @@ namespace CodeMap.Handlebars.Helpers
         /// </exception>
         public object Invoke(in HelperOptions options, in Context context, in Arguments arguments)
         {
-            var declarationNode = arguments.At<DeclarationNode>(0) ?? throw new ArgumentException("Expected a " + nameof(DeclarationNode) + " provided as the first argument or context.");
+            var declarationNode = arguments.DefaultIfEmpty(context.Value).ElementAtOrDefault(0) as DeclarationNode ?? throw new ArgumentException("Expected a " + nameof(DeclarationNode) + " provided as the first argument or context.");
 
             switch (declarationNode)
             {

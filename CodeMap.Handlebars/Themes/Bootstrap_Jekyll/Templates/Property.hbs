@@ -8,7 +8,7 @@ version: {{Semver declaringType.assembly.version}}
 <h2>{{name}} Property</h2>
 
 <p>Property type: {{MemberReference type}}.</p>
-{{> Documentation summary}}
+{{> Documentation node=summary}}
 
 {{#if getter}}
 {{#if setter}}
@@ -43,7 +43,7 @@ version: {{Semver declaringType.assembly.version}}
     {{/if}}
     <li>
         <h5>{{this.name}}: {{MemberReference type}}</h5>
-        {{> Documentation description}}
+        {{> Documentation node=description}}
     </li>
     {{#if @last}}
 </ul>
@@ -55,13 +55,13 @@ version: {{Semver declaringType.assembly.version}}
 <h3>Exceptions</h3>
 <ul>
     {{/if}}
-    <li>{{> Documentation}}</li>
+    <li>{{> Documentation node=this}}</li>
     {{#if @last}}
 </ul>
 {{/if}}
 {{/each}}
 
 {{> Documentation node=remarks title='Remarks'}}
-{{> Documentation examples}}
+{{> Documentation node=examples}}
 {{> Documentation node=relatedMembers title='Related Members' asList=1}}
 {% endraw %}

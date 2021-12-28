@@ -36,7 +36,7 @@ namespace CodeMap.Handlebars.Helpers
         /// </exception>
         public object Invoke(in HelperOptions options, in Context context, in Arguments arguments)
         {
-            var assemblyDeclaraction = arguments.At<AssemblyDeclaration>(0) ?? throw new ArgumentException("Expected an " + nameof(AssemblyDeclaration) + " provided as the first argument or context.");
+            var assemblyDeclaraction = arguments.ElementAtOrDefault(0) as AssemblyDeclaration ?? throw new ArgumentException("Expected an " + nameof(AssemblyDeclaration) + " provided as the first argument or context.");
 
             var companyName = assemblyDeclaraction
                 .Attributes

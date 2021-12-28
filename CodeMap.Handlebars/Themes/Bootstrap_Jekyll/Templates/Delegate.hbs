@@ -7,7 +7,7 @@ version: {{Semver assembly.version}}
 
 <h2>{{name}} Delegate</h2>
 
-{{> Documentation summary}}
+{{> Documentation node=summary}}
 
 <p>This is a <code>{{MemberAccessModifier}}</code> delegate.</p>
 
@@ -20,7 +20,7 @@ version: {{Semver assembly.version}}
     {{/if}}
     <li>
         <h5>{{this.name}}: {{MemberReference type}}</h5>
-        {{> Documentation description}}
+        {{> Documentation node=description}}
     </li>
     {{#if @last}}
 </ul>
@@ -29,7 +29,7 @@ version: {{Semver assembly.version}}
 
 {{#each return.description}}
 {{#if @first}}<h3>Returns: {{MemberReference @root.return.type}}</h3>{{/if}}
-{{> Documentation}}
+{{> Documentation node=this}}
 {{/each}}
 
 {{#each exceptions}}
@@ -37,13 +37,13 @@ version: {{Semver assembly.version}}
 <h3>Exceptions</h3>
 <ul>
     {{/if}}
-    <li>{{> Documentation}}</li>
+    <li>{{> Documentation node=this}}</li>
     {{#if @last}}
 </ul>
 {{/if}}
 {{/each}}
 
 {{> Documentation node=remarks title='Remarks'}}
-{{> Documentation examples}}
+{{> Documentation node=examples}}
 {{> Documentation node=relatedMembers title='Related Members' asList=1}}
 {% endraw %}
