@@ -56,6 +56,6 @@ namespace CodeMap.Handlebars.Helpers
         /// Thrown when the first argument is not an <see cref="AssemblyDeclaration"/> or when not provided and the given <paramref name="context"/> is not an <see cref="AssemblyDeclaration"/>.
         /// </exception>
         public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
-            => output.WriteSafeString(Invoke(options, context, arguments));
+            => output.WriteSafeString(Invoke(options, context, arguments) ?? string.Empty);
     }
 }

@@ -81,12 +81,12 @@ namespace CodeMap.Handlebars.Helpers
             var lexer = language is null ? null : GetLexer(language.ToLowerInvariant());
             if (lexer is null)
             {
-                output.WriteSafeString("<pre><code>");
-                output.Write(code);
-                output.WriteSafeString("</pre></code>");
+                output.Write("<pre><code>", encode: false);
+                output.WriteSafeString(code);
+                output.Write("</pre></code>", encode: false);
             }
             else
-                output.Write(Pygmentize.Content(code).WithLexer(lexer).WithFormatter(new HtmlFormatter(new HtmlFormatterOptions())).AsString());
+                output.Write(Pygmentize.Content(code).WithLexer(lexer).WithFormatter(new HtmlFormatter(new HtmlFormatterOptions())).AsString(), encode: false);
         }
 
         /// <summary>Gets the <see cref="Lexer"/> for the provided <paramref name="language"/>.</summary>

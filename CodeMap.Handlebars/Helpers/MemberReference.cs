@@ -90,11 +90,11 @@ namespace CodeMap.Handlebars.Helpers
         /// <param name="content">The content (text) of the hyperlink.</param>
         protected virtual void WriteHyperlink(EncodedTextWriter output, string url, string content)
         {
-            output.WriteSafeString("<a href=\"");
-            output.Write(url);
-            output.WriteSafeString("\">");
-            output.Write(content);
-            output.WriteSafeString("</a>");
+            output.Write("<a href=\"", encode: false);
+            output.WriteSafeString(url);
+            output.Write("\">", encode: false);
+            output.WriteSafeString(content);
+            output.Write("</a>", encode: false);
         }
     }
 }

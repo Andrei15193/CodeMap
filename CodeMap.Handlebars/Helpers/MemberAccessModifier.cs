@@ -70,7 +70,7 @@ namespace CodeMap.Handlebars.Helpers
         /// Thrown when the first argument is not a <see cref="DeclarationNode"/> or when not provided and the given <paramref name="context"/> is not a <see cref="DeclarationNode"/>.
         /// </exception>
         public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
-            => output.WriteSafeString(Invoke(options, context, arguments));
+            => output.WriteSafeString(Invoke(options, context, arguments) ?? string.Empty);
 
         /// <summary>Gets the display label for the provided <paramref name="accessModifier"/>.</summary>
         /// <param name="accessModifier">The <see cref="AccessModifier"/> for which to get the display value.</param>

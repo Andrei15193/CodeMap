@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using CodeMap.DocumentationElements;
 using HandlebarsDotNet;
@@ -58,7 +57,6 @@ namespace CodeMap.Handlebars.Helpers
 
             var visitor = new PartialNameSelector();
             documentationElement.Accept(visitor);
-            Debug.WriteLine(visitor.PartialName);
             return visitor.PartialName;
         }
 
@@ -72,7 +70,7 @@ namespace CodeMap.Handlebars.Helpers
         /// Thrown when the first argument is not an <see cref="DocumentationElement"/> or when not provided and the given <paramref name="context"/> is not an <see cref="DocumentationElement"/>.
         /// </exception>
         public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
-            => output.Write(Invoke(options, context, arguments));
+            => output.Write(Convert.ToString(Invoke(options, context, arguments)), encode: false);
 
         private sealed class PartialNameSelector : DocumentationVisitor
         {

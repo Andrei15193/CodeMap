@@ -1,0 +1,12 @@
+{{#if asList}}
+    {{#node}}
+        {{#if @first}}{{#if ../title}}<h3>{{../title}}</h3>{{/if}}<ul>{{/if}}
+            <li>{{> (GetDocumentationPartialName)}}</li>
+        {{#if @last}}</ul>{{/if}}
+    {{/node}}
+{{else}}
+    {{#node}}
+        {{#if @first}}{{#if ../title}}<h3>{{../title}}</h3>{{/if}}{{/if}}
+        {{> (GetDocumentationPartialName)}}
+    {{/node}}
+{{/if}}

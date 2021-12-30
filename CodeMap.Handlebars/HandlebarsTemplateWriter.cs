@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using CodeMap.Handlebars.Helpers;
 using EmbeddedResourceBrowser;
 using HandlebarsDotNet;
@@ -32,6 +34,17 @@ namespace CodeMap.Handlebars
     /// MyDocumentationGeneratorApp/
     ///     Themes/
     ///         Bootstrap/
+    ///             4.5.0/
+    ///                 This is a version specific override. Only files for this version will be overridden, all other versions are not affected.
+    ///                 Assets/
+    ///                     favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
+    ///                 Partials/
+    ///                     Layout.hbs (overrides the layout partial, this can be a copy of the default layout to which one can add extra tags, such as one for the favicon)
+    ///                 Templates/
+    ///                     Class.hbs (this will override the default handlebars template for class declarations)
+    ///                     Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
+    ///
+    ///             This is a theme specific override. Only files for this theme will be overridden, all versions are affected, but all other themes are not affected.
     ///             Assets/
     ///                 favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
     ///             Partials/
@@ -39,7 +52,22 @@ namespace CodeMap.Handlebars
     ///             Templates/
     ///                 Class.hbs (this will override the default handlebars template for class declarations)
     ///                 Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
+    ///
+    ///        This is a global override. All themes are affected by these changes.
+    ///        Assets/
+    ///            favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
+    ///        Partials/
+    ///            Layout.hbs (overrides the layout partial, this can be a copy of the default layout to which one can add extra tags, such as one for the favicon)
+    ///        Templates/
+    ///            Class.hbs (this will override the default handlebars template for class declarations)
+    ///            Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
     /// </code>
+    /// <para>
+    /// In case there are multiple overrides then they are picked from specific to global meaning that if there is a Bootstrap override and a global override
+    /// for the same template file, when generating documentation using the Bootstrap theme then the specific override is used, for all other themes the
+    /// global one is used. This applies to version specific vs theme overrides, the version speific will be picked when using that version, otherwise the
+    /// theme one will be picked.
+    /// </para>
     /// <para>
     /// To view all default templates simply browse them on the repository page, generally when making changes to them it is a good option to start by
     /// copying the default one and modify it. At the same time one can create a new layout from the ground up using different theming libraries.
@@ -51,49 +79,83 @@ namespace CodeMap.Handlebars
     /// </remarks>
     public class HandlebarsTemplateWriter
     {
+        private readonly Regex _themeSpecificationRegex = new Regex(@"^(?<name>[^@]*)(?<version>@((?<major>\d+)(\.(?<minor>\d+)(\.(?<patch>\d+))?)?)|latest)?$", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+        private readonly Regex _versionDirectoryNameRegex = new Regex(@"^_\d+$", RegexOptions.IgnoreCase);
         private readonly IMemberReferenceResolver _memberReferenceResolver;
-        private readonly EmbeddedDirectory _themeResources;
+        private readonly EmbeddedDirectory _baseThemeDirectory;
+        private readonly EmbeddedDirectory _versionedThemeDirectory;
         private readonly Lazy<IReadOnlyDictionary<string, HandlebarsTemplate<TextWriter, object, object>>> _templates;
 
         /// <summary>Initializes a new instance of the <see cref="HandlebarsTemplateWriter"/> class.</summary>
-        /// <param name="theme">The theme name to apply.</param>
+        /// <param name="theme">The theme name to apply. This can be accompanied by the version of the theme (e.g.: <c>Bootstrap@4</c>, <c>Bootstrap@4.5</c>, or <c>Bootstrap@4.5.0</c>). To use the latest version either specify <c>@latest</c> or no version at all.</param>
         /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used by the <see cref="MemberReference"/> helper.</param>
         /// <param name="assemblies">The <see cref="Assembly"/> objects from where to load assets and Handlebars templates and partials.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="theme" /> is <c>null</c>, empty or white space or when a theme with the provided name (and version) could not be found.
+        /// </exception>
         public HandlebarsTemplateWriter(string theme, IMemberReferenceResolver memberReferenceResolver, IEnumerable<Assembly> assemblies)
         {
+            if (string.IsNullOrWhiteSpace(theme))
+                throw new ArgumentException("Cannot be null, empty or white space.", nameof(theme));
+
             var resources = EmbeddedDirectory.Merge(assemblies);
             if (!resources.Subdirectories.TryGetValue("Themes", out var themesDirectory))
                 throw new ArgumentException("Themes directory does not contain any embedded resources.");
-            if (!themesDirectory.Subdirectories.TryGetValue(theme, out var themeDirectory))
-                throw new ArgumentException($"'{theme}' directory does not contain any embedded resources (Themes/{theme}).");
+
+            var match = _themeSpecificationRegex.Match(theme);
+            var themeName = match.Groups["name"].Value;
+            var themeVersion = match.Groups["version"].Value;
+            if (!themesDirectory.Subdirectories.TryGetValue(themeName, out _baseThemeDirectory))
+                throw new ArgumentException($"'{themeName}' directory does not contain any embedded resources.");
+
+            _versionedThemeDirectory = (
+                from majorVersionSubdirectory in _baseThemeDirectory.Subdirectories
+                where string.IsNullOrWhiteSpace(match.Groups["major"].Value) || Regex.IsMatch(majorVersionSubdirectory.Name, $"^_{match.Groups["major"].Value}$")
+                from minorVersionSubdirectory in majorVersionSubdirectory.Subdirectories
+                where string.IsNullOrWhiteSpace(match.Groups["minor"].Value) || Regex.IsMatch(minorVersionSubdirectory.Name, $"^_{match.Groups["minor"].Value}$")
+                from patchVersionSubdirectory in minorVersionSubdirectory.Subdirectories
+                where string.IsNullOrWhiteSpace(match.Groups["patch"].Value) || Regex.IsMatch(patchVersionSubdirectory.Name, $"^_{match.Groups["patch"].Value}$")
+                orderby new Version(int.Parse(majorVersionSubdirectory.Name.Substring(1), NumberStyles.None, CultureInfo.InvariantCulture), int.Parse(minorVersionSubdirectory.Name.Substring(1), NumberStyles.None, CultureInfo.InvariantCulture), int.Parse(patchVersionSubdirectory.Name.Substring(1), NumberStyles.None, CultureInfo.InvariantCulture)) descending
+                select patchVersionSubdirectory
+            ).FirstOrDefault();
+
+            if (_versionedThemeDirectory is null)
+                throw new ArgumentException("'{themeVersion}' theme vesrion directory does not contain any embedded resources.");
 
             _memberReferenceResolver = memberReferenceResolver;
-            _themeResources = themeDirectory;
             _templates = new Lazy<IReadOnlyDictionary<string, HandlebarsTemplate<TextWriter, object, object>>>(_GetTemplates);
         }
 
         /// <summary>Initializes a new instance of the <see cref="HandlebarsTemplateWriter"/> class.</summary>
-        /// <param name="theme">The theme name to apply.</param>
+        /// <param name="theme">The theme name to apply. This can be accompanied by the version of the theme (e.g.: <c>Bootstrap@4</c>, <c>Bootstrap@4.5</c>, or <c>Bootstrap@4.5.0</c>). To use the latest version either specify <c>@latest</c> or no version at all.</param>
         /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used by the <see cref="MemberReference"/> helper.</param>
         /// <param name="assemblies">The <see cref="Assembly"/> objects from where to load assets and Handlebars templates and partials.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="theme" /> is <c>null</c>, empty or white space or when a theme with the provided name (and version) could not be found.
+        /// </exception>
         public HandlebarsTemplateWriter(string theme, IMemberReferenceResolver memberReferenceResolver, params Assembly[] assemblies)
             : this(theme, memberReferenceResolver, (IEnumerable<Assembly>)assemblies)
         {
         }
 
         /// <summary>Initializes a new instance of the <see cref="HandlebarsTemplateWriter"/> class.</summary>
-        /// <param name="theme">The theme name to apply.</param>
+        /// <param name="theme">The theme name to apply. This can be accompanied by the version of the theme (e.g.: <c>Bootstrap@4</c>, <c>Bootstrap@4.5</c>, or <c>Bootstrap@4.5.0</c>). To use the latest version either specify <c>@latest</c> or no version at all.</param>
         /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used by the <see cref="MemberReference"/> helper.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="theme" /> is <c>null</c>, empty or white space or when a theme with the provided name (and version) could not be found.
+        /// </exception>
         public HandlebarsTemplateWriter(string theme, IMemberReferenceResolver memberReferenceResolver)
             : this(theme, memberReferenceResolver, typeof(HandlebarsTemplateWriter).Assembly, Assembly.GetEntryAssembly())
         {
         }
 
-        /// <summary>Gets the <see cref="EmbeddedDirectory"/> containing assets or <c>null</c> if there is no such directory.</summary>
-        public EmbeddedDirectory Assets => _themeResources.Subdirectories.TryGetValue("assets", out var assetsDirectory) ? assetsDirectory : null;
+        /// <summary>Gets the <see cref="EmbeddedFile"/>s containing theme assets.</summary>
+        public IEnumerable<EmbeddedFile> Assets
+            => _GetEmbeddedFilesFromResourceDirectory("assets");
 
-        /// <summary>Gets the <see cref="EmbeddedDirectory"/> containing extras or <c>null</c> if there is no such directory.</summary>
-        public EmbeddedDirectory Extras => _themeResources.Subdirectories.TryGetValue("extras", out var extrasDirectory) ? extrasDirectory : null;
+        /// <summary>Gets the <see cref="EmbeddedFile"/>s containing theme extras.</summary>
+        public IEnumerable<EmbeddedFile> Extras
+            => _GetEmbeddedFilesFromResourceDirectory("extras");
 
         /// <summary>Writes the provided <paramref name="templateName"/> with in the given <paramref name="context"/> to the provided <paramref name="textWriter"/>.</summary>
         /// <param name="textWriter">The <see cref="TextWriter"/> to which to write the template.</param>
@@ -158,6 +220,25 @@ namespace CodeMap.Handlebars
         protected virtual IEnumerable<IHelperDescriptor<BlockHelperOptions>> GetBlockHelpers(IMemberReferenceResolver memberReferenceResolver)
             => Enumerable.Empty<IHelperDescriptor<BlockHelperOptions>>();
 
+        private IEnumerable<EmbeddedDirectory> _EmbeddedResourceDirectories
+        {
+            get
+            {
+                var embeddedDirectory = _versionedThemeDirectory;
+                do
+                {
+                    yield return embeddedDirectory;
+                    embeddedDirectory = embeddedDirectory.ParentDirectory;
+                } while (!embeddedDirectory.Name.Equals("Themes", StringComparison.OrdinalIgnoreCase));
+                yield return embeddedDirectory;
+            }
+        }
+
+        private IEnumerable<EmbeddedFile> _GetEmbeddedFilesFromResourceDirectory(string directoryName)
+            => _EmbeddedResourceDirectories
+                .SelectMany(embeddedResourceDirectory => embeddedResourceDirectory.Subdirectories.TryGetValue(directoryName, out var embeddedDirectory) ? embeddedDirectory.GetAllFiles() : Enumerable.Empty<EmbeddedFile>())
+                .GroupBy(file => file.Name, (name, files) => files.First(), StringComparer.OrdinalIgnoreCase);
+
         private IReadOnlyDictionary<string, HandlebarsTemplate<TextWriter, object, object>> _GetTemplates()
         {
             var handlerbars = HandlebarsDotNet.Handlebars.Create();
@@ -178,21 +259,13 @@ namespace CodeMap.Handlebars
                         break;
                 }
 
-            var partials = _themeResources
-                .Subdirectories["partials"]
-                .GetAllFiles()
-                .Where(partial => partial.Extension.Equals(".hbs", StringComparison.OrdinalIgnoreCase))
-                .GroupBy(partial => partial.Name, (partialName, matchedPartials) => matchedPartials.First(), StringComparer.OrdinalIgnoreCase);
-            foreach (var partial in partials)
+            foreach (var partial in _GetEmbeddedFilesFromResourceDirectory("partials").Where(template => template.Extension.Equals(".hbs", StringComparison.OrdinalIgnoreCase)))
                 using (var partialStream = partial.OpenRead())
                 using (var partialStreamReader = new StreamReader(partialStream))
                     handlerbars.RegisterTemplate(_GetTemplateName(partial), partialStreamReader.ReadToEnd());
 
-            return _themeResources
-                .Subdirectories["templates"]
-                .GetAllFiles()
+            return _GetEmbeddedFilesFromResourceDirectory("templates")
                 .Where(template => template.Extension.Equals(".hbs", StringComparison.OrdinalIgnoreCase))
-                .GroupBy(template => template.Name, (templateName, matchedTemplates) => matchedTemplates.First(), StringComparer.OrdinalIgnoreCase)
                 .ToDictionary(
                     _GetTemplateName,
                     template =>

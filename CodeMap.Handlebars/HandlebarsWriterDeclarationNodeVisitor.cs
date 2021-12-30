@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Text;
 using CodeMap.DeclarationNodes;
 using EmbeddedResourceBrowser;
 
@@ -25,7 +27,23 @@ namespace CodeMap.Handlebars
         /// <param name="assembly">The <see cref="AssemblyDeclaration"/> to visit.</param>
         protected override void VisitAssembly(AssemblyDeclaration assembly)
         {
-            _handlebarsTemplateWriter.Assets?.CopyToRecursively(_directoryInfo);
+            foreach (var extraFile in _handlebarsTemplateWriter.Assets)
+            {
+                var nameBuilder = new StringBuilder();
+                var embeddedDirectory = extraFile.ParentDirectory;
+                while (embeddedDirectory is object && !embeddedDirectory.Name.Equals("assets", StringComparison.OrdinalIgnoreCase))
+                {
+                    nameBuilder.Insert(0, Path.DirectorySeparatorChar);
+                    nameBuilder.Insert(0, embeddedDirectory.Name);
+                    embeddedDirectory = embeddedDirectory.ParentDirectory;
+                }
+                Directory.CreateDirectory(Path.Combine(_directoryInfo.FullName, nameBuilder.ToString()));
+                nameBuilder.Append(extraFile.Name);
+
+                using (var outputFileStream = new FileStream(Path.Combine(_directoryInfo.FullName, nameBuilder.ToString()), FileMode.Create, FileAccess.Write, FileShare.Read))
+                using (var extraFileStream = extraFile.OpenRead())
+                    extraFileStream.CopyTo(outputFileStream);
+            }
 
             _ApplyTempalte(DocumentationTemplateNames.Assembly, assembly);
 

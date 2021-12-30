@@ -1,0 +1,13 @@
+{{#>Layout node=this assembly=this title=(Concat name ' ' (Semver version))}}
+{{> Breadcrumbs this}}
+
+<h2>{{name}}</h2>
+
+{{> Documentation node=summary}}
+
+{{> MembersDeclaraction members=namespaces title='Namespaces'}}
+
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation node=examples}}
+{{> Documentation node=relatedMembers title='Related Members' asList=1}}
+{{/Layout}}

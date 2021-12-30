@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using CodeMap.DeclarationNodes;
 using CodeMap.Handlebars;
@@ -47,7 +48,23 @@ namespace CodeMap.Documentation
                 .Apply(new DocumentationAdditions.Version1_0.CodeMapHandlerbarsAssemblyDocumentationAddition())
                 .Accept(new HandlebarsWriterDeclarationNodeVisitor(_GetTargetDirectory(arguments, CodeMapHandlebarsDirectoryName), templateWriter));
 
-            templateWriter.Extras?.CopyToRecursively(Directory.CreateDirectory(arguments.OutputPath));
+            foreach (var extraFile in templateWriter.Extras)
+            {
+                var nameBuilder = new StringBuilder();
+                var embeddedDirectory = extraFile.ParentDirectory;
+                while (embeddedDirectory is object && !embeddedDirectory.Name.Equals("extras", StringComparison.OrdinalIgnoreCase))
+                {
+                    nameBuilder.Insert(0, Path.DirectorySeparatorChar);
+                    nameBuilder.Insert(0, embeddedDirectory.Name);
+                    embeddedDirectory = embeddedDirectory.ParentDirectory;
+                }
+                Directory.CreateDirectory(Path.Combine(arguments.OutputPath, nameBuilder.ToString()));
+                nameBuilder.Append(extraFile.Name);
+
+                using (var outputFileStream = new FileStream(Path.Combine(arguments.OutputPath, nameBuilder.ToString()), FileMode.Create, FileAccess.Write, FileShare.Read))
+                using (var extraFileStream = extraFile.OpenRead())
+                    extraFileStream.CopyTo(outputFileStream);
+            }
         }
 
         private static DirectoryInfo _GetTargetDirectory(Arguments arguments, string documentationDirectoryName)

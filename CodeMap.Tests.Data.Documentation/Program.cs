@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using CodeMap.DeclarationNodes;
 using CodeMap.Documentation;
 using CodeMap.Handlebars;
 using CodeMap.Tests.Data.Documentation.DocumentationAdditions;
-using EmbeddedResourceBrowser;
 
 namespace CodeMap.Tests.Data.Documentation
 {
@@ -44,7 +44,24 @@ namespace CodeMap.Tests.Data.Documentation
             {
                 var templateWriter = new HandlebarsTemplateWriter("Bootstrap_Jekyll", new CodeMapMemberReferenceResolver());
                 templateWriter.Write(indexStreamWriter, "Index", _themes);
-                templateWriter.Assets?.CopyToRecursively(testDataDirectory);
+
+                foreach (var extraFile in templateWriter.Assets)
+                {
+                    var nameBuilder = new StringBuilder();
+                    var embeddedDirectory = extraFile.ParentDirectory;
+                    while (embeddedDirectory is object && !embeddedDirectory.Name.Equals("assets", StringComparison.OrdinalIgnoreCase))
+                    {
+                        nameBuilder.Insert(0, Path.DirectorySeparatorChar);
+                        nameBuilder.Insert(0, embeddedDirectory.Name);
+                        embeddedDirectory = embeddedDirectory.ParentDirectory;
+                    }
+                    Directory.CreateDirectory(Path.Combine(testDataDirectory.FullName, nameBuilder.ToString()));
+                    nameBuilder.Append(extraFile.Name);
+
+                    using (var outputFileStream = new FileStream(Path.Combine(testDataDirectory.FullName, nameBuilder.ToString()), FileMode.Create, FileAccess.Write, FileShare.Read))
+                    using (var extraFileStream = extraFile.OpenRead())
+                        extraFileStream.CopyTo(outputFileStream);
+                }
             }
 
             foreach (var theme in _themes)
@@ -63,10 +80,6 @@ namespace CodeMap.Tests.Data.Documentation
                     .Create(typeof(GlobalTestClass).Assembly, DeclarationFilter.All)
                     .Apply(new TestDataAssemblyDocumentationAddition())
                     .Accept(new HandlebarsWriterDeclarationNodeVisitor(testDataDirectory.CreateSubdirectory(theme.Name), templateWriter));
-
-                if (templateWriter.Extras is object)
-                    foreach (var extrasSubdirectory in templateWriter.Extras.Subdirectories)
-                        extrasSubdirectory.CopyTo(outputDirectory.CreateSubdirectory(extrasSubdirectory.Name).CreateSubdirectory(theme.Name));
             }
         }
     }

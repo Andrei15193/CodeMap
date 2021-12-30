@@ -48,6 +48,6 @@ namespace CodeMap.Handlebars.Helpers
         /// Thrown when the first argument does not implement <see cref="IFormattable"/> or when the second argument is not a <see cref="string"/>.
         /// </exception>
         public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
-            => output.WriteSafeString(Invoke(options, context, arguments));
+            => output.WriteSafeString(Invoke(options, context, arguments) ?? string.Empty);
     }
 }

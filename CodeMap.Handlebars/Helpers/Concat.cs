@@ -38,7 +38,7 @@ namespace CodeMap.Handlebars.Helpers
         public void Invoke(in EncodedTextWriter output, in HelperOptions options, in Context context, in Arguments arguments)
         {
             foreach (var argument in arguments)
-                output.WriteSafeString(argument);
+                output.WriteSafeString(argument ?? string.Empty);
         }
     }
 }
