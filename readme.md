@@ -1,5 +1,3 @@
-![Build and Deploy](https://github.com/Andrei15193/CodeMap/workflows/Build%20and%20Deploy/badge.svg)
-
 Visual Studio enables developers to write comprehensive documentation inside
 their code using XML in three slashed comments,
 see [XML Documentation Comments (C# Programming Guide)](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments) for

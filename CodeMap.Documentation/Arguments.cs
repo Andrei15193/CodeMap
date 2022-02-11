@@ -24,7 +24,5 @@ namespace CodeMap.Documentation
         }
 
         public string OutputPath { get; set; }
-
-        public string TargetSubdirectory { get; set; }
     }
 }

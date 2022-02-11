@@ -81,7 +81,7 @@ namespace CodeMap.Handlebars.Helpers
         /// See the remarks on the declarying type (<see cref="Semver"/>) for more information about the default mapping between
         /// a <see cref="Version"/> and a Semver expression.
         /// </remarks>
-        protected virtual string ToSemver(Version version)
+        public static string ToSemver(Version version)
         {
             var prerelease = string.Empty;
             if (version.Build > 0)

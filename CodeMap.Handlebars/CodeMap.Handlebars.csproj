@@ -25,87 +25,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Themes\Partials\Documentation.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\Code.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\CodeBlock.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\DefinitionList.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\DefinitionListItem.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\DefinitionListItemDescription.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\DefinitionListItemTerm.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\DefinitionListTitle.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\Example.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\Exception.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\GenericParameterReference.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\Hyperlink.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\ListItem.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\MemberReference.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\OrderedList.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\Paragraph.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\ParameterReference.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\Remarks.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\Summary.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\TableCell.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\TableColumn.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\TableRow.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\Text.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\UnorderedList.hbs" />
-    <EmbeddedResource Include="Themes\Partials\Documentation\Value.hbs" />
-    <EmbeddedResource Include="Themes\Partials\GenericParametersDocumentation.hbs" />
-    <EmbeddedResource Include="Themes\Partials\MembersDeclaraction.hbs" />
+    <EmbeddedResource Include="Themes/**/*" LogicalName="$(AssemblyName)/$([System.String]::Copy('%(Identity)').Replace('\', '/'))" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Assets\Style.css" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Partials\Breadcrumbs.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Partials\Layout.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Partials\Documentation\Table.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Assembly.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Record.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Class.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Constant.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Constructor.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Delegate.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Enum.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Event.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Field.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Interface.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Method.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Namespace.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Property.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap\4.5.0\Templates\Struct.hbs" />
+    <None Remove="Themes\Bootstrap_Jekyll\4.5.0\Static\_includes\assembly_version_dropdown.html" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Assets\Style.css" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Extras\_config.yml" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Extras\_layouts\default.html" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Partials\Breadcrumbs.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Partials\Documentation\Table.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Assembly.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Record.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Class.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Constant.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Constructor.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Delegate.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Enum.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Event.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Field.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Interface.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Method.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Namespace.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Property.hbs" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\4.5.0\Templates\Struct.hbs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="EmbeddedResourceBrowser" Version="1.1.0" />
-    <PackageReference Include="Handlebars.Net" Version="2.0.10" />
+    <PackageReference Include="EmbeddedResourceBrowser" Version="1.2.0" />
+    <PackageReference Include="Handlebars.Net" Version="2.1.0" />
     <PackageReference Include="PygmentSharp.Core" Version="0.3.0" />
     <PackageReference Include="StrongNamer" Version="0.2.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CodeMap\CodeMap.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Themes\Bootstrap_Jekyll\4.5.0\Static\_includes\assembly_version_dropdown.html">
+      <LogicalName>$(AssemblyName)/$([System.String]::Copy('%(Identity)').Replace('\', '/'))</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

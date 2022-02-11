@@ -6,9 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Extras\_config.yml" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Extras\_layouts\default.html" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Extras\index.html" />
+    <EmbeddedResource Include="Themes\Static\_layouts\default.html" />
+    <EmbeddedResource Include="Themes\Static\index.html" />
   </ItemGroup>
 
   <ItemGroup>

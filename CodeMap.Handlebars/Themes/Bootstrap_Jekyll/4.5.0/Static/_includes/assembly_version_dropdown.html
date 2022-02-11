@@ -1,0 +1,153 @@
+{% assign default_pre_release_names = 'alpha,beta,rc' | split: ',' %}
+{% assign pre_release_names = site.data.pre_release_names | default: default_pre_release_names %}
+{% assign version_index_pages = site.pages | where: 'assembly', assembly_name | where: 'name', 'index.html' %}
+
+{% assign sorted_versioned_pages = '' | split: ',' | where: 'an', 'array' %}
+{% assign other_versioned_pages = '' | split: ',' | where: 'an', 'array' %}
+
+{% comment %}
+This is basically max-sort in Liquid (fun fun, this can be a coding kata exercise). Determine the maximum
+value (arbitrary condition), add it to the sorted collection, remove it from the main collection, repeat
+until the main collection is empty, or iterate as many times as there are items in the main collection.
+
+Although this is more complicated, it is preferred as the order of versions is determined at compile time
+with this approach. The generated HTML files will contain the menu items directly without the need of any
+JavaScript to handle custom sorting. The page will be ready as it is loaded. If there are no other dynamic
+features (such as search), the pages can be HTML and CSS only! How wonderful is that?
+
+`versioned_pages_info` will contain all valid semver versions (keep in mind `pre_release_names` as they
+determine valid prerelease version names and sort order, 2-in-1) prepared for max-sort. Each version
+element is a valid number and is placed in at the respective index:
+  - the versioned page: 0
+    A versioned page is one that has a version front matter set
+  - major: 1
+  - minor: 2
+  - patch: 3
+  - prerelease name: 4
+    The index of the name is used to determine order, rearranging prerelease names in the array will
+    change the order as well. You can think of it as an enumeration. If there isn't a prerelease name
+    present then `pre_release_names.length` is used as that is outside the bounds of the array and will
+    place any release (non-pre-release, ugh, those prefixes!) above all prereleases of that same version.
+  - prerelease number: 5
+    If there isn't one present, -1 is used as that is not considered as a valid prerelease number. This is
+    hardly the case as usually you either have multiple prereleases and have them properly numbered or you
+    have just one and then there is no need to number it. The safe option would be to number them anyway
+    just in case you will have multiple prereleases in the same cycle (e.g.: 10 beta versions, but that
+    would mean you are not using the patch version for bug fixes. So many options, this is great!).
+
+Once `versioned_pages_info` has been determined, it is sorted using max-sort by comparing each version
+element in the array (major is compared to major, minor to minor and so on, numerically, thus 10 > 2 where
+'10' < '2' when compared as strings, this is why the prerelease name index is used). Once the maximum
+version is determined the respective page is added to the `sorted_versioned_pages` array and _removed_
+from `versioned_pages_info`, this is done through the `versioned_pages_info_new` array which includes all
+items that are less than the maximum version in that iteration.
+
+All pages that do not have a valid version (e.g.: `a.b.c`, 'test-data', 'dev' etc.) is placed in
+`other_versioned_pages`. This is useful because all documentation files can specify their assembly and
+version in front matter and load that information from there. Valid versions usually resemble actual
+releases while anything else is work-in-progress (e.g.: the latest `dev` branch build) or demo data
+(e.g.: `test-data`). Not really documentation per say, but can be useful to showcase different use cases
+or tutorials.
+{% endcomment %}
+
+{% assign versioned_pages_info = '' | split: ',' | where: 'an', 'array' %}
+{% for versioned_page in version_index_pages %}
+    {% if versioned_page.version %}
+        {% assign version_parts = versioned_page.version | split: '.' %}
+
+        {% assign major = 'a' | plus: 0 %}
+        {% assign minor = 'a' | plus: 0 %}
+        {% assign patch = 'a' | plus: 0 %}
+        {% assign pre_release_name_index = 'a' | plus: 0 %}
+        {% assign pre_release_number = 'a' | plus: 0 %}
+
+        {% if version_parts.size == 3 %}
+            {% assign major = version_parts[0] | plus: 0 %}
+            {% assign minor = version_parts[1] | plus: 0 %}
+            {% assign patch_with_pre_release = version_parts[2] | split: '-' %}
+
+            {% if patch_with_pre_release.size <= 2 %}
+                {% assign patch = patch_with_pre_release[0] | plus: 0 %}
+                {% assign pre_release = patch_with_pre_release[1] %}
+
+                {% unless patch_with_pre_release.size == 2 %}
+                    {% assign pre_release_name_index = pre_release_names.size %}
+                    {% assign pre_release_number = -1 %}
+                {% else %}
+                    {% assign pre_release_name_index = 'a' | plus: '0' %}
+                    {% assign pre_release_number = 'a' | plus: '0' %}
+
+                    {% for pre_release_name in pre_release_names %}
+                        {% if pre_release == pre_release_name %}
+                            {% assign pre_release_name_index = forloop.index0 %}
+                            {% assign pre_release_number = -1 %}
+                        {% elsif pre_release contains pre_release_name %}
+                            {% assign pre_release_name_index = forloop.index0 %}
+                            {% assign pre_release_number = pre_release | slice: pre_release_name.size | plus: 0 %}
+                        {% endif %}
+                    {% endfor %}
+                {% endunless %}
+            {% endif %}
+        {% endif %}
+
+        {% assign versioned_page_info = '' | split: ',' | where: 'an', 'array' | push: versioned_page | push: major | push: minor | push: patch | push: pre_release_name_index | push: pre_release_number %}
+        {% assign is_valid_version = true %}
+        {% for part in versioned_page_info offset: 1 %}
+            {% unless part <= 0 or part >= 0 %}
+                {% assign is_valid_version = false %}
+                {% break %}
+            {% endunless %}
+        {% endfor %}
+
+        {% if is_valid_version %}
+            {% assign versioned_pages_info = versioned_pages_info | push: versioned_page_info %}
+        {% else %}
+            {% assign other_versioned_pages = other_versioned_pages | push: versioned_page %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% for number in (1..versioned_pages_info.size) %}
+    {% assign max_versioned_page_info = versioned_pages_info | first %}
+    {% assign versioned_pages_info_new = '' | split: ',' | where: 'an', 'array' %}
+
+    {% for versioned_page_info in versioned_pages_info offset: 1 %}
+        {% assign is_current_greater = false %}
+
+        {% for part_index in (1..max_versioned_page_info.size) limit: max_versioned_page_info.size | add: -1 %}
+            {% if versioned_page_info[part_index] > max_versioned_page_info[part_index] %}
+                {% assign is_current_greater = true %}
+                {% break %}
+            {% elsif max_versioned_page_info[part_index] > versioned_page_info[part_index] %}
+                {% break %}
+            {% endif %}
+        {% endfor %}
+
+        {% if is_current_greater %}
+            {% assign versioned_pages_info_new = versioned_pages_info_new | push: max_versioned_page_info %}
+            {% assign max_versioned_page_info = versioned_page_info %}
+        {% else %}
+            {% assign versioned_pages_info_new = versioned_pages_info_new | push: versioned_page_info %}
+        {% endif %}
+    {% endfor %}
+
+    {% assign sorted_versioned_pages = sorted_versioned_pages | push: max_versioned_page_info[0] %}
+    {% assign versioned_pages_info = versioned_pages_info_new %}
+{% endfor %}
+
+{% assign other_versioned_pages = other_versioned_pages | sort_natural: 'version' %}
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle{% if page.assembly == assembly_name %} active{% endif %}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ assembly_name }}</a>
+    <ul class="dropdown-menu">
+        {% for versioned_page in sorted_versioned_pages %}
+        <li><a class="dropdown-item{% if page.assembly == versioned_page.assembly and page.version == versioned_page.version %} active{% endif %}" href="{{ versioned_page.url | relative_url }}">{{ versioned_page.version }}</a></li>
+        {% endfor %}
+        {% if other_versioned_pages.size > 0 %}
+        <li><hr class="dropdown-divider"></li>
+        {% for versioned_page in other_versioned_pages %}
+        <li><a class="dropdown-item{% if page.assembly == versioned_page.assembly and page.version == versioned_page.version %} active{% endif %}" href="{{ versioned_page.url | relative_url }}">{{ versioned_page.version }}</a></li>
+        {% endfor %}
+        {% endif %}
+    </ul>
+</li>

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using CodeMap.DeclarationNodes;
 using CodeMap.Documentation;
 using CodeMap.Handlebars;
@@ -33,35 +32,17 @@ namespace CodeMap.Tests.Data.Documentation
             var arguments = Arguments.GetFrom(args);
             if (string.IsNullOrWhiteSpace(arguments.OutputPath))
                 throw new ArgumentException("Expected -OutputPath", nameof(args));
-            if (string.IsNullOrWhiteSpace(arguments.TargetSubdirectory))
-                throw new ArgumentException("Expected -TargetSubdirectory", nameof(args));
+            //if (string.IsNullOrWhiteSpace(arguments.TargetSubdirectory))
+            //    throw new ArgumentException("Expected -TargetSubdirectory", nameof(args));
 
             var outputDirectory = Directory.CreateDirectory(arguments.OutputPath);
-            var testDataDirectory = outputDirectory.CreateSubdirectory(arguments.TargetSubdirectory);
+            //var testDataDirectory = outputDirectory.CreateSubdirectory(arguments.TargetSubdirectory);
 
-            using (var indexFileStream = new FileStream(Path.Combine(testDataDirectory.FullName, "index.html"), FileMode.Create, FileAccess.Write, FileShare.Read))
+            using (var indexFileStream = new FileStream(Path.Combine(outputDirectory.FullName, "index.html"), FileMode.Create, FileAccess.Write, FileShare.Read))
             using (var indexStreamWriter = new StreamWriter(indexFileStream))
             {
                 var templateWriter = new HandlebarsTemplateWriter("Bootstrap_Jekyll", new CodeMapMemberReferenceResolver());
                 templateWriter.Write(indexStreamWriter, "Index", _themes);
-
-                foreach (var extraFile in templateWriter.Assets)
-                {
-                    var nameBuilder = new StringBuilder();
-                    var embeddedDirectory = extraFile.ParentDirectory;
-                    while (embeddedDirectory is object && !embeddedDirectory.Name.Equals("assets", StringComparison.OrdinalIgnoreCase))
-                    {
-                        nameBuilder.Insert(0, Path.DirectorySeparatorChar);
-                        nameBuilder.Insert(0, embeddedDirectory.Name);
-                        embeddedDirectory = embeddedDirectory.ParentDirectory;
-                    }
-                    Directory.CreateDirectory(Path.Combine(testDataDirectory.FullName, nameBuilder.ToString()));
-                    nameBuilder.Append(extraFile.Name);
-
-                    using (var outputFileStream = new FileStream(Path.Combine(testDataDirectory.FullName, nameBuilder.ToString()), FileMode.Create, FileAccess.Write, FileShare.Read))
-                    using (var extraFileStream = extraFile.OpenRead())
-                        extraFileStream.CopyTo(outputFileStream);
-                }
             }
 
             foreach (var theme in _themes)
@@ -79,7 +60,7 @@ namespace CodeMap.Tests.Data.Documentation
                 DeclarationNode
                     .Create(typeof(GlobalTestClass).Assembly, DeclarationFilter.All)
                     .Apply(new TestDataAssemblyDocumentationAddition())
-                    .Accept(new HandlebarsWriterDeclarationNodeVisitor(testDataDirectory.CreateSubdirectory(theme.Name), templateWriter));
+                    .Accept(new HandlebarsWriterDeclarationNodeVisitor(outputDirectory.CreateSubdirectory(theme.Name), templateWriter));
             }
         }
     }

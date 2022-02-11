@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CodeMap.DeclarationNodes;
-using EmbeddedResourceBrowser;
 
 namespace CodeMap.Handlebars
 {
@@ -10,40 +10,55 @@ namespace CodeMap.Handlebars
     public class HandlebarsWriterDeclarationNodeVisitor : DeclarationNodeVisitor
     {
         private readonly IMemberReferenceResolver _memberReferenceResolver = new CodeMapMemberReferenceResolver();
-        private readonly DirectoryInfo _directoryInfo;
+        private readonly DirectoryInfo _outputDirectoryInfo;
         private readonly HandlebarsTemplateWriter _handlebarsTemplateWriter;
 
         /// <summary>Initialzies a new instance of the <see cref="HandlebarsWriterDeclarationNodeVisitor"/> class.</summary>
-        /// <param name="directoryInfo">The directory to write the documentation files to.</param>
+        /// <param name="outputDirectoryInfo">The directory to write the documentation files to.</param>
         /// <param name="handlebarsTemplateWriter">The <see cref="HandlebarsTemplateWriter"/> used for generating documentation files.</param>
-        public HandlebarsWriterDeclarationNodeVisitor(DirectoryInfo directoryInfo, HandlebarsTemplateWriter handlebarsTemplateWriter)
+        public HandlebarsWriterDeclarationNodeVisitor(DirectoryInfo outputDirectoryInfo, HandlebarsTemplateWriter handlebarsTemplateWriter)
         {
             _memberReferenceResolver = new CodeMapMemberReferenceResolver();
-            _directoryInfo = directoryInfo;
+            _outputDirectoryInfo = outputDirectoryInfo;
             _handlebarsTemplateWriter = handlebarsTemplateWriter;
         }
+
+        /// <summary>Specifies a different target directory than the output directory for generated documentation files.</summary>
+        /// <remarks>
+        /// The <see cref="HandlebarsTemplateWriter.StaticFilesDirectories"/> will be copied to the provided output directory, only
+        /// documentation files will be generated in the <see cref="DocumentationTargetDirectory"/>.
+        /// </remarks>
+        public DirectoryInfo DocumentationTargetDirectory { get; set; }
 
         /// <summary>Visits an <see cref="AssemblyDeclaration"/>.</summary>
         /// <param name="assembly">The <see cref="AssemblyDeclaration"/> to visit.</param>
         protected override void VisitAssembly(AssemblyDeclaration assembly)
         {
-            foreach (var extraFile in _handlebarsTemplateWriter.Assets)
-            {
-                var nameBuilder = new StringBuilder();
-                var embeddedDirectory = extraFile.ParentDirectory;
-                while (embeddedDirectory is object && !embeddedDirectory.Name.Equals("assets", StringComparison.OrdinalIgnoreCase))
+            var copiedFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var staticFilesDirectory in _handlebarsTemplateWriter.StaticFilesDirectories)
+                foreach (var staticFile in staticFilesDirectory.GetAllFiles())
                 {
-                    nameBuilder.Insert(0, Path.DirectorySeparatorChar);
-                    nameBuilder.Insert(0, embeddedDirectory.Name);
-                    embeddedDirectory = embeddedDirectory.ParentDirectory;
+                    var currentDirectory = staticFile.ParentDirectory;
+                    var filePathBuilder = new StringBuilder(staticFile.Name);
+                    while (currentDirectory != staticFilesDirectory)
+                    {
+                        filePathBuilder
+                            .Insert(0, Path.DirectorySeparatorChar)
+                            .Insert(0, currentDirectory.Name);
+                        currentDirectory = currentDirectory.ParentDirectory;
+                    }
+                    filePathBuilder
+                        .Insert(0, Path.DirectorySeparatorChar)
+                        .Insert(0, _outputDirectoryInfo.FullName);
+                    var outputFileInfo = new FileInfo(filePathBuilder.ToString());
+                    if (copiedFiles.Add(outputFileInfo.FullName))
+                    {
+                        outputFileInfo.Directory.Create();
+                        using (var staticFileStream = staticFile.OpenRead())
+                        using (var outputFileStream = outputFileInfo.OpenWrite())
+                            staticFileStream.CopyTo(outputFileStream);
+                    }
                 }
-                Directory.CreateDirectory(Path.Combine(_directoryInfo.FullName, nameBuilder.ToString()));
-                nameBuilder.Append(extraFile.Name);
-
-                using (var outputFileStream = new FileStream(Path.Combine(_directoryInfo.FullName, nameBuilder.ToString()), FileMode.Create, FileAccess.Write, FileShare.Read))
-                using (var extraFileStream = extraFile.OpenRead())
-                    extraFileStream.CopyTo(outputFileStream);
-            }
 
             _ApplyTempalte(DocumentationTemplateNames.Assembly, assembly);
 
@@ -152,7 +167,7 @@ namespace CodeMap.Handlebars
 
         private void _ApplyTempalte(string templateName, DeclarationNode declarationNode)
         {
-            using var fileStream = new FileStream(Path.Combine(_directoryInfo.FullName, _memberReferenceResolver.GetUrl(declarationNode.AsMeberReference())), FileMode.Create, FileAccess.Write, FileShare.Read);
+            using var fileStream = new FileStream(Path.Combine((DocumentationTargetDirectory ?? _outputDirectoryInfo).FullName, _memberReferenceResolver.GetUrl(declarationNode.AsMeberReference())), FileMode.Create, FileAccess.Write, FileShare.Read);
             using var fileStreamWriter = new StreamWriter(fileStream);
             _handlebarsTemplateWriter.Write(fileStreamWriter, templateName, declarationNode);
         }

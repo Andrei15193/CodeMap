@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <None Include="..\LICENSE" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\readme.md" Pack="true" PackagePath="" Visible="false" />
     <None Include="..\logo.png" Pack="true" PackagePath="" Visible="false" />
   </ItemGroup>
 

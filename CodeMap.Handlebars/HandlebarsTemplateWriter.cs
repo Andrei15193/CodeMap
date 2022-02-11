@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -22,10 +21,10 @@ namespace CodeMap.Handlebars
     /// add new or modified handlebars templates and assets as embedded resources in the console application assembly.
     /// </para>
     /// <para>
-    /// Embedded resources are loaded from the themes directories where each theme is formed out of 3 base directories: <c>Assets</c>, made available through
-    /// the <see cref="Assets"/> property, <c>Partials</c> and <c>Templates</c>. Assets are provided as an <see cref="EmbeddedDirectory"/> in order to allow
-    /// copying them in various ways and different directories. On the other hand, the handlebars templates are loaded automatically from their respective
-    /// directories after their structures have been flattened.
+    /// Embedded resources are loaded from the themes directories where each theme is formed out of 3 base directories: <c>Static</c>, made available through
+    /// the <see cref="StaticFilesDirectories"/> property, <c>Partials</c> and <c>Templates</c>. Assets are provided as an <see cref="EmbeddedDirectory"/> in
+    /// order to allow copying them in various ways and different directories. On the other hand, the handlebars templates are loaded automatically from their
+    /// respective directories after their structures have been flattened.
     /// </para>
     /// <para>
     /// Overriding templates or assets is rather easy, simply define an embedded resource respecting the directory structure.
@@ -36,7 +35,7 @@ namespace CodeMap.Handlebars
     ///         Bootstrap/
     ///             4.5.0/
     ///                 This is a version specific override. Only files for this version will be overridden, all other versions are not affected.
-    ///                 Assets/
+    ///                 Static/
     ///                     favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
     ///                 Partials/
     ///                     Layout.hbs (overrides the layout partial, this can be a copy of the default layout to which one can add extra tags, such as one for the favicon)
@@ -45,7 +44,7 @@ namespace CodeMap.Handlebars
     ///                     Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
     ///
     ///             This is a theme specific override. Only files for this theme will be overridden, all versions are affected, but all other themes are not affected.
-    ///             Assets/
+    ///             Static/
     ///                 favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
     ///             Partials/
     ///                 Layout.hbs (overrides the layout partial, this can be a copy of the default layout to which one can add extra tags, such as one for the favicon)
@@ -54,7 +53,7 @@ namespace CodeMap.Handlebars
     ///                 Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
     ///
     ///        This is a global override. All themes are affected by these changes.
-    ///        Assets/
+    ///        Static/
     ///            favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
     ///        Partials/
     ///            Layout.hbs (overrides the layout partial, this can be a copy of the default layout to which one can add extra tags, such as one for the favicon)
@@ -79,8 +78,7 @@ namespace CodeMap.Handlebars
     /// </remarks>
     public class HandlebarsTemplateWriter
     {
-        private readonly Regex _themeSpecificationRegex = new Regex(@"^(?<name>[^@]*)(?<version>@((?<major>\d+)(\.(?<minor>\d+)(\.(?<patch>\d+))?)?)|latest)?$", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-        private readonly Regex _versionDirectoryNameRegex = new Regex(@"^_\d+$", RegexOptions.IgnoreCase);
+        private readonly Regex _themeSpecificationRegex = new Regex(@"^(?<name>[^@]*)(@(?<version>(?<major>\d+)(\.(?<minor>\d+)(\.(?<patch>\d+))?)?)|latest)?$", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
         private readonly IMemberReferenceResolver _memberReferenceResolver;
         private readonly EmbeddedDirectory _baseThemeDirectory;
         private readonly EmbeddedDirectory _versionedThemeDirectory;
@@ -108,19 +106,14 @@ namespace CodeMap.Handlebars
             if (!themesDirectory.Subdirectories.TryGetValue(themeName, out _baseThemeDirectory))
                 throw new ArgumentException($"'{themeName}' directory does not contain any embedded resources.");
 
-            _versionedThemeDirectory = (
-                from majorVersionSubdirectory in _baseThemeDirectory.Subdirectories
-                where string.IsNullOrWhiteSpace(match.Groups["major"].Value) || Regex.IsMatch(majorVersionSubdirectory.Name, $"^_{match.Groups["major"].Value}$")
-                from minorVersionSubdirectory in majorVersionSubdirectory.Subdirectories
-                where string.IsNullOrWhiteSpace(match.Groups["minor"].Value) || Regex.IsMatch(minorVersionSubdirectory.Name, $"^_{match.Groups["minor"].Value}$")
-                from patchVersionSubdirectory in minorVersionSubdirectory.Subdirectories
-                where string.IsNullOrWhiteSpace(match.Groups["patch"].Value) || Regex.IsMatch(patchVersionSubdirectory.Name, $"^_{match.Groups["patch"].Value}$")
-                orderby new Version(int.Parse(majorVersionSubdirectory.Name.Substring(1), NumberStyles.None, CultureInfo.InvariantCulture), int.Parse(minorVersionSubdirectory.Name.Substring(1), NumberStyles.None, CultureInfo.InvariantCulture), int.Parse(patchVersionSubdirectory.Name.Substring(1), NumberStyles.None, CultureInfo.InvariantCulture)) descending
-                select patchVersionSubdirectory
-            ).FirstOrDefault();
+            _versionedThemeDirectory = _baseThemeDirectory
+                .Subdirectories
+                .Where(versionDirectory => string.IsNullOrWhiteSpace(themeVersion) || versionDirectory.Name.StartsWith(themeVersion, StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(versionDirectory => new Version(versionDirectory.Name))
+                .FirstOrDefault();
 
             if (_versionedThemeDirectory is null)
-                throw new ArgumentException("'{themeVersion}' theme vesrion directory does not contain any embedded resources.");
+                throw new ArgumentException($"'{themeVersion}' theme vesrion directory does not contain any embedded resources.");
 
             _memberReferenceResolver = memberReferenceResolver;
             _templates = new Lazy<IReadOnlyDictionary<string, HandlebarsTemplate<TextWriter, object, object>>>(_GetTemplates);
@@ -149,36 +142,92 @@ namespace CodeMap.Handlebars
         {
         }
 
-        /// <summary>Gets the <see cref="EmbeddedFile"/>s containing theme assets.</summary>
-        public IEnumerable<EmbeddedFile> Assets
-            => _GetEmbeddedFilesFromResourceDirectory("assets");
-
-        /// <summary>Gets the <see cref="EmbeddedFile"/>s containing theme extras.</summary>
-        public IEnumerable<EmbeddedFile> Extras
-            => _GetEmbeddedFilesFromResourceDirectory("extras");
+        /// <summary>Gets the <see cref="EmbeddedDirectory"/> instances for static files from the most version specific to the least specific.</summary>
+        /// <value>
+        /// Static files can be specified at any level in a theme. They can be specific only to a version (e.g.: the stylesheet would be a
+        /// version specific static file), specific to a theme (e.g.: if a theme has the same color theme throughout the versions then the
+        /// Pygments stylesheet can be placed at the theme level since it is the same for all), or be a global one (e.g.: helpers can be
+        /// placed here, or theme invariant files such as the license file).
+        /// </value>
+        /// <remarks>
+        /// Copying files from these directories can be done using the <see cref="FileSystemInfoExtensions.CopyTo(EmbeddedDirectory, DirectoryInfo)"/>
+        /// method on the reverse order of the provided static <see cref="EmbeddedDirectory"/> items. The most specific ones should replace the most
+        /// general ones in case of files having the same name.
+        /// <code lang="c#">
+        /// foreach (var staticFilesDirectory in templateWriter.StaticFilesDirectories.Reverse())
+        ///     // CopyTo is an extension method
+        ///     staticFilesDirectory.CopyTo(new DirectoryInfo(outputDirectoryPath));
+        /// </code>
+        /// Alternatively, a <see cref="HashSet{T}"/> can be used to keep track of which files have already been copied and simply skip them
+        /// when they are found in a more general <see cref="EmbeddedDirectory"/>. This will optimize disk operations as only the necessary
+        /// files will be copied.
+        /// <code lang="c#">
+        /// var copiedFiles = new HashSet&lt;string&lt;(StringComparer.OrdinalIgnoreCase);
+        /// foreach (var staticFilesDirectory in templateWriter.StaticFilesDirectories)
+        ///     foreach (var staticFile in staticFilesDirectory.GetAllFiles())
+        ///     {
+        ///         var currentDirectory = staticFile.ParentDirectory;
+        ///         var filePathBuilder = new StringBuilder(staticFile.Name);
+        ///         while (currentDirectory != staticFilesDirectory)
+        ///         {
+        ///             filePathBuilder
+        ///                 .Insert(0, Path.DirectorySeparatorChar)
+        ///                 .Insert(0, currentDirectory.Name);
+        ///             currentDirectory = currentDirectory.ParentDirectory;
+        ///         }
+        ///         filePathBuilder
+        ///             .Insert(0, Path.DirectorySeparatorChar)
+        ///             .Insert(0, outputDirectoryPath);
+        ///         var outputFileInfo = new FileInfo(filePathBuilder.ToString());
+        ///         if (copiedFiles.Add(outputFileInfo.FullName))
+        ///             using (var staticFileStream = staticFile.OpenRead())
+        ///             using (var outputFileStream = outputFileInfo.OpenWrite())
+        ///                 staticFileStream.CopyTo(outputFileStream);
+        ///     }
+        /// </code>
+        /// </remarks>
+        public IEnumerable<EmbeddedDirectory> StaticFilesDirectories
+        {
+            get
+            {
+                foreach (var embeddedResourceDirectory in _EmbeddedResourceDirectories)
+                    if (embeddedResourceDirectory.Subdirectories.TryGetValue("Static", out var resourceDirectory))
+                        yield return resourceDirectory;
+            }
+        }
 
         /// <summary>Writes the provided <paramref name="templateName"/> with in the given <paramref name="context"/> to the provided <paramref name="textWriter"/>.</summary>
         /// <param name="textWriter">The <see cref="TextWriter"/> to which to write the template.</param>
         /// <param name="templateName">The name of the template to apply.</param>
         /// <param name="context">The context in which to apply the template.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="templateName"/> is not defined.</exception>
         public void Write(TextWriter textWriter, string templateName, object context)
-            => _templates.Value[templateName](textWriter, context);
+        {
+            if (!_templates.Value.TryGetValue(templateName, out var templateWriter))
+                throw new ArgumentException($"The \"{templateName}\" template does not exist.", nameof(templateName));
+
+            templateWriter(textWriter, context);
+        }
 
         /// <summary>Applies the template with the given <paramref name="templateName"/> in the given <paramref name="context"/>.</summary>
         /// <param name="templateName">The template to apply.</param>
         /// <param name="context">The context in which to apply the template.</param>
         /// <returns>Returns the applied template.</returns>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="templateName"/> is not defined.</exception>
         public string Apply(string templateName, object context)
         {
+            if (!_templates.Value.TryGetValue(templateName, out var templateWriter))
+                throw new ArgumentException($"The \"{templateName}\" template does not exist.", nameof(templateName));
+
             var result = new StringBuilder();
             using (var stringWriter = new StringWriter(result))
                 Write(stringWriter, templateName, context);
             return result.ToString();
         }
 
-        /// <summary>Gets a collection of inline helpers that are available in each template.</summary>
+        /// <summary>Gets a collection of helpers that are available in each template.</summary>
         /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used to resolve <see cref="ReferenceData.MemberReference"/>s.</param>
-        /// <returns>Returns a collection of inline helpers to use in templates.</returns>
+        /// <returns>Returns a collection of helpers to use in templates.</returns>
         /// <remarks>
         /// If there are multiple helpers that have the same name, only the latest will be registered in the Handlebars engine.
         /// This enables easy overriding of helpers as such:
@@ -201,7 +250,7 @@ namespace CodeMap.Handlebars
         /// </code>
         /// If <c>MyCustomSemver</c> has the same helper name as <see cref="Semver"/> then <c>MyCustomSemver</c> will override the <see cref="Semver"/> helper.
         /// </remarks>
-        protected virtual IEnumerable<IHelperDescriptor<HelperOptions>> GetHelpers(IMemberReferenceResolver memberReferenceResolver)
+        protected virtual IEnumerable<IHelperDescriptor> GetHelpers(IMemberReferenceResolver memberReferenceResolver)
         {
             yield return new Concat();
             yield return new Format();
@@ -212,13 +261,6 @@ namespace CodeMap.Handlebars
             yield return new GetDocumentationPartialName();
             yield return new MemberAccessModifier();
         }
-
-        /// <summary>Gets a collection of block helpers that are available in each template.</summary>
-        /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used to resolve <see cref="ReferenceData.MemberReference"/>s.</param>
-        /// <returns>Returns a collection of block helpers to use in templates.</returns>
-        /// <remarks>If there are multiple helpers that have the same name, only the latest will be registered in the Handlebars engine.</remarks>
-        protected virtual IEnumerable<IHelperDescriptor<BlockHelperOptions>> GetBlockHelpers(IMemberReferenceResolver memberReferenceResolver)
-            => Enumerable.Empty<IHelperDescriptor<BlockHelperOptions>>();
 
         private IEnumerable<EmbeddedDirectory> _EmbeddedResourceDirectories
         {
@@ -234,18 +276,13 @@ namespace CodeMap.Handlebars
             }
         }
 
-        private IEnumerable<EmbeddedFile> _GetEmbeddedFilesFromResourceDirectory(string directoryName)
-            => _EmbeddedResourceDirectories
-                .SelectMany(embeddedResourceDirectory => embeddedResourceDirectory.Subdirectories.TryGetValue(directoryName, out var embeddedDirectory) ? embeddedDirectory.GetAllFiles() : Enumerable.Empty<EmbeddedFile>())
-                .GroupBy(file => file.Name, (name, files) => files.First(), StringComparer.OrdinalIgnoreCase);
-
         private IReadOnlyDictionary<string, HandlebarsTemplate<TextWriter, object, object>> _GetTemplates()
         {
             var handlerbars = HandlebarsDotNet.Handlebars.Create();
 
-            var helpers = (GetHelpers(_memberReferenceResolver) ?? Enumerable.Empty<IHelperDescriptor>())
-                .Concat(GetBlockHelpers(_memberReferenceResolver) ?? Enumerable.Empty<IHelperDescriptor>())
-                .GroupBy(helper => helper.Name.ToString(), (helperName, matchedHelpers) => matchedHelpers.Last(), StringComparer.OrdinalIgnoreCase);
+            var helpers = GetHelpers(_memberReferenceResolver)
+                ?.GroupBy(helper => helper.Name.ToString(), (helperName, matchedHelpers) => matchedHelpers.Last(), StringComparer.OrdinalIgnoreCase)
+                ?? Enumerable.Empty<IHelperDescriptor>();
 
             foreach (var helper in helpers)
                 switch (helper)
@@ -257,14 +294,17 @@ namespace CodeMap.Handlebars
                     case IHelperDescriptor<BlockHelperOptions> blockHelper:
                         handlerbars.RegisterHelper(blockHelper);
                         break;
+
+                    default:
+                        throw new InvalidOperationException($"Unknown type for \"{helper.Name}\" helper.");
                 }
 
-            foreach (var partial in _GetEmbeddedFilesFromResourceDirectory("partials").Where(template => template.Extension.Equals(".hbs", StringComparison.OrdinalIgnoreCase)))
+            foreach (var partial in _GetEmbeddedFilesFromResourceDirectory("Partials").Where(template => template.Extension.Equals(".hbs", StringComparison.OrdinalIgnoreCase)))
                 using (var partialStream = partial.OpenRead())
                 using (var partialStreamReader = new StreamReader(partialStream))
                     handlerbars.RegisterTemplate(_GetTemplateName(partial), partialStreamReader.ReadToEnd());
 
-            return _GetEmbeddedFilesFromResourceDirectory("templates")
+            return _GetEmbeddedFilesFromResourceDirectory("Templates")
                 .Where(template => template.Extension.Equals(".hbs", StringComparison.OrdinalIgnoreCase))
                 .ToDictionary(
                     _GetTemplateName,
@@ -277,6 +317,11 @@ namespace CodeMap.Handlebars
                     StringComparer.OrdinalIgnoreCase
                 );
         }
+
+        private IEnumerable<EmbeddedFile> _GetEmbeddedFilesFromResourceDirectory(string directoryName)
+            => _EmbeddedResourceDirectories
+                .SelectMany(embeddedResourceDirectory => embeddedResourceDirectory.Subdirectories.TryGetValue(directoryName, out var embeddedDirectory) ? embeddedDirectory.GetAllFiles() : Enumerable.Empty<EmbeddedFile>())
+                .GroupBy(file => file.Name, (name, files) => files.First(), StringComparer.OrdinalIgnoreCase);
 
         private static string _GetTemplateName(EmbeddedFile embeddedFile)
             => embeddedFile.Name.Substring(0, embeddedFile.Name.Length - embeddedFile.Extension.Length);

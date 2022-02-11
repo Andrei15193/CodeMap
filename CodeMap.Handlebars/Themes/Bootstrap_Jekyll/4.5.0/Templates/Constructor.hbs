@@ -1,6 +1,8 @@
 ---
 title: {{name}} Constructor
+assembly: {{assembly.name}}
 version: {{Semver declaringType.assembly.version}}
+layout: default@4.5.0
 ---
 {% raw %}
 {{> Breadcrumbs this}}
@@ -23,7 +25,7 @@ version: {{Semver declaringType.assembly.version}}
     {{#if @last}}
 </ul>
 {{/if}}
-{{/#each}}
+{{/each}}
 
 {{#each exceptions}}
 {{#if @first}}
