@@ -32,11 +32,8 @@ namespace CodeMap.Tests.Data.Documentation
             var arguments = Arguments.GetFrom(args);
             if (string.IsNullOrWhiteSpace(arguments.OutputPath))
                 throw new ArgumentException("Expected -OutputPath", nameof(args));
-            //if (string.IsNullOrWhiteSpace(arguments.TargetSubdirectory))
-            //    throw new ArgumentException("Expected -TargetSubdirectory", nameof(args));
 
             var outputDirectory = Directory.CreateDirectory(arguments.OutputPath);
-            //var testDataDirectory = outputDirectory.CreateSubdirectory(arguments.TargetSubdirectory);
 
             using (var indexFileStream = new FileStream(Path.Combine(outputDirectory.FullName, "index.html"), FileMode.Create, FileAccess.Write, FileShare.Read))
             using (var indexStreamWriter = new StreamWriter(indexFileStream))
@@ -60,7 +57,7 @@ namespace CodeMap.Tests.Data.Documentation
                 DeclarationNode
                     .Create(typeof(GlobalTestClass).Assembly, DeclarationFilter.All)
                     .Apply(new TestDataAssemblyDocumentationAddition())
-                    .Accept(new HandlebarsWriterDeclarationNodeVisitor(outputDirectory.CreateSubdirectory(theme.Name), templateWriter));
+                    .Accept(new HandlebarsWriterDeclarationNodeVisitor(outputDirectory.CreateSubdirectory(theme.Name), templateWriter, new[] { "Themes" }));
             }
         }
     }

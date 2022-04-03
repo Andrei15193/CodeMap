@@ -3,6 +3,12 @@ title: {{name}}
 assembly: {{name}}
 version: {{Semver version}}
 layout: default@4.5.0
+{{#each @dropdown}}
+{{#if @first}}
+dropdown:
+{{/if}}
+- '{{this}}'
+{{/each}}
 ---
 {% raw %}
 {{> Breadcrumbs this}}

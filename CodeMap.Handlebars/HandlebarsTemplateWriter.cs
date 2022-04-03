@@ -108,7 +108,7 @@ namespace CodeMap.Handlebars
 
             _versionedThemeDirectory = _baseThemeDirectory
                 .Subdirectories
-                .Where(versionDirectory => string.IsNullOrWhiteSpace(themeVersion) || versionDirectory.Name.StartsWith(themeVersion, StringComparison.OrdinalIgnoreCase))
+                .Where(versionDirectory => (string.IsNullOrWhiteSpace(themeVersion) || versionDirectory.Name.StartsWith(themeVersion, StringComparison.OrdinalIgnoreCase)) && Version.TryParse(versionDirectory.Name, out var _))
                 .OrderByDescending(versionDirectory => new Version(versionDirectory.Name))
                 .FirstOrDefault();
 
@@ -202,11 +202,20 @@ namespace CodeMap.Handlebars
         /// <param name="context">The context in which to apply the template.</param>
         /// <exception cref="ArgumentException">Thrown when <paramref name="templateName"/> is not defined.</exception>
         public void Write(TextWriter textWriter, string templateName, object context)
+            => Write(textWriter, templateName, context);
+
+        /// <summary>Writes the provided <paramref name="templateName"/> with in the given <paramref name="context"/> to the provided <paramref name="textWriter"/>.</summary>
+        /// <param name="textWriter">The <see cref="TextWriter"/> to which to write the template.</param>
+        /// <param name="templateName">The name of the template to apply.</param>
+        /// <param name="context">The context in which to apply the template.</param>
+        /// <param name="data">An object containing data, this can be used for different data overrides.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="templateName"/> is not defined.</exception>
+        public void Write(TextWriter textWriter, string templateName, object context, object data)
         {
             if (!_templates.Value.TryGetValue(templateName, out var templateWriter))
                 throw new ArgumentException($"The \"{templateName}\" template does not exist.", nameof(templateName));
 
-            templateWriter(textWriter, context);
+            templateWriter(textWriter, context, data);
         }
 
         /// <summary>Applies the template with the given <paramref name="templateName"/> in the given <paramref name="context"/>.</summary>
@@ -215,13 +224,22 @@ namespace CodeMap.Handlebars
         /// <returns>Returns the applied template.</returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="templateName"/> is not defined.</exception>
         public string Apply(string templateName, object context)
+            => Apply(templateName, context);
+
+        /// <summary>Applies the template with the given <paramref name="templateName"/> in the given <paramref name="context"/>.</summary>
+        /// <param name="templateName">The template to apply.</param>
+        /// <param name="context">The context in which to apply the template.</param>
+        /// <param name="data">An object containing data, this can be used for different data overrides.</param>
+        /// <returns>Returns the applied template.</returns>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="templateName"/> is not defined.</exception>
+        public string Apply(string templateName, object context, object data)
         {
             if (!_templates.Value.TryGetValue(templateName, out var templateWriter))
                 throw new ArgumentException($"The \"{templateName}\" template does not exist.", nameof(templateName));
 
             var result = new StringBuilder();
             using (var stringWriter = new StringWriter(result))
-                Write(stringWriter, templateName, context);
+                Write(stringWriter, templateName, context, data);
             return result.ToString();
         }
 

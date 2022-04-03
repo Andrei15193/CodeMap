@@ -29,10 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Themes\Bootstrap_Jekyll\4.5.0\Static\_includes\assembly_version_dropdown.html" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="EmbeddedResourceBrowser" Version="1.2.0" />
     <PackageReference Include="Handlebars.Net" Version="2.1.0" />
     <PackageReference Include="PygmentSharp.Core" Version="0.3.0" />
@@ -41,12 +37,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CodeMap\CodeMap.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Themes\Bootstrap_Jekyll\4.5.0\Static\_includes\assembly_version_dropdown.html">
-      <LogicalName>$(AssemblyName)/$([System.String]::Copy('%(Identity)').Replace('\', '/'))</LogicalName>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

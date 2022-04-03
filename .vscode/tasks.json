@@ -11,6 +11,10 @@
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": "$msCompile"
         },
         {
@@ -23,7 +27,31 @@
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch jekyll",
+            "command": "bundle",
+            "type": "process",
+            "args": [
+                "exec",
+                "jekyll",
+                "serve",
+                "--watch",
+                "--incremental",
+                "--open-url"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/CodeMap.Documentation/bin/docs"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

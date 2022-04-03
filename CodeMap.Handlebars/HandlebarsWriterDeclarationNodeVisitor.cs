@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using CodeMap.DeclarationNodes;
 
@@ -12,15 +13,26 @@ namespace CodeMap.Handlebars
         private readonly IMemberReferenceResolver _memberReferenceResolver = new CodeMapMemberReferenceResolver();
         private readonly DirectoryInfo _outputDirectoryInfo;
         private readonly HandlebarsTemplateWriter _handlebarsTemplateWriter;
+        private readonly IEnumerable<string> _dropdown;
 
         /// <summary>Initialzies a new instance of the <see cref="HandlebarsWriterDeclarationNodeVisitor"/> class.</summary>
         /// <param name="outputDirectoryInfo">The directory to write the documentation files to.</param>
         /// <param name="handlebarsTemplateWriter">The <see cref="HandlebarsTemplateWriter"/> used for generating documentation files.</param>
         public HandlebarsWriterDeclarationNodeVisitor(DirectoryInfo outputDirectoryInfo, HandlebarsTemplateWriter handlebarsTemplateWriter)
+            : this(outputDirectoryInfo, handlebarsTemplateWriter, Enumerable.Empty<string>())
+        {
+        }
+
+        /// <summary>Initialzies a new instance of the <see cref="HandlebarsWriterDeclarationNodeVisitor"/> class.</summary>
+        /// <param name="outputDirectoryInfo">The directory to write the documentation files to.</param>
+        /// <param name="handlebarsTemplateWriter">The <see cref="HandlebarsTemplateWriter"/> used for generating documentation files.</param>
+        /// <param name="dropdown">The dropdown path, this data can be accessed using @dropdown in templates.</param>
+        public HandlebarsWriterDeclarationNodeVisitor(DirectoryInfo outputDirectoryInfo, HandlebarsTemplateWriter handlebarsTemplateWriter, IEnumerable<string> dropdown)
         {
             _memberReferenceResolver = new CodeMapMemberReferenceResolver();
             _outputDirectoryInfo = outputDirectoryInfo;
             _handlebarsTemplateWriter = handlebarsTemplateWriter;
+            _dropdown = dropdown ?? Enumerable.Empty<string>();
         }
 
         /// <summary>Specifies a different target directory than the output directory for generated documentation files.</summary>
@@ -169,7 +181,7 @@ namespace CodeMap.Handlebars
         {
             using var fileStream = new FileStream(Path.Combine((DocumentationTargetDirectory ?? _outputDirectoryInfo).FullName, _memberReferenceResolver.GetUrl(declarationNode.AsMeberReference())), FileMode.Create, FileAccess.Write, FileShare.Read);
             using var fileStreamWriter = new StreamWriter(fileStream);
-            _handlebarsTemplateWriter.Write(fileStreamWriter, templateName, declarationNode);
+            _handlebarsTemplateWriter.Write(fileStreamWriter, templateName, declarationNode, new { dropdown = _dropdown });
         }
     }
 }

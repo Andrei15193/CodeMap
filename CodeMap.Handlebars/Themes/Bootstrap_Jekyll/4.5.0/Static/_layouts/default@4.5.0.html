@@ -9,6 +9,303 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ 'Pygments@4.5.0.css' | relative_url }}" />
 </head>
+
+{% assign default_pre_release_names = 'alpha,beta,rc' | split: ',' %}
+{% assign pre_release_names = site.data.pre_release_names | default: default_pre_release_names %}
+
+{% assign dropdown_tree = '' | split: ',' | where: 'an', 'array: [tuple dropdown_node: [id, parent_id?, display_text, path, page?]]' %}
+
+{% for page in site.pages %}
+    {% if page.dropdown.size and page.dropdown.size > 0 %}
+        {% assign parent_id = nil %}
+        {% for element in page.dropdown %}
+            {% assign level = forloop.index %}
+            {% assign index_in_dropdown_tree = -1 %}
+            {% for dropdown_node in dropdown_tree %}
+                {% assign dropdown_node_index = forloop.index0 %}
+                {% assign dropdown_node_path = dropdown_node[3] %}
+                {% if dropdown_node_path.size == level %}
+                    {% for dropdown_node_path_element in dropdown_node_path %}
+                        {% assign is_matching = true %}
+                        {% if dropdown_node_path_element != page.dropdown[forloop.index0] %}
+                            {% assign is_matching = false %}
+                            {% break %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if is_matching %}
+                        {% assign index_in_dropdown_tree = dropdown_node_index %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if index_in_dropdown_tree == -1 %}
+                {% assign new_dropdown_node_id = dropdown_tree.size %}
+                {% assign new_dropdown_node_path = page.dropdown | slice: 0, level %}
+                {%
+                    assign new_dropdown_node = '' | split: ',' | where: 'a', 'dropdown_node'
+                        | push: new_dropdown_node_id
+                        | push: parent_id
+                        | push: element
+                        | push: new_dropdown_node_path
+                %}
+
+                {% if level == page.dropdown.size %}
+                    {% assign new_dropdown_node = new_dropdown_node | push: page %}
+                {% endif %}
+
+                {% assign index_in_dropdown_tree = dropdown_tree.size %}
+                {% assign dropdown_tree = dropdown_tree | push: new_dropdown_node %}
+            {% endif %}
+
+            {% assign dropdown_node = dropdown_tree[index_in_dropdown_tree] %}
+            {% assign dropdown_node_id = dropdown_node[0] %}
+            {% assign parent_id = dropdown_node_id %}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+{% assign dropdown_node_parent_ids = '' | split: ',' | where: 'an', 'array: number' %}
+{% for dropdown_node in dropdown_tree %}
+    {% assign dropdown_node_parent_id = dropdown_node[1] %}
+    {% assign dropdown_node_parent_ids = dropdown_node_parent_ids | push: dropdown_node_parent_id %}
+{% endfor %}
+{% assign dropdown_node_parent_ids = dropdown_node_parent_ids | uniq %}
+
+{% assign dropdown_nodes_by_parent_ids = '' | split: ',' | where: 'an', 'array: [tuple: [parent_id, dropdown_node]]' %}
+{% for parent_id in dropdown_node_parent_ids %}
+    {% assign dropdown_nodes_by_parent_id = '' | split: ',' | where: 'an', 'array: [dropdown_node]' %}
+    {% for dropdown_node in dropdown_tree %}
+        {% assign dropdown_node_parent_id = dropdown_node[1] %}
+        {% if dropdown_node_parent_id == parent_id %}
+            {% assign dropdown_nodes_by_parent_id = dropdown_nodes_by_parent_id | push: dropdown_node %}
+        {% endif %}
+    {% endfor %}
+
+    {%
+        assign dropdown_nodes_by_parent_id_grouping = '' | split: ',' | where: 'a', 'tuple: [parent_id: number, dropdown_nodes: array: [dropdown_node]]'
+            | push: parent_id
+            | push: dropdown_nodes_by_parent_id
+    %}
+    {% assign dropdown_nodes_by_parent_ids = dropdown_nodes_by_parent_ids | push: dropdown_nodes_by_parent_id_grouping %}
+{% endfor %}
+
+{%
+    assign sorted_dropdown_nodes_by_parent_ids = '' | split: ','
+        | where: 'an', 'array: [tuple sorted_dropdown_nodes_by_parent_id: [parent_id: number, version_dropdown_nodes: array: [dropdown_node], other_dropdown_nodes: array: [dropdown_node]]]'
+%}
+
+{% for dropdown_nodes_by_parent_id in dropdown_nodes_by_parent_ids %}
+    {% assign parent_id = dropdown_nodes_by_parent_id[0] %}
+    {% assign dropdown_nodes = dropdown_nodes_by_parent_id[1] %}
+
+    {% assign versioned_dropdown_nodes = '' | split: ',' | where: 'an', 'array: [dropdown_node]' %}
+    {% assign other_dropdown_nodes = '' | split: ',' | where: 'an', 'array: [dropdown_node]' %}
+
+    {% assign versioned_dropdown_nodes_info = '' | split: ',' | where: 'an', 'array: [tupple dropdown_node_info: [dropdown_node, major: number, minor: number, path: number, pre_release_name_index: number, pre_release_number: number]]' %}
+    {% for dropdown_node in dropdown_nodes %}
+        {% assign display_text = dropdown_node[2] %}
+        {% assign is_valid_version = false %}
+        {% assign version_parts = display_text | split: '.' %}
+        {% if version_parts.size == 3 %}
+            {% assign major = version_parts[0] | plus: 0 %}
+            {% assign minor = version_parts[1] | plus: 0 %}
+            {% assign patch_with_pre_release = version_parts[2] | split: '-' %}
+
+            {% if patch_with_pre_release.size <= 2 %}
+                {% assign patch = patch_with_pre_release[0] | plus: 0 %}
+                {% assign pre_release = patch_with_pre_release[1] %}
+
+                {% unless patch_with_pre_release.size == 2 %}
+                    {% assign pre_release_name_index = pre_release_names.size %}
+                    {% assign pre_release_number = -1 %}
+                {% else %}
+                    {% assign pre_release_name_index = '' | plus: '0' %}
+                    {% assign pre_release_number = '' | plus: '0' %}
+
+                    {% for pre_release_name in pre_release_names %}
+                        {% if pre_release == pre_release_name %}
+                            {% assign pre_release_name_index = forloop.index0 %}
+                            {% assign pre_release_number = -1 %}
+                        {% elsif pre_release contains pre_release_name %}
+                            {% assign pre_release_name_index = forloop.index0 %}
+                            {% assign pre_release_number = pre_release | slice: pre_release_name.size | plus: 0 %}
+                        {% endif %}
+                    {% endfor %}
+                {% endunless %}
+
+                {%
+                    assign dropdown_node_info = '' | split: ',' | where: 'a', 'tupple dropdown_node_info'
+                        | push: dropdown_node
+                        | push: major
+                        | push: minor
+                        | push: patch
+                        | push: pre_release_name_index
+                        | push: pre_release_number
+                %}
+                {% assign is_valid_version = true %}
+                {% for version_part in dropdown_node_info offset: 1 %}
+                    {% unless version_part <= 0 or version_part >= 0 %}
+                        {% assign is_valid_version = false %}
+                        {% break %}
+                    {% endunless %}
+                {% endfor %}
+
+                {% if is_valid_version %}
+                    {% assign versioned_dropdown_nodes_info = versioned_dropdown_nodes_info | push: dropdown_node_info %}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+        {% unless is_valid_version %}
+            {% assign other_dropdown_nodes = other_dropdown_nodes | push: dropdown_node %}
+        {% endunless %}
+    {% endfor %}
+
+    {% for number in (1..versioned_dropdown_nodes_info.size) %}
+        {% assign max_versioned_dropdown_node_info = versioned_dropdown_nodes_info | first %}
+        {% assign versioned_dropdown_nodes_info_new = '' | split: ',' | where: 'a', 'array: [tuple: dropdown_node_info]' %}
+
+        {% for versioned_dropdown_node_info in versioned_dropdown_nodes_info offset: 1 %}
+            {% assign is_current_greater = false %}
+
+            {% for version_part_index in (1..max_versioned_dropdown_node_info.size) %}
+                {% if versioned_dropdown_node_info[version_part_index] > max_versioned_dropdown_node_info[version_part_index] %}
+                    {% assign is_current_greater = true %}
+                    {% break %}
+                {% elsif max_versioned_dropdown_node_info[version_part_index] > versioned_dropdown_node_info[version_part_index] %}
+                    {% break %}
+                {% endif %}
+            {% endfor %}
+
+            {% if is_current_greater %}
+                {% assign versioned_dropdown_nodes_info_new = versioned_dropdown_nodes_info_new | push: max_versioned_dropdown_node_info %}
+                {% assign max_versioned_dropdown_node_info = versioned_dropdown_node_info %}
+            {% else %}
+                {% assign versioned_dropdown_nodes_info_new = versioned_dropdown_nodes_info_new | push: versioned_dropdown_node_info %}
+            {% endif %}
+        {% endfor %}
+
+        {% assign max_dropdown_node = max_versioned_dropdown_node_info[0] %}
+        {% assign versioned_dropdown_nodes = versioned_dropdown_nodes | push: max_dropdown_node %}
+        {% assign versioned_dropdown_nodes_info = versioned_dropdown_nodes_info_new %}
+    {% endfor %}
+
+    {% assign other_dropdown_nodes_temp = '' | split: ',' | where: 'a', 'array: [tuple: dropdown_node_info]' %}
+    {% for number in (1..other_dropdown_nodes.size) %}
+        {% assign min_dropdown_node = other_dropdown_nodes | first %}
+        {% assign other_dropdown_nodes_new = '' | split: ',' | where: 'a', 'array: [tuple: dropdown_node_info]' %}
+
+        {% for dropdown_node in other_dropdown_nodes offset: 1 %}
+            {% assign min_dropdown_node_display_text = min_dropdown_node[2] %}
+            {% assign dropdown_node_display_text = dropdown_node[2] %}
+
+            {% if dropdown_node_display_text < min_dropdown_node_display_text %}
+                {% assign other_dropdown_nodes_new = other_dropdown_nodes_new | push: min_dropdown_node %}
+                {% assign min_dropdown_node = dropdown_node %}
+            {% else %}
+                {% assign other_dropdown_nodes_new = other_dropdown_nodes_new | push: dropdown_node %}
+            {% endif %}
+        {% endfor %}
+
+        {% assign other_dropdown_nodes_temp = other_dropdown_nodes_temp | push: min_dropdown_node %}
+        {% assign other_dropdown_nodes = other_dropdown_nodes_new %}
+    {% endfor %}
+    {% assign other_dropdown_nodes = other_dropdown_nodes_temp %}
+
+    {%
+        assign sorted_dropdown_nodes_by_parent_id = '' | split: ','
+            | where: 'an', 'tuple: sorted_dropdown_nodes_by_parent_id'
+            | push: parent_id
+            | push: versioned_dropdown_nodes
+            | push: other_dropdown_nodes
+    %}
+    {% assign sorted_dropdown_nodes_by_parent_ids = sorted_dropdown_nodes_by_parent_ids | push: sorted_dropdown_nodes_by_parent_id %}
+{% endfor %}
+
+{% assign condensed_dropdown_nodes_by_parent_ids = '' | split: ',' | where: 'an', 'array: [tuple: [parent_id: number, capture]]' %}
+{% for sorted_dropdown_nodes_by_parent_id in sorted_dropdown_nodes_by_parent_ids reversed %}
+    {% assign parent_id = sorted_dropdown_nodes_by_parent_id[0] %}
+    {% assign version_dropdown_nodes = sorted_dropdown_nodes_by_parent_id[1] %}
+    {% assign other_dropdown_nodes = sorted_dropdown_nodes_by_parent_id[2] %}
+
+    {% capture dropdown_nodes_capture %}
+        {% for dropdown_node in version_dropdown_nodes %}
+            {% assign dropdown_node_id = dropdown_node[0] %}
+            {% assign dropdown_node_display_text = dropdown_node[2] %}
+            {% assign dropdown_node_page = dropdown_node[4] %}
+
+            {% assign condensed_child_dropdown_nodes = nil %}
+            {% for condensed_dropdown_nodes_by_parent_id in condensed_dropdown_nodes_by_parent_ids %}
+                {% assign condensed_dropdown_nodes_parent_id = condensed_dropdown_nodes_by_parent_id[0] %}
+                {% if condensed_dropdown_nodes_parent_id == dropdown_node_id %}
+                    {% assign condensed_child_dropdown_nodes = condensed_dropdown_nodes_by_parent_id[1] %}
+                    {% break %}
+                {% endif %}
+            {% endfor %}
+
+            {% if condensed_child_dropdown_nodes %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" data-toggle="dropdown" aria-expanded="false">
+                        {{ dropdown_node_display_text }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {{ condensed_child_dropdown_nodes }}
+                    </div>
+                </li>
+            {% elsif parent_id == nil %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ dropdown_node_page.url }}">{{ dropdown_node_display_text }}</a>
+                </li>
+            {% else %}
+                <a class="dropdown-item" href="{{ dropdown_node_page.url }}">{{ dropdown_node_display_text }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if version_dropdown_nodes.size > 0 and other_dropdown_nodes.size > 0 %}
+            <div class="dropdown-divider"></div>
+        {% endif %}
+
+        {% for dropdown_node in other_dropdown_nodes %}
+            {% assign dropdown_node_id = dropdown_node[0] %}
+            {% assign dropdown_node_display_text = dropdown_node[2] %}
+            {% assign dropdown_node_page = dropdown_node[4] %}
+
+            {% assign condensed_child_dropdown_nodes = nil %}
+            {% for condensed_dropdown_nodes_by_parent_id in condensed_dropdown_nodes_by_parent_ids %}
+                {% assign condensed_dropdown_nodes_parent_id = condensed_dropdown_nodes_by_parent_id[0] %}
+                {% if condensed_dropdown_nodes_parent_id == dropdown_node_id %}
+                    {% assign condensed_child_dropdown_nodes = condensed_dropdown_nodes_by_parent_id[1] %}
+                    {% break %}
+                {% endif %}
+            {% endfor %}
+
+            {% if condensed_child_dropdown_nodes %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" data-toggle="dropdown" aria-expanded="false">
+                        {{ dropdown_node_display_text }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {{ condensed_child_dropdown_nodes }}
+                    </div>
+                </li>
+            {% elsif parent_id == nil %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ dropdown_node_page.url }}">{{ dropdown_node_display_text }}</a>
+                </li>
+            {% else %}
+                <a class="dropdown-item" href="{{ dropdown_node_page.url }}">{{ dropdown_node_display_text }}</a>
+            {% endif %}
+        {% endfor %}
+    {% endcapture %}
+
+    {%
+        assign condensed_dropdown_nodes_by_parent_id_grouping = '' | split: ',' | where: 'a', 'tuple: [parent_id: number, capture]'
+            | push: parent_id
+            | push: dropdown_nodes_capture
+    %}
+    {% assign condensed_dropdown_nodes_by_parent_ids = condensed_dropdown_nodes_by_parent_ids | push: condensed_dropdown_nodes_by_parent_id_grouping %}
+{% endfor %}
+
 <body class="d-flex flex-column">
     <nav class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
         <div class="container">
@@ -20,12 +317,12 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
-                    {% assign assembly_names = site.pages | sort_natural: 'assembly' | map: 'assembly' | uniq %}
-
-                    {% for assembly_name in assembly_names %}
-                        {% if assembly_name %}
-                            {% include assembly_version_dropdown.html assembly_name=assembly_name %}
-                        {% endif %}
+                    {% for condensed_dropdown_nodes_by_parent_id in condensed_dropdown_nodes_by_parent_ids %}
+                        {% assign parent_id = condensed_dropdown_nodes_by_parent_id[0] %}
+                        {% assign dropdown_nodes_capture = condensed_dropdown_nodes_by_parent_id[1] %}
+                        {% unless parent_id %}
+                            {{ dropdown_nodes_capture }}
+                        {% endunless %}
                     {% endfor %}
 
                     <li class="nav-item">
