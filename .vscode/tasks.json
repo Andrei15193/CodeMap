@@ -34,6 +34,15 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "generate Gemfile",
+            "command": "echo >> Gemfile \"source 'https://rubygems.org'\n\ngem 'github-pages', group: :jekyll_plugins\"",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/CodeMap.Documentation/bin/docs"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "watch jekyll",
             "command": "bundle",
             "type": "process",

@@ -1,0 +1,18 @@
+{% if include.depth == 1 %}
+    <li class="nav-item dropdown{% if include.is_active %} active{% endif %}">
+        {% if include.child_pages_content %}
+            <a class="nav-link dropdown-toggle" href="" data-toggle="dropdown" aria-expanded="false">
+                {{ include.display_text }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {{ include.child_pages_content }}
+            </div>
+        {% else %}
+            <li class="nav-item{% if include.is_active %} active{% endif %}">
+                <a class="nav-link" href="{{ include.page.url }}">{{ include.display_text }}</a>
+            </li>
+        {% endif %}
+    </li>
+{% else %}
+    <a class="dropdown-item{% if include.is_active %} active{% endif %}" href="{{ include.page.url }}">{{ include.display_text }}</a>
+{% endif %}

@@ -67,7 +67,7 @@ namespace CodeMap.Handlebars
                     {
                         outputFileInfo.Directory.Create();
                         using (var staticFileStream = staticFile.OpenRead())
-                        using (var outputFileStream = outputFileInfo.OpenWrite())
+                        using (var outputFileStream = outputFileInfo.Open(FileMode.Create, FileAccess.Write, FileShare.Read))
                             staticFileStream.CopyTo(outputFileStream);
                     }
                 }
