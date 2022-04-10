@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Themes\Static\_layouts\default.html" />
     <EmbeddedResource Include="Themes\Static\index.html" />
   </ItemGroup>
 

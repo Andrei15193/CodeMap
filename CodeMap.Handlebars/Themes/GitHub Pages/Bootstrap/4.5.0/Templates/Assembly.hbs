@@ -1,0 +1,26 @@
+---
+title: {{name}}
+assembly: {{name}}
+version: {{Semver version}}
+layout: Bootstrap@4.5.0
+is_dropdown_landing_page: true
+{{#each @dropdown}}
+{{#if @first}}
+dropdown:
+{{/if}}
+- '{{this}}'
+{{/each}}
+---
+{% raw %}
+{{> Breadcrumbs this}}
+
+<h2>{{name}}</h2>
+
+{{> Documentation node=summary}}
+
+{{> MembersDeclaraction members=namespaces title='Namespaces'}}
+
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation node=examples}}
+{{> Documentation node=relatedMembers title='Related Members' asList=1}}
+{% endraw %}

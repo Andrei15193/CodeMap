@@ -44,7 +44,7 @@ namespace CodeMap.Documentation
             var codeMapHandlebarsVersion = arguments.Version ?? _ToSemver(codeMapHandlebarsDeclaration.Version);
 
             var templateWriter = new HandlebarsTemplateWriter(
-                "Bootstrap_Jekyll@4.5.0",
+                "GitHub Pages/Bootstrap@4.5.0",
                 memberReferenceResolver: new MemberReferenceResolver(
                     new Dictionary<Assembly, IMemberReferenceResolver>
                     {

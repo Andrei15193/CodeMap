@@ -78,10 +78,12 @@ namespace CodeMap.Handlebars
     /// </remarks>
     public class HandlebarsTemplateWriter
     {
-        private readonly Regex _themeSpecificationRegex = new Regex(@"^(?<name>[^@]*)(@(?<version>(?<major>\d+)(\.(?<minor>\d+)(\.(?<patch>\d+))?)?)|latest)?$", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+        private readonly Regex _themeSpecificationRegex = new Regex(@"^(?<category>[^/]+)/(?<name>[^@]+)@(?<version>\d+\.\d+\.\d+)$", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
         private readonly IMemberReferenceResolver _memberReferenceResolver;
-        private readonly EmbeddedDirectory _baseThemeDirectory;
-        private readonly EmbeddedDirectory _versionedThemeDirectory;
+        private readonly EmbeddedDirectory _themesDirectory;
+        private readonly EmbeddedDirectory _themeCategoryDirectory;
+        private readonly EmbeddedDirectory _themeBaseDirectory;
+        private readonly EmbeddedDirectory _themeSpecificDirectory;
         private readonly Lazy<IReadOnlyDictionary<string, HandlebarsTemplate<TextWriter, object, object>>> _templates;
 
         /// <summary>Initializes a new instance of the <see cref="HandlebarsTemplateWriter"/> class.</summary>
@@ -97,23 +99,31 @@ namespace CodeMap.Handlebars
                 throw new ArgumentException("Cannot be null, empty or white space.", nameof(theme));
 
             var resources = EmbeddedDirectory.Merge(assemblies);
-            if (!resources.Subdirectories.TryGetValue("Themes", out var themesDirectory))
+            if (!resources.Subdirectories.TryGetValue("Themes", out _themesDirectory))
                 throw new ArgumentException("Themes directory does not contain any embedded resources.");
 
             var match = _themeSpecificationRegex.Match(theme);
+            if (!match.Success)
+                throw new ArgumentException("The theme name is not in the expected format (theme-category/theme-name@theme-version).", nameof(theme));
+
+            var themeCategory = match.Groups["category"].Value;
             var themeName = match.Groups["name"].Value;
             var themeVersion = match.Groups["version"].Value;
-            if (!themesDirectory.Subdirectories.TryGetValue(themeName, out _baseThemeDirectory))
-                throw new ArgumentException($"'{themeName}' directory does not contain any embedded resources.");
 
-            _versionedThemeDirectory = _baseThemeDirectory
-                .Subdirectories
-                .Where(versionDirectory => (string.IsNullOrWhiteSpace(themeVersion) || versionDirectory.Name.StartsWith(themeVersion, StringComparison.OrdinalIgnoreCase)) && Version.TryParse(versionDirectory.Name, out var _))
-                .OrderByDescending(versionDirectory => new Version(versionDirectory.Name))
-                .FirstOrDefault();
+            if (themeCategory == "Partials" || themeCategory == "Themes" || themeCategory == "Static")
+                throw new ArgumentNullException($"'{themeCategory}' theme category name is reserved.", nameof(theme));
 
-            if (_versionedThemeDirectory is null)
-                throw new ArgumentException($"'{themeVersion}' theme vesrion directory does not contain any embedded resources.");
+            if (themeName == "Partials" || themeName == "Themes" || themeName == "Static")
+                throw new ArgumentNullException($"'{themeName}' theme name is reserved.", nameof(theme));
+
+            if (!_themesDirectory.Subdirectories.TryGetValue(themeCategory, out _themeCategoryDirectory))
+                throw new ArgumentException($"'{themeCategory}' theme category was not found, directory does not contain any embedded resources.", nameof(theme));
+
+            if (!_themeCategoryDirectory.Subdirectories.TryGetValue(themeName, out _themeBaseDirectory))
+                throw new ArgumentException($"'{themeName}' theme was not found, directory does not contain any embedded resources.", nameof(theme));
+
+            if (!_themeBaseDirectory.Subdirectories.TryGetValue(themeVersion, out _themeSpecificDirectory))
+                throw new ArgumentException($"'{themeVersion}' theme version was not found, directory does not contain any embedded resources.", nameof(theme));
 
             _memberReferenceResolver = memberReferenceResolver;
             _templates = new Lazy<IReadOnlyDictionary<string, HandlebarsTemplate<TextWriter, object, object>>>(_GetTemplates);
@@ -284,13 +294,10 @@ namespace CodeMap.Handlebars
         {
             get
             {
-                var embeddedDirectory = _versionedThemeDirectory;
-                do
-                {
-                    yield return embeddedDirectory;
-                    embeddedDirectory = embeddedDirectory.ParentDirectory;
-                } while (!embeddedDirectory.Name.Equals("Themes", StringComparison.OrdinalIgnoreCase));
-                yield return embeddedDirectory;
+                yield return _themeSpecificDirectory;
+                yield return _themeBaseDirectory;
+                yield return _themeCategoryDirectory;
+                yield return _themesDirectory;
             }
         }
 

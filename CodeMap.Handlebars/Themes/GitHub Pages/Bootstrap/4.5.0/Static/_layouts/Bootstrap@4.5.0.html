@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>{{ site.github.repository_name }} - {{ page.title }} {{ page.version }}</title>
+    <link rel="stylesheet" href="{{ 'bootstrap@4.5.0.css' | relative_url }}" />
+    <link rel="stylesheet" href="{{ 'pygments@4.5.0.css' | relative_url }}" />
+    <link rel="stylesheet" href="{{ 'custom@4.5.0.css' | relative_url }}" />
+</head>
+<body class="d-flex flex-column">
+    <nav class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
+        <div class="container">
+            {% assign page_path_elements = page.path | split: '.' %}
+            <a class="navbar-brand{% if page_path_elements.size == 2 and page_path_elements[0] == 'index' %} active{% endif %}" href="{{ site.baseurl }}">Home</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    {%
+                        include dropdowns.html
+                            item_include_name='Bootstrap/4.5.0/dropdown-item.html'
+                            item_separator_include_name='Bootstrap/4.5.0/dropdown-item-separator.html'
+                    %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ site.github.repository_url }}">View on GitHub</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.nuget.org/packages/{{ site.github.repository_name }}">View on NuGet</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="d-flex flex-column flex-grow-1 flex-shrink-1">
+        <div class="d-flex flex-column flex-grow-1 flex-shrink-1 container px-2 pt-2">
+            {{ content }}
+        </div>
+    </div>
+    <div>
+        <hr />
+        <div class="d-flex flex-column container px-2">
+            <p class="text-center">
+                {% if page.version %}
+                <a href="{{site.github.repository_url}}/releases/tag/{{ page.version }}">{{ site.github.repository_name }} {{ page.version }}</a>
+                -
+                {% endif %}
+                <a href="{{site.github.repository_url}}">View on GitHub</a>
+                -
+                <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{% if page.version %}{{ page.version }}{% endif %}">View on NuGet</a>
+            </p>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>

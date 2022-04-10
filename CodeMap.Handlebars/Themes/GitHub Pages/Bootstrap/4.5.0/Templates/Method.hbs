@@ -1,0 +1,71 @@
+---
+title: {{name}} Method
+assembly: {{assembly.name}}
+version: {{Semver declaringType.assembly.version}}
+layout: Bootstrap@4.5.0
+{{#each @dropdown}}
+{{#if @first}}
+dropdown:
+{{/if}}
+- '{{this}}'
+{{/each}}
+---
+{% raw %}
+{{> Breadcrumbs this}}
+
+<h2>{{name}} Method</h2>
+
+{{> Documentation node=summary}}
+
+{{#if isStatic}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/static">static</a> method.</p>
+{{else if isSealed}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a> method.</p>
+{{else if isAbstract}}
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> method.</p>
+{{else if isVirtual}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/virtual">virtual</a> method.</p>
+{{else if isOverride}}
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/override">overriding</a> method.</p>
+{{else if isShadowing}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/new-modifier">shadowing</a> method.</p>
+{{/if}}
+
+<p>This is a <code>{{MemberAccessModifier}}</code> method.</p>
+
+{{> GenericParametersDocumentation genericParameters}}
+
+{{#each parameters}}
+{{#if @first}}
+<h3>Parameters</h3>
+<ul>
+    {{/if}}
+    <li>
+        <h5>{{name}}: {{MemberReference type}}</h5>
+        {{> Documentation node=description}}
+    </li>
+    {{#if @last}}
+</ul>
+{{/if}}
+{{/each}}
+
+{{#each return.description}}
+{{#if @first}}<h3>Returns: {{MemberReference @root.return.type}}</h3>{{/if}}
+{{> Documentation node=this}}
+{{/each}}
+
+{{#each exceptions}}
+{{#if @first}}
+<h3>Exceptions</h3>
+<ul>
+    {{/if}}
+    <li>{{> Documentation node=this}}</li>
+    {{#if @last}}
+</ul>
+{{/if}}
+{{/each}}
+
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation node=examples}}
+{{> Documentation node=relatedMembers title='Related Members' asList=1}}
+{% endraw %}

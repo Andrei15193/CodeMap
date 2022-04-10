@@ -1,0 +1,5 @@
+body { min-height: 100vh; }
+th { white-space: nowrap; }
+p, th, td, li { text-align: justify; }
+table.table > thead > tr > th p:last-child, table.table > tbody > tr > td p:last-child { margin-bottom: 0; }
+pre { padding: 2px 7px; background-color: #F8F8F8; }

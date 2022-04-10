@@ -1,0 +1,49 @@
+---
+title: {{name}} Event
+assembly: {{assembly.name}}
+version: {{Semver declaringType.assembly.version}}
+layout: Bootstrap@4.5.0
+{{#each @dropdown}}
+{{#if @first}}
+dropdown:
+{{/if}}
+- '{{this}}'
+{{/each}}
+---
+{% raw %}
+{{> Breadcrumbs this}}
+
+<h2>{{name}} Event</h2>
+
+<p>Event type: {{MemberReference type}}.</p>
+{{> Documentation node=summary}}
+
+{{#if isStatic}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/static">static</a> event.</p>
+{{else if isSealed}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a> event.</p>
+{{else if isAbstract}}
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/abstract">abstract</a> event.</p>
+{{else if isVirtual}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/virtual">virtual</a> event.</p>
+{{else if isOverride}}
+<p>This is an <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/override">overriding</a> event.</p>
+{{else if isShadowing}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/new-modifier">shadowing</a> event.</p>
+{{/if}}
+
+{{#each exceptions}}
+{{#if @first}}
+<h3>Exceptions</h3>
+<ul>
+    {{/if}}
+    <li>{{> Documentation node=this}}</li>
+    {{#if @last}}
+</ul>
+{{/if}}
+{{/each}}
+
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation node=examples}}
+{{> Documentation node=relatedMembers title='Related Members' asList=1}}
+{% endraw %}

@@ -1,0 +1,30 @@
+---
+title: {{name}} Field
+assembly: {{assembly.name}}
+version: {{Semver declaringType.assembly.version}}
+layout: Bootstrap@4.5.0
+{{#each @dropdown}}
+{{#if @first}}
+dropdown:
+{{/if}}
+- '{{this}}'
+{{/each}}
+---
+{% raw %}
+{{> Breadcrumbs this}}
+
+<h2>{{name}} Field</h2>
+
+<p>Field type: {{MemberReference type}}.</p>
+{{> Documentation node=summary}}
+
+{{#if isStatic}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/static">static</a> field.</p>
+{{else if isShadowing}}
+<p>This is a <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/new-modifier">shadowing</a> field.</p>
+{{/if}}
+
+{{> Documentation node=remarks title='Remarks'}}
+{{> Documentation node=examples}}
+{{> Documentation node=relatedMembers title='Related Members' asList=1}}
+{% endraw %}
