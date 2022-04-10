@@ -16,9 +16,9 @@ namespace CodeMap.Handlebars
     /// <remarks>
     /// <para>
     /// The Handlebars resources are loaded using the <see cref="EmbeddedDirectory.Merge(IEnumerable{Assembly})"/> method from the provided assemblies, the
-    /// default assemblies from where resources are <c>CodeMap.Handlebars</c> and the entry assembly (<see cref="Assembly.GetEntryAssembly"/>). This should
-    /// suffice for most cases as the intended way of using this library is to define a .NET Core Console application that generates the documenation and
-    /// add new or modified handlebars templates and assets as embedded resources in the console application assembly.
+    /// default assemblies are <c>CodeMap.Handlebars</c> and the entry assembly (<see cref="Assembly.GetEntryAssembly"/>). This should suffice for most cases
+    /// as the intended way of using this library is to define a .NET Core Console application that generates the documenation and add new or modified
+    /// handlebars templates and assets as embedded resources in the console application assembly.
     /// </para>
     /// <para>
     /// Embedded resources are loaded from the themes directories where each theme is formed out of 3 base directories: <c>Static</c>, made available through
@@ -27,53 +27,89 @@ namespace CodeMap.Handlebars
     /// respective directories after their structures have been flattened.
     /// </para>
     /// <para>
-    /// Overriding templates or assets is rather easy, simply define an embedded resource respecting the directory structure.
+    /// Themes are grouped into categories, each category provides a number of features and is aimed to be used in a certain way. For instance, the GitHub
+    /// Pages category is aimed to generate documentation websites that are to be deployed using <a href="https://pages.github.com/">GitHub Pages</a>
+    /// leveraging <a href="https://jekyllrb.com/">Jekyll</a> features. On the other hand, the Simple category contains themes that generate documentation
+    /// pages for a single version, these themes are aimed to get started with the library and get quick results while the GitHub Pages one offers more
+    /// features, but it may take a bit longer to get started.
+    /// </para>
+    /// <para>
+    /// Each category contains a number of themes where each is versioned. This is to offer legacy support for older documentation sites, or for sites
+    /// that at some point will become legacy. All files in specific versions have the version either in their name or in the relative path for the theme.
+    /// For instance, the layout for the Bootstrap theme version 4.5.0 is named <c>Bootstrap@4.5.0.html</c>, while the includes for this theme are under
+    /// the <c>Bootstrap/4.5.0/</c> directory structure. This allows for multiple themes and versions of the same theme to be used at the same time.
+    /// This is generally applicable when a library hosts multiple versions of its documentation, for legacy support as libraries usually have multiple
+    /// versions that are supported at the same time, at the very least when a new version is released.
+    /// </para>
+    /// <para>
+    /// Themes are embedded resources in the .NET assembly in order to simplify their usage. If the assembly is loaded, then all themes are available,
+    /// no missing files. The structure is simple, the root embedded directory for themes is <c>Themes</c>, then there is the theme category, then the
+    /// theme and finally each version. At all levels there are three directory names that are reserved, <c>Templates</c>, <c>Partials</c> and
+    /// <c>Static</c>. The embedded resources are inherited, meaning that a file under the <c>Partials</c> directory which itself is directly under the
+    /// <c>Themes</c> directory is available across all themes. Similarly there can be theme category specific files, this works well with the GitHub
+    /// Pages category as includes that are useful across all themes aimed to be hosted on <a href="https://pages.github.com/">GitHub Pages</a> can
+    /// be defined in one place.
+    /// </para>
+    /// <para>
+    /// Customizing themes is done rather easy. The embedded resources are merged using the <see cref="EmbeddedDirectory.Merge(IEnumerable{Assembly})"/>
+    /// method and from the result the specific theme is loaded when creating an instance of this class. This is one of the reasons why only the
+    /// <c>CodeMap.Handlebars</c> assembly and the calling assembly are used by default, to customize a theme one only needs to follow the same directory
+    /// structure and provide the replacements or additions.
     /// </para>
     /// <code>
     /// MyDocumentationGeneratorApp/
     ///     Themes/
-    ///         Bootstrap/
-    ///             4.5.0/
-    ///                 This is a version specific override. Only files for this version will be overridden, all other versions are not affected.
-    ///                 Static/
-    ///                     favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
-    ///                 Partials/
-    ///                     Layout.hbs (overrides the layout partial, this can be a copy of the default layout to which one can add extra tags, such as one for the favicon)
-    ///                 Templates/
-    ///                     Class.hbs (this will override the default handlebars template for class declarations)
-    ///                     Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
-    ///
-    ///             This is a theme specific override. Only files for this theme will be overridden, all versions are affected, but all other themes are not affected.
-    ///             Static/
-    ///                 favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
-    ///             Partials/
-    ///                 Layout.hbs (overrides the layout partial, this can be a copy of the default layout to which one can add extra tags, such as one for the favicon)
-    ///             Templates/
-    ///                 Class.hbs (this will override the default handlebars template for class declarations)
-    ///                 Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
-    ///
-    ///        This is a global override. All themes are affected by these changes.
-    ///        Static/
-    ///            favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
-    ///        Partials/
-    ///            Layout.hbs (overrides the layout partial, this can be a copy of the default layout to which one can add extra tags, such as one for the favicon)
-    ///        Templates/
-    ///            Class.hbs (this will override the default handlebars template for class declarations)
-    ///            Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
+    ///     |-- GitHub Pages/
+    ///     |   |-- Bootstrap/
+    ///     |   |   |-- 4.5.0/
+    ///     |   |   |   |   This is a version specific override/addition. Only files for this version will be overridden, all other versions are not affected.
+    ///     |   |   |   |-- Static/
+    ///     |   |   |   |   |-- favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
+    ///     |   |   |   |-- Partials/
+    ///     |   |   |   |   |-- Breadcrumbs.hbs (overrides the breadcrumbs partial, this can be a copy of the default breadcrumbs to which one can add extra tags, such as one for the favicon)
+    ///     |   |   |   |-- Templates/
+    ///     |   |   |       |-- Class.hbs (this will override the default handlebars template for class declarations)
+    ///     |   |   |       |-- Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
+    ///     |   |   |
+    ///     |   |   |   This is a theme specific override/addition. Only files for this theme will be overridden, all versions are affected, but all other themes are not affected.
+    ///     |   |   |-- Static/
+    ///     |   |   |   |-- favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
+    ///     |   |   |-- Partials/
+    ///     |   |   |   |-- Breadcrumbs.hbs (overrides the breadcrumbs partial, this can be a copy of the default breadcrumbs to which one can add extra tags, such as one for the favicon)
+    ///     |   |   |-- Templates/
+    ///     |   |   |   |-- Class.hbs (this will override the default handlebars template for class declarations)
+    ///     |   |   |   |-- Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
+    ///     |   |
+    ///     |   |-- This is a theme category override/addition. All themes in this category are affected by these changes.
+    ///     |   |-- Static/
+    ///     |   |   |-- favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
+    ///     |   |-- Partials/
+    ///     |   |   |-- Breadcrumbs.hbs (overrides the breadcrumbs partial, this can be a copy of the default breadcrumbs to which one can add extra tags, such as one for the favicon)
+    ///     |   |-- Templates/
+    ///     |       |-- Class.hbs (this will override the default handlebars template for class declarations)
+    ///     |       |-- Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
+    ///     |
+    ///     |   This is a global override/addition. All themes are affected by these changes.
+    ///     |-- Static/
+    ///     |   |-- favicon.ico (adds a favicon asset that will be copied over along side all other default resources)
+    ///     |-- Partials/
+    ///     |   |-- Breadcrumbs.hbs (overrides the breadcrumbs partial, this can be a copy of the default breadcrumbs to which one can add extra tags, such as one for the favicon)
+    ///     |-- Templates/
+    ///     |   |-- Class.hbs (this will override the default handlebars template for class declarations)
+    ///     |   |-- Index.hbs (this will add a new template that can be used besides the declaration node templates, useful for generating home pages)
     /// </code>
     /// <para>
     /// In case there are multiple overrides then they are picked from specific to global meaning that if there is a Bootstrap override and a global override
     /// for the same template file, when generating documentation using the Bootstrap theme then the specific override is used, for all other themes the
     /// global one is used. This applies to version specific vs theme overrides, the version speific will be picked when using that version, otherwise the
-    /// theme one will be picked.
+    /// theme one will be picked. This applies to theme categories as well.
     /// </para>
     /// <para>
     /// To view all default templates simply browse them on the repository page, generally when making changes to them it is a good option to start by
-    /// copying the default one and modify it. At the same time one can create a new layout from the ground up using different theming libraries.
+    /// copying the default one and modifying it. At the same time one can create a new layout from the ground up using different theming libraries.
     /// </para>
     /// <para>
-    /// Generally, the library aims to provide as much out of the box that is possible. Generating project documentation should be really easy and quick
-    /// to configure.
+    /// The library aims to provide as much out of the box that as possible. Generating project documentation should be really be easy to configure.
     /// </para>
     /// </remarks>
     public class HandlebarsTemplateWriter
@@ -87,11 +123,11 @@ namespace CodeMap.Handlebars
         private readonly Lazy<IReadOnlyDictionary<string, HandlebarsTemplate<TextWriter, object, object>>> _templates;
 
         /// <summary>Initializes a new instance of the <see cref="HandlebarsTemplateWriter"/> class.</summary>
-        /// <param name="theme">The theme name to apply. This can be accompanied by the version of the theme (e.g.: <c>Bootstrap@4</c>, <c>Bootstrap@4.5</c>, or <c>Bootstrap@4.5.0</c>). To use the latest version either specify <c>@latest</c> or no version at all.</param>
+        /// <param name="theme">The theme name to apply using the following specification <c>theme-category/theme-name@theme version</c> (e.g.: <c>Simple/Bootstrap@4.5.0</c>).</param>
         /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used by the <see cref="MemberReference"/> helper.</param>
         /// <param name="assemblies">The <see cref="Assembly"/> objects from where to load assets and Handlebars templates and partials.</param>
         /// <exception cref="ArgumentException">
-        /// Thrown when <paramref name="theme" /> is <c>null</c>, empty or white space or when a theme with the provided name (and version) could not be found.
+        /// Thrown when <paramref name="theme" /> is <c>null</c>, empty or white space or when a theme could not be found.
         /// </exception>
         public HandlebarsTemplateWriter(string theme, IMemberReferenceResolver memberReferenceResolver, IEnumerable<Assembly> assemblies)
         {
@@ -130,11 +166,11 @@ namespace CodeMap.Handlebars
         }
 
         /// <summary>Initializes a new instance of the <see cref="HandlebarsTemplateWriter"/> class.</summary>
-        /// <param name="theme">The theme name to apply. This can be accompanied by the version of the theme (e.g.: <c>Bootstrap@4</c>, <c>Bootstrap@4.5</c>, or <c>Bootstrap@4.5.0</c>). To use the latest version either specify <c>@latest</c> or no version at all.</param>
+        /// <param name="theme">The theme name to apply using the following specification <c>theme-category/theme-name@theme version</c> (e.g.: <c>Simple/Bootstrap@4.5.0</c>).</param>
         /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used by the <see cref="MemberReference"/> helper.</param>
         /// <param name="assemblies">The <see cref="Assembly"/> objects from where to load assets and Handlebars templates and partials.</param>
         /// <exception cref="ArgumentException">
-        /// Thrown when <paramref name="theme" /> is <c>null</c>, empty or white space or when a theme with the provided name (and version) could not be found.
+        /// Thrown when <paramref name="theme" /> is <c>null</c>, empty or white space or when a theme could not be found.
         /// </exception>
         public HandlebarsTemplateWriter(string theme, IMemberReferenceResolver memberReferenceResolver, params Assembly[] assemblies)
             : this(theme, memberReferenceResolver, (IEnumerable<Assembly>)assemblies)
@@ -142,22 +178,23 @@ namespace CodeMap.Handlebars
         }
 
         /// <summary>Initializes a new instance of the <see cref="HandlebarsTemplateWriter"/> class.</summary>
-        /// <param name="theme">The theme name to apply. This can be accompanied by the version of the theme (e.g.: <c>Bootstrap@4</c>, <c>Bootstrap@4.5</c>, or <c>Bootstrap@4.5.0</c>). To use the latest version either specify <c>@latest</c> or no version at all.</param>
+        /// <param name="theme">The theme name to apply using the following specification <c>theme-category/theme-name@theme version</c> (e.g.: <c>Simple/Bootstrap@4.5.0</c>).</param>
         /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used by the <see cref="MemberReference"/> helper.</param>
         /// <exception cref="ArgumentException">
-        /// Thrown when <paramref name="theme" /> is <c>null</c>, empty or white space or when a theme with the provided name (and version) could not be found.
+        /// Thrown when <paramref name="theme" /> is <c>null</c>, empty or white space or when a theme could not be found.
         /// </exception>
         public HandlebarsTemplateWriter(string theme, IMemberReferenceResolver memberReferenceResolver)
             : this(theme, memberReferenceResolver, typeof(HandlebarsTemplateWriter).Assembly, Assembly.GetEntryAssembly())
         {
         }
 
-        /// <summary>Gets the <see cref="EmbeddedDirectory"/> instances for static files from the most version specific to the least specific.</summary>
+        /// <summary>Gets the <see cref="EmbeddedDirectory"/> instances for static files from the version specific to the global ones.</summary>
         /// <value>
-        /// Static files can be specified at any level in a theme. They can be specific only to a version (e.g.: the stylesheet would be a
+        /// Static files can be specified at any level for a theme. They can be specific only to a version (e.g.: the stylesheet would be a
         /// version specific static file), specific to a theme (e.g.: if a theme has the same color theme throughout the versions then the
-        /// Pygments stylesheet can be placed at the theme level since it is the same for all), or be a global one (e.g.: helpers can be
-        /// placed here, or theme invariant files such as the license file).
+        /// Pygments stylesheet can be placed at the theme level since it is the same for all), specific to a theme category (e.g.: includes
+        /// that are used by all GitHub Pages themes can be placed here), or at the global level (e.g.: helpers can be placed here, or theme
+        /// invariant files such as the license file).
         /// </value>
         /// <remarks>
         /// Copying files from these directories can be done using the <see cref="FileSystemInfoExtensions.CopyTo(EmbeddedDirectory, DirectoryInfo)"/>
@@ -191,7 +228,7 @@ namespace CodeMap.Handlebars
         ///         var outputFileInfo = new FileInfo(filePathBuilder.ToString());
         ///         if (copiedFiles.Add(outputFileInfo.FullName))
         ///             using (var staticFileStream = staticFile.OpenRead())
-        ///             using (var outputFileStream = outputFileInfo.OpenWrite())
+        ///             using (var outputFileStream = outputFileInfo.Open(FileMode.Create, FileAccess.Write, FileShare.Read))
         ///                 staticFileStream.CopyTo(outputFileStream);
         ///     }
         /// </code>
@@ -212,7 +249,7 @@ namespace CodeMap.Handlebars
         /// <param name="context">The context in which to apply the template.</param>
         /// <exception cref="ArgumentException">Thrown when <paramref name="templateName"/> is not defined.</exception>
         public void Write(TextWriter textWriter, string templateName, object context)
-            => Write(textWriter, templateName, context);
+            => Write(textWriter, templateName, context, null);
 
         /// <summary>Writes the provided <paramref name="templateName"/> with in the given <paramref name="context"/> to the provided <paramref name="textWriter"/>.</summary>
         /// <param name="textWriter">The <see cref="TextWriter"/> to which to write the template.</param>
@@ -234,7 +271,7 @@ namespace CodeMap.Handlebars
         /// <returns>Returns the applied template.</returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="templateName"/> is not defined.</exception>
         public string Apply(string templateName, object context)
-            => Apply(templateName, context);
+            => Apply(templateName, context, null);
 
         /// <summary>Applies the template with the given <paramref name="templateName"/> in the given <paramref name="context"/>.</summary>
         /// <param name="templateName">The template to apply.</param>
