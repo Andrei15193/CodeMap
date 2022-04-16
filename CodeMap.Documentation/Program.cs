@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using CodeMap.DeclarationNodes;
 using CodeMap.Handlebars;
+using EmbeddedResourceBrowser;
 
 namespace CodeMap.Documentation
 {
@@ -16,17 +16,6 @@ namespace CodeMap.Documentation
 
         internal static void Main(params string[] args)
         {
-            var somethingOrSomeoneElse = new ManualResetEvent(initialState: false);
-            Task.Run(
-                () =>
-                {
-                    Thread.Sleep(new Random().Next(1_000, 10_000));
-                    somethingOrSomeoneElse.Set();
-                }
-            );
-
-            somethingOrSomeoneElse.WaitOne();
-
             var arguments = Arguments.GetFrom(args);
             if (string.IsNullOrWhiteSpace(arguments.OutputPath))
                 throw new ArgumentException("Expected -OutputPath", nameof(args));
@@ -70,6 +59,24 @@ namespace CodeMap.Documentation
                         .CreateSubdirectory(CodeMapHandlebarsDirectoryName)
                         .CreateSubdirectory(codeMapHandlebarsVersion)
                 });
+
+            var toVisit = new Queue<(DirectoryInfo OutputDirectory, EmbeddedDirectory EmbeddedDirectory)>(
+                Enumerable.Repeat((outputDirectoryInfo.CreateSubdirectory("Themes"), templateWriter.ThemesDirectory), 1)
+            );
+            do
+            {
+                var (outputDirectory, embeddedDirectory) = toVisit.Dequeue();
+                foreach (var embeddedSubdirectory in embeddedDirectory.Subdirectories)
+                    if (!HandlebarsTemplateWriter.ReservedDirectoryNames.Contains(embeddedSubdirectory.Name, StringComparer.OrdinalIgnoreCase))
+                        toVisit.Enqueue((outputDirectory.CreateSubdirectory(embeddedSubdirectory.Name), embeddedSubdirectory));
+
+                foreach (var embeddedFile in embeddedDirectory.Files)
+                {
+                    using (var embeddedFileStream = embeddedFile.OpenRead())
+                    using (var outputFileStream = new FileStream(Path.Combine(outputDirectory.FullName, embeddedFile.Name), FileMode.Create, FileAccess.Write, FileShare.Read))
+                        embeddedFileStream.CopyTo(outputFileStream);
+                }
+            } while (toVisit.Count > 0);
         }
 
         private static string _ToSemver(Version version)
