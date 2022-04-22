@@ -1,0 +1,49 @@
+---
+layout: Bootstrap@4.5.0
+---
+{% assign directory_path_size = page.path.size | minus: page.name.size %}
+{% assign directory_path = page.path | slice: 0, directory_path_size %}
+{% assign parent_index_page_path = directory_path | split: '/' | reverse | slice: 1, 10 | reverse | join: '/' | append: '/index.md' %}
+{% assign grandparent_index_page_path = directory_path | split: '/' | reverse | slice: 2, 10 | reverse | join: '/' | append: '/index.md' %}
+{% assign version_directory_name = directory_path | split: '/' | reverse | slice: 3 %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        {% for page in site.pages %}
+            {% if page.path == grandparent_index_page_path %}
+                <li class="breadcrumb-item" aria-current="page">
+                    <a href="{{ page.url }}">{{ page.title }}@{{ version_directory_name }}</a>
+                </li>
+                {% break %}
+            {% endif %}
+        {% endfor %}
+        {% for page in site.pages %}
+            {% if page.path == parent_index_page_path %}
+                <li class="breadcrumb-item" aria-current="page">
+                    <a href="{{ page.url }}">{{ page.title }}</a>
+                </li>
+                {% break %}
+            {% endif %}
+        {% endfor %}
+        <li class="breadcrumb-item active" aria-current="page">
+            {{ page.title }}
+        </li>
+    </ol>
+</nav>
+
+<h2>{{ page.title }}</h2>
+
+{% for theme_version_index_page in site.pages %}
+    {% if theme_version_index_page.name == 'index.md' %}
+        {% assign theme_version_index_page_directory_path_size = theme_version_index_page.path.size | minus: theme_version_index_page.name.size %}
+        {% assign theme_version_index_page_directory_path = theme_version_index_page.path | slice: 0, theme_version_index_page_directory_path_size %}
+        {% assign theme_version_index_page_parent_index_page_path = theme_version_index_page_directory_path | split: '/' | reverse | slice: 1, 10 | reverse | join: '/' | append: '/index.md' %}
+        {% if page.path == theme_version_index_page_parent_index_page_path %}
+            {{ theme_version_index_page_directory_path | split: '/' | reverse | first }}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{{ content }}
+
+{% include {{ directory_path | append: 'files.html' | replace: ' ', '-' }} %}

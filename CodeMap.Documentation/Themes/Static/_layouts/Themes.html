@@ -1,0 +1,20 @@
+---
+layout: Bootstrap@4.5.0
+---
+{% assign directory_path_size = page.path.size | minus: page.name.size %}
+{% assign directory_path = page.path | slice: 0, directory_path_size %}
+{% assign version_directory_name = directory_path | split: '/' | reverse | slice: 1 | first %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">
+            {{ page.title }}@{{ version_directory_name }}
+        </li>
+    </ol>
+</nav>
+
+<h2>{{ page.title }}</h2>
+
+{{ content }}
+
+{% include {{ directory_path | append: 'files.html' | replace: ' ', '-' }} %}

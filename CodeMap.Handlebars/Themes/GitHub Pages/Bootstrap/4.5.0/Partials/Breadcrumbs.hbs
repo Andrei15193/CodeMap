@@ -8,7 +8,7 @@
         {{else if assembly}}
         {{> Breadcrumbs node=assembly}}
         {{/if}}
-        <li class="breadcrumb-item active" aria-current="page">{{#if name}}{{name}}{{else}}global{{/if}}</li>
+        <li class="breadcrumb-item active" aria-current="page">{{#if name}}{{name}}{{#if namespaces}}@{{Semver version}}{{/if}}{{else}}global{{/if}}</li>
     </ol>
 </nav>
 {{else}}{{#with node}}

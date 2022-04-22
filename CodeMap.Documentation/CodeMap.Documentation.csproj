@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Themes\Static\_includes\subdirectory_browser.html" />
+    <EmbeddedResource Include="Themes\Static\_layouts\Theme.html" />
+    <EmbeddedResource Include="Themes\Static\_layouts\ThemeCategory.html" />
+    <EmbeddedResource Include="Themes\Static\_layouts\Themes.html" />
     <EmbeddedResource Include="Themes\Static\index.html" />
     <EmbeddedResource Include="Themes\Static\favicon.ico" />
   </ItemGroup>

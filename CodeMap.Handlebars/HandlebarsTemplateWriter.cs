@@ -116,10 +116,11 @@ namespace CodeMap.Handlebars
     {
         /// <summary>Gets the names of reserved directory names.</summary>
         /// <value>The collection contains the following values: <c>Partials</c>, <c>Templates</c>, and <c>Static</c>></value>
-        public static IReadOnlyList<string> ReservedDirectoryNames { get; } = new[] { "Partials", "Templates", "Static" };
+        public static IReadOnlyList<string> ReservedDirectoryNames { get; } = new[] { "Static", "Partials", "Templates" };
 
         private readonly Regex _themeSpecificationRegex = new Regex(@"^(?<category>[^/]+)/(?<name>[^@]+)@(?<version>\d+\.\d+\.\d+)$", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
         private readonly IMemberReferenceResolver _memberReferenceResolver;
+        private readonly EmbeddedDirectory _themesDirectory;
         private readonly EmbeddedDirectory _themeCategoryDirectory;
         private readonly EmbeddedDirectory _themeBaseDirectory;
         private readonly EmbeddedDirectory _themeSpecificDirectory;
@@ -141,7 +142,7 @@ namespace CodeMap.Handlebars
             if (!resources.Subdirectories.TryGetValue("Themes", out var themesDirectory))
                 throw new ArgumentException("Themes directory does not contain any embedded resources.");
 
-            ThemesDirectory = themesDirectory;
+            _themesDirectory = themesDirectory;
             var match = _themeSpecificationRegex.Match(theme);
             if (!match.Success)
                 throw new ArgumentException("The theme name is not in the expected format (theme-category/theme-name@theme-version).", nameof(theme));
@@ -156,7 +157,7 @@ namespace CodeMap.Handlebars
             if (ReservedDirectoryNames.Contains(themeName, StringComparer.OrdinalIgnoreCase))
                 throw new ArgumentNullException($"'{themeName}' theme name is reserved.", nameof(theme));
 
-            if (!ThemesDirectory.Subdirectories.TryGetValue(themeCategory, out _themeCategoryDirectory))
+            if (!_themesDirectory.Subdirectories.TryGetValue(themeCategory, out _themeCategoryDirectory))
                 throw new ArgumentException($"'{themeCategory}' theme category was not found, directory does not contain any embedded resources.", nameof(theme));
 
             if (!_themeCategoryDirectory.Subdirectories.TryGetValue(themeName, out _themeBaseDirectory))
@@ -191,9 +192,6 @@ namespace CodeMap.Handlebars
             : this(theme, memberReferenceResolver, typeof(HandlebarsTemplateWriter).Assembly, Assembly.GetEntryAssembly())
         {
         }
-
-        /// <summary>Gets the base <see cref="EmbeddedDirectory" /> containing all the themes.</summary>
-        public EmbeddedDirectory ThemesDirectory { get; }
 
         /// <summary>Gets the <see cref="EmbeddedDirectory"/> instances for static files from the version specific to the global ones.</summary>
         /// <value>
@@ -341,7 +339,7 @@ namespace CodeMap.Handlebars
                 yield return _themeSpecificDirectory;
                 yield return _themeBaseDirectory;
                 yield return _themeCategoryDirectory;
-                yield return ThemesDirectory;
+                yield return _themesDirectory;
             }
         }
 

@@ -60,23 +60,92 @@ namespace CodeMap.Documentation
                         .CreateSubdirectory(codeMapHandlebarsVersion)
                 });
 
-            var toVisit = new Queue<(DirectoryInfo OutputDirectory, EmbeddedDirectory EmbeddedDirectory)>(
-                Enumerable.Repeat((outputDirectoryInfo.CreateSubdirectory("Themes"), templateWriter.ThemesDirectory), 1)
-            );
+            var themesEmbeddedDirectory = new EmbeddedDirectory(typeof(HandlebarsTemplateWriter).Assembly).Subdirectories["Themes"];
+
+            var keyThemeDirectoriesToVisit = new Queue<ThemeEmbeddedDirectoryData>();
+            keyThemeDirectoriesToVisit.Enqueue(new ThemeEmbeddedDirectoryData(
+                $"https://github.com/Andrei15193/CodeMap/blob/{codeMapHandlebarsVersion}/CodeMap.Handlebars/Themes",
+                outputDirectoryInfo.CreateSubdirectory("CodeMap.Handlebars").CreateSubdirectory(codeMapHandlebarsVersion).CreateSubdirectory("Themes"),
+                outputDirectoryInfo.CreateSubdirectory("_includes").CreateSubdirectory("CodeMap.Handlebars").CreateSubdirectory(codeMapHandlebarsVersion).CreateSubdirectory("Themes"),
+                themesEmbeddedDirectory,
+                Enumerable.Empty<ThemeEmbeddedDirectoryData>()
+            ));
+
             do
             {
-                var (outputDirectory, embeddedDirectory) = toVisit.Dequeue();
-                foreach (var embeddedSubdirectory in embeddedDirectory.Subdirectories)
-                    if (!HandlebarsTemplateWriter.ReservedDirectoryNames.Contains(embeddedSubdirectory.Name, StringComparer.OrdinalIgnoreCase))
-                        toVisit.Enqueue((outputDirectory.CreateSubdirectory(embeddedSubdirectory.Name), embeddedSubdirectory));
+                var keyThemeEmbeddedDirectoryData = keyThemeDirectoriesToVisit.Dequeue();
+                foreach (var keyThemeEmbeddedSubdirectoryData in keyThemeEmbeddedDirectoryData.SubdirectoriesData)
+                    if (!HandlebarsTemplateWriter.ReservedDirectoryNames.Contains(keyThemeEmbeddedSubdirectoryData.Name, StringComparer.OrdinalIgnoreCase))
+                        keyThemeDirectoriesToVisit.Enqueue(keyThemeEmbeddedSubdirectoryData);
 
-                foreach (var embeddedFile in embeddedDirectory.Files)
+                using (var includeFileStream = new FileStream(Path.Combine(keyThemeEmbeddedDirectoryData.OutputIncludeDirectory.FullName, "files.html"), FileMode.Create, FileAccess.Write, FileShare.Read))
+                using (var includeStreamWriter = new StreamWriter(includeFileStream))
                 {
-                    using (var embeddedFileStream = embeddedFile.OpenRead())
-                    using (var outputFileStream = new FileStream(Path.Combine(outputDirectory.FullName, embeddedFile.Name), FileMode.Create, FileAccess.Write, FileShare.Read))
-                        embeddedFileStream.CopyTo(outputFileStream);
+                    var themeEmbeddedDirectoriesData = Enumerable.Repeat(keyThemeEmbeddedDirectoryData, 1).Concat(keyThemeEmbeddedDirectoryData.Parents);
+                    if (themeEmbeddedDirectoriesData.Any(themeEmbeddedDirectoryData => HandlebarsTemplateWriter.ReservedDirectoryNames.Any(themeEmbeddedDirectoryData.EmbeddedDirectory.Subdirectories.ContainsKey)))
+                    {
+                        if (keyThemeEmbeddedDirectoryData.EmbeddedDirectory == themesEmbeddedDirectory)
+                            includeStreamWriter.WriteLine("<h3 id=\"global-files\">Global Files</h3>");
+                        else
+                            includeStreamWriter.WriteLine("<h3 id=\"files\">Files</h3>");
+
+                        includeStreamWriter.WriteLine("<ul>");
+                        _WriteFileListInclude(includeStreamWriter, themeEmbeddedDirectoriesData);
+                        includeStreamWriter.WriteLine("</ul>");
+                    }
                 }
-            } while (toVisit.Count > 0);
+
+                foreach (var embeddedFile in keyThemeEmbeddedDirectoryData.EmbeddedDirectory.Files)
+                    using (var embeddedFileStream = embeddedFile.OpenRead())
+                    using (var outputFileStream = new FileStream(Path.Combine(keyThemeEmbeddedDirectoryData.OutputPageDirectory.FullName, embeddedFile.Name), FileMode.Create, FileAccess.Write, FileShare.Read))
+                        embeddedFileStream.CopyTo(outputFileStream);
+            } while (keyThemeDirectoriesToVisit.Count > 0);
+        }
+
+        private static void _WriteFileListInclude(TextWriter includeStreamWriter, IEnumerable<ThemeEmbeddedDirectoryData> keyThemeEmbeddedDirectoriesData)
+        {
+            foreach (var reservedDirectoryName in HandlebarsTemplateWriter.ReservedDirectoryNames)
+                Write(
+                    from keyThemeEmbeddedDirectoryData in keyThemeEmbeddedDirectoriesData
+                    from subdirectoryData in keyThemeEmbeddedDirectoryData.SubdirectoriesData
+                    where reservedDirectoryName == subdirectoryData.Name
+                    select subdirectoryData
+                );
+
+            void Write(IEnumerable<ThemeEmbeddedDirectoryData> themeEmbeddedDirectoriesData, int level = 1)
+            {
+                if (themeEmbeddedDirectoriesData.Any())
+                {
+                    includeStreamWriter.WriteLine(new string(' ', 4 * level) + $"<li>" + themeEmbeddedDirectoriesData.Select(themeEmbeddedDirectoryData => themeEmbeddedDirectoryData.Name).First());
+
+                    includeStreamWriter.WriteLine(new string(' ', 4 * (level + 1)) + "<ul>");
+                    var groupedThemeEmbeddedSubdirectoriesData =
+                        from themeEmbeddedDirectoryData in themeEmbeddedDirectoriesData
+                        from themeEmbeddedSubdirectoryData in themeEmbeddedDirectoryData.SubdirectoriesData
+                        group themeEmbeddedSubdirectoryData by themeEmbeddedSubdirectoryData.Name.ToLowerInvariant();
+
+                    if (groupedThemeEmbeddedSubdirectoriesData.Any())
+                        foreach (var embeddedSubdirectories in groupedThemeEmbeddedSubdirectoriesData)
+                            Write(embeddedSubdirectories, level + 2);
+
+                    var files =
+                        from themeEmbeddedDirectoryData in themeEmbeddedDirectoriesData
+                        from embeddedFile in themeEmbeddedDirectoryData.EmbeddedDirectory.Files
+                        group (BaseUrl: $"{themeEmbeddedDirectoryData.GitHubBaseUrl}/{embeddedFile.Name}", EmbeddedFile: embeddedFile, IsInherited: themeEmbeddedDirectoryData.IsInherited) by embeddedFile.Name.ToLowerInvariant() into groupedFiles
+                        orderby groupedFiles.First().EmbeddedFile.Name
+                        select groupedFiles.First();
+                    foreach (var (baseUrl, embeddedFile, isInherited) in files)
+                    {
+                        includeStreamWriter.Write(new string(' ', 4 * (level + 2)) + $"<li><a href=\"{baseUrl}\">{embeddedFile.Name}</a>");
+                        if (isInherited)
+                            includeStreamWriter.Write(" <small>(inherited)</small>");
+                        includeStreamWriter.WriteLine("</li>");
+                    }
+                    includeStreamWriter.WriteLine(new string(' ', 4 * (level + 1)) + "</ul>");
+
+                    includeStreamWriter.WriteLine(new string(' ', 4 * level) + "</li>");
+                }
+            }
         }
 
         private static string _ToSemver(Version version)
@@ -99,6 +168,35 @@ namespace CodeMap.Documentation
                 }
 
             return $"{version.Major}.{version.Minor}.{version.Revision}{prerelease}";
+        }
+
+        private record ThemeEmbeddedDirectoryData(string GitHubBaseUrl, DirectoryInfo OutputPageDirectory, DirectoryInfo OutputIncludeDirectory, EmbeddedDirectory EmbeddedDirectory, IEnumerable<ThemeEmbeddedDirectoryData> Parents)
+        {
+            public string Name
+                => EmbeddedDirectory.Name;
+
+            public bool IsInherited { get; init; }
+
+            public IEnumerable<ThemeEmbeddedDirectoryData> SubdirectoriesData
+            {
+                get
+                {
+                    foreach (var subdirectory in EmbeddedDirectory.Subdirectories)
+                        yield return GetSubdirectory(subdirectory.Name);
+                }
+            }
+
+            public ThemeEmbeddedDirectoryData GetSubdirectory(string subdirectoryName)
+                => new ThemeEmbeddedDirectoryData(
+                    $"{GitHubBaseUrl}/{subdirectoryName}",
+                    OutputPageDirectory.CreateSubdirectory(subdirectoryName),
+                    OutputIncludeDirectory.CreateSubdirectory(subdirectoryName.Replace(' ', '-')),
+                    EmbeddedDirectory.Subdirectories[subdirectoryName],
+                    Enumerable.Repeat(this, 1).Concat(Parents).Select(parent => parent with { IsInherited = true })
+                )
+                {
+                    IsInherited = this.IsInherited
+                };
         }
     }
 }

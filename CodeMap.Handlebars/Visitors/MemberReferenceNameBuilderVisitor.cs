@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using CodeMap.Handlebars.Helpers;
 using CodeMap.ReferenceData;
 
 namespace CodeMap.Handlebars.Visitors
@@ -21,7 +22,7 @@ namespace CodeMap.Handlebars.Visitors
         }
 
         protected override void VisitAssembly(AssemblyReference assembly)
-            => _nameBuilder.Append(assembly.Name);
+            => _nameBuilder.Append(assembly.Name).Append('@').Append(Semver.ToSemver(assembly.Version));
 
         protected override void VisitNamespace(NamespaceReference @namespace)
             => _nameBuilder.Append(string.IsNullOrWhiteSpace(@namespace.Name) ? "global-namespace" : @namespace.Name);

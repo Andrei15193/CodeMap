@@ -1,0 +1,28 @@
+---
+layout: Bootstrap@4.5.0
+---
+{% assign directory_path_size = page.path.size | minus: page.name.size %}
+{% assign directory_path = page.path | slice: 0, directory_path_size %}
+{% assign parent_index_page_path = directory_path | split: '/' | reverse | slice: 1, 10 | reverse | join: '/' | append: '/index.md' %}
+{% assign version_directory_name = directory_path | split: '/' | reverse | slice: 2 %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        {% for page in site.pages %}
+            {% if page.path == parent_index_page_path %}
+                <li class="breadcrumb-item" aria-current="page">
+                    <a href="{{ page.url }}">{{ page.title }}@{{ version_directory_name }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        <li class="breadcrumb-item active" aria-current="page">
+            {{ page.title }}
+        </li>
+    </ol>
+</nav>
+
+<h2>{{ page.title }}</h2>
+
+{{ content }}
+
+{% include {{ directory_path | append: 'files.html' | replace: ' ', '-' }} %}
