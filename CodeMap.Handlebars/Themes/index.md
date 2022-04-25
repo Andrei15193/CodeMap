@@ -1,7 +1,6 @@
 ---
 title: Themes
 layout: Themes
-is_dropdown_landing_page: true
 dropdown:
 - Themes
 ---

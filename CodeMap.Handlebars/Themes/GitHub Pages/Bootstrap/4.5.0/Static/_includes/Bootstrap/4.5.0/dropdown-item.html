@@ -9,10 +9,10 @@
             </div>
         {% else %}
             <li class="nav-item{% if include.is_active %} active{% endif %}">
-                <a class="nav-link" href="{{ include.page.url }}">{{ include.display_text }}</a>
+                <a class="nav-link" href="{{ include.page.url | relative_url }}">{{ include.display_text }}</a>
             </li>
         {% endif %}
     </li>
 {% else %}
-    <a class="dropdown-item{% if include.is_active %} active{% endif %}" href="{{ include.page.url }}">{{ include.display_text }}</a>
+    <a class="dropdown-item{% if include.is_active %} active{% endif %}" href="{{ include.page.url | relative_url }}">{{ include.display_text }}</a>
 {% endif %}

@@ -92,7 +92,7 @@
     {% assign versioned_dropdown_nodes = '' | split: ',' | where: 'an', 'array: [dropdown_node]' %}
     {% assign other_dropdown_nodes = '' | split: ',' | where: 'an', 'array: [dropdown_node]' %}
 
-    {% assign versioned_dropdown_nodes_info = '' | split: ',' | where: 'an', 'array: [tupple dropdown_node_info: [dropdown_node, major: number, minor: number, path: number, pre_release_name_index: number, pre_release_number: number]]' %}
+    {% assign versioned_dropdown_nodes_info = '' | split: ',' | where: 'an', 'array: [tuple dropdown_node_info: [dropdown_node, major: number, minor: number, path: number, pre_release_name_index: number, pre_release_number: number]]' %}
     {% for dropdown_node in dropdown_nodes %}
         {% assign display_text = dropdown_node[2] %}
         {% assign is_valid_version = false %}
@@ -125,7 +125,7 @@
                 {% endunless %}
 
                 {%
-                    assign dropdown_node_info = '' | split: ',' | where: 'a', 'tupple dropdown_node_info'
+                    assign dropdown_node_info = '' | split: ',' | where: 'a', 'dropdown_node_info'
                         | push: dropdown_node
                         | push: major
                         | push: minor
@@ -154,7 +154,7 @@
 
     {% for number in (1..versioned_dropdown_nodes_info.size) %}
         {% assign max_versioned_dropdown_node_info = versioned_dropdown_nodes_info | first %}
-        {% assign versioned_dropdown_nodes_info_new = '' | split: ',' | where: 'a', 'array: [tuple: dropdown_node_info]' %}
+        {% assign versioned_dropdown_nodes_info_new = '' | split: ',' | where: 'an', 'array: [dropdown_node_info]' %}
 
         {% for versioned_dropdown_node_info in versioned_dropdown_nodes_info offset: 1 %}
             {% assign is_current_greater = false %}
@@ -181,10 +181,10 @@
         {% assign versioned_dropdown_nodes_info = versioned_dropdown_nodes_info_new %}
     {% endfor %}
 
-    {% assign other_dropdown_nodes_temp = '' | split: ',' | where: 'a', 'array: [tuple: dropdown_node_info]' %}
+    {% assign other_dropdown_nodes_temp = '' | split: ',' | where: 'an', 'array: [dropdown_node_info]' %}
     {% for number in (1..other_dropdown_nodes.size) %}
         {% assign min_dropdown_node = other_dropdown_nodes | first %}
-        {% assign other_dropdown_nodes_new = '' | split: ',' | where: 'a', 'array: [tuple: dropdown_node_info]' %}
+        {% assign other_dropdown_nodes_new = '' | split: ',' | where: 'an', 'array: [dropdown_node_info]' %}
 
         {% for dropdown_node in other_dropdown_nodes offset: 1 %}
             {% assign min_dropdown_node_display_text = min_dropdown_node[2] %}
@@ -205,7 +205,7 @@
 
     {%
         assign sorted_dropdown_nodes_by_parent_id = '' | split: ','
-            | where: 'an', 'tuple: sorted_dropdown_nodes_by_parent_id'
+            | where: 'a', 'sorted_dropdown_nodes_by_parent_id'
             | push: parent_id
             | push: versioned_dropdown_nodes
             | push: other_dropdown_nodes

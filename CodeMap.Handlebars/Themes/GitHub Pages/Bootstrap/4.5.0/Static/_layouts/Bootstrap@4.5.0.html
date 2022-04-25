@@ -14,7 +14,7 @@
     <nav class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
         <div class="container">
             {% assign page_path_elements = page.path | split: '.' %}
-            <a class="navbar-brand{% if page_path_elements.size == 2 and page_path_elements[0] == 'index' %} active{% endif %}" href="{{ site.baseurl }}">Home</a>
+            <a class="navbar-brand{% if page_path_elements.size == 2 and page_path_elements[0] == 'index' %} active{% endif %}" href="{{ '/' | relative_url }}">Home</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

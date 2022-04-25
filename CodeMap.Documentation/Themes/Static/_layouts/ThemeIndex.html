@@ -4,10 +4,9 @@ layout: Bootstrap@4.5.0
 {% assign directory_path = page.path | split: '/' %}
 {% assign directory_path = directory_path | reverse | slice: 1, directory_path.size | reverse %}
 
-{% assign current_theme_version = directory_path | last %}
-{% assign theme_index_page_path = directory_path | reverse | slice: 1, directory_path.size | reverse | join: '/' | append: '/index.md' %}
-{% assign theme_category_index_page_path = directory_path | reverse | slice: 2, directory_path.size | reverse | join: '/' | append: '/index.md' %}
-{% assign themes_index_page_path = directory_path | reverse | slice: 3, directory_path.size | reverse | join: '/' | append: '/index.md' %}
+{% assign parent_index_page_path = directory_path | reverse | slice: 1, directory_path.size | reverse | join: '/' | append: '/index.md' %}
+{% assign grandparent_index_page_path = directory_path | reverse | slice: 2, directory_path.size | reverse | join: '/' | append: '/index.md' %}
+{% assign codemap_handlebars_version = directory_path | reverse | slice: 3 | first %}
 
 {% assign theme_version_index_pages_info = '' | split: ',' | where: 'an', 'array: [tuple theme_index_pageInfo: [page, theme_version: string]]' %}
 {% for theme_version_index_page in site.pages %}
@@ -15,9 +14,9 @@ layout: Bootstrap@4.5.0
         {% assign theme_version_index_page_directory_path = theme_version_index_page.path | split: '/' %}
         {% assign theme_version_index_page_directory_path = theme_version_index_page_directory_path | reverse | slice: 1, theme_version_index_page_directory_path.size | reverse %}
 
-        {% assign theme_index_page_path_other = theme_version_index_page_directory_path | reverse | slice: 1, theme_version_index_page_directory_path.size | reverse | join: '/' | append: '/index.md' %}
-        {% if theme_index_page_path == theme_index_page_path_other %}
-            {% assign theme_version = theme_version_index_page_directory_path | last %}
+        {% assign theme_version_index_page_parent_index_page_path = theme_version_index_page_directory_path | reverse | slice: 1, theme_version_index_page_directory_path.size | reverse | join: '/' | append: '/index.md' %}
+        {% if page.path == theme_version_index_page_parent_index_page_path %}
+            {% assign theme_version = theme_version_index_page_directory_path | reverse | first %}
             {%
                 assign theme_version_index_page_info = '' | split: ',' | where: 'a', 'theme_index_pageInfo'
                     | push: theme_version_index_page
@@ -63,11 +62,22 @@ layout: Bootstrap@4.5.0
     {% assign sorted_theme_version_index_pages_info = sorted_theme_version_index_pages_info | push: max_theme_version_index_pages_info %}
 {% endfor %}
 
+
+{% assign empty_array = '' | split: ',' | where: 'an', 'array: []' %}
+{% assign all_tags = '' | split: ',' | where: 'an', 'array: [string]' %}
+
+{% assign page_tags = page.tags | default: empty_array %}
+{% assign all_tags = all_tags | concat: page_tags %}
+{% for theme_version_index_page_info in sorted_theme_version_index_pages_info %}
+    {% assign theme_version_index_page = theme_version_index_page_info[0] %}
+    {% assign theme_version_index_page_tags = theme_version_index_page.tags | default: empty_array %}
+    {% assign all_tags = all_tags | concat: theme_version_index_page_tags | uniq %}
+{% endfor %}
+
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         {% for page in site.pages %}
-            {% if page.path == themes_index_page_path %}
-                {% assign codemap_handlebars_version = directory_path | reverse | slice: 4 | first %}
+            {% if page.path == grandparent_index_page_path %}
                 <li class="breadcrumb-item" aria-current="page">
                     <a href="{{ page.url | relative_url }}" title="CodeMap.Handlebars@{{ codemap_handlebars_version }}">{{ page.title }}@{{ codemap_handlebars_version }}</a>
                 </li>
@@ -75,7 +85,7 @@ layout: Bootstrap@4.5.0
             {% endif %}
         {% endfor %}
         {% for page in site.pages %}
-            {% if page.path == theme_category_index_page_path %}
+            {% if page.path == parent_index_page_path %}
                 <li class="breadcrumb-item" aria-current="page">
                     <a href="{{ page.url | relative_url }}">{{ page.title }}</a>
                 </li>
@@ -83,37 +93,16 @@ layout: Bootstrap@4.5.0
             {% endif %}
         {% endfor %}
         <li class="breadcrumb-item active" aria-current="page">
-            {{ page.title }}@{{ current_theme_version }}
+            {{ page.title }}
         </li>
     </ol>
 </nav>
 
-<h2>
-    {{ page.title }}
-    <div class="btn-group">
-        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-            {{ current_theme_version }}
-        </button>
-        <div class="dropdown-menu">
-            {% for page in site.pages %}
-                {% if page.path == theme_index_page_path %}
-                    <a class="dropdown-item" href="{{ page.url | relative_url }}">Home</a>
-                    <div class="dropdown-divider"></div>
-                    {% break %}
-                {% endif %}
-            {% endfor %}
-            {% for theme_version_index_page_info in sorted_theme_version_index_pages_info %}
-                {% assign theme_version_index_page = theme_version_index_page_info[0] %}
-                {% assign theme_version = theme_version_index_page_info[1] %}
-                <a class="dropdown-item{% if theme_version == current_theme_version %} active{% endif %}" href="{{ theme_version_index_page.url | relative_url }}">{{ theme_version }}</a>
-            {% endfor %}
-        </div>
-    </div>
-</h2>
+<h2>{{ page.title }}</h2>
 
-{% if page.tags and page.tags.size > 0 %}
+{% if all_tags.size > 0 %}
     <div>
-        {% for tag in page.tags %}
+        {% for tag in all_tags %}
             <span class="badge badge-pill badge-primary">{{ tag }}</span>
         {% endfor %}
     </div>
@@ -121,4 +110,20 @@ layout: Bootstrap@4.5.0
 
 {{ content }}
 
+{% assign latest_theme_version_index_page_info = sorted_theme_version_index_pages_info | first %}
+{% assign latest_theme_version_index_page = latest_theme_version_index_page_info[0] %}
+{% assign latest_theme_version = latest_theme_version_index_page_info[1] %}
+
+<p>View the latest <a href="{{ latest_theme_version_index_page.url | relative_url }}">{{ latest_theme_version_index_page.title }}@{{ latest_theme_version }}</a> theme, for olderver versions check the <a href="#all-versions">all versions</a> list.</p>
+
 {% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' }} %}
+
+<h3 id="all-versions">All versions</h3>
+
+<ul>
+{% for theme_version_index_page_info in sorted_theme_version_index_pages_info %}
+    {% assign theme_version_index_page = theme_version_index_page_info[0] %}
+    {% assign theme_version = theme_version_index_page_info[1] %}
+    <li><a href="{{ theme_version_index_page.url | relative_url }}">{{ theme_version_index_page.title }}@{{ theme_version }}</a></li>
+{% endfor %}
+</ul>

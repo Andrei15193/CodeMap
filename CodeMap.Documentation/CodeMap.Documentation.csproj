@@ -9,9 +9,11 @@
     <EmbeddedResource Include="Themes\Static\_includes\subdirectory_browser.html" />
     <EmbeddedResource Include="Themes\Static\_layouts\Theme.html" />
     <EmbeddedResource Include="Themes\Static\_layouts\ThemeCategory.html" />
+    <EmbeddedResource Include="Themes\Static\_layouts\ThemeIndex.html" />
     <EmbeddedResource Include="Themes\Static\_layouts\Themes.html" />
-    <EmbeddedResource Include="Themes\Static\index.html" />
+    <EmbeddedResource Include="Themes\Static\CodeMap.Handlebars\Themes.md" LogicalName="$(AssemblyName)/Themes/Static/CodeMap.Handlebars/Themes.md" />
     <EmbeddedResource Include="Themes\Static\favicon.ico" />
+    <EmbeddedResource Include="Themes\Static\index.html" />
   </ItemGroup>
 
   <ItemGroup>

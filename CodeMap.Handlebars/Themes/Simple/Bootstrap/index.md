@@ -1,6 +1,6 @@
 ---
 title: Bootstrap
-layout: Theme
+layout: ThemeIndex
 card_relative_url: card.png
 dropdown:
 - Themes

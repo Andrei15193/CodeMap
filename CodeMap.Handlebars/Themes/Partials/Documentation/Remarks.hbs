@@ -1,1 +1,5 @@
+{{#unless title}}
+{{> Documentation node=content title="Remarks"}}
+{{else}}
 {{> Documentation node=content title=title}}
+{{/unless}}

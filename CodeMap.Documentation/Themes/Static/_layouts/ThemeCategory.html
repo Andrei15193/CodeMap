@@ -1,17 +1,18 @@
 ---
 layout: Bootstrap@4.5.0
 ---
-{% assign directory_path_size = page.path.size | minus: page.name.size %}
-{% assign directory_path = page.path | slice: 0, directory_path_size %}
-{% assign parent_index_page_path = directory_path | split: '/' | reverse | slice: 1, 10 | reverse | join: '/' | append: '/index.md' %}
-{% assign version_directory_name = directory_path | split: '/' | reverse | slice: 2 %}
+{% assign directory_path = page.path | split: '/' %}
+{% assign directory_path = directory_path | reverse | slice: 1, directory_path.size | reverse %}
+
+{% assign themes_index_page_path = directory_path | reverse | slice: 1, directory_path.size | reverse | join: '/' | append: '/index.md' %}
+{% assign codemap_handlebars_version = directory_path | reverse | slice: 2 | first %}
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         {% for page in site.pages %}
-            {% if page.path == parent_index_page_path %}
+            {% if page.path == themes_index_page_path %}
                 <li class="breadcrumb-item" aria-current="page">
-                    <a href="{{ page.url }}">{{ page.title }}@{{ version_directory_name }}</a>
+                    <a href="{{ page.url | relative_url }}" title="CodeMap.Handlebars@{{ codemap_handlebars_version }}">{{ page.title }}@{{ codemap_handlebars_version }}</a>
                 </li>
             {% endif %}
         {% endfor %}
@@ -25,4 +26,4 @@ layout: Bootstrap@4.5.0
 
 {{ content }}
 
-{% include {{ directory_path | append: 'files.html' | replace: ' ', '-' }} %}
+{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' }} %}

@@ -1,3 +1,6 @@
 ---
-title: Bootstrap@4.5.0
+title: Bootstrap
+layout: Theme
 ---
+
+Bootstrap theme (Simple)

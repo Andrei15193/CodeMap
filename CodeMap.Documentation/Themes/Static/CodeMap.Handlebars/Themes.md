@@ -1,14 +1,18 @@
 ---
+title: Themes
 layout: Bootstrap@4.5.0
+is_dropdown_landing_page: true
+permalink: 'CodeMap.Handlebars/Themes/'
+dropdown:
+- Themes
 ---
 {% assign default_pre_release_names = 'alpha,beta,rc' | split: ',' %}
 {% assign pre_release_names = site.data.pre_release_names | default: default_pre_release_names %}
 
 {% assign directory_path = page.path | split: '/' %}
-{% assign directory_path = directory_path | reverse | slice: 1, directory_path.size | reverse %}
+{% assign directory_path = directory_path | reverse | slice: 0, directory_path.size | reverse %}
 
-{% assign current_codemap_handlebars_version = directory_path | reverse | slice: 1 | first %}
-{% assign codemap_handlebars_path = directory_path | reverse | slice: 2, directory_path.size | reverse | join: '/' %}
+{% assign codemap_handlebars_path = directory_path | reverse | slice: 1, directory_path.size | reverse | join: '/' %}
 
 {% assign versioned_themes_index_pages_info = '' | split: ',' | where: 'an', 'array: [tuple versioned_themes_index_page_info: [page, codemap_handlebars_version: string, major: number, minor: number, path: number, pre_release_name_index: number, pre_release_number: number]]' %}
 {% assign other_themes_index_pages_info = '' | split: ',' | where: 'an', 'array: [tuple other_themes_index_page_info: [page, codemap_handlebars_version: string]]' %}
@@ -138,25 +142,51 @@ layout: Bootstrap@4.5.0
     {% endfor %}
 {% endfor %}
 
+{% assign latest_themes_index_page_info = nil %}
+{% if versioned_themes_index_pages_info.size > 0 %}
+    {% assign latest_themes_index_page_info = versioned_themes_index_pages_info | first %}
+{% elsif other_themes_index_pages_info.size > 0 %}
+    {% assign latest_themes_index_page_info = other_themes_index_pages_info | first %}
+{% endif %}
+
+{% unless latest_themes_index_page_info %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item active" aria-current="page">
-            <span title="CodeMap.Handlebars@{{ current_codemap_handlebars_version }}">{{ page.title }}@{{ current_codemap_handlebars_version }}</span>
+            <span title="CodeMap.Handlebars">{{ page.title }}</span>
+        </li>
+    </ol>
+</nav>
+
+<h2>{{ page.title }}</h2>
+
+<p><code>CodeMap.Handlebars</code> does not have any published packages with themes, please check again later.</p>
+{% else %}
+{% assign latest_themes_index_page = latest_themes_index_page_info[0] %}
+{% assign latest_codemap_handlebars_version = latest_themes_index_page_info[1] %}
+
+{% assign latest_themes_index_page_directory_path = latest_themes_index_page.path | split: '/' %}
+{% assign latest_themes_index_page_directory_path = latest_themes_index_page_directory_path | reverse | slice: 1, latest_themes_index_page_directory_path.size | reverse %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">
+            <span title="CodeMap.Handlebars@{{ latest_codemap_handlebars_version }}">{{ latest_themes_index_page.title }}@{{ latest_codemap_handlebars_version }}</span>
         </li>
     </ol>
 </nav>
 
 <h2>
-    {{ page.title }}
+    {{ latest_themes_index_page.title }}
     <div class="btn-group">
         <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-            CodeMap.Handlebars@{{ current_codemap_handlebars_version }}
+            CodeMap.Handlebars@{{ latest_codemap_handlebars_version }}
         </button>
         <div class="dropdown-menu">
             {% for versioned_themes_index_page_info in versioned_themes_index_pages_info %}
                 {% assign themes_version_index_page = versioned_themes_index_page_info[0] %}
                 {% assign codemap_handlebars_version = versioned_themes_index_page_info[1] %}
-                <a class="dropdown-item{% if codemap_handlebars_version == current_codemap_handlebars_version %} active{% endif %}" href="{{ themes_version_index_page.url | relative_url }}">CodeMap.Handlebars@{{ codemap_handlebars_version }}</a>
+                <a class="dropdown-item{% if codemap_handlebars_version == latest_codemap_handlebars_version %} active{% endif %}" href="{{ themes_version_index_page.url | relative_url }}">CodeMap.Handlebars@{{ codemap_handlebars_version }}</a>
             {% endfor %}
             {% if versioned_themes_index_pages_info.size > 0 and other_themes_index_page_info.size > 0 %}
                 <div class="dropdown-divider"></div>
@@ -164,12 +194,24 @@ layout: Bootstrap@4.5.0
             {% for other_themes_index_page_info in other_themes_index_pages_info %}
                 {% assign themes_version_index_page = other_themes_index_page_info[0] %}
                 {% assign codemap_handlebars_version = other_themes_index_page_info[1] %}
-                <a class="dropdown-item{% if codemap_handlebars_version == current_codemap_handlebars_version %} active{% endif %}" href="{{ themes_version_index_page.url | relative_url }}">CodeMap.Handlebars@{{ codemap_handlebars_version }}</a>
+                <a class="dropdown-item{% if codemap_handlebars_version == latest_codemap_handlebars_version %} active{% endif %}" href="{{ themes_version_index_page.url | relative_url }}">CodeMap.Handlebars@{{ codemap_handlebars_version }}</a>
             {% endfor %}
         </div>
     </div>
 </h2>
 
-{{ content }}
+{% capture subdirectory_view_content %}
+    {% include subdirectory_browser.html directory_path=latest_themes_index_page_directory_path button_label='View Theme Category' %}
+{% endcapture %}
 
-{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' }} %}
+{% capture subdirectory_view_replace %}
+{% raw %}
+{% include subdirectory_browser.html button_label='View Theme Category' %}
+{% endraw %}
+{% endcapture %}
+
+{{ latest_themes_index_page.content | replace: subdirectory_view_replace, subdirectory_view_content }}
+
+{% include {{ latest_themes_index_page_directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' }} %}
+
+{% endunless %}
