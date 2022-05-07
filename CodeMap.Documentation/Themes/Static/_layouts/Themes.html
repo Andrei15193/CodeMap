@@ -1,17 +1,64 @@
 ---
 layout: Bootstrap@4.5.0
 ---
-{% assign default_pre_release_names = 'alpha,beta,rc' | split: ',' %}
-{% assign pre_release_names = site.data.pre_release_names | default: default_pre_release_names %}
+{% comment %}
+enum Precedence {
+    Release = 4,
+    Build = 3,
+    PreRelease = 2,
+    TextIdentifier = 1,
+    NumberIdentifier = 0
+}
+
+tuple: SemVer [
+    major: number >= 0,
+    minor: number >= 0,
+    patch: number >= 0,
+    { release version => Precedence.Release (4), pre-release version => Precedence.PreRelease (2) }
+    ...[
+        if (identifier is number and >= 0)
+            ...[ Precedence.NumberIdentifier (0), identifier as number ]
+        else
+            ...[ Precedence.TextIdentifier (1), identifier ]
+    ],
+    { without build version => Precedence.Release (4), with build version => Precedence.Build (3) }
+    ...[
+        if (identifier is number and >= 0)
+            ...[ Precedence.NumberIdentifier (0), identifier as number ]
+        else
+            ...[ Precedence.TextIdentifier (1), identifier ]
+    ]
+]
+
+A SemVer tuple is an array of items where the first 3 are the base version identifiers, always numeric identifiers (these are number greater than or equal to 0)
+followed by the version precedence (release = 4, pre-release = 2)
+followed by the pre-release version identifier pairs made out of the precedence for text or number identifiers then the identifier itself accordingly
+followed by the version precedence (release = 4, build = 3)
+followed by the build version identifier pairs which are just like the pre-release version identifier pairs
+
+When comparing any two versions, values at the same index have the same type, thus numbers are compared with numbers and strings with strings.
+To determine which version has precedence over another simply compare the individual items lexicographically.
+
+Example:
+1.0.0                  => [1, 0, 0, Release   , Release]
+1.0.0-alpha            => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       ]
+1.0.0-alpha.1          => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       , NumberIdentifier, 1               , Release]
+1.0.0-alpha.1+build.1  => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       , NumberIdentifier, 1               , Build  , TextIdentifier, 'build', NumberIdentifier, 1]
+1.0.0-alpha+build      => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       , Build           , TextIdentifier  , 'build']
+1.0.0+build            => [1, 0, 0, Release   , Build         , TextIdentifier, 'build']
+1.0.0+build.1          => [1, 0, 0, Release   , Build         , TextIdentifier, 'build'         , NumberIdentifier, 1      ]
+1.0.0+build.2          => [1, 0, 0, Release   , Build         , TextIdentifier, 'build'         , NumberIdentifier, 2      ]
+2.0.0                  => [2, 0, 0, Release   , Release]
+{% endcomment %}
 
 {% assign directory_path = page.path | split: '/' %}
 {% assign directory_path = directory_path | reverse | slice: 1, directory_path.size | reverse %}
 
-{% assign current_codemap_handlebars_version = directory_path | reverse | slice: 1 | first %}
+{% assign current_codemap_handlebars_version_string = directory_path | reverse | slice: 1 | first %}
 {% assign codemap_handlebars_path = directory_path | reverse | slice: 2, directory_path.size | reverse | join: '/' %}
 
-{% assign versioned_themes_index_pages_info = '' | split: ',' | where: 'an', 'array: [tuple versioned_themes_index_page_info: [page, codemap_handlebars_version: string, major: number, minor: number, path: number, pre_release_name_index: number, pre_release_number: number]]' %}
-{% assign other_themes_index_pages_info = '' | split: ',' | where: 'an', 'array: [tuple other_themes_index_page_info: [page, codemap_handlebars_version: string]]' %}
+{% assign versioned_themes_index_pages_info = '' | split: ',' | where: 'an', 'array: [tuple versioned_themes_index_page_info: [page, codemap_handlebars_version_string: string, codemap_handlebars_version: SemVer]' %}
+{% assign other_themes_index_pages_info = '' | split: ',' | where: 'an', 'array: [tuple other_themes_index_page_info: [page, codemap_handlebars_version_string: string]]' %}
 {% for themes_version_index_page in site.pages %}
     {% if themes_version_index_page.name == 'index.md' %}
         {% assign themes_version_index_page_directory_path = themes_version_index_page.path | split: '/' %}
@@ -19,69 +66,80 @@ layout: Bootstrap@4.5.0
 
         {% assign codemap_handlebars_path_other = themes_version_index_page_directory_path | reverse | slice: 2, themes_version_index_page_directory_path.size | reverse | join: '/' %}
         {% if codemap_handlebars_path == codemap_handlebars_path_other %}
-            {% assign codemap_handlebars_version = themes_version_index_page_directory_path | reverse | slice: 1 | first %}
+            {% assign codemap_handlebars_version_string = themes_version_index_page_directory_path | reverse | slice: 1 | first %}
 
-            {% assign is_valid_version = false %}
-            {% assign version_parts = codemap_handlebars_version | split: '.' %}
-            {% if version_parts.size == 3 %}
-                {% assign major = version_parts[0] | plus: 0 %}
-                {% assign minor = version_parts[1] | plus: 0 %}
-                {% assign patch_with_pre_release = version_parts[2] | split: '-' %}
-
-                {% if patch_with_pre_release.size <= 2 %}
-                    {% assign patch = patch_with_pre_release[0] | plus: 0 %}
-                    {% assign pre_release = patch_with_pre_release[1] %}
-
-                    {% unless patch_with_pre_release.size == 2 %}
-                        {% assign pre_release_name_index = pre_release_names.size %}
-                        {% assign pre_release_number = -1 %}
-                    {% else %}
-                        {% assign pre_release_name_index = '' | plus: '0' %}
-                        {% assign pre_release_number = '' | plus: '0' %}
-
-                        {% for pre_release_name in pre_release_names %}
-                            {% if pre_release == pre_release_name %}
-                                {% assign pre_release_name_index = forloop.index0 %}
-                                {% assign pre_release_number = -1 %}
-                            {% elsif pre_release contains pre_release_name %}
-                                {% assign pre_release_name_index = forloop.index0 %}
-                                {% assign pre_release_number = pre_release | slice: pre_release_name.size | plus: 0 %}
-                            {% endif %}
-                        {% endfor %}
-                    {% endunless %}
-
-                    {%
-                        assign versioned_themes_index_page_info = '' | split: ',' | where: 'a', 'versioned_themes_index_page_info'
-                            | push: themes_version_index_page
-                            | push: codemap_handlebars_version
-                            | push: major
-                            | push: minor
-                            | push: patch
-                            | push: pre_release_name_index
-                            | push: pre_release_number
-                    %}
-                    {% assign is_valid_version = true %}
-                    {% for version_part in versioned_themes_index_page_info offset: 2 %}
-                        {% unless version_part <= 0 or version_part >= 0 %}
-                            {% assign is_valid_version = false %}
-                            {% break %}
-                        {% endunless %}
-                    {% endfor %}
-
-                    {% if is_valid_version %}
-                        {% assign versioned_themes_index_pages_info = versioned_themes_index_pages_info | push: versioned_themes_index_page_info %}
-                    {% endif %}
-                {% endif %}
+            {% assign codemap_handlebars_build_version_split = codemap_handlebars_version_string | split: '+' %}
+            {% if codemap_handlebars_build_version_split.size > 1 %}
+                {% assign codemap_handlebars_build_version_string = codemap_handlebars_build_version_split | slice: 1, codemap_handlebars_build_version_split.size | join: '+' %}
+            {% else %}
+                {% assign codemap_handlebars_build_version_string = nil %}
             {% endif %}
 
-            {% unless is_valid_version %}
+            {% assign codemap_handlebars_pre_release_version_split = codemap_handlebars_build_version_split | first | split: '-' %}
+            {% assign codemap_handlebars_base_version_string = codemap_handlebars_pre_release_version_split | first %}
+            {% if codemap_handlebars_pre_release_version_split.size > 1 %}
+                {% assign codemap_handlebars_pre_release_version_string = codemap_handlebars_pre_release_version_split | slice: 1, codemap_handlebars_pre_release_version_split.size | join: '-' %}
+            {% else %}
+                {% assign codemap_handlebars_pre_release_version_string = nil %}
+            {% endif %}
+
+            {% assign codemap_handlebars_base_version = codemap_handlebars_base_version_string | split: '.' %}
+            {% assign codemap_handlebars_semver = '' | split: ',' | where: 'a', 'SemVer' %}
+            {% for base_version_identifier in codemap_handlebars_base_version %}
+                {% assign base_version_number_identifier = base_version_identifier | plus: 0 %}
+                {% if base_version_identifier == '0' or base_version_number_identifier > 0 %}
+                    {% assign codemap_handlebars_semver = codemap_handlebars_semver | push: base_version_number_identifier %}
+                {% endif %}
+            {% endfor %}
+
+            {% if codemap_handlebars_semver.size == 3 %}
+                {% if codemap_handlebars_pre_release_version_string %}
+                    {% assign codemap_handlebars_pre_release_version = codemap_handlebars_pre_release_version_string | split: '.' %}
+
+                    {% assign codemap_handlebars_semver = codemap_handlebars_semver | push: 2 %}
+                    {% for codemap_handlebars_pre_release_version_identifier in codemap_handlebars_pre_release_version %}
+                        {% assign codemap_handlebars_pre_release_version_number_identifier = codemap_handlebars_pre_release_version_identifier | plus: 0 %}
+                        {% if codemap_handlebars_pre_release_version_identifier == '0' or codemap_handlebars_pre_release_version_number_identifier > 0 %}
+                            {% assign codemap_handlebars_semver = codemap_handlebars_semver | push: 0 | push: codemap_handlebars_pre_release_version_number_identifier %}
+                        {% else %}
+                            {% assign codemap_handlebars_semver = codemap_handlebars_semver | push: 1 | push: codemap_handlebars_pre_release_version_identifier %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% assign codemap_handlebars_semver = codemap_handlebars_semver | push: 4 %}
+                {% endif %}
+
+                {% if codemap_handlebars_build_version_string %}
+                    {% assign codemap_handlebars_build_version = codemap_handlebars_build_version_string | split: '.' %}
+
+                    {% assign codemap_handlebars_semver = codemap_handlebars_semver | push: 3 %}
+                    {% for codemap_handlebars_build_version_identifier in codemap_handlebars_build_version %}
+                        {% assign codemap_handlebars_build_version_number_identifier = codemap_handlebars_build_version_identifier | plus: 0 %}
+                        {% if codemap_handlebars_build_version_identifier == '0' or codemap_handlebars_build_version_number_identifier > 0 %}
+                            {% assign codemap_handlebars_semver = codemap_handlebars_semver | push: 0 | push: codemap_handlebars_build_version_number_identifier %}
+                        {% else %}
+                            {% assign codemap_handlebars_semver = codemap_handlebars_semver | push: 1 | push: codemap_handlebars_build_version_identifier %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% assign codemap_handlebars_semver = codemap_handlebars_semver | push: 4 %}
+                {% endif %}
+
+                {%
+                    assign versioned_themes_index_page_info = '' | split: ',' | where: 'a', 'versioned_themes_index_page_info'
+                        | push: themes_version_index_page
+                        | push: codemap_handlebars_version_string
+                        | push: codemap_handlebars_semver
+                %}
+                {% assign versioned_themes_index_pages_info = versioned_themes_index_pages_info | push: versioned_themes_index_page_info %}
+            {% else %}
                 {%
                     assign other_themes_index_page_info = '' | split: ',' | where: 'a', 'other_themes_index_page_info'
                         | push: themes_version_index_page
-                        | push: codemap_handlebars_version
+                        | push: codemap_handlebars_version_string
                 %}
                 {% assign other_themes_index_pages_info = other_themes_index_pages_info | push: other_themes_index_page_info %}
-            {% endunless %}
+            {% endif %}
         {% endif %}
     {% endif %}
 {% endfor %}
@@ -91,16 +149,32 @@ layout: Bootstrap@4.5.0
     {% assign versioned_themes_index_pages_info_not_sorted = '' | split: ',' | where: 'an', 'array: [versioned_themes_index_page_info]' %}
 
     {% for versioned_themes_index_page_info in versioned_themes_index_pages_info offset: offset %}
-        {% assign is_current_greater = false %}
+        {% assign is_current_greater = nil %}
 
-        {% for version_part_index in (2..max_versioned_themes_index_page_info.size) %}
-            {% if versioned_themes_index_page_info[version_part_index] > max_versioned_themes_index_page_info[version_part_index] %}
+        {% assign max_versioned_themes_index_page_semver = max_versioned_themes_index_page_info[2] %}
+        {% assign versioned_themes_index_page_semver = versioned_themes_index_page_info[2] %}
+        {% assign min_semver_length = max_versioned_themes_index_page_semver.size %}
+        {% if versioned_themes_index_page_semver.size < min_semver_length %}
+            {% assign min_semver_length = versioned_themes_index_page_semver.size %}
+        {% endif %}
+
+        {% for semver_part_index in (0..min_semver_length) limit: min_semver_length %}
+            {% if versioned_themes_index_page_semver[semver_part_index] > max_versioned_themes_index_page_semver[semver_part_index] %}
                 {% assign is_current_greater = true %}
                 {% break %}
-            {% elsif max_versioned_themes_index_page_info[version_part_index] > versioned_themes_index_page_info[version_part_index] %}
+            {% elsif max_versioned_themes_index_page_semver[semver_part_index] > versioned_themes_index_page_semver[semver_part_index] %}
+                {% assign is_current_greater = false %}
                 {% break %}
             {% endif %}
         {% endfor %}
+
+        {% if is_current_greater == nil %}
+            {% if max_versioned_themes_index_page_semver.size < versioned_themes_index_page_semver.size %}
+                {% assign is_current_greater = true %}
+            {% else %}
+                {% assign is_current_greater = false %}
+            {% endif %}
+        {% endif %}
 
         {% if is_current_greater %}
             {% assign versioned_themes_index_pages_info_not_sorted = versioned_themes_index_pages_info_not_sorted | push: max_versioned_themes_index_page_info %}
@@ -141,7 +215,7 @@ layout: Bootstrap@4.5.0
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item active" aria-current="page">
-            <span title="CodeMap.Handlebars@{{ current_codemap_handlebars_version }}">{{ page.title }}@{{ current_codemap_handlebars_version }}</span>
+            <span title="CodeMap.Handlebars@{{ current_codemap_handlebars_version_string }}">{{ page.title }}@{{ current_codemap_handlebars_version_string }}</span>
         </li>
     </ol>
 </nav>
@@ -150,21 +224,21 @@ layout: Bootstrap@4.5.0
     {{ page.title }}
     <div class="btn-group">
         <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-            CodeMap.Handlebars@{{ current_codemap_handlebars_version }}
+            CodeMap.Handlebars@{{ current_codemap_handlebars_version_string }}
         </button>
         <div class="dropdown-menu">
             {% for versioned_themes_index_page_info in versioned_themes_index_pages_info %}
                 {% assign themes_version_index_page = versioned_themes_index_page_info[0] %}
-                {% assign codemap_handlebars_version = versioned_themes_index_page_info[1] %}
-                <a class="dropdown-item{% if codemap_handlebars_version == current_codemap_handlebars_version %} active{% endif %}" href="{{ themes_version_index_page.url | relative_url }}">CodeMap.Handlebars@{{ codemap_handlebars_version }}</a>
+                {% assign codemap_handlebars_version_string = versioned_themes_index_page_info[1] %}
+                <a class="dropdown-item{% if codemap_handlebars_version_string == current_codemap_handlebars_version_string %} active{% endif %}" href="{{ themes_version_index_page.url | relative_url }}">CodeMap.Handlebars@{{ codemap_handlebars_version_string }}</a>
             {% endfor %}
             {% if versioned_themes_index_pages_info.size > 0 and other_themes_index_page_info.size > 0 %}
                 <div class="dropdown-divider"></div>
             {% endif %}
             {% for other_themes_index_page_info in other_themes_index_pages_info %}
                 {% assign themes_version_index_page = other_themes_index_page_info[0] %}
-                {% assign codemap_handlebars_version = other_themes_index_page_info[1] %}
-                <a class="dropdown-item{% if codemap_handlebars_version == current_codemap_handlebars_version %} active{% endif %}" href="{{ themes_version_index_page.url | relative_url }}">CodeMap.Handlebars@{{ codemap_handlebars_version }}</a>
+                {% assign codemap_handlebars_version_string = other_themes_index_page_info[1] %}
+                <a class="dropdown-item{% if codemap_handlebars_version_string == current_codemap_handlebars_version_string %} active{% endif %}" href="{{ themes_version_index_page.url | relative_url }}">CodeMap.Handlebars@{{ codemap_handlebars_version_string }}</a>
             {% endfor %}
         </div>
     </div>
@@ -172,4 +246,4 @@ layout: Bootstrap@4.5.0
 
 {{ content }}
 
-{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' }} %}
+{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' | replace: '+', '_' }} %}

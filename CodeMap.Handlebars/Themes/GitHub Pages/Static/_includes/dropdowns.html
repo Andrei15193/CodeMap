@@ -1,8 +1,97 @@
-{% assign default_pre_release_names = include.pre_release_names | default: 'alpha,beta,rc' | split: ',' %}
-{% assign pre_release_names = site.data.pre_release_names | default: default_pre_release_names %}
+{% comment %}
+Parameters:
+- `item_include_name` (defaults to `dropdown-item.html`)
+- `item_separator_include_name` (defaults to `dropdown-item-separator.html`)
+
+Groups pages that have the `is_dropdown_landing_page` flag set to true and have a configured `dropdown` path, these
+can be set in the front matter of a page or through Jekyll configuration files.
+
+```
+is_dropdown_landing_page: true
+dropdown:
+- Blog
+- Latest
+```
+
+From the above example, a dropdown structure will be generated where all pages that have the 1st dropdown item `Blog`
+will be grouped together where each 2nd item will point to the actual page. The `is_dropdown_landing_page` flag indicates
+the landing page when multiple pages have the same dropdown path.
+
+In order to generate the dropdown items themselves, this include depends on two other includes which are provided through
+the `item_include_name` and `item_separator_include_name` parameters which default to `dropdown-item.html` and
+`dropdown-item-separator.html` respectively.
+
+The item include receives a number of parameters that are useful when generating a dropdown item:
+* `display_text`: the last item in the dropdown path (in the given example this would be `Latest`)
+* `is_active`: a flag indicating that dropdown item is part of the dropdown path of the page being processed
+  (in the given example, both `Blog` and `Blog / Latest` are ative items for any page having the `Blog, Latest` dropdown path,
+   but a page having the dropdown path `Latest` or `Lastest / Blog` will not mark either item as active as they would result
+   in other dropdown item groupings, or trees)
+* `depth`: this is the depth in the dropdown path starting with 1 (in the given example, the `Blog` item has the depth of `1`
+  while `Blog / Latest` has the depth of `2`)
+* `page`: this is the landing page for a dropdown item, may not always have value (in the given example, the `Blog` item does
+  not have a landing page, but `Blog / Latest` does)
+* `child_pages_content`: an HTML capture of child dropdown items, may not always have value (in the given example, the
+  `Blog / Latest` item does not have any child page contents, however the `Blog` item will received the HTML captures
+  that were generated for all child items, such as `Blog / Latest`)
+* `is_version_item`: a flag indicating whether the `display_text` is a valid SemVer
+
+The item separator include receives just two parameters which are exactly the same as the ones for the item include. These are
+the `depth` and `page` parameters.
+{% endcomment %}
 
 {% assign item_include_name = include.item_include_name | default: 'dropdown-item.html' %}
 {% assign item_separator_include_name = include.item_separator_include_name | default: 'dropdown-item-separator.html' %}
+
+{% comment %}
+enum Precedence {
+    Release = 4,
+    Build = 3,
+    PreRelease = 2,
+    TextIdentifier = 1,
+    NumberIdentifier = 0
+}
+
+tuple: SemVer [
+    major: number >= 0,
+    minor: number >= 0,
+    patch: number >= 0,
+    { release version => Precedence.Release (4), pre-release version => Precedence.PreRelease (2) }
+    ...[
+        if (identifier is number and >= 0)
+            ...[ Precedence.NumberIdentifier (0), identifier as number ]
+        else
+            ...[ Precedence.TextIdentifier (1), identifier ]
+    ],
+    { without build version => Precedence.Release (4), with build version => Precedence.Build (3) }
+    ...[
+        if (identifier is number and >= 0)
+            ...[ Precedence.NumberIdentifier (0), identifier as number ]
+        else
+            ...[ Precedence.TextIdentifier (1), identifier ]
+    ]
+]
+
+A SemVer tuple is an array of items where the first 3 are the base version identifiers, always numeric identifiers (these are number greater than or equal to 0)
+followed by the version precedence (release = 4, pre-release = 2)
+followed by the pre-release version identifier pairs made out of the precedence for text or number identifiers then the identifier itself accordingly
+followed by the version precedence (release = 4, build = 3)
+followed by the build version identifier pairs which are just like the pre-release version identifier pairs
+
+When comparing any two versions, values at the same index have the same type, thus numbers are compared with numbers and strings with strings.
+To determine which version has precedence over another simply compare the individual items lexicographically.
+
+Example:
+1.0.0                  => [1, 0, 0, Release   , Release]
+1.0.0-alpha            => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       ]
+1.0.0-alpha.1          => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       , NumberIdentifier, 1               , Release]
+1.0.0-alpha.1+build.1  => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       , NumberIdentifier, 1               , Build  , TextIdentifier, 'build', NumberIdentifier, 1]
+1.0.0-alpha+build      => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       , Build           , TextIdentifier  , 'build']
+1.0.0+build            => [1, 0, 0, Release   , Build         , TextIdentifier, 'build']
+1.0.0+build.1          => [1, 0, 0, Release   , Build         , TextIdentifier, 'build'         , NumberIdentifier, 1      ]
+1.0.0+build.2          => [1, 0, 0, Release   , Build         , TextIdentifier, 'build'         , NumberIdentifier, 2      ]
+2.0.0                  => [2, 0, 0, Release   , Release]
+{% endcomment %}
 
 {% assign dropdown_tree = '' | split: ',' | where: 'an', 'array: [tuple dropdown_node: [id, parent_id?, display_text, path, page?]]' %}
 
@@ -92,64 +181,77 @@
     {% assign versioned_dropdown_nodes = '' | split: ',' | where: 'an', 'array: [dropdown_node]' %}
     {% assign other_dropdown_nodes = '' | split: ',' | where: 'an', 'array: [dropdown_node]' %}
 
-    {% assign versioned_dropdown_nodes_info = '' | split: ',' | where: 'an', 'array: [tuple dropdown_node_info: [dropdown_node, major: number, minor: number, path: number, pre_release_name_index: number, pre_release_number: number]]' %}
+    {% assign versioned_dropdown_nodes_info = '' | split: ',' | where: 'an', 'array: [tuple dropdown_node_info: [dropdown_node, dropdown_node_version: SemVer]]' %}
     {% for dropdown_node in dropdown_nodes %}
         {% assign display_text = dropdown_node[2] %}
-        {% assign is_valid_version = false %}
-        {% assign version_parts = display_text | split: '.' %}
-        {% if version_parts.size == 3 %}
-            {% assign major = version_parts[0] | plus: 0 %}
-            {% assign minor = version_parts[1] | plus: 0 %}
-            {% assign patch_with_pre_release = version_parts[2] | split: '-' %}
+        {% assign dropdown_node_version_string = display_text %}
 
-            {% if patch_with_pre_release.size <= 2 %}
-                {% assign patch = patch_with_pre_release[0] | plus: 0 %}
-                {% assign pre_release = patch_with_pre_release[1] %}
-
-                {% unless patch_with_pre_release.size == 2 %}
-                    {% assign pre_release_name_index = pre_release_names.size %}
-                    {% assign pre_release_number = -1 %}
-                {% else %}
-                    {% assign pre_release_name_index = '' | plus: '0' %}
-                    {% assign pre_release_number = '' | plus: '0' %}
-
-                    {% for pre_release_name in pre_release_names %}
-                        {% if pre_release == pre_release_name %}
-                            {% assign pre_release_name_index = forloop.index0 %}
-                            {% assign pre_release_number = -1 %}
-                        {% elsif pre_release contains pre_release_name %}
-                            {% assign pre_release_name_index = forloop.index0 %}
-                            {% assign pre_release_number = pre_release | slice: pre_release_name.size | plus: 0 %}
-                        {% endif %}
-                    {% endfor %}
-                {% endunless %}
-
-                {%
-                    assign dropdown_node_info = '' | split: ',' | where: 'a', 'dropdown_node_info'
-                        | push: dropdown_node
-                        | push: major
-                        | push: minor
-                        | push: patch
-                        | push: pre_release_name_index
-                        | push: pre_release_number
-                %}
-                {% assign is_valid_version = true %}
-                {% for version_part in dropdown_node_info offset: 1 %}
-                    {% unless version_part <= 0 or version_part >= 0 %}
-                        {% assign is_valid_version = false %}
-                        {% break %}
-                    {% endunless %}
-                {% endfor %}
-
-                {% if is_valid_version %}
-                    {% assign versioned_dropdown_nodes_info = versioned_dropdown_nodes_info | push: dropdown_node_info %}
-                {% endif %}
-            {% endif %}
+        {% assign dropdown_node_build_version_split = dropdown_node_version_string | split: '+' %}
+        {% if dropdown_node_build_version_split.size > 1 %}
+            {% assign dropdown_node_build_version_string = dropdown_node_build_version_split | slice: 1, dropdown_node_build_version_split.size | join: '+' %}
+        {% else %}
+            {% assign dropdown_node_build_version_string = nil %}
         {% endif %}
 
-        {% unless is_valid_version %}
+        {% assign dropdown_node_pre_release_version_split = dropdown_node_build_version_split | first | split: '-' %}
+        {% assign dropdown_node_base_version_string = dropdown_node_pre_release_version_split | first %}
+        {% if dropdown_node_pre_release_version_split.size > 1 %}
+            {% assign dropdown_node_pre_release_version_string = dropdown_node_pre_release_version_split | slice: 1, dropdown_node_pre_release_version_split.size | join: '-' %}
+        {% else %}
+            {% assign dropdown_node_pre_release_version_string = nil %}
+        {% endif %}
+
+        {% assign dropdown_node_base_version = dropdown_node_base_version_string | split: '.' %}
+        {% assign dropdown_node_semver = '' | split: ',' | where: 'a', 'SemVer' %}
+        {% for base_version_identifier in dropdown_node_base_version %}
+            {% assign base_version_number_identifier = base_version_identifier | plus: 0 %}
+            {% if base_version_identifier == '0' or base_version_number_identifier > 0 %}
+                {% assign dropdown_node_semver = dropdown_node_semver | push: base_version_number_identifier %}
+            {% endif %}
+        {% endfor %}
+
+        {% if dropdown_node_semver.size == 3 %}
+            {% if dropdown_node_pre_release_version_string %}
+                {% assign dropdown_node_pre_release_version = dropdown_node_pre_release_version_string | split: '.' %}
+
+                {% assign dropdown_node_semver = dropdown_node_semver | push: 2 %}
+                {% for dropdown_node_pre_release_version_identifier in dropdown_node_pre_release_version %}
+                    {% assign dropdown_node_pre_release_version_number_identifier = dropdown_node_pre_release_version_identifier | plus: 0 %}
+                    {% if dropdown_node_pre_release_version_identifier == '0' or dropdown_node_pre_release_version_number_identifier > 0 %}
+                        {% assign dropdown_node_semver = dropdown_node_semver | push: 0 | push: dropdown_node_pre_release_version_number_identifier %}
+                    {% else %}
+                        {% assign dropdown_node_semver = dropdown_node_semver | push: 1 | push: dropdown_node_pre_release_version_identifier %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% assign dropdown_node_semver = dropdown_node_semver | push: 4 %}
+            {% endif %}
+
+            {% if dropdown_node_build_version_string %}
+                {% assign dropdown_node_build_version = dropdown_node_build_version_string | split: '.' %}
+
+                {% assign dropdown_node_semver = dropdown_node_semver | push: 3 %}
+                {% for dropdown_node_build_version_identifier in dropdown_node_build_version %}
+                    {% assign dropdown_node_build_version_number_identifier = dropdown_node_build_version_identifier | plus: 0 %}
+                    {% if dropdown_node_build_version_identifier == '0' or dropdown_node_build_version_number_identifier > 0 %}
+                        {% assign dropdown_node_semver = dropdown_node_semver | push: 0 | push: dropdown_node_build_version_number_identifier %}
+                    {% else %}
+                        {% assign dropdown_node_semver = dropdown_node_semver | push: 1 | push: dropdown_node_build_version_identifier %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% assign dropdown_node_semver = dropdown_node_semver | push: 4 %}
+            {% endif %}
+
+            {%
+                assign dropdown_node_info = '' | split: ',' | where: 'a', 'dropdown_node_info'
+                    | push: dropdown_node
+                    | push: dropdown_node_semver
+            %}
+            {% assign versioned_dropdown_nodes_info = versioned_dropdown_nodes_info | push: dropdown_node_info %}
+        {% else %}
             {% assign other_dropdown_nodes = other_dropdown_nodes | push: dropdown_node %}
-        {% endunless %}
+        {% endif %}
     {% endfor %}
 
     {% for number in (1..versioned_dropdown_nodes_info.size) %}
@@ -157,16 +259,32 @@
         {% assign versioned_dropdown_nodes_info_new = '' | split: ',' | where: 'an', 'array: [dropdown_node_info]' %}
 
         {% for versioned_dropdown_node_info in versioned_dropdown_nodes_info offset: 1 %}
-            {% assign is_current_greater = false %}
+            {% assign is_current_greater = nil %}
 
-            {% for version_part_index in (1..max_versioned_dropdown_node_info.size) %}
-                {% if versioned_dropdown_node_info[version_part_index] > max_versioned_dropdown_node_info[version_part_index] %}
+            {% assign max_versioned_dropdown_node_info_semver = max_versioned_dropdown_node_info[1] %}
+            {% assign versioned_dropdown_node_info_semver = versioned_dropdown_node_info[1] %}
+            {% assign min_semver_length = max_versioned_dropdown_node_info_semver.size %}
+            {% if versioned_dropdown_node_info_semver.size < min_semver_length %}
+                {% assign min_semver_length = versioned_dropdown_node_info_semver.size %}
+            {% endif %}
+
+            {% for semver_part_index in (0..min_semver_length) limit: min_semver_length %}
+                {% if versioned_dropdown_node_info_semver[semver_part_index] > max_versioned_dropdown_node_info_semver[semver_part_index] %}
                     {% assign is_current_greater = true %}
                     {% break %}
-                {% elsif max_versioned_dropdown_node_info[version_part_index] > versioned_dropdown_node_info[version_part_index] %}
+                {% elsif max_versioned_dropdown_node_info_semver[semver_part_index] > versioned_dropdown_node_info_semver[semver_part_index] %}
+                    {% assign is_current_greater = false %}
                     {% break %}
                 {% endif %}
             {% endfor %}
+
+            {% if is_current_greater == nil %}
+                {% if max_versioned_dropdown_node_info_semver.size < versioned_dropdown_node_info_semver.size %}
+                    {% assign is_current_greater = true %}
+                {% else %}
+                    {% assign is_current_greater = false %}
+                {% endif %}
+            {% endif %}
 
             {% if is_current_greater %}
                 {% assign versioned_dropdown_nodes_info_new = versioned_dropdown_nodes_info_new | push: max_versioned_dropdown_node_info %}
@@ -259,7 +377,11 @@
         {% endfor %}
 
         {% if version_dropdown_nodes.size > 0 and other_dropdown_nodes.size > 0 %}
-            {% include {{ item_separator_include_name }} %}
+            {%
+                include {{ item_separator_include_name }}
+                    depth=dropdown_node_depth
+                    page=dropdown_node_page
+            %}
         {% endif %}
 
         {% for dropdown_node in other_dropdown_nodes %}

@@ -190,7 +190,7 @@ namespace CodeMap.Documentation
                 => new ThemeEmbeddedDirectoryData(
                     $"{GitHubBaseUrl}/{subdirectoryName}",
                     OutputPageDirectory.CreateSubdirectory(subdirectoryName),
-                    OutputIncludeDirectory.CreateSubdirectory(subdirectoryName.Replace(' ', '-')),
+                    OutputIncludeDirectory.CreateSubdirectory(subdirectoryName.Replace(' ', '-').Replace('+', '_')),
                     EmbeddedDirectory.Subdirectories[subdirectoryName],
                     Enumerable.Repeat(this, 1).Concat(Parents).Select(parent => parent with { IsInherited = true })
                 )

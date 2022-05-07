@@ -26,4 +26,4 @@ layout: Bootstrap@4.5.0
 
 {{ content }}
 
-{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' }} %}
+{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' | replace: '+', '_' }} %}
