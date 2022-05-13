@@ -153,6 +153,7 @@ Example:
 
         {% assign max_versioned_themes_index_page_semver = max_versioned_themes_index_page_info[2] %}
         {% assign versioned_themes_index_page_semver = versioned_themes_index_page_info[2] %}
+
         {% assign min_semver_length = max_versioned_themes_index_page_semver.size %}
         {% if versioned_themes_index_page_semver.size < min_semver_length %}
             {% assign min_semver_length = versioned_themes_index_page_semver.size %}
@@ -246,4 +247,4 @@ Example:
 
 {{ content }}
 
-{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' | replace: '+', '_' }} %}
+{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' | replace: '@', '-' | replace: '+', '_' }} %}

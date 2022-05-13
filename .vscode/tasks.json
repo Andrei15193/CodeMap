@@ -43,7 +43,7 @@
         },
         {
             "label": "generate Gemfile",
-            "command": "mkdir docs && echo >> docs/Gemfile \"source 'https://rubygems.org'\n\ngem 'github-pages', group: :jekyll_plugins\"",
+            "command": "mkdir --parents docs && echo >> docs/Gemfile \"source 'https://rubygems.org'\n\ngem 'github-pages', group: :jekyll_plugins\"",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}/CodeMap.Documentation/bin"
@@ -62,7 +62,8 @@
                 "--incremental",
                 "--baseurl",
                 "/CodeMap",
-                "--open-url"
+                "--open-url",
+                "--trace"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/CodeMap.Documentation/bin/docs"

@@ -16,9 +16,17 @@
                     <div class="card bg-light h-100">
                         <div class="card-header">{{ subdirectory_index_page.title }}</div>
                         {% if subdirectory_index_page.card_relative_url %}
-                        <img src="{{ subdirectory_path | join: '/' | append: '/' | append: subdirectory_index_page.card_relative_url | relative_url }}" alt="{{ subdirectory_index_page.title }} card">
+                            <img src="{{ subdirectory_path | join: '/' | append: '/' | append: subdirectory_index_page.card_relative_url | relative_url }}" alt="{{ subdirectory_index_page.title }} card">
                         {% endif %}
                         <div class="card-body d-flex flex-column">
+                            {% if subdirectory_index_page.tags and subdirectory_index_page.tags.size > 0 %}
+                            <p>
+                                {% for tag in subdirectory_index_page.tags %}
+                                    <span class="badge badge-pill badge-primary">{{ tag }}</span>
+                                {% endfor %}
+                            </p>
+                            {% endif %}
+
                             <p class="card-text">{{ subdirectory_index_page.excerpt }}</p>
                             <div class="mt-auto text-right">
                                 <a href="{{ subdirectory_index_page.url | relative_url }}" class="btn btn-sm btn-primary">{{ include.button_label | default: 'View Page' }}</a>

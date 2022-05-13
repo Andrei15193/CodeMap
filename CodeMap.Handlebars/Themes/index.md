@@ -6,9 +6,27 @@ dropdown:
 ---
 Browse themes available with `CodeMap.Handlebars` for generating documentation websites for your .NET projects.
 
-Themes are grouped into categories, each category aims to provide a number of features or have a specific mode of deployment. For instance, the GitHub Pages category provides themes that are aimed to generate websites that are hosted on <a href="https://pages.github.com/">GitHub Pages</a> taking advantage of <a href="https://jekyllrb.com/">Jekyll</a> to provide different features, such as hosting documentation for multiple versions of a library allowing users to browse older documentations when they are not using the latest one yet.
-
 {% include subdirectory_browser.html button_label='View Theme Category' %}
+
+All themes are made available through the package itself as embedded resources. This simplifies deployment and ensures that a theme is fully compatible with the package itself. This may get confusing when it comes to checking out themes and available files because both `CodeMap.Handlebars` and available themes have their own versions.
+
+Themes are versioned to ensure backwards compatibility with the ones that were previously deployed and allow for newer features, or changes, to be made available for future deployments. If a theme is based on a 3rd party UI library, such as Bootstrap, MaterialUI or FluentUI then the theme version correlates with the one of 3rd party library. For instance, the Bootstrap 4.5.0 theme uses Bootstrap 4.5.0. This is in an effort to reduce confusion and make it easier to know what dependencies are being used.
+
+Each release of `CodeMap.Handlebars` has a version of itself, as any other package, and with each release there may be other themes that are added or modified. To correctly identify the available themes, pick the `CodeMap.Handlebars` version from the dropdown that you are currently using. To get to the exact theme version that you are using, navigate to the respective theme version for the `CodeMap.Handlebars` version that you are currently using.
+
+Themes are grouped into categories, each category aims to provide a number of features or have particularities about deployment. For instance, the GitHub Pages category is meant to generate documentation sites hosted on <a href="https://pages.github.com/">GitHub Pages</a>, while the Simple category is meant to generate HTML files that can be hosted anywhere, even browsed locally.
+
+As mentioned above, themes are versioned themselves. However, files that are available for a specific theme can come from multiple levels. Globally available files are stored at the root of the Themes embedded directory, these are generally [Handlebars](https://handlebarsjs.com/) templates that are theme and theme category agnostic. A good example for this are the documentation [Handlebars partials](https://handlebarsjs.com/guide/partials.html) which are used to generate HTML for documentation written through the XML tags in C# source code.
+
+The next level is the Theme Category level, these files are specific to the category containing them only. For instance, the GitHub Pages category provides a [Jekyll Include](https://jekyllrb.com/docs/includes/) for generating dropdown menus from pages, particularly useful for hosting multiple versions of a library. Whenever a new version is added a new item is added in the dropdown and all pages get automatically updated. Items matching a [SemVer](https://semver.org/) specification are sorted accordingly.
+
+The 3rd level is the Theme itself, but not a specific theme version. At this level files can be made available for all versions of that specific theme. Once again, these can be helpers or common templates.
+
+Finally, the 4th level is the Specific Theme Version level. Files at this level are available only to that specific theme version alone and is the ideal place to have the CSS and JavaScript files.
+
+Multiple themes can be deployed at the same time and be used on different pages of the same site. In order to provide this, files are either named or placed in directories resembling both the theme and the version they belong to. For instance, the layout page for the Bootstrap 4.5.0 theme from GitHub Pages is named `bootstrap@4.5.0`, while includes are placed in in `Bootstrap/4.5.0/` ([Jekyll Includes](https://jekyllrb.com/docs/includes/) have restrictions on the file name, but not on the directory names). This will allow users to switch to a different version of Bootstrap while the already deployed pages will still use the previous version and be displayed the same way.
+
+All dependencies are provided with the website, there are no external links to JavaScript, CSS, font, images and so on from the generated pages. Everything is meant to be hosted on the documentation website to remove dependencies to 3rd party hosting systems and ensure that the dependent files will always be available.
 
 ### Remarks
 

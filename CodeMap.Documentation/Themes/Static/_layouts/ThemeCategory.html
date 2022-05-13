@@ -1,11 +1,236 @@
 ---
 layout: Bootstrap@4.5.0
 ---
+{% comment %}
+enum Precedence {
+    Release = 4,
+    Build = 3,
+    PreRelease = 2,
+    TextIdentifier = 1,
+    NumberIdentifier = 0
+}
+
+tuple: SemVer [
+    major: number >= 0,
+    minor: number >= 0,
+    patch: number >= 0,
+    { release version => Precedence.Release (4), pre-release version => Precedence.PreRelease (2) }
+    ...[
+        if (identifier is number and >= 0)
+            ...[ Precedence.NumberIdentifier (0), identifier as number ]
+        else
+            ...[ Precedence.TextIdentifier (1), identifier ]
+    ],
+    { without build version => Precedence.Release (4), with build version => Precedence.Build (3) }
+    ...[
+        if (identifier is number and >= 0)
+            ...[ Precedence.NumberIdentifier (0), identifier as number ]
+        else
+            ...[ Precedence.TextIdentifier (1), identifier ]
+    ]
+]
+
+A SemVer tuple is an array of items where the first 3 are the base version identifiers, always numeric identifiers (these are number greater than or equal to 0)
+followed by the version precedence (release = 4, pre-release = 2)
+followed by the pre-release version identifier pairs made out of the precedence for text or number identifiers then the identifier itself accordingly
+followed by the version precedence (release = 4, build = 3)
+followed by the build version identifier pairs which are just like the pre-release version identifier pairs
+
+When comparing any two versions, values at the same index have the same type, thus numbers are compared with numbers and strings with strings.
+To determine which version has precedence over another simply compare the individual items lexicographically.
+
+Example:
+1.0.0                  => [1, 0, 0, Release   , Release]
+1.0.0-alpha            => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       ]
+1.0.0-alpha.1          => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       , NumberIdentifier, 1               , Release]
+1.0.0-alpha.1+build.1  => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       , NumberIdentifier, 1               , Build  , TextIdentifier, 'build', NumberIdentifier, 1]
+1.0.0-alpha+build      => [1, 0, 0, PreRelease, TextIdentifier, 'alpha'       , Build           , TextIdentifier  , 'build']
+1.0.0+build            => [1, 0, 0, Release   , Build         , TextIdentifier, 'build']
+1.0.0+build.1          => [1, 0, 0, Release   , Build         , TextIdentifier, 'build'         , NumberIdentifier, 1      ]
+1.0.0+build.2          => [1, 0, 0, Release   , Build         , TextIdentifier, 'build'         , NumberIdentifier, 2      ]
+2.0.0                  => [2, 0, 0, Release   , Release]
+{% endcomment %}
+
 {% assign directory_path = page.path | split: '/' %}
 {% assign directory_path = directory_path | reverse | slice: 1, directory_path.size | reverse %}
 
+{% assign current_theme_category_directory_path = directory_path | join: '/' %}
 {% assign themes_index_page_path = directory_path | reverse | slice: 1, directory_path.size | reverse | join: '/' | append: '/index.md' %}
 {% assign codemap_handlebars_version = directory_path | reverse | slice: 2 | first %}
+
+{% assign theme_index_pages_info = '' | split: ',' | where: 'an', 'array: [tuple theme_index_page_info: [page, theme_id, theme_version_string: string, theme_version: SemVer]]' %}
+{% for theme_index_page in site.pages %}
+    {% if theme_index_page.name == 'index.md' %}
+        {% assign theme_index_page_directory_path = theme_index_page.path | split: '/' %}
+        {% assign theme_index_page_directory_path = theme_index_page_directory_path | reverse | slice: 1, theme_index_page_directory_path.size | reverse %}
+
+        {% assign theme_category_directory_path = theme_index_page_directory_path | reverse | slice: 1, theme_index_page_directory_path.size | reverse | join: '/' %}
+        {% if current_theme_category_directory_path == theme_category_directory_path %}
+            {% assign theme_id = theme_index_page_directory_path | last | split: '@' %}
+            {% assign theme_id = theme_id | reverse | slice: 1, theme_id.size | reverse | join: '@' %}
+            {% assign theme_id = theme_index_page_directory_path | reverse | slice: 1, theme_index_page_directory_path.size | reverse | join: '/' | append: '/' | append: theme_id | append: '/' %}
+            {% assign theme_version_string = theme_index_page_directory_path | last | split: '@' | last %}
+
+            {% assign theme_build_version_split = theme_version_string | split: '+' %}
+            {% if theme_build_version_split.size > 1 %}
+                {% assign theme_build_version_string = theme_build_version_split | slice: 1, theme_build_version_split.size | join: '+' %}
+            {% else %}
+                {% assign theme_build_version_string = nil %}
+            {% endif %}
+
+            {% assign theme_pre_release_version_split = theme_build_version_split | first | split: '-' %}
+            {% assign theme_base_version_string = theme_pre_release_version_split | first %}
+            {% if theme_pre_release_version_split.size > 1 %}
+                {% assign theme_pre_release_version_string = theme_pre_release_version_split | slice: 1, theme_pre_release_version_split.size | join: '-' %}
+            {% else %}
+                {% assign theme_pre_release_version_string = nil %}
+            {% endif %}
+
+            {% assign theme_base_version = theme_base_version_string | split: '.' %}
+            {% assign theme_semver = '' | split: ',' | where: 'a', 'SemVer' %}
+            {% for base_version_identifier in theme_base_version %}
+                {% assign base_version_number_identifier = base_version_identifier | plus: 0 %}
+                {% if base_version_identifier == '0' or base_version_number_identifier > 0 %}
+                    {% assign theme_semver = theme_semver | push: base_version_number_identifier %}
+                {% endif %}
+            {% endfor %}
+
+            {% if theme_semver.size == 3 %}
+                {% if theme_pre_release_version_string %}
+                    {% assign theme_pre_release_version = theme_pre_release_version_string | split: '.' %}
+
+                    {% assign theme_semver = theme_semver | push: 2 %}
+                    {% for theme_pre_release_version_identifier in theme_pre_release_version %}
+                        {% assign theme_pre_release_version_number_identifier = theme_pre_release_version_identifier | plus: 0 %}
+                        {% if theme_pre_release_version_identifier == '0' or theme_pre_release_version_number_identifier > 0 %}
+                            {% assign theme_semver = theme_semver | push: 0 | push: theme_pre_release_version_number_identifier %}
+                        {% else %}
+                            {% assign theme_semver = theme_semver | push: 1 | push: theme_pre_release_version_identifier %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% assign theme_semver = theme_semver | push: 4 %}
+                {% endif %}
+
+                {% if theme_build_version_string %}
+                    {% assign theme_build_version = theme_build_version_string | split: '.' %}
+
+                    {% assign theme_semver = theme_semver | push: 3 %}
+                    {% for theme_build_version_identifier in theme_build_version %}
+                        {% assign theme_build_version_number_identifier = theme_build_version_identifier | plus: 0 %}
+                        {% if theme_build_version_identifier == '0' or theme_build_version_number_identifier > 0 %}
+                            {% assign theme_semver = theme_semver | push: 0 | push: theme_build_version_number_identifier %}
+                        {% else %}
+                            {% assign theme_semver = theme_semver | push: 1 | push: theme_build_version_identifier %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% assign theme_semver = theme_semver | push: 4 %}
+                {% endif %}
+
+                {%
+                    assign theme_index_page_info = '' | split: ',' | where: 'a', 'theme_index_page_info'
+                        | push: theme_index_page
+                        | push: theme_id
+                        | push: theme_version_string
+                        | push: theme_semver
+                %}
+                {% assign theme_index_pages_info = theme_index_pages_info | push: theme_index_page_info %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% for offset in (1..theme_index_pages_info.size) %}
+    {% assign max_theme_index_page_info = theme_index_pages_info | slice: forloop.index0 | first %}
+    {% assign theme_index_pages_info_not_sorted = '' | split: ',' | where: 'an', 'array: [theme_index_page_info]' %}
+
+    {% for theme_index_page_info in theme_index_pages_info offset: offset %}
+        {% assign is_current_greater = nil %}
+
+        {% assign max_versioned_themes_index_page_semver = max_theme_index_page_info[3] %}
+        {% assign versioned_themes_index_page_semver = theme_index_page_info[3] %}
+
+        {% assign min_semver_length = max_versioned_themes_index_page_semver.size %}
+        {% if versioned_themes_index_page_semver.size < min_semver_length %}
+            {% assign min_semver_length = versioned_themes_index_page_semver.size %}
+        {% endif %}
+
+        {% for semver_part_index in (0..min_semver_length) limit: min_semver_length %}
+            {% if versioned_themes_index_page_semver[semver_part_index] > max_versioned_themes_index_page_semver[semver_part_index] %}
+                {% assign is_current_greater = true %}
+                {% break %}
+            {% elsif max_versioned_themes_index_page_semver[semver_part_index] > versioned_themes_index_page_semver[semver_part_index] %}
+                {% assign is_current_greater = false %}
+                {% break %}
+            {% endif %}
+        {% endfor %}
+
+        {% if is_current_greater == nil %}
+            {% if max_versioned_themes_index_page_semver.size < versioned_themes_index_page_semver.size %}
+                {% assign is_current_greater = true %}
+            {% else %}
+                {% assign is_current_greater = false %}
+            {% endif %}
+        {% endif %}
+
+        {% if is_current_greater %}
+            {% assign theme_index_pages_info_not_sorted = theme_index_pages_info_not_sorted | push: max_theme_index_page_info %}
+            {% assign max_theme_index_page_info = theme_index_page_info %}
+        {% else %}
+            {% assign theme_index_pages_info_not_sorted = theme_index_pages_info_not_sorted | push: theme_index_page_info %}
+        {% endif %}
+    {% endfor %}
+
+    {% assign theme_index_pages_info = theme_index_pages_info | slice: 0, forloop.index0 | push: max_theme_index_page_info %}
+    {% for theme_index_page_info_not_sorted in theme_index_pages_info_not_sorted %}
+        {% assign theme_index_pages_info = theme_index_pages_info | push: theme_index_page_info_not_sorted %}
+    {% endfor %}
+{% endfor %}
+
+{% for offset in (1..theme_index_pages_info.size) %}
+    {% assign min_theme_index_page_info = theme_index_pages_info | slice: forloop.index0 | first %}
+    {% assign theme_index_pages_info_not_sorted = '' | split: ',' | where: 'an', 'array: [theme_index_page_info]' %}
+
+    {% for theme_index_page_info in theme_index_pages_info offset: offset %}
+        {% assign min_theme_index_page_theme_id = min_theme_index_page_info[1] %}
+        {% assign theme_index_page_theme_id = theme_index_page_info[1] %}
+
+        {% if theme_index_page_theme_id < min_theme_index_page_theme_id %}
+            {% assign theme_index_pages_info_not_sorted = theme_index_pages_info_not_sorted | push: min_theme_index_page_info %}
+            {% assign min_theme_index_page_info = theme_index_page_info %}
+        {% else %}
+            {% assign theme_index_pages_info_not_sorted = theme_index_pages_info_not_sorted | push: theme_index_page_info %}
+        {% endif %}
+    {% endfor %}
+
+    {% assign theme_index_pages_info = theme_index_pages_info | slice: 0, forloop.index0 | push: min_theme_index_page_info %}
+    {% for theme_index_page_info_not_sorted in theme_index_pages_info_not_sorted %}
+        {% assign theme_index_pages_info = theme_index_pages_info | push: theme_index_page_info_not_sorted %}
+    {% endfor %}
+{% endfor %}
+
+{% assign previous_theme_id = nil %}
+{% assign theme_index_pages_info_by_theme_id = '' | split: ',' | where: 'an', 'array: [theme_index_page_info]' %}
+{% assign theme_index_pages_info_by_theme_ids = '' | split: ',' | where: 'an', 'array: [array: [theme_index_page_info]]' %}
+{% for theme_index_page_info in theme_index_pages_info %}
+    {% assign theme_id = theme_index_page_info[1] %}
+    {% if previous_theme_id == theme_id %}
+        {% assign theme_index_pages_info_by_theme_id = theme_index_pages_info_by_theme_id | push: theme_index_page_info %}
+    {% else %}
+        {% if theme_index_pages_info_by_theme_id.size > 0 %}
+            {% assign theme_index_pages_info_by_theme_ids = theme_index_pages_info_by_theme_ids | push: theme_index_pages_info_by_theme_id %}
+        {% endif %}
+        {%
+            assign theme_index_pages_info_by_theme_id = '' | split: ',' | where: 'an', 'array: [theme_index_page_info]'
+                | push: theme_index_page_info
+        %}
+        {% assign previous_theme_id = theme_id %}
+    {% endif %}
+{% endfor %}
+{% if theme_index_pages_info_by_theme_id.size > 0 %}
+    {% assign theme_index_pages_info_by_theme_ids = theme_index_pages_info_by_theme_ids | push: theme_index_pages_info_by_theme_id %}
+{% endif %}
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -24,6 +249,63 @@ layout: Bootstrap@4.5.0
 
 <h2>{{ page.title }}</h2>
 
+{% if page.tags and page.tags.size > 0 %}
+    <p>
+        {% for tag in page.tags %}
+            <span class="badge badge-pill badge-primary">{{ tag }}</span>
+        {% endfor %}
+    </p>
+{% endif %}
+
 {{ content }}
 
-{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' | replace: '+', '_' }} %}
+<div class="container p-0">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 no-gutters" style="margin-right: -1.5rem;">
+        {% for theme_index_pages_info_by_theme_id in theme_index_pages_info_by_theme_ids %}
+            {% assign latest_theme_index_page_info = theme_index_pages_info_by_theme_id | first %}
+            {% assign latest_theme_index_page = latest_theme_index_page_info[0] %}
+            {% assign latest_theme_version_string = latest_theme_index_page_info[2] %}
+
+            <div class="col pb-3 pr-4">
+                <div class="card bg-light h-100">
+                    <div class="card-header">{{ latest_theme_index_page.title }}</div>
+                    {% if latest_theme_index_page.card_relative_url %}
+                        {% assign theme_directory_path = latest_theme_index_page.path | split: '/' %}
+                        {% assign theme_directory_path = theme_directory_path | reverse | slice: 1, theme_directory_path.size | reverse %}
+                        <img src="{{ theme_directory_path | join: '/' | append: '/' | append: latest_theme_index_page.card_relative_url | relative_url }}" alt="{{ latest_theme_index_page.title }} card">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        {% if latest_theme_index_page.tags and latest_theme_index_page.tags.size > 0 %}
+                        <p>
+                            {% for tag in latest_theme_index_page.tags %}
+                                <span class="badge badge-pill badge-primary">{{ tag }}</span>
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+
+                        <p class="card-text">{{ latest_theme_index_page.excerpt }}</p>
+                        <div class="mt-auto text-right">
+                            <div class="btn-group">
+                                <a href="{{ latest_theme_index_page.url | relative_url }}" class="btn btn-sm btn-primary">View Theme ({{ latest_theme_version_string }})</a>
+                                {% if theme_index_pages_info_by_theme_id.size > 1 %}
+                                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        {% for previous_theme_index_page_info in theme_index_pages_info_by_theme_id offset: 1 %}
+                                            {% assign previous_theme_index_page = previous_theme_index_page_info[0] %}
+                                            {% assign previous_theme_version_string = previous_theme_index_page_info[2] %}
+                                            <a class="dropdown-item" href="{{ previous_theme_index_page.url | relative_url }}">{{ previous_theme_version_string }}</a>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' | replace: '@', '-' | replace: '+', '_' }} %}

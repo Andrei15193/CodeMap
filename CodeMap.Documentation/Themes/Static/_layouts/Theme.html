@@ -54,10 +54,14 @@ Example:
 {% assign directory_path = page.path | split: '/' %}
 {% assign directory_path = directory_path | reverse | slice: 1, directory_path.size | reverse %}
 
-{% assign current_theme_version_string = directory_path | last %}
-{% assign theme_index_page_path = directory_path | reverse | slice: 1, directory_path.size | reverse | join: '/' | append: '/index.md' %}
-{% assign theme_category_index_page_path = directory_path | reverse | slice: 2, directory_path.size | reverse | join: '/' | append: '/index.md' %}
-{% assign themes_index_page_path = directory_path | reverse | slice: 3, directory_path.size | reverse | join: '/' | append: '/index.md' %}
+{% assign theme_id = directory_path | last | split: '@' %}
+{% assign theme_id = theme_id | reverse | slice: 1, theme_id.size | reverse | join: '@' %}
+{% assign theme_id = directory_path | reverse | slice: 1, directory_path.size | reverse | join: '/' | append: '/' | append: theme_id | append: '/' %}
+
+{% assign current_theme_version_string =  directory_path | last | split: '@' | last %}
+{% assign theme_index_page_path = directory_path | join: '/' | append: '/index.md' %}
+{% assign theme_category_index_page_path = directory_path | reverse | slice: 1, directory_path.size | reverse | join: '/' | append: '/index.md' %}
+{% assign themes_index_page_path = directory_path | reverse | slice: 2, directory_path.size | reverse | join: '/' | append: '/index.md' %}
 
 {% assign theme_version_index_pages_info = '' | split: ',' | where: 'an', 'array: [tuple theme_index_page_info: [page, theme_version_string: string, theme_version: SemVer]]' %}
 {% for theme_version_index_page in site.pages %}
@@ -65,9 +69,12 @@ Example:
         {% assign theme_version_index_page_directory_path = theme_version_index_page.path | split: '/' %}
         {% assign theme_version_index_page_directory_path = theme_version_index_page_directory_path | reverse | slice: 1, theme_version_index_page_directory_path.size | reverse %}
 
-        {% assign theme_index_page_path_other = theme_version_index_page_directory_path | reverse | slice: 1, theme_version_index_page_directory_path.size | reverse | join: '/' | append: '/index.md' %}
-        {% if theme_index_page_path == theme_index_page_path_other %}
-            {% assign theme_version_string = theme_version_index_page_directory_path | last %}
+        {% assign theme_id_other = theme_version_index_page_directory_path | last | split: '@' %}
+        {% assign theme_id_other = theme_id_other | reverse | slice: 1, theme_id_other.size | reverse | join: '@' %}
+        {% assign theme_id_other = theme_version_index_page_directory_path | reverse | slice: 1, theme_version_index_page_directory_path.size | reverse | join: '/' | append: '/' | append: theme_id_other | append: '/' %}
+
+        {% if theme_id == theme_id_other %}
+            {% assign theme_version_string = theme_version_index_page_directory_path | last | split: '@' | last %}
 
             {% assign theme_build_version_split = theme_version_string | split: '+' %}
             {% if theme_build_version_split.size > 1 %}
@@ -147,6 +154,7 @@ Example:
 
         {% assign max_versioned_themes_index_page_semver = max_theme_index_page_info[2] %}
         {% assign versioned_themes_index_page_semver = theme_index_page_info[2] %}
+
         {% assign min_semver_length = max_versioned_themes_index_page_semver.size %}
         {% if versioned_themes_index_page_semver.size < min_semver_length %}
             {% assign min_semver_length = versioned_themes_index_page_semver.size %}
@@ -188,9 +196,9 @@ Example:
     <ol class="breadcrumb">
         {% for page in site.pages %}
             {% if page.path == themes_index_page_path %}
-                {% assign theme_version_string = directory_path | reverse | slice: 4 | first %}
+                {% assign codemap_handlebars_version_string = directory_path | reverse | slice: 3 | first %}
                 <li class="breadcrumb-item" aria-current="page">
-                    <a href="{{ page.url | relative_url }}" title="CodeMap.Handlebars@{{ theme_version_string }}">{{ page.title }}@{{ theme_version_string }}</a>
+                    <a href="{{ page.url | relative_url }}" title="CodeMap.Handlebars@{{ codemap_handlebars_version_string }}">{{ page.title }}@{{ codemap_handlebars_version_string }}</a>
                 </li>
                 {% break %}
             {% endif %}
@@ -206,11 +214,11 @@ Example:
         {% for page in site.pages %}
             {% if page.path == theme_index_page_path %}
                 <li class="breadcrumb-item active" aria-current="page">
-                    <a href="{{ page.url | relative_url }}">{{ page.title }}</a>@{{ current_theme_version_string }}
+                    {{ page.title }}@{{ current_theme_version_string }}
+                </li>
                 {% break %}
             {% endif %}
         {% endfor %}
-        </li>
     </ol>
 </nav>
 
@@ -221,13 +229,6 @@ Example:
             {{ current_theme_version_string }}
         </button>
         <div class="dropdown-menu">
-            {% for page in site.pages %}
-                {% if page.path == theme_index_page_path %}
-                    <a class="dropdown-item" href="{{ page.url | relative_url }}">Home</a>
-                    <div class="dropdown-divider"></div>
-                    {% break %}
-                {% endif %}
-            {% endfor %}
             {% for theme_version_index_page_info in theme_version_index_pages_info %}
                 {% assign theme_version_index_page = theme_version_index_page_info[0] %}
                 {% assign theme_version_string = theme_version_index_page_info[1] %}
@@ -238,13 +239,13 @@ Example:
 </h2>
 
 {% if page.tags and page.tags.size > 0 %}
-    <div>
+    <p>
         {% for tag in page.tags %}
             <span class="badge badge-pill badge-primary">{{ tag }}</span>
         {% endfor %}
-    </div>
+    </p>
 {% endif %}
 
 {{ content }}
 
-{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' | replace: '+', '_' }} %}
+{% include {{ directory_path | join: '/' | append: '/files.html' | replace: ' ', '-' | replace: '@', '-' | replace: '+', '_' }} %}

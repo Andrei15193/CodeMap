@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="bootstrap@4.5.0.css" />
+    <link rel="stylesheet" href="pygments@4.5.0.css" />
+    <link rel="stylesheet" href="style@4.5.0.css" />
+</head>
+<body class="d-flex flex-column">
+    <div>
+        <div class="d-flex flex-row align-items-center container px-2 pt-2">
+            <h1 class="flex-grow-1 flex-shrink-1">{{assembly.name}} <small>{{Semver assembly.version}}</small></h1>
+            <a class="btn btn-link" href="https://github.com/{{GetAssemblyCompany assembly}}/{{assembly.name}}">View on GitHub</a>
+            <a class="btn btn-link" href="https://www.nuget.org/packages/{{assembly.name}}/{{Semver assembly.version}}">View on NuGet</a>
+        </div>
+
+        <hr />
+    </div>
+
+    <div class="d-flex flex-column flex-grow-1 flex-shrink-1">
+        <div class="d-flex flex-column flex-grow-1 flex-shrink-1 container px-2 pt-2">
+            {{#with node}}{{> @partial-block this}}{{/with}}
+        </div>
+    </div>
+
+    <div>
+        <hr />
+
+        <div class="d-flex flex-column container px-2">
+            <p class="text-center">
+                <a href="https://github.com/{{GetAssemblyCompany assembly}}/{{assembly.name}}/releases/tag/{{Semver assembly.version}}">{{assembly.name}} {{Semver assembly.version}}</a>
+                -
+                <a href="https://github.com/{{GetAssemblyCompany assembly}}/{{assembly.name}}">View on GitHub</a>
+                -
+                <a href="https://www.nuget.org/packages/{{assembly.name}}/{{Semver assembly.version}}">View on NuGet</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="jquery@3.5.1+slim.js"></script>
+    <script src="popper.js@1.16.0.js"></script>
+    <script src="bootstrap@4.5.0.js"></script>
+</body>
+</html>

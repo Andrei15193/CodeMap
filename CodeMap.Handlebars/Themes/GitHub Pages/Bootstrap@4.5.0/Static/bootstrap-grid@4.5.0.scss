@@ -1,0 +1,33 @@
+---
+sass:
+  sass_dir: _sass/Bootstrap/4.5.0
+---
+/*!
+ * Bootstrap Grid v4.5.0 (https://getbootstrap.com/)
+ * Copyright 2011-2020 The Bootstrap Authors
+ * Copyright 2011-2020 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+
+html {
+  box-sizing: border-box;
+  -ms-overflow-style: scrollbar;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+@import "Bootstrap/4.5.0/functions";
+@import "Bootstrap/4.5.0/variables";
+
+@import "Bootstrap/4.5.0/mixins/breakpoints";
+@import "Bootstrap/4.5.0/mixins/grid-framework";
+@import "Bootstrap/4.5.0/mixins/grid";
+
+@import "Bootstrap/4.5.0/grid";
+@import "Bootstrap/4.5.0/utilities/display";
+@import "Bootstrap/4.5.0/utilities/flex";
+@import "Bootstrap/4.5.0/utilities/spacing";
