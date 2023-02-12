@@ -94,54 +94,53 @@ Example:
 {% endcomment %}
 
 {% assign dropdown_tree = '' | split: ',' | where: 'an', 'array: [tuple dropdown_node: [id, parent_id?, display_text, path, page?]]' %}
+{% assign dropdown_landing_pages = site.pages | where: 'is_dropdown_landing_page', true | where_exp: 'dropdown', 'dropdown.size > 0' %}
 
-{% for page in site.pages %}
-    {% if page.dropdown.size and page.dropdown.size > 0 and page.is_dropdown_landing_page %}
-        {% assign parent_id = nil %}
-        {% for element in page.dropdown %}
-            {% assign level = forloop.index %}
-            {% assign index_in_dropdown_tree = -1 %}
-            {% for dropdown_node in dropdown_tree %}
-                {% assign dropdown_node_index = forloop.index0 %}
-                {% assign dropdown_node_path = dropdown_node[3] %}
-                {% if dropdown_node_path.size == level %}
-                    {% for dropdown_node_path_element in dropdown_node_path %}
-                        {% assign is_matching = true %}
-                        {% if dropdown_node_path_element != page.dropdown[forloop.index0] %}
-                            {% assign is_matching = false %}
-                            {% break %}
-                        {% endif %}
-                    {% endfor %}
-                    {% if is_matching %}
-                        {% assign index_in_dropdown_tree = dropdown_node_index %}
+{% for dropdown_landing_page in dropdown_landing_pages %}
+    {% assign parent_id = nil %}
+    {% for element in dropdown_landing_page.dropdown %}
+        {% assign level = forloop.index %}
+        {% assign index_in_dropdown_tree = -1 %}
+        {% for dropdown_node in dropdown_tree %}
+            {% assign dropdown_node_index = forloop.index0 %}
+            {% assign dropdown_node_path = dropdown_node[3] %}
+            {% if dropdown_node_path.size == level %}
+                {% for dropdown_node_path_element in dropdown_node_path %}
+                    {% assign is_matching = true %}
+                    {% if dropdown_node_path_element != dropdown_landing_page.dropdown[forloop.index0] %}
+                        {% assign is_matching = false %}
+                        {% break %}
                     {% endif %}
+                {% endfor %}
+                {% if is_matching %}
+                    {% assign index_in_dropdown_tree = dropdown_node_index %}
                 {% endif %}
-            {% endfor %}
+            {% endif %}
+        {% endfor %}
 
-            {% if index_in_dropdown_tree == -1 %}
-                {% assign new_dropdown_node_id = dropdown_tree.size %}
-                {% assign new_dropdown_node_path = page.dropdown | slice: 0, level %}
-                {%
-                    assign new_dropdown_node = '' | split: ',' | where: 'a', 'dropdown_node'
-                        | push: new_dropdown_node_id
-                        | push: parent_id
-                        | push: element
-                        | push: new_dropdown_node_path
-                %}
+        {% if index_in_dropdown_tree == -1 %}
+            {% assign new_dropdown_node_id = dropdown_tree.size %}
+            {% assign new_dropdown_node_path = dropdown_landing_page.dropdown | slice: 0, level %}
+            {%
+                assign new_dropdown_node = '' | split: ',' | where: 'a', 'dropdown_node'
+                    | push: new_dropdown_node_id
+                    | push: parent_id
+                    | push: element
+                    | push: new_dropdown_node_path
+            %}
 
-                {% if level == page.dropdown.size %}
-                    {% assign new_dropdown_node = new_dropdown_node | push: page %}
-                {% endif %}
-
-                {% assign index_in_dropdown_tree = dropdown_tree.size %}
-                {% assign dropdown_tree = dropdown_tree | push: new_dropdown_node %}
+            {% if level == dropdown_landing_page.dropdown.size %}
+                {% assign new_dropdown_node = new_dropdown_node | push: dropdown_landing_page %}
             {% endif %}
 
-            {% assign dropdown_node = dropdown_tree[index_in_dropdown_tree] %}
-            {% assign dropdown_node_id = dropdown_node[0] %}
-            {% assign parent_id = dropdown_node_id %}
-        {% endfor %}
-    {% endif %}
+            {% assign index_in_dropdown_tree = dropdown_tree.size %}
+            {% assign dropdown_tree = dropdown_tree | push: new_dropdown_node %}
+        {% endif %}
+
+        {% assign dropdown_node = dropdown_tree[index_in_dropdown_tree] %}
+        {% assign dropdown_node_id = dropdown_node[0] %}
+        {% assign parent_id = dropdown_node_id %}
+    {% endfor %}
 {% endfor %}
 
 {% assign dropdown_node_parent_ids = '' | split: ',' | where: 'an', 'array: number' %}
