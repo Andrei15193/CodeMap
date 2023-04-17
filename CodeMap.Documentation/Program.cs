@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using CodeMap.DeclarationNodes;
-using CodeMap.Handlebars;
-using EmbeddedResourceBrowser;
+using CodeMap.Html;
 
 namespace CodeMap.Documentation
 {
@@ -18,53 +16,95 @@ namespace CodeMap.Documentation
 
         internal static void Main(params string[] args)
         {
-            var arguments = Arguments.GetFrom(args);
-            if (string.IsNullOrWhiteSpace(arguments.OutputPath))
-                throw new ArgumentException("Expected -OutputPath", nameof(args));
-            if (string.IsNullOrWhiteSpace(arguments.TargetSubdirectory))
-                throw new ArgumentException("Expected -TargetSubdirectory", nameof(args));
-
-            var templateWriter = new HandlebarsTemplateWriter(
-                "Bootstrap_Jekyll",
-                memberReferenceResolver: new MemberReferenceResolver(
-                    new Dictionary<Assembly, IMemberReferenceResolver>
-                    {
-                        { typeof(DeclarationNode).Assembly, new CodeMapMemberReferenceResolver($"../../{arguments.TargetSubdirectory}/{CodeMapDirectoryName}/") },
-                        { typeof(HandlebarsTemplateWriter).Assembly, new CodeMapMemberReferenceResolver($"../../{arguments.TargetSubdirectory}/{CodeMapHandlebarsDirectoryName}/") },
-                        { typeof(EmbeddedDirectory).Assembly, new CodeMapMemberReferenceResolver("https://andrei15193.github.io/EmbeddedResourceBrowser/") }
-                    },
-                    new MicrosoftDocsMemberReferenceResolver("netstandard-2.1")
-                )
-            );
-
             var codeMapAssemblyDeclaration = DeclarationNode
                 .Create(typeof(DeclarationNode).Assembly)
                 .Apply(new DocumentationAdditions.Version1_0.CodeMapAssemblyDocumentationAddition());
 
-            codeMapAssemblyDeclaration
-                .Accept(new HandlebarsWriterDeclarationNodeVisitor(_GetTargetDirectory(arguments, CodeMapDirectoryName), templateWriter));
-            DeclarationNode
-                .Create(typeof(HandlebarsTemplateWriter).Assembly)
-                .Apply(new DocumentationAdditions.Version1_0.CodeMapHandlerbarsAssemblyDocumentationAddition())
-                .Accept(new HandlebarsWriterDeclarationNodeVisitor(_GetTargetDirectory(arguments, CodeMapHandlebarsDirectoryName), templateWriter));
+            var defaultMemberReferenceResolver = new MicrosoftDocsMemberReferenceResolver("netstandard-2.1", "en-US");
 
-            foreach (var extraFile in templateWriter.Extras)
-            {
-                var nameBuilder = new StringBuilder();
-                var embeddedDirectory = extraFile.ParentDirectory;
-                while (embeddedDirectory is object && !embeddedDirectory.Name.Equals("extras", StringComparison.OrdinalIgnoreCase))
+            var fileWriterDeclarationNodeVisitor = FileWriterDeclarationNodeVisitor.Create(
+                declarationNode =>
                 {
-                    nameBuilder.Insert(0, Path.DirectorySeparatorChar);
-                    nameBuilder.Insert(0, embeddedDirectory.Name);
-                    embeddedDirectory = embeddedDirectory.ParentDirectory;
-                }
-                Directory.CreateDirectory(Path.Combine(arguments.OutputPath, nameBuilder.ToString()));
-                nameBuilder.Append(extraFile.Name);
+                    var declarationDirectoryPath = declarationNode switch
+                    {
+                        AssemblyDeclaration assembly => assembly.Version.ToString(),
+                        NamespaceDeclaration @namespace => Path.Join(@namespace.Assembly.Version.ToString(), @namespace.GetFullNameReference()),
+                        TypeDeclaration type => Path.Join(type.Assembly.Version.ToString(), type.GetFullNameReference()),
+                        MemberDeclaration member => Path.Join(member.DeclaringType.Assembly.Version.ToString(), member.GetFullNameReference()),
+                        _ => throw new NotImplementedException()
+                    };
 
-                using (var outputFileStream = new FileStream(Path.Combine(arguments.OutputPath, nameBuilder.ToString()), FileMode.Create, FileAccess.Write, FileShare.Read))
-                using (var extraFileStream = extraFile.OpenRead())
-                    extraFileStream.CopyTo(outputFileStream);
-            }
+                    var outputDirectory = Directory.CreateDirectory(Path.Join(Environment.CurrentDirectory, "TEST Documentation", declarationDirectoryPath));
+
+                    return new StreamWriter(
+                        new FileStream(
+                            Path.Join(outputDirectory.FullName, "index.html"),
+                            FileMode.Create,
+                            FileAccess.Write,
+                            FileShare.Read
+                        ),
+                        Encoding.UTF8,
+                        leaveOpen: false
+                    );
+                },
+                (declarationNode, declarationTextWriter) => new HtmlWriterDeclarationNodeVisitor(
+                    declarationTextWriter,
+                    new MemberReferenceResolver(defaultMemberReferenceResolver)
+                    {
+                        { typeof(DeclarationNode).Assembly, MemberReferenceResolver.Create(memberReference => declarationNode is AssemblyDeclaration ? $"./{memberReference.GetFullNameReference()}/" : $"../{memberReference.GetFullNameReference()}/") }
+                    }
+                )
+            );
+
+            codeMapAssemblyDeclaration.Accept(fileWriterDeclarationNodeVisitor);
+
+            // var arguments = Arguments.GetFrom(args);
+            // if (string.IsNullOrWhiteSpace(arguments.OutputPath))
+            //     throw new ArgumentException("Expected -OutputPath", nameof(args));
+            // if (string.IsNullOrWhiteSpace(arguments.TargetSubdirectory))
+            //     throw new ArgumentException("Expected -TargetSubdirectory", nameof(args));
+
+            // var templateWriter = new HandlebarsTemplateWriter(
+            //     "Bootstrap_Jekyll",
+            //     memberReferenceResolver: new MemberReferenceResolver(
+            //         new Dictionary<Assembly, IMemberReferenceResolver>
+            //         {
+            //             { typeof(DeclarationNode).Assembly, new CodeMapMemberReferenceResolver($"../../{arguments.TargetSubdirectory}/{CodeMapDirectoryName}/") },
+            //             { typeof(HandlebarsTemplateWriter).Assembly, new CodeMapMemberReferenceResolver($"../../{arguments.TargetSubdirectory}/{CodeMapHandlebarsDirectoryName}/") },
+            //             { typeof(EmbeddedDirectory).Assembly, new CodeMapMemberReferenceResolver("https://andrei15193.github.io/EmbeddedResourceBrowser/") }
+            //         },
+            //         new MicrosoftDocsMemberReferenceResolver("netstandard-2.1")
+            //     )
+            // );
+
+            // var codeMapAssemblyDeclaration = DeclarationNode
+            //     .Create(typeof(DeclarationNode).Assembly)
+            //     .Apply(new DocumentationAdditions.Version1_0.CodeMapAssemblyDocumentationAddition());
+
+            // codeMapAssemblyDeclaration
+            //     .Accept(new HandlebarsWriterDeclarationNodeVisitor(_GetTargetDirectory(arguments, CodeMapDirectoryName), templateWriter));
+            // DeclarationNode
+            //     .Create(typeof(HandlebarsTemplateWriter).Assembly)
+            //     .Apply(new DocumentationAdditions.Version1_0.CodeMapHandlerbarsAssemblyDocumentationAddition())
+            //     .Accept(new HandlebarsWriterDeclarationNodeVisitor(_GetTargetDirectory(arguments, CodeMapHandlebarsDirectoryName), templateWriter));
+
+            // foreach (var extraFile in templateWriter.Extras)
+            // {
+            //     var nameBuilder = new StringBuilder();
+            //     var embeddedDirectory = extraFile.ParentDirectory;
+            //     while (embeddedDirectory is object && !embeddedDirectory.Name.Equals("extras", StringComparison.OrdinalIgnoreCase))
+            //     {
+            //         nameBuilder.Insert(0, Path.DirectorySeparatorChar);
+            //         nameBuilder.Insert(0, embeddedDirectory.Name);
+            //         embeddedDirectory = embeddedDirectory.ParentDirectory;
+            //     }
+            //     Directory.CreateDirectory(Path.Combine(arguments.OutputPath, nameBuilder.ToString()));
+            //     nameBuilder.Append(extraFile.Name);
+
+            //     using (var outputFileStream = new FileStream(Path.Combine(arguments.OutputPath, nameBuilder.ToString()), FileMode.Create, FileAccess.Write, FileShare.Read))
+            //     using (var extraFileStream = extraFile.OpenRead())
+            //         extraFileStream.CopyTo(outputFileStream);
+            // }
         }
 
         private static DirectoryInfo _GetTargetDirectory(Arguments arguments, string documentationDirectoryName)
