@@ -38,7 +38,7 @@ namespace CodeMap.Documentation
             TextWriter.Write("<a href=\"");
             WriteSafeHtml(MemberReferenceResolver.GetUrl(type));
             TextWriter.Write("\">");
-            WriteSafeHtml(type.Name);
+            WriteSafeHtml(GetTypeName(type));
             TextWriter.Write("</a>");
 
             if (type.GenericArguments.Any())
@@ -55,6 +55,43 @@ namespace CodeMap.Documentation
                 }
                 WriteSafeHtml(">");
             }
+        }
+
+        protected virtual string GetTypeName(TypeReference type)
+        {
+            if (type == typeof(void))
+                return "void";
+
+            if (type == typeof(char))
+                return "char";
+            if (type == typeof(string))
+                return "string";
+
+            if (type == typeof(byte))
+                return "byte";
+            if (type == typeof(sbyte))
+                return "sbyte";
+            if (type == typeof(short))
+                return "short";
+            if (type == typeof(ushort))
+                return "ushort";
+            if (type == typeof(int))
+                return "int";
+            if (type == typeof(uint))
+                return "uint";
+            if (type == typeof(long))
+                return "long";
+            if (type == typeof(ulong))
+                return "ulong";
+                
+            if (type == typeof(float))
+                return "float";
+            if (type == typeof(double))
+                return "double";
+            if (type == typeof(decimal))
+                return "decimal";
+
+            return type.Name;
         }
 
         protected override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
