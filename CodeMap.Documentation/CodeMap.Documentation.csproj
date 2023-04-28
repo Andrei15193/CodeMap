@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CodeMap.Handlebars\CodeMap.Handlebars.csproj" />
     <ProjectReference Include="..\CodeMap\CodeMap.csproj" />
   </ItemGroup>
 

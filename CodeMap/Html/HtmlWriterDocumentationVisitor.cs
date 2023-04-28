@@ -4,27 +4,30 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CodeMap.DocumentationElements;
-using CodeMap.Html;
-using CodeMap.ReferenceData;
 
-namespace CodeMap.Documentation
+namespace CodeMap.Html
 {
+    /// <summary/>
     public class HtmlWriterDocumentationVisitor : DocumentationVisitor
     {
         private int _exceptionCount = 0;
         private int _exampleCount = 0;
 
+        /// <summary/>
         public HtmlWriterDocumentationVisitor(TextWriter textWriter, IMemberReferenceResolver memberReferenceResolver)
         {
             TextWriter = textWriter ?? throw new ArgumentNullException(nameof(textWriter));
             MemberReferenceResolver = memberReferenceResolver ?? throw new ArgumentNullException(nameof(memberReferenceResolver));
         }
 
+        /// <summary/>
         public TextWriter TextWriter { get; }
 
+        /// <summary/>
         public IMemberReferenceResolver MemberReferenceResolver { get; }
 
-        protected override void VisitSummary(SummaryDocumentationElement summary)
+        /// <summary/>
+        protected internal override void VisitSummary(SummaryDocumentationElement summary)
         {
             if (summary.Content.Any())
             {
@@ -35,7 +38,8 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitValue(ValueDocumentationElement value)
+        /// <summary/>
+        protected internal override void VisitValue(ValueDocumentationElement value)
         {
             if (value.Content.Any())
             {
@@ -51,7 +55,8 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitException(ExceptionDocumentationElement exception)
+        /// <summary/>
+        protected internal override void VisitException(ExceptionDocumentationElement exception)
         {
             _exceptionCount++;
             WriteElementOpening("section", new Dictionary<string, string>(exception.XmlAttributes) { { "id", $"exception-{_exceptionCount}" } });
@@ -67,7 +72,8 @@ namespace CodeMap.Documentation
             WriteElementClosing("section");
         }
 
-        protected override void VisitExample(ExampleDocumentationElement example)
+        /// <summary/>
+        protected internal override void VisitExample(ExampleDocumentationElement example)
         {
             if (example.Content.Any())
             {
@@ -84,7 +90,8 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitRemarks(RemarksDocumentationElement remarks)
+        /// <summary/>
+        protected internal override void VisitRemarks(RemarksDocumentationElement remarks)
         {
             if (remarks.Content.Any())
             {
@@ -100,7 +107,8 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitParagraph(ParagraphDocumentationElement paragraph)
+        /// <summary/>
+        protected internal override void VisitParagraph(ParagraphDocumentationElement paragraph)
         {
             WriteElementOpening("p", paragraph.XmlAttributes);
             foreach (var element in paragraph.Content)
@@ -108,7 +116,8 @@ namespace CodeMap.Documentation
             WriteElementClosing("p");
         }
 
-        protected override void VisitCodeBlock(CodeBlockDocumentationElement codeBlock)
+        /// <summary/>
+        protected internal override void VisitCodeBlock(CodeBlockDocumentationElement codeBlock)
         {
             WriteElementOpening("code", codeBlock.XmlAttributes);
             WriteStartElement("pre");
@@ -117,42 +126,48 @@ namespace CodeMap.Documentation
             WriteElementClosing("code");
         }
 
-        protected override void VisitInlineReference(ReferenceDataDocumentationElement memberInfoReference)
+        /// <summary/>
+        protected internal override void VisitInlineReference(ReferenceDataDocumentationElement memberInfoReference)
         {
             WriteElementOpening("a", new Dictionary<string, string>(memberInfoReference.XmlAttributes) { { "href", MemberReferenceResolver.GetUrl(memberInfoReference.ReferredMember) } });
             WriteSafeHtml(memberInfoReference.ReferredMember.GetSimpleNameReference());
             WriteElementClosing("a");
         }
 
-        protected override void VisitHyperlink(HyperlinkDocumentationElement hyperlink)
+        /// <summary/>
+        protected internal override void VisitHyperlink(HyperlinkDocumentationElement hyperlink)
         {
             WriteElementOpening("a", new Dictionary<string, string>(hyperlink.XmlAttributes) { { "href", hyperlink.Destination } });
             WriteSafeHtml(hyperlink.Text);
             WriteElementClosing("a");
         }
 
-        protected override void VisitInlineCode(InlineCodeDocumentationElement inlineCode)
+        /// <summary/>
+        protected internal override void VisitInlineCode(InlineCodeDocumentationElement inlineCode)
         {
             WriteElementOpening("code", inlineCode.XmlAttributes);
             WriteSafeHtml(inlineCode.Code);
             WriteElementClosing("code");
         }
 
-        protected override void VisitGenericParameterReference(GenericParameterReferenceDocumentationElement genericParameterReference)
+        /// <summary/>
+        protected internal override void VisitGenericParameterReference(GenericParameterReferenceDocumentationElement genericParameterReference)
         {
             WriteElementOpening("pre", genericParameterReference.XmlAttributes);
             WriteSafeHtml(genericParameterReference.GenericParameterName);
             WriteElementClosing("pre");
         }
 
-        protected override void VisitParameterReference(ParameterReferenceDocumentationElement parameterReference)
+        /// <summary/>
+        protected internal override void VisitParameterReference(ParameterReferenceDocumentationElement parameterReference)
         {
             WriteElementOpening("code", parameterReference.XmlAttributes);
             WriteSafeHtml(parameterReference.ParameterName);
             WriteElementClosing("code");
         }
 
-        protected override void VisitUnorderedList(UnorderedListDocumentationElement unorderedList)
+        /// <summary/>
+        protected internal override void VisitUnorderedList(UnorderedListDocumentationElement unorderedList)
         {
             WriteElementOpening("ul", unorderedList.XmlAttributes);
             foreach (var item in unorderedList.Items)
@@ -160,7 +175,8 @@ namespace CodeMap.Documentation
             WriteElementClosing("ul");
         }
 
-        protected override void VisitOrderedList(OrderedListDocumentationElement orderedList)
+        /// <summary/>
+        protected internal override void VisitOrderedList(OrderedListDocumentationElement orderedList)
         {
             WriteElementOpening("ol", orderedList.XmlAttributes);
             foreach (var item in orderedList.Items)
@@ -168,7 +184,8 @@ namespace CodeMap.Documentation
             WriteElementClosing("ol");
         }
 
-        protected override void VisitListItem(ListItemDocumentationElement listItem)
+        /// <summary/>
+        protected internal override void VisitListItem(ListItemDocumentationElement listItem)
         {
             WriteElementOpening("li", listItem.XmlAttributes);
             foreach (var element in listItem.Content)
@@ -176,7 +193,8 @@ namespace CodeMap.Documentation
             WriteElementClosing("li");
         }
 
-        protected override void VisitDefinitionList(DefinitionListDocumentationElement definitionList)
+        /// <summary/>
+        protected internal override void VisitDefinitionList(DefinitionListDocumentationElement definitionList)
         {
             definitionList.ListTitle.Accept(this);
             WriteElementOpening("dl", definitionList.XmlAttributes);
@@ -185,7 +203,8 @@ namespace CodeMap.Documentation
             WriteElementClosing("dl");
         }
 
-        protected override void VisitDefinitionListTitle(DefinitionListTitleDocumentationElement definitionListTitle)
+        /// <summary/>
+        protected internal override void VisitDefinitionListTitle(DefinitionListTitleDocumentationElement definitionListTitle)
         {
             if (definitionListTitle.Content.Any())
             {
@@ -196,13 +215,15 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitDefinitionListItem(DefinitionListItemDocumentationElement definitionListItem)
+        /// <summary/>
+        protected internal override void VisitDefinitionListItem(DefinitionListItemDocumentationElement definitionListItem)
         {
             definitionListItem.Term.Accept(this);
             definitionListItem.Description.Accept(this);
         }
 
-        protected override void VisitDefinitionListItemTerm(DefinitionListItemTermDocumentationElement definitionListItemTerm)
+        /// <summary/>
+        protected internal override void VisitDefinitionListItemTerm(DefinitionListItemTermDocumentationElement definitionListItemTerm)
         {
             WriteElementOpening("dt", definitionListItemTerm.XmlAttributes);
             foreach (var element in definitionListItemTerm.Content)
@@ -210,7 +231,8 @@ namespace CodeMap.Documentation
             WriteElementClosing("dt");
         }
 
-        protected override void VisitDefinitionListItemDescription(DefinitionListItemDescriptionDocumentationElement definitionListItemDescription)
+        /// <summary/>
+        protected internal override void VisitDefinitionListItemDescription(DefinitionListItemDescriptionDocumentationElement definitionListItemDescription)
         {
             WriteElementOpening("dd", definitionListItemDescription.XmlAttributes);
             foreach (var element in definitionListItemDescription.Content)
@@ -218,7 +240,8 @@ namespace CodeMap.Documentation
             WriteElementClosing("dd");
         }
 
-        protected override void VisitTable(TableDocumentationElement table)
+        /// <summary/>
+        protected internal override void VisitTable(TableDocumentationElement table)
         {
             WriteElementOpening("table", table.XmlAttributes);
             WriteStartElement("thead");
@@ -230,8 +253,8 @@ namespace CodeMap.Documentation
             WriteElementClosing("table");
         }
 
-
-        protected override void VisitTableColumn(TableColumnDocumentationElement tableColumn)
+        /// <summary/>
+        protected internal override void VisitTableColumn(TableColumnDocumentationElement tableColumn)
         {
             WriteElementOpening("th", tableColumn.XmlAttributes);
             foreach (var element in tableColumn.Name)
@@ -239,14 +262,17 @@ namespace CodeMap.Documentation
             WriteElementClosing("th");
         }
 
-        protected override void VisitTableRow(TableRowDocumentationElement tableRow)
+        /// <summary/>
+        protected internal override void VisitTableRow(TableRowDocumentationElement tableRow)
         {
             WriteElementOpening("tr", tableRow.XmlAttributes);
             foreach (var cell in tableRow.Cells)
                 cell.Accept(this);
             WriteElementClosing("tr");
         }
-        protected override void VisitTableCell(TableCellDocumentationElement tableCell)
+
+        /// <summary/>
+        protected internal override void VisitTableCell(TableCellDocumentationElement tableCell)
         {
             WriteElementOpening("tr", tableCell.XmlAttributes);
             foreach (var element in tableCell.Content)
@@ -254,24 +280,29 @@ namespace CodeMap.Documentation
             WriteElementClosing("tr");
         }
 
-        protected override void VisitText(TextDocumentationElement text)
+        /// <summary/>
+        protected internal override void VisitText(TextDocumentationElement text)
             => WriteSafeHtml(text.Text);
 
+        /// <summary/>
         protected void WriteStartElement(string name)
             => WriteElementOpening(name, null);
 
+        /// <summary/>
         protected void WriteElementOpening(string name, IReadOnlyDictionary<string, string> xmlAttributes)
         {
             TextWriter.Write($"<{name}");
-            if (xmlAttributes is not null)
+            if (xmlAttributes != null)
                 foreach (var xmlAttribute in xmlAttributes)
                     TextWriter.Write($" {xmlAttribute.Key}=\"{xmlAttribute.Value}\"");
             TextWriter.Write(">");
         }
 
+        /// <summary/>
         protected void WriteElementClosing(string name)
             => TextWriter.Write($"</{name}>");
 
+        /// <summary/>
         protected void WriteSafeHtml(string value)
         {
             var htmlSafeValue = value;

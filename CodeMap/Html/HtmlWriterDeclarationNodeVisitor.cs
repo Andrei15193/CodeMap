@@ -6,16 +6,17 @@ using System.Linq;
 using System.Text;
 using CodeMap.DeclarationNodes;
 using CodeMap.DocumentationElements;
-using CodeMap.Html;
 using CodeMap.ReferenceData;
 
-namespace CodeMap.Documentation
+namespace CodeMap.Html
 {
+    /// <summary/>
     public class HtmlWriterDeclarationNodeVisitor : DeclarationNodeVisitor
     {
         private bool _isHtmlInitialized = false;
         private int _declarationDepth = 0;
 
+        /// <summary/>
         public HtmlWriterDeclarationNodeVisitor(TextWriter textWriter, IMemberReferenceResolver memberReferenceResolver)
         {
             TextWriter = textWriter;
@@ -23,15 +24,19 @@ namespace CodeMap.Documentation
             HasDefaultSection = false;
         }
 
+        /// <summary/>
         public TextWriter TextWriter { get; set; }
 
+        /// <summary/>
         public IMemberReferenceResolver MemberReferenceResolver { get; }
 
+        /// <summary/>
         protected bool HasDefaultSection { get; private set; }
 
-        protected sealed override void VisitAssembly(AssemblyDeclaration assembly)
+        /// <summary/>
+        protected internal sealed override void VisitAssembly(AssemblyDeclaration assembly)
         {
-            _WriteHtmlDocumentBeginning($"{assembly.Name}@{assembly.Version} - Home");
+            _WriteHtmlDocumentBeginning(assembly);
 
             WriteAssemblyDeclaration(assembly);
 
@@ -40,12 +45,13 @@ namespace CodeMap.Documentation
                 @namespace.Accept(this);
             _declarationDepth--;
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(assembly);
         }
 
+        /// <summary/>
         protected virtual void WriteAssemblyDeclaration(AssemblyDeclaration assembly)
         {
-            WriteDeclarationSectionBeginning(assembly, $"{assembly.Name}@{assembly.Version} - Home");
+            WriteDeclarationSectionBeginning(assembly);
             HasDefaultSection = true;
 
             WriteNavigation(assembly);
@@ -58,9 +64,10 @@ namespace CodeMap.Documentation
             WriteRemarks(assembly.Remarks);
             WriteRelatedMembers(assembly.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(assembly);
         }
 
+        /// <summary/>
         protected virtual void WriteNamespacesList(IEnumerable<NamespaceDeclaration> namespaces)
         {
             if (namespaces.Any())
@@ -104,9 +111,10 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected sealed override void VisitNamespace(NamespaceDeclaration @namespace)
+        /// <summary/>
+        protected internal sealed override void VisitNamespace(NamespaceDeclaration @namespace)
         {
-            _WriteHtmlDocumentBeginning($"{@namespace.Assembly.Name}@{@namespace.Assembly.Version} - {@namespace.Name} Namespace");
+            _WriteHtmlDocumentBeginning(@namespace);
 
             WriteNamespaceDeclaration(@namespace);
 
@@ -115,12 +123,13 @@ namespace CodeMap.Documentation
                 type.Accept(this);
             _declarationDepth--;
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(@namespace);
         }
 
+        /// <summary/>
         protected virtual void WriteNamespaceDeclaration(NamespaceDeclaration @namespace)
         {
-            WriteDeclarationSectionBeginning(@namespace, $"{@namespace.Assembly.Name}@{@namespace.Assembly.Version} - {@namespace.Name} Namespace");
+            WriteDeclarationSectionBeginning(@namespace);
             HasDefaultSection = true;
 
             WriteNavigation(@namespace);
@@ -138,21 +147,23 @@ namespace CodeMap.Documentation
             WriteRemarks(@namespace.Remarks);
             WriteRelatedMembers(@namespace.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(@namespace);
         }
 
-        protected sealed override void VisitEnum(EnumDeclaration @enum)
+        /// <summary/>
+        protected internal sealed override void VisitEnum(EnumDeclaration @enum)
         {
-            _WriteHtmlDocumentBeginning($"{@enum.Assembly.Name}@{@enum.Assembly.Version} - {@enum.GetSimpleNameReference()} Enum");
+            _WriteHtmlDocumentBeginning(@enum);
 
             WriteEnumDeclaration(@enum);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(@enum);
         }
 
+        /// <summary/>
         protected virtual void WriteEnumDeclaration(EnumDeclaration @enum)
         {
-            WriteDeclarationSectionBeginning(@enum, $"{@enum.Assembly.Name}@{@enum.Assembly.Version} - {@enum.GetSimpleNameReference()} Enum");
+            WriteDeclarationSectionBeginning(@enum);
             HasDefaultSection = true;
 
             WriteNavigation(@enum);
@@ -209,21 +220,23 @@ namespace CodeMap.Documentation
             WriteRemarks(@enum.Remarks);
             WriteRelatedMembers(@enum.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(@enum);
         }
 
-        protected sealed override void VisitDelegate(DelegateDeclaration @delegate)
+        /// <summary/>
+        protected internal sealed override void VisitDelegate(DelegateDeclaration @delegate)
         {
-            _WriteHtmlDocumentBeginning($"{@delegate.Assembly.Name}@{@delegate.Assembly.Version} - {@delegate.GetSimpleNameReference()} Delegate");
+            _WriteHtmlDocumentBeginning(@delegate);
 
             WriteDelegateDeclaration(@delegate);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(@delegate);
         }
 
+        /// <summary/>
         protected void WriteDelegateDeclaration(DelegateDeclaration @delegate)
         {
-            WriteDeclarationSectionBeginning(@delegate, $"{@delegate.Assembly.Name}@{@delegate.Assembly.Version} - {@delegate.GetSimpleNameReference()} Delegate");
+            WriteDeclarationSectionBeginning(@delegate);
             HasDefaultSection = true;
 
             WriteNavigation(@delegate);
@@ -240,24 +253,26 @@ namespace CodeMap.Documentation
             WriteRemarks(@delegate.Remarks);
             WriteRelatedMembers(@delegate.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(@delegate);
         }
 
-        protected sealed override void VisitInterface(InterfaceDeclaration @interface)
+        /// <summary/>
+        protected internal sealed override void VisitInterface(InterfaceDeclaration @interface)
         {
-            _WriteHtmlDocumentBeginning($"{@interface.Assembly.Name}@{@interface.Assembly.Version} - {@interface.GetSimpleNameReference()} Interface");
+            _WriteHtmlDocumentBeginning(@interface);
 
             WriteInterfaceDeclaration(@interface);
 
             foreach (var member in @interface.Members)
                 member.Accept(this);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(@interface);
         }
 
+        /// <summary/>
         protected virtual void WriteInterfaceDeclaration(InterfaceDeclaration @interface)
         {
-            WriteDeclarationSectionBeginning(@interface, $"{@interface.Assembly.Name}@{@interface.Assembly.Version} - {@interface.GetSimpleNameReference()} Interface");
+            WriteDeclarationSectionBeginning(@interface);
             HasDefaultSection = true;
 
             WriteNavigation(@interface);
@@ -292,12 +307,13 @@ namespace CodeMap.Documentation
             WriteRemarks(@interface.Remarks);
             WriteRelatedMembers(@interface.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(@interface);
         }
 
-        protected sealed override void VisitClass(ClassDeclaration @class)
+        /// <summary/>
+        protected internal sealed override void VisitClass(ClassDeclaration @class)
         {
-            _WriteHtmlDocumentBeginning($"{@class.Assembly.Name}@{@class.Assembly.Version} - {@class.GetSimpleNameReference()} Class");
+            _WriteHtmlDocumentBeginning(@class);
 
             WriteClassDeclaration(@class);
 
@@ -306,12 +322,13 @@ namespace CodeMap.Documentation
             foreach (var member in @class.Members)
                 member.Accept(this);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(@class);
         }
 
+        /// <summary/>
         protected virtual void WriteClassDeclaration(ClassDeclaration @class)
         {
-            WriteDeclarationSectionBeginning(@class, $"{@class.Assembly.Name}@{@class.Assembly.Version} - {@class.GetSimpleNameReference()} Class");
+            WriteDeclarationSectionBeginning(@class);
             HasDefaultSection = true;
 
             WriteNavigation(@class);
@@ -357,12 +374,13 @@ namespace CodeMap.Documentation
             WriteRemarks(@class.Remarks);
             WriteRelatedMembers(@class.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(@class);
         }
 
-        protected sealed override void VisitRecord(RecordDeclaration record)
+        /// <summary/>
+        protected internal sealed override void VisitRecord(RecordDeclaration record)
         {
-            _WriteHtmlDocumentBeginning($"{@record.Assembly.Name}@{@record.Assembly.Version} - {@record.GetSimpleNameReference()} Record");
+            _WriteHtmlDocumentBeginning(record);
 
             WriteRecordDeclaration(record);
 
@@ -371,12 +389,13 @@ namespace CodeMap.Documentation
             foreach (var member in record.Members)
                 member.Accept(this);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(record);
         }
 
+        /// <summary/>
         protected virtual void WriteRecordDeclaration(RecordDeclaration record)
         {
-            WriteDeclarationSectionBeginning(record, $"{@record.Assembly.Name}@{@record.Assembly.Version} - {@record.GetSimpleNameReference()} Record");
+            WriteDeclarationSectionBeginning(record);
             HasDefaultSection = true;
 
             WriteNavigation(@record);
@@ -422,12 +441,13 @@ namespace CodeMap.Documentation
             WriteRemarks(@record.Remarks);
             WriteRelatedMembers(@record.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(record);
         }
 
-        protected sealed override void VisitStruct(StructDeclaration @struct)
+        /// <summary/>
+        protected internal sealed override void VisitStruct(StructDeclaration @struct)
         {
-            _WriteHtmlDocumentBeginning($"{@struct.Assembly.Name}@{@struct.Assembly.Version} - {@struct.GetSimpleNameReference()} Struct");
+            _WriteHtmlDocumentBeginning(@struct);
 
             WriteStructDeclaration(@struct);
 
@@ -436,12 +456,13 @@ namespace CodeMap.Documentation
             foreach (var member in @struct.Members)
                 member.Accept(this);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(@struct);
         }
 
+        /// <summary/>
         protected virtual void WriteStructDeclaration(StructDeclaration @struct)
         {
-            WriteDeclarationSectionBeginning(@struct, $"{@struct.Assembly.Name}@{@struct.Assembly.Version} - {@struct.GetSimpleNameReference()} Struct");
+            WriteDeclarationSectionBeginning(@struct);
             HasDefaultSection = true;
 
             WriteNavigation(@struct);
@@ -479,21 +500,23 @@ namespace CodeMap.Documentation
             WriteRemarks(@struct.Remarks);
             WriteRelatedMembers(@struct.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(@struct);
         }
 
-        protected sealed override void VisitConstant(ConstantDeclaration constant)
+        /// <summary/>
+        protected internal sealed override void VisitConstant(ConstantDeclaration constant)
         {
-            _WriteHtmlDocumentBeginning($"{constant.DeclaringType.Assembly.Name}@{constant.DeclaringType.Assembly.Version} - {constant.DeclaringType.GetSimpleNameReference()} Constant");
+            _WriteHtmlDocumentBeginning(constant);
 
             WriteConstantDeclaration(constant);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(constant);
         }
 
+        /// <summary/>
         protected virtual void WriteConstantDeclaration(ConstantDeclaration constant)
         {
-            WriteDeclarationSectionBeginning(constant, $"{constant.DeclaringType.Assembly.Name}@{constant.DeclaringType.Assembly.Version} - {constant.DeclaringType.GetSimpleNameReference()} Constant");
+            WriteDeclarationSectionBeginning(constant);
             HasDefaultSection = true;
 
             WriteNavigation(constant);
@@ -512,21 +535,23 @@ namespace CodeMap.Documentation
             WriteRemarks(constant.Remarks);
             WriteRelatedMembers(constant.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(constant);
         }
 
-        protected sealed override void VisitField(FieldDeclaration field)
+        /// <summary/>
+        protected internal sealed override void VisitField(FieldDeclaration field)
         {
-            _WriteHtmlDocumentBeginning($"{field.DeclaringType.Assembly.Name}@{field.DeclaringType.Assembly.Version} - {field.DeclaringType.GetSimpleNameReference()} Field");
+            _WriteHtmlDocumentBeginning(field);
 
             WriteFieldDeclaration(field);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(field);
         }
 
+        /// <summary/>
         protected virtual void WriteFieldDeclaration(FieldDeclaration field)
         {
-            WriteDeclarationSectionBeginning(field, $"{field.DeclaringType.Assembly.Name}@{field.DeclaringType.Assembly.Version} - {field.DeclaringType.GetSimpleNameReference()} Field");
+            WriteDeclarationSectionBeginning(field);
             HasDefaultSection = true;
 
             WriteNavigation(field);
@@ -538,21 +563,23 @@ namespace CodeMap.Documentation
             WriteRemarks(field.Remarks);
             WriteRelatedMembers(field.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(field);
         }
 
-        protected sealed override void VisitConstructor(ConstructorDeclaration constructor)
+        /// <summary/>
+        protected internal sealed override void VisitConstructor(ConstructorDeclaration constructor)
         {
-            _WriteHtmlDocumentBeginning($"{constructor.DeclaringType.Assembly.Name}@{constructor.DeclaringType.Assembly.Version} - {constructor.GetSimpleNameReference()} Constructor");
+            _WriteHtmlDocumentBeginning(constructor);
 
             WriteConstructorDeclaration(constructor);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(constructor);
         }
 
+        /// <summary/>
         private void WriteConstructorDeclaration(ConstructorDeclaration constructor)
         {
-            WriteDeclarationSectionBeginning(constructor, $"{constructor.DeclaringType.Assembly.Name}@{constructor.DeclaringType.Assembly.Version} - {constructor.GetSimpleNameReference()} Constructor");
+            WriteDeclarationSectionBeginning(constructor);
             HasDefaultSection = true;
 
             WriteNavigation(constructor);
@@ -567,21 +594,23 @@ namespace CodeMap.Documentation
             WriteRemarks(constructor.Remarks);
             WriteRelatedMembers(constructor.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(constructor);
         }
 
-        protected sealed override void VisitEvent(EventDeclaration @event)
+        /// <summary/>
+        protected internal sealed override void VisitEvent(EventDeclaration @event)
         {
-            _WriteHtmlDocumentBeginning($"{@event.DeclaringType.Assembly.Name}@{@event.DeclaringType.Assembly.Version} - {@event.DeclaringType.GetSimpleNameReference()} Event");
+            _WriteHtmlDocumentBeginning(@event);
 
             WriteEventDeclaration(@event);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(@event);
         }
 
+        /// <summary/>
         protected virtual void WriteEventDeclaration(EventDeclaration @event)
         {
-            WriteDeclarationSectionBeginning(@event, $"{@event.DeclaringType.Assembly.Name}@{@event.DeclaringType.Assembly.Version} - {@event.DeclaringType.GetSimpleNameReference()} Event");
+            WriteDeclarationSectionBeginning(@event);
             HasDefaultSection = true;
 
             WriteNavigation(@event);
@@ -636,21 +665,23 @@ namespace CodeMap.Documentation
             WriteRemarks(@event.Remarks);
             WriteRelatedMembers(@event.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(@event);
         }
 
-        protected sealed override void VisitProperty(PropertyDeclaration property)
+        /// <summary/>
+        protected internal sealed override void VisitProperty(PropertyDeclaration property)
         {
-            _WriteHtmlDocumentBeginning($"{property.DeclaringType.Assembly.Name}@{property.DeclaringType.Assembly.Version} - {property.DeclaringType.GetSimpleNameReference()} Property");
+            _WriteHtmlDocumentBeginning(property);
 
             WritePropertyDeclaration(property);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(property);
         }
 
+        /// <summary/>
         protected virtual void WritePropertyDeclaration(PropertyDeclaration property)
         {
-            WriteDeclarationSectionBeginning(property, $"{property.DeclaringType.Assembly.Name}@{property.DeclaringType.Assembly.Version} - {property.DeclaringType.GetSimpleNameReference()} Property");
+            WriteDeclarationSectionBeginning(property);
             HasDefaultSection = true;
 
             WriteNavigation(property);
@@ -664,7 +695,7 @@ namespace CodeMap.Documentation
             TextWriter.Write("</p>");
 
             TextWriter.Write("<p>");
-            if (property.Getter is not null && property.Setter is not null)
+            if (property.Getter != null && property.Setter != null)
             {
                 WriteSafeHtml("This property has a ");
                 WriteAccessModifier(property.Getter.AccessModifier);
@@ -672,13 +703,13 @@ namespace CodeMap.Documentation
                 WriteAccessModifier(property.Setter.AccessModifier);
                 WriteSafeHtml(" setter.");
             }
-            else if (property.Getter is not null)
+            else if (property.Getter != null)
             {
                 WriteSafeHtml("This property has a ");
                 WriteAccessModifier(property.Getter.AccessModifier);
                 WriteSafeHtml(" getter.");
             }
-            else if (property.Setter is not null)
+            else if (property.Setter != null)
             {
                 WriteSafeHtml("This property has a ");
                 WriteAccessModifier(property.Setter.AccessModifier);
@@ -729,21 +760,23 @@ namespace CodeMap.Documentation
             WriteRemarks(property.Remarks);
             WriteRelatedMembers(property.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(property);
         }
 
-        protected sealed override void VisitMethod(MethodDeclaration method)
+        /// <summary/>
+        protected internal sealed override void VisitMethod(MethodDeclaration method)
         {
-            _WriteHtmlDocumentBeginning($"{method.DeclaringType.Assembly.Name}@{method.DeclaringType.Assembly.Version} - {method.DeclaringType.GetSimpleNameReference()} Method");
+            _WriteHtmlDocumentBeginning(method);
 
             WriteMethodDeclaration(method);
 
-            _WriteHtmlDocumentEnding();
+            _WriteHtmlDocumentEnding(method);
         }
 
+        /// <summary/>
         protected virtual void WriteMethodDeclaration(MethodDeclaration method)
         {
-            WriteDeclarationSectionBeginning(method, $"{method.DeclaringType.Assembly.Name}@{method.DeclaringType.Assembly.Version} - {method.DeclaringType.GetSimpleNameReference()} Method");
+            WriteDeclarationSectionBeginning(method);
             HasDefaultSection = true;
 
             WriteNavigation(method);
@@ -797,9 +830,10 @@ namespace CodeMap.Documentation
             WriteRemarks(method.Remarks);
             WriteRelatedMembers(method.RelatedMembers);
 
-            WriteDeclarationSectionEnding();
+            WriteDeclarationSectionEnding(method);
         }
 
+        /// <summary/>
         protected virtual void WriteAccessModifier(AccessModifier accessModifier)
             => WriteSafeHtml(accessModifier switch
             {
@@ -812,6 +846,7 @@ namespace CodeMap.Documentation
                 _ => throw new NotImplementedException()
             });
 
+        /// <summary/>
         protected virtual void WriteTypesList(IEnumerable<TypeDeclaration> types, string title, string sectionId)
         {
             if (types.Any())
@@ -861,9 +896,11 @@ namespace CodeMap.Documentation
             }
         }
 
+        /// <summary/>
         protected virtual void WriteMembersList(IEnumerable<MemberDeclaration> members, string title, string sectionId)
             => WriteMembersList(members, title, sectionId, false);
 
+        /// <summary/>
         protected virtual void WriteMembersList(IEnumerable<MemberDeclaration> members, string title, string sectionId, bool hideAccessModifier)
         {
             if (members.Any())
@@ -925,6 +962,7 @@ namespace CodeMap.Documentation
             }
         }
 
+        /// <summary/>
         protected virtual void WriteGenericParameters(IEnumerable<GenericParameterData> genericParameters)
         {
             if (genericParameters.Any())
@@ -1019,6 +1057,7 @@ namespace CodeMap.Documentation
             }
         }
 
+        /// <summary/>
         protected virtual void WriteNavigation(DeclarationNode declarationNode)
         {
             TextWriter.Write("<nav>");
@@ -1050,7 +1089,7 @@ namespace CodeMap.Documentation
                         WriteDeclarationReference(type.Namespace);
                         TextWriter.Write(" / ");
 
-                        if (type.DeclaringType is not null)
+                        if (type.DeclaringType != (TypeDeclaration)null)
                         {
                             WriteDeclarationReference(type.DeclaringType);
                             TextWriter.Write(" / ");
@@ -1078,10 +1117,11 @@ namespace CodeMap.Documentation
             }
         }
 
+        /// <summary/>
         protected virtual void WriteNavigationReference(DeclarationNode declarationNode)
         {
             TextWriter.Write("<a href=\"");
-            if (declarationNode is not AssemblyDeclaration)
+            if (!(declarationNode is AssemblyDeclaration))
             {
                 WriteSafeHtml("#");
                 WriteSafeHtml(declarationNode.GetFullNameReference());
@@ -1091,12 +1131,15 @@ namespace CodeMap.Documentation
             TextWriter.Write("</a>");
         }
 
+        /// <summary/>
         protected virtual void WriteNavigationActiveReference(DeclarationNode declarationNode)
             => WriteSafeHtml(declarationNode.GetSimpleNameReference());
 
+        /// <summary/>
         protected virtual void WritePageHeading(string title)
             => WritePageHeading(title, null);
 
+        /// <summary/>
         protected virtual void WritePageHeading(string title, AccessModifier? accessModifier)
         {
             TextWriter.Write("<h1>");
@@ -1110,9 +1153,11 @@ namespace CodeMap.Documentation
             TextWriter.Write("</h1>");
         }
 
+        /// <summary/>
         protected virtual void WriteSummary(SummaryDocumentationElement summary)
             => summary.Accept(new HtmlWriterDocumentationVisitor(TextWriter, MemberReferenceResolver));
 
+        /// <summary/>
         protected virtual void WriteFirstSummaryParagraph(SummaryDocumentationElement summary)
         {
             var documentationVisitor = new HtmlWriterDocumentationVisitor(TextWriter, MemberReferenceResolver);
@@ -1121,6 +1166,7 @@ namespace CodeMap.Documentation
                     element.Accept(documentationVisitor);
         }
 
+        /// <summary/>
         protected virtual void WriteValue(ValueDocumentationElement value)
         {
             if (value.Content.Any())
@@ -1137,6 +1183,7 @@ namespace CodeMap.Documentation
             }
         }
 
+        /// <summary/>
         protected virtual void WriteParameters(IEnumerable<ParameterData> parameters)
         {
             if (parameters.Any())
@@ -1207,6 +1254,7 @@ namespace CodeMap.Documentation
             }
         }
 
+        /// <summary/>
         protected virtual void WriteReturn(MethodReturnData returnData)
         {
             var htmlWriterDocumentationVisitor = new HtmlWriterDocumentationVisitor(TextWriter, MemberReferenceResolver);
@@ -1221,6 +1269,7 @@ namespace CodeMap.Documentation
             TextWriter.Write("</section>");
         }
 
+        /// <summary/>
         protected virtual void WriteExceptions(IEnumerable<ExceptionDocumentationElement> exceptions)
         {
             if (exceptions.Any())
@@ -1233,6 +1282,7 @@ namespace CodeMap.Documentation
             }
         }
 
+        /// <summary/>
         protected virtual void WriteExamples(IEnumerable<ExampleDocumentationElement> examples)
         {
             if (examples.Any())
@@ -1245,9 +1295,11 @@ namespace CodeMap.Documentation
             }
         }
 
+        /// <summary/>
         protected virtual void WriteRemarks(RemarksDocumentationElement remarks)
             => remarks.Accept(new HtmlWriterDocumentationVisitor(TextWriter, MemberReferenceResolver));
 
+        /// <summary/>
         protected virtual void WriteRelatedMembers(IEnumerable<MemberReferenceDocumentationElement> relatedMembers)
         {
             if (relatedMembers.Any())
@@ -1266,12 +1318,14 @@ namespace CodeMap.Documentation
             }
         }
 
+        /// <summary/>
         protected virtual void WriteConstructedTypeReference(BaseTypeReference type)
         {
             var memberReferenceVisitor = new HyperlinkWriterMemberReferenceVisitor(TextWriter, MemberReferenceResolver);
             type.Accept(memberReferenceVisitor);
         }
 
+        /// <summary/>
         protected virtual void WriteConstantValue(ConstantDeclaration constant)
         {
             if (constant.Value is null)
@@ -1286,6 +1340,7 @@ namespace CodeMap.Documentation
                 WriteSafeHtml(Convert.ToString(constant.Value, CultureInfo.InvariantCulture));
         }
 
+        /// <summary/>
         protected virtual void WriteSafeHtml(string value)
         {
             var htmlSafeValue = value;
@@ -1322,12 +1377,13 @@ namespace CodeMap.Documentation
             TextWriter.Write(htmlSafeValue);
         }
 
-        protected virtual void WriteDeclarationSectionBeginning(DeclarationNode declarationNode, string sectionTitle)
+        /// <summary/>
+        protected virtual void WriteDeclarationSectionBeginning(DeclarationNode declarationNode)
         {
             TextWriter.Write("<section id=\"");
-            WriteSafeHtml(declarationNode.GetFullNameReference());
+            WriteSafeHtml(declarationNode is AssemblyDeclaration ? "$default" : declarationNode.GetFullNameReference());
             TextWriter.Write("\" data-title=\"");
-            WriteSafeHtml(sectionTitle);
+            WriteSafeHtml(GetPageTitle(declarationNode));
             TextWriter.Write("\"");
 
             if (!HasDefaultSection)
@@ -1338,22 +1394,33 @@ namespace CodeMap.Documentation
             TextWriter.Write(">");
         }
 
-        protected virtual void WriteDeclarationSectionEnding()
+        /// <summary/>
+        protected virtual void WriteDeclarationSectionEnding(DeclarationNode declarationNode)
             => TextWriter.Write("</section>");
 
-        private void _WriteHtmlDocumentBeginning(string title)
+        /// <summary/>
+        protected virtual string GetPageTitle(DeclarationNode declarationNode)
+        {
+            var visitor = new HtmlPageTitleDeclarationNodeVisitor();
+            declarationNode.Accept(visitor);
+            return visitor.TitleStringBuilder.ToString();
+        }
+
+        /// <summary/>
+        private void _WriteHtmlDocumentBeginning(DeclarationNode declarationNode)
         {
             if (_declarationDepth == 0)
             {
                 if (_isHtmlInitialized)
                     throw new InvalidOperationException("The HTML document has already been started, please use a different instance.");
 
-                WriteHtmlBeginning(title);
+                WriteHtmlBeginning(declarationNode);
                 _isHtmlInitialized = true;
             }
         }
 
-        protected virtual void WriteHtmlBeginning(string pageTitle)
+        /// <summary/>
+        protected virtual void WriteHtmlBeginning(DeclarationNode declarationNode)
         {
             TextWriter.WriteLine("<!DOCTYPE html>");
             TextWriter.Write("<html lang=\"en-US\">");
@@ -1362,24 +1429,26 @@ namespace CodeMap.Documentation
             TextWriter.Write("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">");
             TextWriter.Write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
             TextWriter.Write("<title>");
-            WriteSafeHtml(pageTitle);
+            WriteSafeHtml(GetPageTitle(declarationNode));
             TextWriter.Write("</title>");
             TextWriter.Write("</head>");
             TextWriter.Write("<body>");
         }
 
-        private void _WriteHtmlDocumentEnding()
+        /// <summary/>
+        private void _WriteHtmlDocumentEnding(DeclarationNode declarationNode)
         {
             if (_declarationDepth == 0)
             {
                 if (!_isHtmlInitialized)
                     throw new InvalidOperationException("The HTML document has not been started.");
 
-                WriteHtmlEnding();
+                WriteHtmlEnding(declarationNode);
             }
         }
 
-        protected virtual void WriteHtmlEnding()
+        /// <summary/>
+        protected virtual void WriteHtmlEnding(DeclarationNode declarationNode)
         {
             TextWriter.Write("<script>");
             TextWriter.Write("window.addEventListener(\"hashchange\", function (hashChangeEvent) { ");

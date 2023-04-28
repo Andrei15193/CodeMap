@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CodeMap.Handlebars\CodeMap.Handlebars.csproj" />
     <ProjectReference Include="..\CodeMap.Documentation\CodeMap.Documentation.csproj" />
     <ProjectReference Include="..\CodeMap.Tests.Data\CodeMap.Tests.Data.csproj" />
     <ProjectReference Include="..\CodeMap\CodeMap.csproj" />

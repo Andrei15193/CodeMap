@@ -2,30 +2,36 @@ using System.Linq;
 using System.Text;
 using CodeMap.DeclarationNodes;
 
-namespace CodeMap.Documentation
+namespace CodeMap.Html
 {
+    /// <summary/>
     public class SimpleNameDeclarationNodeVisitor : DeclarationNodeVisitor
     {
+        /// <summary/>
         public SimpleNameDeclarationNodeVisitor()
             : this(null)
         {
         }
 
+        /// <summary/>
         public SimpleNameDeclarationNodeVisitor(StringBuilder stringBuilder)
             => StringBuilder ??= new StringBuilder();
 
+        /// <summary/>
         public StringBuilder StringBuilder { get; set; }
 
-        protected override void VisitAssembly(AssemblyDeclaration assembly)
+        /// <summary/>
+        protected internal override void VisitAssembly(AssemblyDeclaration assembly)
         {
-                if (StringBuilder.Length > 0)
-                    StringBuilder.Append('.');
-                StringBuilder.Append(assembly.Name);
+            if (StringBuilder.Length > 0)
+                StringBuilder.Append('.');
+            StringBuilder.Append(assembly.Name);
         }
 
-        protected override void VisitNamespace(NamespaceDeclaration @namespace)
+        /// <summary/>
+        protected internal override void VisitNamespace(NamespaceDeclaration @namespace)
         {
-            if (@namespace is not GlobalNamespaceDeclaration)
+            if (!(@namespace is GlobalNamespaceDeclaration))
             {
                 if (StringBuilder.Length > 0)
                     StringBuilder.Append('.');
@@ -33,7 +39,8 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitInterface(InterfaceDeclaration @interface)
+        /// <summary/>
+        protected internal override void VisitInterface(InterfaceDeclaration @interface)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');
@@ -55,7 +62,8 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitClass(ClassDeclaration @class)
+        /// <summary/>
+        protected internal override void VisitClass(ClassDeclaration @class)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');
@@ -77,7 +85,8 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitRecord(RecordDeclaration record)
+        /// <summary/>
+        protected internal override void VisitRecord(RecordDeclaration record)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');
@@ -99,7 +108,8 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitStruct(StructDeclaration @struct)
+        /// <summary/>
+        protected internal override void VisitStruct(StructDeclaration @struct)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');
@@ -121,7 +131,8 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitDelegate(DelegateDeclaration @delegate)
+        /// <summary/>
+        protected internal override void VisitDelegate(DelegateDeclaration @delegate)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');
@@ -157,28 +168,32 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitEnum(EnumDeclaration @enum)
+        /// <summary/>
+        protected internal override void VisitEnum(EnumDeclaration @enum)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');
             StringBuilder.Append(@enum.Name);
         }
 
-        protected override void VisitConstant(ConstantDeclaration constant)
+        /// <summary/>
+        protected internal override void VisitConstant(ConstantDeclaration constant)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');
             StringBuilder.Append(constant.Name);
         }
 
-        protected override void VisitField(FieldDeclaration field)
+        /// <summary/>
+        protected internal override void VisitField(FieldDeclaration field)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');
             StringBuilder.Append(field.Name);
         }
 
-        protected override void VisitConstructor(ConstructorDeclaration constructor)
+        /// <summary/>
+        protected internal override void VisitConstructor(ConstructorDeclaration constructor)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');
@@ -197,14 +212,16 @@ namespace CodeMap.Documentation
             StringBuilder.Append(')');
         }
 
-        protected override void VisitEvent(EventDeclaration @event)
+        /// <summary/>
+        protected internal override void VisitEvent(EventDeclaration @event)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');
             StringBuilder.Append(@event.Name);
         }
 
-        protected override void VisitProperty(PropertyDeclaration property)
+        /// <summary/>
+        protected internal override void VisitProperty(PropertyDeclaration property)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');
@@ -226,7 +243,8 @@ namespace CodeMap.Documentation
             }
         }
 
-        protected override void VisitMethod(MethodDeclaration method)
+        /// <summary/>
+        protected internal override void VisitMethod(MethodDeclaration method)
         {
             if (StringBuilder.Length > 0)
                 StringBuilder.Append('.');

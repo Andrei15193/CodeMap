@@ -1,9 +1,11 @@
 using CodeMap.DeclarationNodes;
 
-namespace CodeMap.Documentation
+namespace CodeMap.Html
 {
+    /// <summary/>
     public static class DeclarationNodeVisitorExtensions
     {
+        /// <summary/>
         public static string GetSimpleNameReference(this DeclarationNode declarationNode)
         {
             var declarationNodeVisitor = new SimpleNameDeclarationNodeVisitor();
@@ -11,6 +13,7 @@ namespace CodeMap.Documentation
             return declarationNodeVisitor.StringBuilder.ToString();
         }
 
+        /// <summary/>
         public static string GetFullNameReference(this DeclarationNode declarationNode)
         {
             var declarationNodeVisitor = new FullNameDeclarationNodeVisitor();
