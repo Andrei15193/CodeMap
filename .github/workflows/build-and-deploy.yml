@@ -98,7 +98,8 @@ jobs:
     - name: Generate Project Site
       shell: pwsh
       run: |
-        dotnet run --project CodeMap.Documentation --no-build -- -OutputFilePath './docs/${{ github.ref_name }}/index.html'
+        [string] $documentationDirectoryPath = if ('${{ github.ref_name }}' -ieq 'dev') { 'dev/${{ github.ref_name }}' } else { '${{ github.ref_name }}' }
+        dotnet run --project CodeMap.Documentation --no-build -- -OutputFilePath "./docs/$documentationDirectoryPath/index.html"
         # Set-Content -Path "./docs/_data/versions.yml" -Encoding utf8
 
     - name: Publish Project Site
