@@ -50,7 +50,7 @@ namespace CodeMap.Html
             StringBuilder.Append(type.Name);
             if (type.GenericArguments.Any())
             {
-                StringBuilder.Append('[');
+                StringBuilder.Append('<');
                 var isFirst = true;
                 foreach (var genericArgument in type.GenericArguments)
                 {
@@ -63,7 +63,7 @@ namespace CodeMap.Html
                     genericArgument.Accept(memberReferenceVisitor);
                     StringBuilder.Append(memberReferenceVisitor.StringBuilder);
                 }
-                StringBuilder.Append(']');
+                StringBuilder.Append('>');
             }
         }
 
@@ -136,9 +136,8 @@ namespace CodeMap.Html
                         isFirst = false;
                     else
                         StringBuilder.Append(',');
-                    parameterType.Accept(this);
+                    StringBuilder.Append(parameterType.GetFullNameReference());
                 }
-                StringBuilder.Append(',');
                 StringBuilder.Append(']');
             }
         }
@@ -150,7 +149,7 @@ namespace CodeMap.Html
             StringBuilder.Append('.').Append(method.Name);
             if (method.GenericArguments.Any())
             {
-                StringBuilder.Append('[');
+                StringBuilder.Append('<');
                 var isFirst = true;
                 foreach (var genericArgument in method.GenericArguments)
                 {
@@ -162,7 +161,7 @@ namespace CodeMap.Html
                     genericArgument.Accept(memberReferenceVisitor);
                     StringBuilder.Append(memberReferenceVisitor.StringBuilder);
                 }
-                StringBuilder.Append(']');
+                StringBuilder.Append('>');
             }
 
             if (method.ParameterTypes.Any())
@@ -175,14 +174,14 @@ namespace CodeMap.Html
                         isFirst = false;
                     else
                         StringBuilder.Append(',');
-                    parameterType.Accept(this);
+                    StringBuilder.Append(parameterType.GetFullNameReference());
                 }
                 StringBuilder.Append(',');
                 StringBuilder.Append(')');
             }
         }
 
-    /// <summary/>
+        /// <summary/>
         protected internal override void VisitGenericMethodParameter(GenericMethodParameterReference genericMethodParameter)
             => StringBuilder.Append(genericMethodParameter.Name);
     }

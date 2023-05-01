@@ -137,6 +137,6 @@ namespace CodeMap.Html
                 .Append(method.DeclaringType.Assembly.Version)
                 .Append(" - ")
                 .Append(method.GetSimpleNameReference())
-                .Append(" Property");
+                .Append(" Method");
     }
 }

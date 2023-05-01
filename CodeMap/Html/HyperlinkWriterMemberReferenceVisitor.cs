@@ -35,7 +35,7 @@ namespace CodeMap.Html
             }
 
             TextWriter.Write("<a href=\"");
-            WriteSafeHtml(MemberReferenceResolver.GetUrl(type));
+            TextWriter.Write(MemberReferenceResolver.GetUrl(type));
             TextWriter.Write("\">");
             WriteSafeHtml(GetTypeName(type));
             TextWriter.Write("</a>");
@@ -144,7 +144,7 @@ namespace CodeMap.Html
         protected void WriteSafeHtml(string value)
         {
             var htmlSafeValue = value;
-            if (value.Any(@char => @char == '<' || @char == '>' || @char == '&' || @char == '\'' || @char == '"' || char.IsControl(@char)))
+            if (value.Any(@char => @char == '<' || @char == '>' || @char == '&' || @char == '\'' || @char == '"' || (char.IsControl(@char) && !char.IsWhiteSpace(@char))))
                 htmlSafeValue = value
                     .Aggregate(
                         new StringBuilder(),
@@ -162,10 +162,10 @@ namespace CodeMap.Html
                                     return stringBuilder.Append("&amp;");
 
                                 case '"':
-                                    return stringBuilder.Append("&quot");
+                                    return stringBuilder.Append("&quot;");
 
                                 default:
-                                    if (@char == '\'' || char.IsControl(@char))
+                                    if (@char == '\'' || (char.IsControl(@char) && !char.IsWhiteSpace(@char)))
                                         return stringBuilder.Append("&#x").Append(((short)@char).ToString("x2")).Append(';');
                                     else
                                         return stringBuilder.Append(@char);

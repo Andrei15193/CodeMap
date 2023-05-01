@@ -79,7 +79,7 @@ namespace CodeMap.Html
                             isFirst = false;
                         else
                             StringBuilder.Append(", ");
-                        genericArgument.Accept(this);
+                        StringBuilder.Append(genericArgument.GetSimpleNameReference());
                     }
                     StringBuilder.Append('>');
                 }
@@ -155,7 +155,7 @@ namespace CodeMap.Html
                         isFirst = false;
                     else
                         StringBuilder.Append(", ");
-                    parameterType.Accept(this);
+                    StringBuilder.Append(parameterType.GetSimpleNameReference());
                 }
                 StringBuilder.Append(',');
                 StringBuilder.Append(']');
@@ -177,7 +177,7 @@ namespace CodeMap.Html
                         isFirst = false;
                     else
                         StringBuilder.Append(", ");
-                    genericArgument.Accept(this);
+                    StringBuilder.Append(genericArgument.GetSimpleNameReference());
                 }
                 StringBuilder.Append('<');
             }
@@ -192,7 +192,7 @@ namespace CodeMap.Html
                         isFirst = false;
                     else
                         StringBuilder.Append(", ");
-                    parameterType.Accept(this);
+                    StringBuilder.Append(parameterType.GetSimpleNameReference());
                 }
                 StringBuilder.Append(',');
                 StringBuilder.Append(')');

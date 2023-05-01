@@ -23,8 +23,6 @@ namespace CodeMap.Documentation
             return result;
         }
 
-        public string OutputPath { get; set; }
-
-        public string TargetSubdirectory { get; set; }
+        public string OutputFilePath { get; set; }
     }
 }

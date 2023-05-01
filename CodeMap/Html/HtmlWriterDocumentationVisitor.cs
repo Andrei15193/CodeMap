@@ -31,7 +31,7 @@ namespace CodeMap.Html
         {
             if (summary.Content.Any())
             {
-                WriteElementOpening("section", new Dictionary<string, string>(summary.XmlAttributes) { { "id", "summary" } });
+                WriteElementOpening("section", new Dictionary<string, string>(summary.XmlAttributes) { { "data-sectionId", "summary" } });
                 foreach (var element in summary.Content)
                     element.Accept(this);
                 WriteElementClosing("section");
@@ -43,7 +43,7 @@ namespace CodeMap.Html
         {
             if (value.Content.Any())
             {
-                WriteElementOpening("section", new Dictionary<string, string>(value.XmlAttributes) { { "id", "value" } });
+                WriteElementOpening("section", new Dictionary<string, string>(value.XmlAttributes) { { "data-sectionId", "value" } });
 
                 WriteStartElement("h2");
                 WriteSafeHtml("Value");
@@ -59,7 +59,7 @@ namespace CodeMap.Html
         protected internal override void VisitException(ExceptionDocumentationElement exception)
         {
             _exceptionCount++;
-            WriteElementOpening("section", new Dictionary<string, string>(exception.XmlAttributes) { { "id", $"exception-{_exceptionCount}" } });
+            WriteElementOpening("section", new Dictionary<string, string>(exception.XmlAttributes) { { "data-sectionId", $"exception-{_exceptionCount}" } });
 
             WriteStartElement("h2");
             WriteSafeHtml("Exception: ");
@@ -78,7 +78,7 @@ namespace CodeMap.Html
             if (example.Content.Any())
             {
                 _exampleCount++;
-                WriteElementOpening("section", new Dictionary<string, string>(example.XmlAttributes) { { "id", $"example-{_exampleCount}" } });
+                WriteElementOpening("section", new Dictionary<string, string>(example.XmlAttributes) { { "data-sectionId", $"example-{_exampleCount}" } });
 
                 WriteStartElement("h2");
                 WriteSafeHtml("Example");
@@ -95,7 +95,7 @@ namespace CodeMap.Html
         {
             if (remarks.Content.Any())
             {
-                WriteElementOpening("section", new Dictionary<string, string>(remarks.XmlAttributes) { { "id", "remarks" } });
+                WriteElementOpening("section", new Dictionary<string, string>(remarks.XmlAttributes) { { "data-sectionId", "remarks" } });
 
                 WriteStartElement("h2");
                 WriteSafeHtml("Remarks");
@@ -119,11 +119,11 @@ namespace CodeMap.Html
         /// <summary/>
         protected internal override void VisitCodeBlock(CodeBlockDocumentationElement codeBlock)
         {
-            WriteElementOpening("code", codeBlock.XmlAttributes);
             WriteStartElement("pre");
+            WriteElementOpening("code", codeBlock.XmlAttributes);
             WriteSafeHtml(codeBlock.Code);
-            WriteElementClosing("pre");
             WriteElementClosing("code");
+            WriteElementClosing("pre");
         }
 
         /// <summary/>
@@ -306,7 +306,7 @@ namespace CodeMap.Html
         protected void WriteSafeHtml(string value)
         {
             var htmlSafeValue = value;
-            if (value.Any(@char => @char == '<' || @char == '>' || @char == '&' || @char == '\'' || @char == '"' || char.IsControl(@char)))
+            if (value.Any(@char => @char == '<' || @char == '>' || @char == '&' || @char == '\'' || @char == '"' || (char.IsControl(@char) && !char.IsWhiteSpace(@char))))
                 htmlSafeValue = value
                     .Aggregate(
                         new StringBuilder(),
@@ -324,10 +324,10 @@ namespace CodeMap.Html
                                     return stringBuilder.Append("&amp;");
 
                                 case '"':
-                                    return stringBuilder.Append("&quot");
+                                    return stringBuilder.Append("&quot;");
 
                                 default:
-                                    if (@char == '\'' || char.IsControl(@char))
+                                    if (@char == '\'' || (char.IsControl(@char) && !char.IsWhiteSpace(@char)))
                                         return stringBuilder.Append("&#x").Append(((short)@char).ToString("x2")).Append(';');
                                     else
                                         return stringBuilder.Append(@char);

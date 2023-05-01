@@ -8,8 +8,8 @@
             "args": [
                 "build",
                 "${workspaceFolder}",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary",
+                "-property:GenerateFullPaths=true"
             ],
             "problemMatcher": "$msCompile"
         },
