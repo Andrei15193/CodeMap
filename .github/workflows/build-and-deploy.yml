@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Generate Package Info
       id: package_info
@@ -43,27 +43,22 @@ jobs:
     - name: Build
       shell: pwsh
       run: |
-        switch ('${{ github.event_name }}')
-        {
-          'push' {
-            dotnet build `
-              --configuration Release `
-              --no-restore
-          }
+        [Convert]::FromBase64String('${{ secrets.KeyFile }}') `
+        | Set-Content ./CodeMap.snk -AsByteStream
 
-          'release' {
-            [Convert]::FromBase64String('${{ secrets.KeyFile }}') `
-            | Set-Content ./CodeMap.snk -AsByteStream
+        $additionalBuildArgs = @()
 
-            dotnet build `
-              --configuration Release `
-              --no-restore `
-              -property:Version='${{ github.ref_name }}' `
-              -property:SignAssembly=True `
-              -property:AssemblyOriginatorKeyFile=../CodeMap.snk `
-              -property:DisableStrongNamer=False
-          }
+        if ('${{ github.event_name }}' -ieq 'release') {
+          $additionalBuildArgs += '-property:Version=${{ github.ref_name }}'
         }
+
+        dotnet build `
+          --configuration Release `
+          --no-restore `
+          -property:SignAssembly=True `
+          -property:AssemblyOriginatorKeyFile=../CodeMap.snk `
+          -property:DisableStrongNamer=False `
+          @additionalBuildArgs
 
     - name: Test
       shell: pwsh
@@ -98,8 +93,8 @@ jobs:
     - name: Generate Project Site
       shell: pwsh
       run: |
-        [string] $documentationDirectoryPath = if ('${{ github.ref_name }}' -ieq 'dev') { 'dev/${{ github.ref_name }}' } else { '${{ github.ref_name }}' }
-        dotnet run --project CodeMap.Documentation --no-build -- -OutputFilePath "./docs/$documentationDirectoryPath/index.html"
+        [string] $documentationDirectoryPath = if ('${{ github.ref_name }}' -ieq 'dev') { '${{ github.ref_name }}' } else { 'dev/${{ github.ref_name }}' }
+        dotnet run --project CodeMap.Documentation --configuration Release --no-build -- -OutputFilePath "./docs/$documentationDirectoryPath/index.html"
         # Set-Content -Path "./docs/_data/versions.yml" -Encoding utf8
 
     - name: Publish Project Site

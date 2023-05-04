@@ -8,8 +8,6 @@ namespace CodeMap.Documentation
 {
     internal static class Program
     {
-        private const string CodeMapDirectoryName = "CodeMap";
-
         internal static void Main(params string[] args)
         {
             var arguments = Arguments.GetFrom(args);
