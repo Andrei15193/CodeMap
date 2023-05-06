@@ -21,7 +21,7 @@ namespace CodeMap.Documentation
             var outputFileInfo = new FileInfo(arguments.OutputFilePath);
             outputFileInfo.Directory.Create();
             using var outputFileStream = new FileStream(outputFileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.Read);
-            using var outputFileStreamWriter = new StreamWriter(outputFileStream, Encoding.UTF8);
+            using var outputFileStreamWriter = new StreamWriter(outputFileStream);
 
             var htmlWriterDeclarationNodeVisitor = new CodeMalHtmlWriterDocumentaitonNodeVisitor(
                 outputFileStreamWriter,

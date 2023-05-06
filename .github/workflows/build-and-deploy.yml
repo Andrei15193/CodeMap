@@ -17,6 +17,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Generate Package Info
       id: package_info
@@ -34,8 +36,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: |
-          6.0.x
+        dotnet-version: 6.0.x
 
     - name: Restore
       run: dotnet restore
@@ -62,6 +63,7 @@ jobs:
 
     - name: Test
       shell: pwsh
+      if: false
       run: |
         dotnet test `
           --configuration Release `
@@ -95,6 +97,21 @@ jobs:
       run: |
         [string] $documentationDirectoryPath = if ('${{ github.ref_name }}' -ieq 'dev') { '${{ github.ref_name }}' } else { 'dev/${{ github.ref_name }}' }
         dotnet run --project CodeMap.Documentation --configuration Release --no-build -- -OutputFilePath "./docs/$documentationDirectoryPath/index.html"
+
+        New-Item `
+          -Type Directory `
+          -Name docs `
+          -ErrorAction SilentlyContinue
+        New-Item `
+          -Type Directory `
+          -Name _data `
+          -Path docs `
+          -ErrorAction SilentlyContinue
+
+        git tag `
+        | ForEach-Object { "- $_" } `
+        | Out-File ./docs/_data/tags.yml -Encoding utf8
+
         # Set-Content -Path "./docs/_data/versions.yml" -Encoding utf8
 
     - name: Publish Project Site

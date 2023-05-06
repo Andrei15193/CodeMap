@@ -1616,6 +1616,16 @@ namespace CodeMap.Html
         /// <summary/>
         protected virtual void WriteHtmlEnding(DeclarationNode declarationNode)
         {
+            WriteNavigationJavaScript(declarationNode);
+            WriteOtherHtmlBodyTags(declarationNode);
+
+            TextWriter.Write("</body>");
+            TextWriter.Write("</html>");
+        }
+
+        /// <summary/>
+        protected virtual void WriteNavigationJavaScript(DeclarationNode declarationNode)
+        {
             TextWriter.Write("<script>");
             TextWriter.Write("window.addEventListener(\"hashchange\", function (hashChangeEvent) { ");
             TextWriter.Write("switchView(hashChangeEvent.oldURL.split(\"#\", 2)[1], hashChangeEvent.newURL.split(\"#\", 2)[1]);");
@@ -1640,11 +1650,6 @@ namespace CodeMap.Html
 
             TextWriter.Write("switchView((document.getElementById(\"$default\") || document.querySelector(\"section[data-default='true']\")).id, window.location.hash.split(\"#\")[1]);");
             TextWriter.Write("</script>");
-
-            WriteOtherHtmlBodyTags(declarationNode);
-
-            TextWriter.Write("</body>");
-            TextWriter.Write("</html>");
         }
 
         /// <summary/>
