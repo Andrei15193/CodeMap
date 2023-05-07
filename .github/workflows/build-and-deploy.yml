@@ -112,6 +112,11 @@ jobs:
         | ForEach-Object { "- $_" } `
         | Out-File ./docs/_data/tags.yml -Encoding utf8
 
+        Copy-Item `
+          -Path 'CodeMap.Documentation/GitHub Pages' `
+          -Destination './docs' `
+          -Recurse
+
         # Set-Content -Path "./docs/_data/versions.yml" -Encoding utf8
 
     - name: Publish Project Site

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using CodeMap.DeclarationNodes;
 using CodeMap.Html;
 
