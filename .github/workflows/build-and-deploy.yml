@@ -44,14 +44,35 @@ jobs:
     - name: Build
       shell: pwsh
       run: |
-        [Convert]::FromBase64String('${{ secrets.KeyFile }}') `
-        | Set-Content ./CodeMap.snk -AsByteStream
-
         $additionalBuildArgs = @()
 
         if ('${{ github.event_name }}' -ieq 'release') {
-          $additionalBuildArgs += '-property:Version=${{ github.ref_name }}'
+          [string] $baseVersionPart, [string] $preReleaseVersionPart = '${{ github.ref_name }}' -split '\-'
+          [int] $major, [int] $minor, [int] $revision = $baseVersionPart -split '\.', 3
+
+          # The build version represents a build of the same sources, this seldom happens with releases.
+          # Pre-releases have only major and minor version leaving the build and revision numbers as undefined.
+          #
+          # Releases map the major, minor and patch version numbers to major, minor and revision respectively,
+          # leaving the build number to always be 0. If there will be a case where the same sources are build
+          # and released in a separate NuGet package it will be addressed at that point, right now I don't see
+          # how that will ever happen since releases are tagged in git (must be unique) using SemVer.
+          #
+          # https://learn.microsoft.com/dotnet/api/system.version
+          # https://semver.org
+          [string] $version = "$major.$minor.0.$revision"
+
+          if ($preReleaseVersionPart -ne [string]::Empty) {
+            $version = "$major.$minor"
+          }
+
+          $additionalBuildArgs += "-property:Version=$version"
         }
+
+        $additionalBuildArgs += '-property:InformationalVersion=${{ github.ref_name }}'
+
+        [Convert]::FromBase64String('${{ secrets.KeyFile }}') `
+        | Set-Content ./CodeMap.snk -AsByteStream
 
         dotnet build `
           --configuration Release `
@@ -96,7 +117,12 @@ jobs:
       shell: pwsh
       run: |
         [string] $documentationDirectoryPath = if ('${{ github.ref_name }}' -ieq 'dev') { '${{ github.ref_name }}' } else { 'dev/${{ github.ref_name }}' }
-        dotnet run --project CodeMap.Documentation --configuration Release --no-build -- -OutputFilePath "./docs/$documentationDirectoryPath/index.html"
+        dotnet run `
+          --project CodeMap.Documentation `
+          --configuration Release `
+          --no-build `
+          -- `
+          -OutputFilePath "./docs/$documentationDirectoryPath/index.html"
 
         New-Item `
           -Type Directory `
@@ -108,16 +134,14 @@ jobs:
           -Path docs `
           -ErrorAction SilentlyContinue
 
-        git tag `
-        | ForEach-Object { "- $_" } `
-        | Out-File ./docs/_data/tags.yml -Encoding utf8
-
         Copy-Item `
           -Path 'CodeMap.Documentation/GitHub Pages' `
           -Destination './docs' `
           -Recurse
 
-        # Set-Content -Path "./docs/_data/versions.yml" -Encoding utf8
+        git tag `
+        | ForEach-Object { "- $_" } `
+        | Out-File ./docs/_data/tags.yml -Encoding utf8
 
     - name: Publish Project Site
       uses: peaceiris/actions-gh-pages@v3

@@ -250,10 +250,10 @@ namespace CodeMap.Documentation
         {
             var version = declarationNode switch
             {
-                AssemblyDeclaration assemblyDeclaration => assemblyDeclaration.Version,
-                NamespaceDeclaration namespaceDeclaration => namespaceDeclaration.Assembly.Version,
-                TypeDeclaration typeDeclaration => typeDeclaration.Assembly.Version,
-                MemberDeclaration memberDeclaration => memberDeclaration.DeclaringType.Assembly.Version,
+                AssemblyDeclaration assemblyDeclaration => assemblyDeclaration.GetInformalVersion(),
+                NamespaceDeclaration namespaceDeclaration => namespaceDeclaration.Assembly.GetInformalVersion(),
+                TypeDeclaration typeDeclaration => typeDeclaration.Assembly.GetInformalVersion(),
+                MemberDeclaration memberDeclaration => memberDeclaration.DeclaringType.Assembly.GetInformalVersion(),
                 _ => throw new InvalidOperationException("Unhandled declaration node type.")
             };
 

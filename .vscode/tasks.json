@@ -9,7 +9,8 @@
                 "build",
                 "${workspaceFolder}",
                 "/consoleloggerparameters:NoSummary",
-                "-property:GenerateFullPaths=true"
+                "-property:GenerateFullPaths=true",
+                "-property:InformationalVersion=local"
             ],
             "problemMatcher": "$msCompile"
         },

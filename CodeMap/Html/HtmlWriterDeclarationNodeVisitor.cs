@@ -59,7 +59,7 @@ namespace CodeMap.Html
             WriteDeclarationSectionBeginning(assembly);
 
             WriteNavigation(assembly);
-            WritePageHeading($"{assembly.Name}@{assembly.Version}");
+            WritePageHeading($"{assembly.Name}@{assembly.GetInformalVersion()}");
 
             WriteSummary(assembly.Summary);
             WriteNamespacesList(assembly.Namespaces);

@@ -19,14 +19,14 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(assembly.Name)
                 .Append('@')
-                .Append(assembly.Version)
+                .Append(assembly.GetInformalVersion())
                 .Append(" - Home");
                 
         protected internal override void VisitNamespace(NamespaceDeclaration @namespace)
             => TitleStringBuilder
                 .Append(@namespace.Assembly.Name)
                 .Append('@')
-                .Append(@namespace.Assembly.Version)
+                .Append(@namespace.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(@namespace.Name)
                 .Append(" Namespace");
@@ -35,7 +35,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(@enum.Assembly.Name)
                 .Append('@')
-                .Append(@enum.Assembly.Version)
+                .Append(@enum.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(@enum.GetSimpleNameReference())
                 .Append(" Enum");
@@ -44,7 +44,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(@delegate.Assembly.Name)
                 .Append('@')
-                .Append(@delegate.Assembly.Version)
+                .Append(@delegate.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(@delegate.GetSimpleNameReference())
                 .Append(" Delegate");
@@ -53,7 +53,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(@interface.Assembly.Name)
                 .Append('@')
-                .Append(@interface.Assembly.Version)
+                .Append(@interface.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(@interface.GetSimpleNameReference())
                 .Append(" Interface");
@@ -62,7 +62,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(@class.Assembly.Name)
                 .Append('@')
-                .Append(@class.Assembly.Version)
+                .Append(@class.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(@class.GetSimpleNameReference())
                 .Append(" Class");
@@ -71,7 +71,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(record.Assembly.Name)
                 .Append('@')
-                .Append(record.Assembly.Version)
+                .Append(record.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(record.GetSimpleNameReference())
                 .Append(" Record");
@@ -80,7 +80,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(@struct.Assembly.Name)
                 .Append('@')
-                .Append(@struct.Assembly.Version)
+                .Append(@struct.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(@struct.GetSimpleNameReference())
                 .Append(" Struct");
@@ -89,7 +89,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(constant.DeclaringType.Assembly.Name)
                 .Append('@')
-                .Append(constant.DeclaringType.Assembly.Version)
+                .Append(constant.DeclaringType.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(constant.GetSimpleNameReference())
                 .Append(" Constant");
@@ -98,7 +98,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(field.DeclaringType.Assembly.Name)
                 .Append('@')
-                .Append(field.DeclaringType.Assembly.Version)
+                .Append(field.DeclaringType.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(field.GetSimpleNameReference())
                 .Append(" Field");
@@ -107,7 +107,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(constructor.DeclaringType.Assembly.Name)
                 .Append('@')
-                .Append(constructor.DeclaringType.Assembly.Version)
+                .Append(constructor.DeclaringType.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(constructor.GetSimpleNameReference())
                 .Append(" Constructor");
@@ -116,7 +116,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(@event.DeclaringType.Assembly.Name)
                 .Append('@')
-                .Append(@event.DeclaringType.Assembly.Version)
+                .Append(@event.DeclaringType.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(@event.GetSimpleNameReference())
                 .Append(" Event");
@@ -125,7 +125,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(property.DeclaringType.Assembly.Name)
                 .Append('@')
-                .Append(property.DeclaringType.Assembly.Version)
+                .Append(property.DeclaringType.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(property.GetSimpleNameReference())
                 .Append(" Property");
@@ -134,7 +134,7 @@ namespace CodeMap.Html
             => TitleStringBuilder
                 .Append(method.DeclaringType.Assembly.Name)
                 .Append('@')
-                .Append(method.DeclaringType.Assembly.Version)
+                .Append(method.DeclaringType.Assembly.GetInformalVersion())
                 .Append(" - ")
                 .Append(method.GetSimpleNameReference())
                 .Append(" Method");
