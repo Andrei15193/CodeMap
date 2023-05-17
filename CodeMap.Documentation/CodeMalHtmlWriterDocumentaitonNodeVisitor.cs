@@ -19,7 +19,7 @@ namespace CodeMap.Documentation
             => new CodeMapHtmlWriterDocumentationVisitor(TextWriter, MemberReferenceResolver);
 
         protected override void WriteOtherSectionAttributes(DeclarationNode declarationNode)
-            => TextWriter.Write(" class=\"mt-2 flex-fill\"");
+            => TextWriter.Write(" class=\"mt-2 mx-3 flex-fill\"");
 
         protected override void WriteNavigation(DeclarationNode declarationNode)
         {
