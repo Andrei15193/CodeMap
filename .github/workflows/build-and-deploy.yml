@@ -134,10 +134,12 @@ jobs:
           -Path docs `
           -ErrorAction SilentlyContinue
 
-        Copy-Item `
-          -Path 'CodeMap.Documentation/GitHub Pages' `
-          -Destination './docs' `
-          -Recurse
+        if (Test-Path 'CodeMap.Documentation/GitHub Pages') {
+          Copy-Item `
+            -Path 'CodeMap.Documentation/GitHub Pages/*' `
+            -Destination './docs' `
+            -Recurse
+        }
 
         git tag `
         | ForEach-Object { "- $_" } `
