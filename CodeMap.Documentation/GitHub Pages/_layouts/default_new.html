@@ -24,7 +24,7 @@
                             Documentation
                         </a>
                         <ul class="dropdown-menu">
-                            {% assign page_directories = site.pages | map: 'path' %}
+                            {% assign page_directories = site.pages | map: 'dir' %}
                             {% for tag in site.data.tags %}
                                 {% assign target_directory = tag | prepend: '/' | append: '/' %}
                                 {% if page_directories contains target_directory %}
