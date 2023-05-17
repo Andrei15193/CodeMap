@@ -10,19 +10,63 @@
 </head>
 <body class="px-3 h-100 d-flex flex-column">
     <ul>
-    {% for tag in site.data.tags %}
-        <li>{{ tag }}</li>
+    {% for page in site.pages %}
+        <li>{{ page.dir }} | {{ page.id }}</li>
     {% endfor %}
     </ul>
+
+    <nav class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
+        <div class="container">
+            {% assign page_path_elements = page.path | split: '.' %}
+            <a class="navbar-brand{% if page_path_elements.size == 2 and page_path_elements[0] == 'index' %} active{% endif %}" href="{{ '/' | relative_url }}">Home</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Documentation
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% for tag in site.data.tags %}
+                                <li><a class="dropdown-item{% if page.version == tag %} active{% endif %}" href="{{ tag | relative_url }}">{{ tag }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ site.github.repository_url }}">View on GitHub</a>
+                    </li>
+                    <li class="nav-item">
+                        {% if site.data.tags contains page.version %}
+                            <a class="nav-link" href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{{ page.version }}">View on NuGet</a>
+                        {% else %}
+                            <a class="nav-link" href="https://www.nuget.org/packages/{{ site.github.repository_name }}">View on NuGet</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     {{ content }}
 
     <footer class="mt-2 py-2 border-top text-center">
-        <a href="{{site.github.repository_url}}/releases/tag/{{ page.version }}">{{ site.github.repository_name }} {{ page.version }}</a>
+        {% if site.data.tags contains page.version %}
+            <a href="{{site.github.repository_url}}/releases/tag/{{ page.version }}">{{ site.github.repository_name }} {{ page.version }}</a>
+        {% else %}
+            <a href="{{site.github.repository_url}}/tree/{{ page.version }}">{{ site.github.repository_name }}@{{ page.version }}</a>
+        {% endif %}
         -
         <a href="{{site.github.repository_url}}">View on GitHub</a>
         -
-        <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{{ page.version }}">View on NuGet</a>
+        {% if site.data.tags contains page.version %}
+            <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{{ page.version }}">View on NuGet</a>
+        {% else %}
+            <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}">View on NuGet</a>
+        {% endif %}
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
