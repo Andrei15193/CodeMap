@@ -1509,16 +1509,19 @@ namespace CodeMap.Html
         /// <seealso cref="CreateDocumentationVisitor"/>
         protected virtual void WriteReturn(MethodReturnData returnData)
         {
-            var htmlWriterDocumentationVisitor = CreateDocumentationVisitor();
-            TextWriter.Write("<section data-sectionId=\"return\">");
+            if (returnData.Type != typeof(void) || returnData.Description.Any())
+            {
+                var htmlWriterDocumentationVisitor = CreateDocumentationVisitor();
+                TextWriter.Write("<section data-sectionId=\"return\">");
 
-            TextWriter.Write("<h2>");
-            WriteSafeHtml("Return: ");
-            WriteConstructedTypeReference(returnData.Type);
-            TextWriter.Write("</h2>");
+                TextWriter.Write("<h2>");
+                WriteSafeHtml("Return: ");
+                WriteConstructedTypeReference(returnData.Type);
+                TextWriter.Write("</h2>");
 
-            returnData.Description.Accept(htmlWriterDocumentationVisitor);
-            TextWriter.Write("</section>");
+                returnData.Description.Accept(htmlWriterDocumentationVisitor);
+                TextWriter.Write("</section>");
+            }
         }
 
         /// <summary>Writes the exceptions documentation of a <see cref="DeclarationNode"/>.</summary>
