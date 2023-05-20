@@ -4,7 +4,7 @@ using CodeMap.ReferenceData;
 
 namespace CodeMap.Html
 {
-    /// <summary>A default implementation for resolving member references.</summary>
+    /// <summary>A default implementation for resolving .NET Framework member references.</summary>
     public class MicrosoftDocsMemberReferenceResolver : IMemberReferenceResolver
     {
         private const string _baseUrl = "https://learn.microsoft.com/";

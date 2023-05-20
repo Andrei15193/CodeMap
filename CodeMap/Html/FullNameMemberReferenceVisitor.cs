@@ -4,28 +4,22 @@ using CodeMap.ReferenceData;
 
 namespace CodeMap.Html
 {
-    /// <summary/>
-    public class FullNameMemberReferenceVisitor : MemberReferenceVisitor
+    internal class FullNameMemberReferenceVisitor : MemberReferenceVisitor
     {
-        /// <summary/>
         public FullNameMemberReferenceVisitor()
             : this(null)
         {
         }
 
-        /// <summary/>
         public FullNameMemberReferenceVisitor(StringBuilder stringBuilder)
             => StringBuilder ??= new StringBuilder();
 
-        /// <summary/>
         public StringBuilder StringBuilder { get; set; }
 
-        /// <summary/>
         protected internal override void VisitAssembly(AssemblyReference assembly)
         {
         }
 
-        /// <summary/>
         protected internal override void VisitNamespace(NamespaceReference @namespace)
         {
             @namespace.Assembly.Accept(this);
@@ -37,7 +31,6 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
         protected internal override void VisitType(TypeReference type)
         {
             if (type.DeclaringType != (TypeReference)null)
@@ -67,60 +60,51 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
         protected internal override void VisitGenericTypeParameter(GenericTypeParameterReference genericTypeParameter)
             => StringBuilder.Append(genericTypeParameter.Name);
 
-        /// <summary/>
         protected internal override void VisitArray(ArrayTypeReference array)
         {
             array.ItemType.Accept(this);
             StringBuilder.Append('[').Append(new string(',', array.Rank - 1)).Append(']');
         }
 
-        /// <summary/>
         protected internal override void VisitByRef(ByRefTypeReference byRef)
         {
             byRef.ReferentType.Accept(this);
             StringBuilder.Append('&');
         }
 
-        /// <summary/>
         protected internal override void VisitPointer(PointerTypeReference pointer)
         {
             pointer.ReferentType.Accept(this);
             StringBuilder.Append('*');
         }
 
-        /// <summary/>
         protected internal override void VisitConstant(ConstantReference constant)
         {
             constant.DeclaringType.Accept(this);
             StringBuilder.Append('.').Append(constant.Name);
         }
 
-        /// <summary/>
         protected internal override void VisitField(FieldReference field)
         {
             field.DeclaringType.Accept(this);
             StringBuilder.Append('.').Append(field.Name);
         }
 
-        /// <summary/>
         protected internal override void VisitConstructor(ConstructorReference constructor)
         {
             constructor.DeclaringType.Accept(this);
             StringBuilder.Append('.').Append(constructor.DeclaringType.Name);
         }
 
-        /// <summary/>
         protected internal override void VisitEvent(EventReference @event)
         {
             @event.DeclaringType.Accept(this);
             StringBuilder.Append('.').Append(@event.Name);
         }
 
-        /// <summary/>
         protected internal override void VisitProperty(PropertyReference property)
         {
             property.DeclaringType.Accept(this);
@@ -142,7 +126,6 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
         protected internal override void VisitMethod(MethodReference method)
         {
             method.DeclaringType.Accept(this);
@@ -181,7 +164,6 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
         protected internal override void VisitGenericMethodParameter(GenericMethodParameterReference genericMethodParameter)
             => StringBuilder.Append(genericMethodParameter.Name);
     }

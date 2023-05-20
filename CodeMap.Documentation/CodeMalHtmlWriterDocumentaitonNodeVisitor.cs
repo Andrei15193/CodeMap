@@ -25,7 +25,7 @@ namespace CodeMap.Documentation
         {
             TextWriter.Write("<nav class=\"badge bg-light p-2 w-100 mb-2\">");
             TextWriter.Write("<ol class=\"breadcrumb m-0\">");
-            WriteDeclarationItems(declarationNode);
+            WriteNavigationItems(declarationNode);
             TextWriter.Write("</ol>");
             TextWriter.Write("</nav>");
         }

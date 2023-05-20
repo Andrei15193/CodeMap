@@ -10,13 +10,65 @@ using CodeMap.ReferenceData;
 
 namespace CodeMap.Html
 {
-    /// <summary/>
+    /// <summary>
+    /// A rudimentary HTML generator for <see cref="DeclarationNode"/>s. This is the most basic way of generating
+    /// HTML documentation pages out of a <see cref="DeclarationNode"/> with customisation options.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The entire documentation for all <see cref="DeclarationNode"/>s is written to a single output. Basic hash
+    /// navigation is added through a simple JavaScript block allowing for only one element to be displayed at a
+    /// given time. This enables sharing of links and bookmarking a specific <see cref="DeclarationNode"/>.
+    /// </para>
+    /// <para>
+    /// For each <see cref="DeclarationNode"/> a <c>section</c> element is generated where the ID is set to the
+    /// full name reference (<see cref="DeclarationNodeExtensions.GetFullNameReference(DeclarationNode)"/>. This
+    /// ID can be used to reference each declaration and it is used for navigation.
+    /// </para>
+    /// <para>
+    /// Most likely there are references between assemblies for which hyperlinks need to be generated. At the very
+    /// least there are the type references to .NET Framework. For this an <see cref="IMemberReferenceResolver"/>
+    /// needs to be provided, there are implementation already available to get started with this quickly.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// To get started, simply generate a <see cref="DeclarationNode"/> using one of the factory methods then
+    /// pass it to an <see cref="HtmlWriterDeclarationNodeVisitor"/> along side an <see cref="IMemberReferenceResolver"/>.
+    /// <code lang="c#">
+    /// var codeMapAssemblyDeclarationNode = DeclarationNode.Create(typeof(DeclarationNode).Assembly);
+    ///
+    /// var defaultMemberReferenceResolver = new MicrosoftDocsMemberReferenceResolver("netstandard-2.1", "en-US");
+    /// var memberReferenceResolver = new MemberReferenceResolver(defaultMemberReferenceResolver)
+    /// {
+    ///     // Don't forget to encode URLs, the full name reference may contain characters (such as &lt; and &gt;) that are forbidden.
+    ///     // As mentioned, the generated HTML page uses basic hash navigation, all elements can be accessed using `#FullNameReference`,
+    ///     // similar to classic in-page navigation, https://stackoverflow.com/questions/24739126/scroll-to-a-specific-element-using-html
+    ///     { typeof(DeclarationNode).Assembly, MemberReferenceResolver.Create(memberReference => $"#{Uri.EscapeDataString(memberReference.GetFullNameReference())}") }
+    /// };
+    ///
+    /// // Create output file stream.
+    /// var outputFileInfo = new FileInfo(arguments.OutputFilePath);
+    /// outputFileInfo.Directory.Create();
+    /// using var outputFileStream = new FileStream(outputFileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.Read);
+    /// using var outputFileStreamWriter = new StreamWriter(outputFileStream);
+    ///
+    /// // Instantiate the visitor.
+    /// var htmlWriterDeclarationNodeVisitor = new CodeMalHtmlWriterDocumentaitonNodeVisitor(outputFileStreamWriter, memberReferenceResolver);
+    ///
+    /// // After all this setup, it is time to generate the HTML page.
+    /// codeMapAssemblyDeclaration.Accept(htmlWriterDeclarationNodeVisitor);
+    /// </code>
+    /// </example>
+    /// <seealso cref="HtmlWriterDocumentationVisitor"/>
     public class HtmlWriterDeclarationNodeVisitor : DeclarationNodeVisitor
     {
         private bool _isHtmlInitialized = false;
         private int _declarationDepth = 0;
 
-        /// <summary/>
+        /// <summary>Initializes a new instance of the <see cref="HtmlWriterDeclarationNodeVisitor"/> class.</summary>
+        /// <param name="textWriter">The <see cref="TextWriter"/> to which to write the HTML output.</param>
+        /// <param name="memberReferenceResolver">The <see cref="IMemberReferenceResolver"/> used to generate URLs for <see cref="MemberReference"/>.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="textWriter"/> or <paramref name="memberReferenceResolver"/> are <c>null</c>.</exception>
         public HtmlWriterDeclarationNodeVisitor(TextWriter textWriter, IMemberReferenceResolver memberReferenceResolver)
         {
             TextWriter = textWriter;
@@ -24,20 +76,31 @@ namespace CodeMap.Html
             HasDefaultSection = false;
         }
 
-        /// <summary/>
+        /// <summary>The <see cref="TextWriter"/> to which the HTML document is being written to.</summary>
         public TextWriter TextWriter { get; set; }
 
-        /// <summary/>
+        /// <summary>The <see cref="IMemberReferenceResolver"/> used to generate URLs for <see cref="MemberReference"/>s.</summary>
         public IMemberReferenceResolver MemberReferenceResolver { get; }
 
-        /// <summary/>
+        /// <summary>An internal flag which indicates whether there is a <see cref="DeclarationNode"/> <c>section</c> element generated.</summary>
+        /// <remarks>
+        /// The first <c>section</c> element that is generated is considered the default, typically this would be for the
+        /// <see cref="AssemblyDeclaration"/>, but HTML pages can be generated only for a type and its declared members as well.
+        /// </remarks>
         protected bool HasDefaultSection { get; private set; }
 
-        /// <summary/>
+        /// <summary>Provides a <see cref="DocumentationVisitor"/> for outputting the related <see cref="DocumentationElement"/>s of a <see cref="DeclarationNode"/>.</summary>
+        /// <returns>Returns a <see cref="DocumentationVisitor"/> for outputting the related <see cref="DocumentationElement"/>s of a <see cref="DeclarationNode"/>.</returns>
+        /// <remarks>
+        /// Implicitly this returns <see cref="HtmlWriterDocumentationVisitor"/> which writers HTML to a provided <see cref="TextWriter"/>.
+        /// For customisation, this method can be overridden and have a different <see cref="DocumentationVisitor"/> provided.
+        /// </remarks>
+        /// <seealso cref="HtmlWriterDocumentationVisitor"/>
         protected virtual DocumentationVisitor CreateDocumentationVisitor()
             => new HtmlWriterDocumentationVisitor(TextWriter, MemberReferenceResolver);
 
-        /// <summary/>
+        /// <summary>Visits an <see cref="AssemblyDeclaration"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyDeclaration"/> to visit.</param>
         protected internal sealed override void VisitAssembly(AssemblyDeclaration assembly)
         {
             _WriteHtmlDocumentBeginning(assembly);
@@ -53,7 +116,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(assembly);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="assembly"/>.</summary>
+        /// <param name="assembly">The <see cref="AssemblyDeclaration"/> for which to write the documentation.</param>
         protected virtual void WriteAssemblyDeclaration(AssemblyDeclaration assembly)
         {
             WriteDeclarationSectionBeginning(assembly);
@@ -73,7 +137,13 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(assembly);
         }
 
-        /// <summary/>
+        /// <summary>Writes an HTML table for the provided <paramref name="namespaces"/>.</summary>
+        /// <param name="namespaces">The <see cref="NamespaceDeclaration"/> for which to write the HTML table.</param>
+        /// <remarks>
+        /// The table contains two columns, one is the namespace itself, which a hyperlink towards the documentation section.
+        /// The second column contains the first paragraph of the namespace summary, if there is one.
+        /// </remarks>
+        /// <seealso cref="WriteFirstSummaryParagraph(SummaryDocumentationElement)"/>
         protected virtual void WriteNamespacesList(IEnumerable<NamespaceDeclaration> namespaces)
         {
             if (namespaces.Any())
@@ -117,7 +187,8 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Visits a <see cref="NamespaceDeclaration"/>.</summary>
+        /// <param name="namespace">The <see cref="NamespaceDeclaration"/> to visit.</param>
         protected internal sealed override void VisitNamespace(NamespaceDeclaration @namespace)
         {
             _WriteHtmlDocumentBeginning(@namespace);
@@ -133,7 +204,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(@namespace);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="namespace"/>.</summary>
+        /// <param name="namespace">The <see cref="NamespaceDeclaration"/> for which to write the documentation.</param>
         protected virtual void WriteNamespaceDeclaration(NamespaceDeclaration @namespace)
         {
             WriteDeclarationSectionBeginning(@namespace);
@@ -156,7 +228,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(@namespace);
         }
 
-        /// <summary/>
+        /// <summary>Visits an <see cref="EnumDeclaration"/>.</summary>
+        /// <param name="enum">The <see cref="EnumDeclaration"/> to visit.</param>
         protected internal sealed override void VisitEnum(EnumDeclaration @enum)
         {
             _WriteHtmlDocumentBeginning(@enum);
@@ -167,7 +240,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(@enum);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="enum"/>.</summary>
+        /// <param name="enum">The <see cref="EnumDeclaration"/> for which to write the documentation.</param>
         protected virtual void WriteEnumDeclaration(EnumDeclaration @enum)
         {
             WriteDeclarationSectionBeginning(@enum);
@@ -192,7 +266,13 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(@enum);
         }
 
-        /// <summary/>
+        /// <summary>Writes an HTML table for the provided enum <paramref name="members"/>.</summary>
+        /// <param name="members">The enum <see cref="ConstantDeclaration"/>s for which to write the HTML table.</param>
+        /// <remarks>
+        /// The HTML table contains 3 columns. The first one is the member name, the second is the value of the member and
+        /// the last contains the first paragraph of the summary of the related member.
+        /// </remarks>
+        /// <seealso cref="WriteFirstSummaryParagraph(SummaryDocumentationElement)"/>
         protected virtual void WriteEnumMembersList(IEnumerable<ConstantDeclaration> members)
         {
             if (members.Any())
@@ -242,7 +322,8 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Visits a <see cref="DelegateDeclaration"/>.</summary>
+        /// <param name="delegate">The <see cref="DelegateDeclaration"/> to visit.</param>
         protected internal sealed override void VisitDelegate(DelegateDeclaration @delegate)
         {
             _WriteHtmlDocumentBeginning(@delegate);
@@ -253,7 +334,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(@delegate);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="delegate"/>.</summary>
+        /// <param name="delegate">The <see cref="DelegateDeclaration"/> for which to write the documentation.</param>
         protected void WriteDelegateDeclaration(DelegateDeclaration @delegate)
         {
             WriteDeclarationSectionBeginning(@delegate);
@@ -281,7 +363,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(@delegate);
         }
 
-        /// <summary/>
+        /// <summary>Visits an <see cref="InterfaceDeclaration"/>.</summary>
+        /// <param name="interface">The <see cref="InterfaceDeclaration"/> to visit.</param>
         protected internal sealed override void VisitInterface(InterfaceDeclaration @interface)
         {
             _WriteHtmlDocumentBeginning(@interface);
@@ -295,7 +378,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(@interface);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="interface"/>.</summary>
+        /// <param name="interface">The <see cref="InterfaceDeclaration"/> for which to write the documentation.</param>
         protected virtual void WriteInterfaceDeclaration(InterfaceDeclaration @interface)
         {
             WriteDeclarationSectionBeginning(@interface);
@@ -341,7 +425,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(@interface);
         }
 
-        /// <summary/>
+        /// <summary>Visits a <see cref="ClassDeclaration"/>.</summary>
+        /// <param name="class">The <see cref="ClassDeclaration"/> to visit.</param>
         protected internal sealed override void VisitClass(ClassDeclaration @class)
         {
             _WriteHtmlDocumentBeginning(@class);
@@ -357,7 +442,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(@class);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="class"/>.</summary>
+        /// <param name="class">The <see cref="ClassDeclaration"/> for which to write the documentation.</param>
         protected virtual void WriteClassDeclaration(ClassDeclaration @class)
         {
             WriteDeclarationSectionBeginning(@class);
@@ -414,7 +500,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(@class);
         }
 
-        /// <summary/>
+        /// <summary>Visits a <see cref="RecordDeclaration"/>.</summary>
+        /// <param name="record">The <see cref="RecordDeclaration"/> to visit.</param>
         protected internal sealed override void VisitRecord(RecordDeclaration record)
         {
             _WriteHtmlDocumentBeginning(record);
@@ -430,7 +517,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(record);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="record"/>.</summary>
+        /// <param name="record">The <see cref="RecordDeclaration"/> for which to write the documentation.</param>
         protected virtual void WriteRecordDeclaration(RecordDeclaration record)
         {
             WriteDeclarationSectionBeginning(record);
@@ -487,7 +575,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(record);
         }
 
-        /// <summary/>
+        /// <summary>Visits a <see cref="StructDeclaration"/>.</summary>
+        /// <param name="struct">The <see cref="StructDeclaration"/> to visit.</param>
         protected internal sealed override void VisitStruct(StructDeclaration @struct)
         {
             _WriteHtmlDocumentBeginning(@struct);
@@ -503,7 +592,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(@struct);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="struct"/>.</summary>
+        /// <param name="struct">The <see cref="StructDeclaration"/> for which to write the documentation.</param>
         protected virtual void WriteStructDeclaration(StructDeclaration @struct)
         {
             WriteDeclarationSectionBeginning(@struct);
@@ -552,7 +642,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(@struct);
         }
 
-        /// <summary/>
+        /// <summary>Visits a <see cref="ConstantDeclaration"/>.</summary>
+        /// <param name="constant">The <see cref="ConstantDeclaration"/> to visit.</param>
         protected internal sealed override void VisitConstant(ConstantDeclaration constant)
         {
             _WriteHtmlDocumentBeginning(constant);
@@ -563,7 +654,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(constant);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="constant"/>.</summary>
+        /// <param name="constant">The <see cref="ConstantDeclaration"/> for which to write the documentation.</param>
         protected virtual void WriteConstantDeclaration(ConstantDeclaration constant)
         {
             WriteDeclarationSectionBeginning(constant);
@@ -593,7 +685,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(constant);
         }
 
-        /// <summary/>
+        /// <summary>Visits a <see cref="FieldDeclaration"/>.</summary>
+        /// <param name="field">The <see cref="FieldDeclaration"/> to visit.</param>
         protected internal sealed override void VisitField(FieldDeclaration field)
         {
             _WriteHtmlDocumentBeginning(field);
@@ -604,7 +697,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(field);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="field"/>.</summary>
+        /// <param name="field">The <see cref="FieldDeclaration"/> for which to write the documentation.</param>
         protected virtual void WriteFieldDeclaration(FieldDeclaration field)
         {
             WriteDeclarationSectionBeginning(field);
@@ -627,7 +721,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(field);
         }
 
-        /// <summary/>
+        /// <summary>Visits a <see cref="ConstructorDeclaration"/>.</summary>
+        /// <param name="constructor">The <see cref="ConstructorDeclaration"/> to visit.</param>
         protected internal sealed override void VisitConstructor(ConstructorDeclaration constructor)
         {
             _WriteHtmlDocumentBeginning(constructor);
@@ -638,7 +733,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(constructor);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="constructor"/>.</summary>
+        /// <param name="constructor">The <see cref="ConstructorDeclaration"/> for which to write the documentation.</param>
         private void WriteConstructorDeclaration(ConstructorDeclaration constructor)
         {
             WriteDeclarationSectionBeginning(constructor);
@@ -664,7 +760,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(constructor);
         }
 
-        /// <summary/>
+        /// <summary>Visits a <see cref="EventDeclaration"/>.</summary>
+        /// <param name="event">The <see cref="EventDeclaration"/> to visit.</param>
         protected internal sealed override void VisitEvent(EventDeclaration @event)
         {
             _WriteHtmlDocumentBeginning(@event);
@@ -675,7 +772,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(@event);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="event"/>.</summary>
+        /// <param name="event">The <see cref="EventDeclaration"/> for which to write the documentation.</param>
         protected virtual void WriteEventDeclaration(EventDeclaration @event)
         {
             WriteDeclarationSectionBeginning(@event);
@@ -741,7 +839,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(@event);
         }
 
-        /// <summary/>
+        /// <summary>Visits a <see cref="PropertyDeclaration"/>.</summary>
+        /// <param name="property">The <see cref="PropertyDeclaration"/> to visit.</param>
         protected internal sealed override void VisitProperty(PropertyDeclaration property)
         {
             _WriteHtmlDocumentBeginning(property);
@@ -752,7 +851,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(property);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="property"/>.</summary>
+        /// <param name="property">The <see cref="PropertyDeclaration"/> for which to write the documentation.</param>
         protected virtual void WritePropertyDeclaration(PropertyDeclaration property)
         {
             WriteDeclarationSectionBeginning(property);
@@ -836,7 +936,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(property);
         }
 
-        /// <summary/>
+        /// <summary>Visits a <see cref="MethodDeclaration"/>.</summary>
+        /// <param name="method">The <see cref="MethodDeclaration"/> to visit.</param>
         protected internal sealed override void VisitMethod(MethodDeclaration method)
         {
             _WriteHtmlDocumentBeginning(method);
@@ -847,7 +948,8 @@ namespace CodeMap.Html
             _WriteHtmlDocumentEnding(method);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML documentation section for the provided <paramref name="method"/>.</summary>
+        /// <param name="method">The <see cref="MethodDeclaration"/> for which to write the documentation.</param>
         protected virtual void WriteMethodDeclaration(MethodDeclaration method)
         {
             WriteDeclarationSectionBeginning(method);
@@ -911,7 +1013,8 @@ namespace CodeMap.Html
             WriteDeclarationSectionEnding(method);
         }
 
-        /// <summary/>
+        /// <summary>Writes a user-friendly name for the provided <paramref name="accessModifier"/>.</summary>
+        /// <param name="accessModifier">The <see cref="AccessModifier"/> for which to write the user-friendly name.</param>
         protected virtual void WriteAccessModifier(AccessModifier accessModifier)
             => WriteSafeHtml(accessModifier switch
             {
@@ -924,7 +1027,15 @@ namespace CodeMap.Html
                 _ => throw new NotImplementedException()
             });
 
-        /// <summary/>
+        /// <summary>Writes an HTML table for the provided <paramref name="types"/>.</summary>
+        /// <param name="types">The <see cref="TypeDeclaration"/>s to include in the table.</param>
+        /// <param name="title">The caption of the table.</param>
+        /// <param name="sectionId">The section id of the table.</param>
+        /// <remarks>
+        /// The table contains two columns, the first one is a hyperlink with the name of the <see cref="TypeDeclaration"/>,
+        /// and the secodn column contains the first paragraph of the summary of the related <see cref="TypeDeclaration"/>.
+        /// </remarks>
+        /// <seealso cref="WriteFirstSummaryParagraph(SummaryDocumentationElement)"/>
         protected virtual void WriteTypesList(IEnumerable<TypeDeclaration> types, string title, string sectionId)
         {
             if (types.Any())
@@ -974,11 +1085,35 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Writes an HTML table for the provided <paramref name="members"/>.</summary>
+        /// <param name="members">The <see cref="MemberDeclaration"/>s to include in the table.</param>
+        /// <param name="title">The caption of the table.</param>
+        /// <param name="sectionId">The section id of the table.</param>
+        /// <remarks>
+        /// The table contains three columns, the first one is a hyperlink with the name of the <see cref="MemberDeclaration"/>,
+        /// the second one contains the access modifier user-friendly name,
+        /// and the secodn column contains the first paragraph of the summary of the related <see cref="MemberDeclaration"/>.
+        /// </remarks>
+        /// <seealso cref="WriteFirstSummaryParagraph(SummaryDocumentationElement)"/>
         protected void WriteMembersList(IEnumerable<MemberDeclaration> members, string title, string sectionId)
             => WriteMembersList(members, title, sectionId, false);
 
-        /// <summary/>
+        /// <summary>Writes an HTML table for the provided <paramref name="members"/>.</summary>
+        /// <param name="members">The <see cref="MemberDeclaration"/>s to include in the table.</param>
+        /// <param name="title">The caption of the table.</param>
+        /// <param name="sectionId">The section id of the table.</param>
+        /// <param name="hideAccessModifier">A flag indicating whether to include the access modifer column.</param>
+        /// <remarks>
+        /// <para>
+        /// The table contains three columns, the first one is a hyperlink with the name of the <see cref="MemberDeclaration"/>,
+        /// the second one contains the access modifier user-friendly name,
+        /// and the secodn column contains the first paragraph of the summary of the related <see cref="MemberDeclaration"/>.
+        /// </para>
+        /// <para>
+        /// If <paramref name="hideAccessModifier"/> is set to <c>true</c> then only the first and last columns are included.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="WriteFirstSummaryParagraph(SummaryDocumentationElement)"/>
         protected virtual void WriteMembersList(IEnumerable<MemberDeclaration> members, string title, string sectionId, bool hideAccessModifier)
         {
             if (members.Any())
@@ -1040,7 +1175,8 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Writes an HTML list describing the provided <paramref name="genericParameters"/>.</summary>
+        /// <param name="genericParameters">The <see cref="GenericMethodParameterData"/> to include in the list.</param>
         protected virtual void WriteGenericParameters(IEnumerable<GenericParameterData> genericParameters)
         {
             if (genericParameters.Any())
@@ -1135,16 +1271,29 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Writes an HTML navigation (similar to breadcrums) for the provided <paramref name="declarationNode"/>.</summary>
+        /// <param name="declarationNode">The <see cref="DeclarationNode"/> for which to write the navigation.</param>
+        /// <remarks>The navigation is generated from the assembly level towards the nested member.</remarks>
+        /// <seealso cref="WriteNavigationItems(DeclarationNode)"/>
+        /// <seealso cref="WriteNavigationItem(DeclarationNode)"/>
+        /// <seealso cref="WriteNavigationActiveItem(DeclarationNode)"/>
         protected virtual void WriteNavigation(DeclarationNode declarationNode)
         {
             TextWriter.Write("<nav>");
-            WriteDeclarationItems(declarationNode);
+            WriteNavigationItems(declarationNode);
             TextWriter.Write("</nav>");
         }
 
-        /// <summary/>
-        protected void WriteDeclarationItems(DeclarationNode declarationNode)
+        /// <summary>Writes an HTML navigation items (similar to breadcrums) for the provided <paramref name="declarationNode"/>.</summary>
+        /// <param name="declarationNode">The <see cref="DeclarationNode"/> for which to write the navigation.</param>
+        /// <remarks>
+        /// <para>The navigation is generated from the assembly level towards the nested member.</para>
+        /// <para>This method is used by <see cref="WriteNavigation(DeclarationNode)"/> which wraps the navigation elements in a root element.</para>
+        /// </remarks>
+        /// <seealso cref="WriteNavigation(DeclarationNode)"/>
+        /// <seealso cref="WriteNavigationItem(DeclarationNode)"/>
+        /// <seealso cref="WriteNavigationActiveItem(DeclarationNode)"/>
+        protected virtual void WriteNavigationItems(DeclarationNode declarationNode)
             => _WriteDeclarationItems(declarationNode, isLeaf: true);
 
         void _WriteDeclarationItems(DeclarationNode declarationNode, bool isLeaf = false)
@@ -1193,7 +1342,14 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>
+        /// Writes the navigation item of the provided <paramref name="declarationNode"/>. Typically this
+        /// is a hyperlink towards the <see cref="DeclarationNode"/>.
+        /// </summary>
+        /// <param name="declarationNode">The <see cref="DeclarationNode"/> for which to generate the navigation item.</param>
+        /// <seealso cref="WriteNavigation(DeclarationNode)"/>
+        /// <seealso cref="WriteNavigationItems(DeclarationNode)"/>
+        /// <seealso cref="WriteNavigationActiveItem(DeclarationNode)"/>
         protected virtual void WriteNavigationItem(DeclarationNode declarationNode)
         {
             TextWriter.Write("<a href=\"#");
@@ -1204,15 +1360,25 @@ namespace CodeMap.Html
             TextWriter.Write("</a>");
         }
 
-        /// <summary/>
+        /// <summary>
+        /// Writes the active navigation item of the provided <paramref name="declarationNode"/>. Typically this
+        /// is just the simple name of the <see cref="DeclarationNode"/>. The active item is the current item.
+        /// </summary>
+        /// <param name="declarationNode">The <see cref="DeclarationNode"/> for which to generate the active navigation item.</param>
+        /// <seealso cref="WriteNavigation(DeclarationNode)"/>
+        /// <seealso cref="WriteNavigationItems(DeclarationNode)"/>
+        /// <seealso cref="WriteNavigationItem(DeclarationNode)"/>
         protected virtual void WriteNavigationActiveItem(DeclarationNode declarationNode)
             => WriteSafeHtml(declarationNode.GetSimpleNameReference());
 
-        /// <summary/>
+        /// <summary>Writes the heading of a documentation section (page).</summary>
+        /// <param name="title">The title of the page.</param>
         protected virtual void WritePageHeading(string title)
             => WritePageHeading(title, null);
 
-        /// <summary/>
+        /// <summary>Writes the heading of a documentation section (page).</summary>
+        /// <param name="title">The title of the page.</param>
+        /// <param name="accessModifier">When provided, writes the user-friend name of the <see cref="AccessModifier"/> after the provided <paramref name="title"/>.</param>
         protected virtual void WritePageHeading(string title, AccessModifier? accessModifier)
         {
             TextWriter.Write("<h1>");
@@ -1226,20 +1392,30 @@ namespace CodeMap.Html
             TextWriter.Write("</h1>");
         }
 
-        /// <summary/>
+        /// <summary>Writes the summary documentation of a <see cref="DeclarationNode"/>.</summary>
+        /// <param name="summary">The <see cref="SummaryDocumentationElement"/> for which to write the HTML.</param>
+        /// <seealso cref="CreateDocumentationVisitor"/>
         protected virtual void WriteSummary(SummaryDocumentationElement summary)
             => summary.Accept(CreateDocumentationVisitor());
 
-        /// <summary/>
+        /// <summary>Writes the contents of the first paragraph of the provided <see cref="SummaryDocumentationElement"/>.</summary>
+        /// <param name="summary">The <see cref="SummaryDocumentationElement"/> for which to write the contents of the first <see cref="ParagraphDocumentationElement"/>.</param>
+        /// <seealso cref="CreateDocumentationVisitor"/>
+        /// <seealso cref="WriteEnumMembersList(IEnumerable{ConstantDeclaration})"/>
+        /// <seealso cref="WriteNamespacesList(IEnumerable{NamespaceDeclaration})"/>
+        /// <seealso cref="WriteTypesList(IEnumerable{TypeDeclaration}, string, string)"/>
+        /// <seealso cref="WriteMembersList(IEnumerable{MemberDeclaration}, string, string)"/>
+        /// <seealso cref="WriteMembersList(IEnumerable{MemberDeclaration}, string, string, bool)"/>
         protected virtual void WriteFirstSummaryParagraph(SummaryDocumentationElement summary)
         {
             var documentationVisitor = CreateDocumentationVisitor();
-            foreach (var paragraphDocumentationElement in summary.Content.OfType<ParagraphDocumentationElement>().Take(1))
-                foreach (var element in paragraphDocumentationElement.Content)
-                    element.Accept(documentationVisitor);
+            foreach (var element in summary.Content.OfType<ParagraphDocumentationElement>().Take(1).SelectMany(paragraph => paragraph.Content))
+                element.Accept(documentationVisitor);
         }
 
-        /// <summary/>
+        /// <summary>Writes the value documentation of a <see cref="DeclarationNode"/>.</summary>
+        /// <param name="value">The <see cref="ValueDocumentationElement"/> for which to write the HTML.</param>
+        /// <seealso cref="CreateDocumentationVisitor"/>
         protected virtual void WriteValue(ValueDocumentationElement value)
         {
             if (value.Content.Any())
@@ -1256,7 +1432,8 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Writes an HTML list describing the provided <paramref name="parameters"/>.</summary>
+        /// <param name="parameters">The <see cref="ParameterData"/> to include in the list.</param>
         protected virtual void WriteParameters(IEnumerable<ParameterData> parameters)
         {
             if (parameters.Any())
@@ -1327,7 +1504,9 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Writes the return documentation of a <see cref="DeclarationNode"/>.</summary>
+        /// <param name="returnData">The <see cref="MethodReturnData"/> for which to write the HTML.</param>
+        /// <seealso cref="CreateDocumentationVisitor"/>
         protected virtual void WriteReturn(MethodReturnData returnData)
         {
             var htmlWriterDocumentationVisitor = CreateDocumentationVisitor();
@@ -1342,7 +1521,8 @@ namespace CodeMap.Html
             TextWriter.Write("</section>");
         }
 
-        /// <summary/>
+        /// <summary>Writes the exceptions documentation of a <see cref="DeclarationNode"/>.</summary>
+        /// <param name="exceptions">The <see cref="ExceptionDocumentationElement"/>s for which to write the HTML.</param>
         protected virtual void WriteExceptions(IEnumerable<ExceptionDocumentationElement> exceptions)
         {
             if (exceptions.Any())
@@ -1355,7 +1535,8 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Writes the examples documentation of a <see cref="DeclarationNode"/>.</summary>
+        /// <param name="examples">The <see cref="ExampleDocumentationElement"/>s for which to write the HTML.</param>
         protected virtual void WriteExamples(IEnumerable<ExampleDocumentationElement> examples)
         {
             if (examples.Any())
@@ -1368,11 +1549,15 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Writes the remarks documentation of a <see cref="DeclarationNode"/>.</summary>
+        /// <param name="remarks">The <see cref="RemarksDocumentationElement"/> for which to write the HTML.</param>
+        /// <seealso cref="CreateDocumentationVisitor"/>
         protected virtual void WriteRemarks(RemarksDocumentationElement remarks)
             => remarks.Accept(CreateDocumentationVisitor());
 
-        /// <summary/>
+        /// <summary>Writes an HTML list for the provided <paramref name="relatedMembers"/>.</summary>
+        /// <param name="relatedMembers">The <see cref="MemberReferenceDocumentationElement"/>s for which to write the HTML list.</param>
+        /// <seealso cref="CreateDocumentationVisitor"/>
         protected virtual void WriteRelatedMembers(IEnumerable<MemberReferenceDocumentationElement> relatedMembers)
         {
             if (relatedMembers.Any())
@@ -1457,14 +1642,28 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Writes a constructed type reference containing one or multiple hyperlinks.</summary>
+        /// <param name="type">The <see cref="BaseTypeReference"/> for which to write the reference.</param>
+        /// <remarks>
+        /// Constructed type references can be quite complex. For instance, a constructed generic type
+        /// will generate a set of hyperlinks, one being towards the generic type definition and then
+        /// one hyperlink for each generic argument.
+        /// </remarks>
         protected virtual void WriteConstructedTypeReference(BaseTypeReference type)
         {
             var memberReferenceVisitor = new HyperlinkWriterMemberReferenceVisitor(TextWriter, MemberReferenceResolver);
             type.Accept(memberReferenceVisitor);
         }
 
-        /// <summary/>
+        /// <summary>Writes the provided <paramref name="value"/>.</summary>
+        /// <param name="value">The value to write.</param>
+        /// <remarks>
+        /// This method is intended to write constant values declared through <c>enums</c>,
+        /// constant fields or attribute parameters.
+        /// </remarks>
+        /// <seealso cref="WriteEnumMembersList(IEnumerable{ConstantDeclaration})"/>
+        /// <seealso cref="WriteConstantDeclaration(ConstantDeclaration)"/>
+        /// <seealso cref="WriteAttributes(IEnumerable{AttributeData}, string, string)"/>
         protected virtual void WriteValue(object value)
         {
             if (value is null)
@@ -1479,7 +1678,12 @@ namespace CodeMap.Html
                 WriteSafeHtml(Convert.ToString(value, CultureInfo.InvariantCulture));
         }
 
-        /// <summary/>
+        /// <summary>Writes the provided <paramref name="value"/> as a safe HTML string.</summary>
+        /// <param name="value">The text to write.</param>
+        /// <remarks>
+        /// If the provied <paramref name="value"/> contains HTML reserved characters, they
+        /// are escaped.
+        /// </remarks>
         protected virtual void WriteSafeHtml(string value)
         {
             var htmlSafeValue = value;
@@ -1516,7 +1720,9 @@ namespace CodeMap.Html
             TextWriter.Write(htmlSafeValue);
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML section begining of a <see cref="DeclarationNode"/>.</summary>
+        /// <param name="declarationNode">The <see cref="DeclarationNode"/> for which to write the HTML section beginning.</param>
+        /// <seealso cref="WriteDeclarationSectionEnding(DeclarationNode)"/>
         protected virtual void WriteDeclarationSectionBeginning(DeclarationNode declarationNode)
         {
             TextWriter.Write("<section id=\"");
@@ -1535,16 +1741,21 @@ namespace CodeMap.Html
             TextWriter.Write(">");
         }
 
-        /// <summary/>
+        /// <summary>Writes other attributes for a declaration section.</summary>
+        /// <param name="declarationNode">The <see cref="DeclarationNode"/> for which to write the HTML section beginning.</param>
         protected virtual void WriteOtherSectionAttributes(DeclarationNode declarationNode)
         {
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML section ending of a <see cref="DeclarationNode"/>.</summary>
+        /// <param name="declarationNode">The <see cref="DeclarationNode"/> for which to write the HTML section ending.</param>
+        /// <seealso cref="WriteDeclarationSectionBeginning(DeclarationNode)"/>
         protected virtual void WriteDeclarationSectionEnding(DeclarationNode declarationNode)
             => TextWriter.Write("</section>");
 
-        /// <summary/>
+        /// <summary>Gets the page/section title for the provided <paramref name="declarationNode"/>.</summary>
+        /// <param name="declarationNode">The <see cref="DeclarationNode"/> for which to get the title.</param>
+        /// <returns>Returns the page/section title for the provided <paramref name="declarationNode"/>.</returns>
         protected virtual string GetPageTitle(DeclarationNode declarationNode)
         {
             var visitor = new HtmlPageTitleDeclarationNodeVisitor();
@@ -1552,7 +1763,6 @@ namespace CodeMap.Html
             return visitor.TitleStringBuilder.ToString();
         }
 
-        /// <summary/>
         private void _WriteHtmlDocumentBeginning(DeclarationNode declarationNode)
         {
             if (_declarationDepth == 0)
@@ -1565,7 +1775,9 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML document begining of a <see cref="DeclarationNode"/>.</summary>
+        /// <param name="declarationNode">The first <see cref="DeclarationNode"/> that is visited for which the HTML document is generated.</param>
+        /// <seealso cref="WriteHtmlEnding(DeclarationNode)"/>
         protected virtual void WriteHtmlBeginning(DeclarationNode declarationNode)
         {
             TextWriter.WriteLine("<!DOCTYPE html>");
@@ -1586,22 +1798,24 @@ namespace CodeMap.Html
             TextWriter.Write(">");
         }
 
-        /// <summary/>
+        /// <summary>Writes other attributes for the <c>html</c> element.</summary>
+        /// <param name="declarationNode">The first <see cref="DeclarationNode"/> that is visited for which the HTML document is generated.</param>
         protected virtual void WriteOtherHtmlAttributes(DeclarationNode declarationNode)
         {
         }
 
-        /// <summary/>
+        /// <summary>Writes other HTML head elements.</summary>
+        /// <param name="declarationNode">The first <see cref="DeclarationNode"/> that is visited for which the HTML document is generated.</param>
         protected virtual void WriteOtherHtmlHeadTags(DeclarationNode declarationNode)
         {
         }
 
-        /// <summary/>
+        /// <summary>Writes other attributes for the <c>body</c> element.</summary>
+        /// <param name="declarationNode">The first <see cref="DeclarationNode"/> that is visited for which the HTML document is generated.</param>
         protected virtual void WriteOtherBodyAttributes(DeclarationNode declarationNode)
         {
         }
 
-        /// <summary/>
         private void _WriteHtmlDocumentEnding(DeclarationNode declarationNode)
         {
             if (_declarationDepth == 0)
@@ -1613,7 +1827,9 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
+        /// <summary>Writes the HTML document ending of a <see cref="DeclarationNode"/>.</summary>
+        /// <param name="declarationNode">The first <see cref="DeclarationNode"/> that is visited for which the HTML document is generated.</param>
+        /// <seealso cref="WriteHtmlBeginning(DeclarationNode)"/>
         protected virtual void WriteHtmlEnding(DeclarationNode declarationNode)
         {
             WriteNavigationJavaScript(declarationNode);
@@ -1623,7 +1839,8 @@ namespace CodeMap.Html
             TextWriter.Write("</html>");
         }
 
-        /// <summary/>
+        /// <summary>Writes the basic navigation JavaScript.</summary>
+        /// <param name="declarationNode">The first <see cref="DeclarationNode"/> that is visited for which the HTML document is generated.</param>
         protected virtual void WriteNavigationJavaScript(DeclarationNode declarationNode)
         {
             TextWriter.Write("<script>");
@@ -1652,7 +1869,8 @@ namespace CodeMap.Html
             TextWriter.Write("</script>");
         }
 
-        /// <summary/>
+        /// <summary>Writes other HTML body elements.</summary>
+        /// <param name="declarationNode">The first <see cref="DeclarationNode"/> that is visited for which the HTML document is generated.</param>
         protected virtual void WriteOtherHtmlBodyTags(DeclarationNode declarationNode)
         {
         }

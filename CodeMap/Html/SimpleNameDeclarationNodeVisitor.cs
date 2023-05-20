@@ -4,23 +4,18 @@ using CodeMap.DeclarationNodes;
 
 namespace CodeMap.Html
 {
-    /// <summary/>
-    public class SimpleNameDeclarationNodeVisitor : DeclarationNodeVisitor
+    internal class SimpleNameDeclarationNodeVisitor : DeclarationNodeVisitor
     {
-        /// <summary/>
         public SimpleNameDeclarationNodeVisitor()
             : this(null)
         {
         }
 
-        /// <summary/>
         public SimpleNameDeclarationNodeVisitor(StringBuilder stringBuilder)
             => StringBuilder ??= new StringBuilder();
 
-        /// <summary/>
         public StringBuilder StringBuilder { get; set; }
 
-        /// <summary/>
         protected internal override void VisitAssembly(AssemblyDeclaration assembly)
         {
             if (StringBuilder.Length > 0)
@@ -28,7 +23,6 @@ namespace CodeMap.Html
             StringBuilder.Append(assembly.Name);
         }
 
-        /// <summary/>
         protected internal override void VisitNamespace(NamespaceDeclaration @namespace)
         {
             if (!(@namespace is GlobalNamespaceDeclaration))
@@ -39,7 +33,6 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
         protected internal override void VisitInterface(InterfaceDeclaration @interface)
         {
             if (StringBuilder.Length > 0)
@@ -62,7 +55,6 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
         protected internal override void VisitClass(ClassDeclaration @class)
         {
             if (StringBuilder.Length > 0)
@@ -85,7 +77,6 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
         protected internal override void VisitRecord(RecordDeclaration record)
         {
             if (StringBuilder.Length > 0)
@@ -108,7 +99,6 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
         protected internal override void VisitStruct(StructDeclaration @struct)
         {
             if (StringBuilder.Length > 0)
@@ -131,7 +121,6 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
         protected internal override void VisitDelegate(DelegateDeclaration @delegate)
         {
             if (StringBuilder.Length > 0)
@@ -168,7 +157,6 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
         protected internal override void VisitEnum(EnumDeclaration @enum)
         {
             if (StringBuilder.Length > 0)
@@ -176,7 +164,6 @@ namespace CodeMap.Html
             StringBuilder.Append(@enum.Name);
         }
 
-        /// <summary/>
         protected internal override void VisitConstant(ConstantDeclaration constant)
         {
             if (StringBuilder.Length > 0)
@@ -184,7 +171,6 @@ namespace CodeMap.Html
             StringBuilder.Append(constant.Name);
         }
 
-        /// <summary/>
         protected internal override void VisitField(FieldDeclaration field)
         {
             if (StringBuilder.Length > 0)
@@ -192,7 +178,6 @@ namespace CodeMap.Html
             StringBuilder.Append(field.Name);
         }
 
-        /// <summary/>
         protected internal override void VisitConstructor(ConstructorDeclaration constructor)
         {
             if (StringBuilder.Length > 0)
@@ -212,7 +197,6 @@ namespace CodeMap.Html
             StringBuilder.Append(')');
         }
 
-        /// <summary/>
         protected internal override void VisitEvent(EventDeclaration @event)
         {
             if (StringBuilder.Length > 0)
@@ -220,7 +204,6 @@ namespace CodeMap.Html
             StringBuilder.Append(@event.Name);
         }
 
-        /// <summary/>
         protected internal override void VisitProperty(PropertyDeclaration property)
         {
             if (StringBuilder.Length > 0)
@@ -243,7 +226,6 @@ namespace CodeMap.Html
             }
         }
 
-        /// <summary/>
         protected internal override void VisitMethod(MethodDeclaration method)
         {
             if (StringBuilder.Length > 0)
