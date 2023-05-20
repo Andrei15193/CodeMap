@@ -20,7 +20,6 @@ namespace CodeMap.Html
         {
         }
 
-        /// <summary />
         protected internal override void VisitNamespace(NamespaceDeclaration @namespace)
         {
             @namespace.Assembly.Accept(this);

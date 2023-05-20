@@ -15,6 +15,7 @@ namespace CodeMap.Html
     {
         /// <summary>Creates an <see cref="IMemberReferenceResolver"/> based on the provided <paramref name="urlResolver"/> callback.</summary>
         /// <param name="urlResolver">A callback that resolves the URL for a given <see cref="MemberReference"/>.</param>
+        /// <returns>Returns an <see cref="IMemberReferenceResolver"/> based on the provided <paramref name="urlResolver"/> callback.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="urlResolver"/> is <c>null</c>.</exception>
         public static IMemberReferenceResolver Create(Func<MemberReference, string> urlResolver)
             => new CallbackMemberReferenceResolver(urlResolver ?? throw new ArgumentNullException(nameof(urlResolver)));
