@@ -25,6 +25,38 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "generate Gemfile",
+            "command": "mkdir --parents docs && echo >> docs/Gemfile \"source 'https://rubygems.org'\n\ngem 'github-pages', group: :jekyll_plugins\"",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/CodeMap.Documentation/bin"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "watch jekyll",
+            "command": "bundle",
+            "type": "process",
+            "args": [
+                "exec",
+                "jekyll",
+                "serve",
+                "--watch",
+                "--incremental",
+                "--baseurl",
+                "/CodeMap",
+                "--open-url",
+                "--trace"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/CodeMap.Documentation/bin/docs"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

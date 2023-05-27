@@ -145,7 +145,6 @@ namespace CodeMap.Html
                         StringBuilder.Append(", ");
                     StringBuilder.Append(parameterType.GetSimpleNameReference());
                 }
-                StringBuilder.Append(',');
                 StringBuilder.Append(']');
             }
         }
@@ -166,7 +165,7 @@ namespace CodeMap.Html
                         StringBuilder.Append(", ");
                     StringBuilder.Append(genericArgument.GetSimpleNameReference());
                 }
-                StringBuilder.Append('<');
+                StringBuilder.Append('>');
             }
 
             if (method.ParameterTypes.Any())
@@ -181,7 +180,6 @@ namespace CodeMap.Html
                         StringBuilder.Append(", ");
                     StringBuilder.Append(parameterType.GetSimpleNameReference());
                 }
-                StringBuilder.Append(',');
                 StringBuilder.Append(')');
             }
         }

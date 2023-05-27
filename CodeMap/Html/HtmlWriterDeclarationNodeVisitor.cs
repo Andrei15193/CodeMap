@@ -43,7 +43,7 @@ namespace CodeMap.Html
     ///     // Don't forget to encode URLs, the full name reference may contain characters (such as &lt; and &gt;) that are forbidden.
     ///     // As mentioned, the generated HTML page uses basic hash navigation, all elements can be accessed using `#FullNameReference`,
     ///     // similar to classic in-page navigation, https://stackoverflow.com/questions/24739126/scroll-to-a-specific-element-using-html
-    ///     { typeof(DeclarationNode).Assembly, MemberReferenceResolver.Create(memberReference => $"#{Uri.EscapeDataString(memberReference.GetFullNameReference())}") }
+    ///     { typeof(DeclarationNode).Assembly, MemberReferenceResolver.Create(memberReference => "#" + Uri.EscapeDataString(memberReference.GetFullNameReference())) }
     /// };
     ///
     /// // Create output file stream.
@@ -1567,6 +1567,10 @@ namespace CodeMap.Html
             {
                 var htmlWriterDocumentationVisitor = CreateDocumentationVisitor();
                 TextWriter.Write("<section data-sectionId=\"references\">");
+                TextWriter.Write("<h2>");
+                WriteSafeHtml("Other references");
+                TextWriter.Write("</h2>");
+                
                 TextWriter.Write("<ul>");
                 foreach (var relatedMember in relatedMembers)
                 {
@@ -1848,23 +1852,24 @@ namespace CodeMap.Html
         {
             TextWriter.Write("<script>");
             TextWriter.Write("window.addEventListener(\"hashchange\", function (hashChangeEvent) { ");
-            TextWriter.Write("switchView(hashChangeEvent.oldURL.split(\"#\", 2)[1], hashChangeEvent.newURL.split(\"#\", 2)[1]);");
+            TextWriter.Write("    switchView(hashChangeEvent.oldURL.split(\"#\", 2)[1], hashChangeEvent.newURL.split(\"#\", 2)[1]);");
             TextWriter.Write("});");
 
             TextWriter.Write("function switchView(from, to) {");
-            TextWriter.Write("hide(from || \"\");");
-            TextWriter.Write("show(to || \"\");");
+            TextWriter.Write("    hide(from || \"\");");
+            TextWriter.Write("    show(to || \"\");");
+            TextWriter.Write("    window.scrollTo({ top: 0, left: 0, behavior: \"instant\" });");
 
-            TextWriter.Write("function show(elementId) {");
-            TextWriter.Write("const element = document.getElementById(elementId) || document.getElementById(\"$default\") || document.querySelector(\"section[data-default='true']\");");
-            TextWriter.Write("element.style.display = \"initial\";");
-            TextWriter.Write("document.title = element.dataset.title");
-            TextWriter.Write("}");
+            TextWriter.Write("    function show(elementId) {");
+            TextWriter.Write("        const element = document.getElementById(elementId) || document.getElementById(\"$default\") || document.querySelector(\"section[data-default='true']\");");
+            TextWriter.Write("        element.style.display = \"initial\";");
+            TextWriter.Write("        document.title = element.dataset.title");
+            TextWriter.Write("    }");
 
-            TextWriter.Write("function hide(elementId) {");
-            TextWriter.Write("const element = document.getElementById(elementId) || document.getElementById(\"$default\") || document.querySelector(\"section[data-default='true']\");");
-            TextWriter.Write("element.style.display = \"none\";");
-            TextWriter.Write("}");
+            TextWriter.Write("    function hide(elementId) {");
+            TextWriter.Write("        const element = document.getElementById(elementId) || document.getElementById(\"$default\") || document.querySelector(\"section[data-default='true']\");");
+            TextWriter.Write("        element.style.display = \"none\";");
+            TextWriter.Write("    }");
 
             TextWriter.Write("}");
 

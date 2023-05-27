@@ -22,7 +22,7 @@ namespace CodeMap.Documentation
             using var outputFileStream = new FileStream(outputFileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.Read);
             using var outputFileStreamWriter = new StreamWriter(outputFileStream);
 
-            var htmlWriterDeclarationNodeVisitor = new CodeMalHtmlWriterDocumentaitonNodeVisitor(
+            var htmlWriterDeclarationNodeVisitor = new CodeMapHtmlWriterDocumentaitonNodeVisitor(
                 outputFileStreamWriter,
                 new MemberReferenceResolver(defaultMemberReferenceResolver)
                 {

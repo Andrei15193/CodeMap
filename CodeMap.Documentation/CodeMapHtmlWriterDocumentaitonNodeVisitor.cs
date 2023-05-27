@@ -8,9 +8,9 @@ using CodeMap.Html;
 
 namespace CodeMap.Documentation
 {
-    public class CodeMalHtmlWriterDocumentaitonNodeVisitor : HtmlWriterDeclarationNodeVisitor
+    public class CodeMapHtmlWriterDocumentaitonNodeVisitor : HtmlWriterDeclarationNodeVisitor
     {
-        public CodeMalHtmlWriterDocumentaitonNodeVisitor(TextWriter textWriter, IMemberReferenceResolver memberReferenceResolver)
+        public CodeMapHtmlWriterDocumentaitonNodeVisitor(TextWriter textWriter, IMemberReferenceResolver memberReferenceResolver)
             : base(textWriter, memberReferenceResolver)
         {
         }

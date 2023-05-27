@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/CodeMap.Documentation/bin/Debug/net6.0/CodeMap.Documentation.dll",
-            "args": ["-OutputFilePath", "docs/1.0.0.0/index.html"],
+            "args": ["-OutputFilePath", "docs/local/index.html"],
             "cwd": "${workspaceFolder}/CodeMap.Documentation/bin",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
@@ -24,7 +24,7 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/CodeMap.Tests.Data.Documentation/bin/Debug/net6.0/CodeMap.Tests.Data.Documentation.dll",
-            "args": ["-OutputPath", "test", "-TargetSubdirectory", "docs"],
+            "args": ["-OutputFilePath", "docs/test-data/index.html"],
             "cwd": "${workspaceFolder}/CodeMap.Tests.Data.Documentation/bin",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
