@@ -6,34 +6,17 @@ namespace CodeMap.Html
 {
     internal class FullNameMemberReferenceVisitor : MemberReferenceVisitor
     {
-        public FullNameMemberReferenceVisitor()
-            : this(null)
-        {
-        }
-
-        public FullNameMemberReferenceVisitor(StringBuilder stringBuilder)
-            => StringBuilder ??= new StringBuilder();
-
-        public StringBuilder StringBuilder { get; set; }
+        public StringBuilder StringBuilder { get; } = new StringBuilder();
 
         protected internal override void VisitAssembly(AssemblyReference assembly)
-        {
-        }
+            => StringBuilder.Append(assembly.Name);
 
         protected internal override void VisitNamespace(NamespaceReference @namespace)
-        {
-            @namespace.Assembly.Accept(this);
-            if (!string.IsNullOrWhiteSpace(@namespace.Name))
-            {
-                if (StringBuilder.Length > 0)
-                    StringBuilder.Append('.');
-                StringBuilder.Append(@namespace.Name);
-            }
-        }
+            => StringBuilder.Append(@namespace.Name);
 
         protected internal override void VisitType(TypeReference type)
         {
-            if (type.DeclaringType != (TypeReference)null)
+            if (type.DeclaringType is object)
                 type.DeclaringType.Accept(this);
             else
                 type.Namespace.Accept(this);
@@ -96,7 +79,20 @@ namespace CodeMap.Html
         protected internal override void VisitConstructor(ConstructorReference constructor)
         {
             constructor.DeclaringType.Accept(this);
-            StringBuilder.Append('.').Append(constructor.DeclaringType.Name);
+            StringBuilder.Append('.');
+
+            StringBuilder.Append(constructor.DeclaringType.Name);
+            StringBuilder.Append('(');
+            var isFirst = true;
+            foreach (var parameterType in constructor.ParameterTypes)
+            {
+                if (isFirst)
+                    isFirst = false;
+                else
+                    StringBuilder.Append(',');
+                StringBuilder.Append(parameterType.GetFullNameReference());
+            }
+            StringBuilder.Append(')');
         }
 
         protected internal override void VisitEvent(EventReference @event)
@@ -159,7 +155,6 @@ namespace CodeMap.Html
                         StringBuilder.Append(',');
                     StringBuilder.Append(parameterType.GetFullNameReference());
                 }
-                StringBuilder.Append(',');
                 StringBuilder.Append(')');
             }
         }

@@ -1,3 +1,4 @@
+using System.Data;
 using System.Linq;
 using System.Text;
 using CodeMap.DeclarationNodes;
@@ -6,37 +7,27 @@ namespace CodeMap.Html
 {
     internal class SimpleNameDeclarationNodeVisitor : DeclarationNodeVisitor
     {
-        public SimpleNameDeclarationNodeVisitor()
-            : this(null)
-        {
-        }
-
-        public SimpleNameDeclarationNodeVisitor(StringBuilder stringBuilder)
-            => StringBuilder ??= new StringBuilder();
-
-        public StringBuilder StringBuilder { get; set; }
+        public StringBuilder StringBuilder { get; } = new StringBuilder();
 
         protected internal override void VisitAssembly(AssemblyDeclaration assembly)
         {
-            if (StringBuilder.Length > 0)
-                StringBuilder.Append('.');
             StringBuilder.Append(assembly.Name);
         }
 
         protected internal override void VisitNamespace(NamespaceDeclaration @namespace)
         {
             if (!(@namespace is GlobalNamespaceDeclaration))
-            {
-                if (StringBuilder.Length > 0)
-                    StringBuilder.Append('.');
                 StringBuilder.Append(@namespace.Name);
-            }
         }
 
         protected internal override void VisitInterface(InterfaceDeclaration @interface)
         {
-            if (StringBuilder.Length > 0)
+            if (@interface.DeclaringType is object)
+            {
+                @interface.DeclaringType.Accept(this);
                 StringBuilder.Append('.');
+            }
+
             StringBuilder.Append(@interface.Name);
 
             if (@interface.GenericParameters.Any())
@@ -57,10 +48,13 @@ namespace CodeMap.Html
 
         protected internal override void VisitClass(ClassDeclaration @class)
         {
-            if (StringBuilder.Length > 0)
+            if (@class.DeclaringType is object)
+            {
+                @class.DeclaringType.Accept(this);
                 StringBuilder.Append('.');
-            StringBuilder.Append(@class.Name);
+            }
 
+            StringBuilder.Append(@class.Name);
             if (@class.GenericParameters.Any())
             {
                 StringBuilder.Append('<');
@@ -79,10 +73,13 @@ namespace CodeMap.Html
 
         protected internal override void VisitRecord(RecordDeclaration record)
         {
-            if (StringBuilder.Length > 0)
+            if (record.DeclaringType is object)
+            {
+                record.DeclaringType.Accept(this);
                 StringBuilder.Append('.');
-            StringBuilder.Append(record.Name);
+            }
 
+            StringBuilder.Append(record.Name);
             if (record.GenericParameters.Any())
             {
                 StringBuilder.Append('<');
@@ -101,10 +98,13 @@ namespace CodeMap.Html
 
         protected internal override void VisitStruct(StructDeclaration @struct)
         {
-            if (StringBuilder.Length > 0)
+            if (@struct.DeclaringType is object)
+            {
+                @struct.DeclaringType.Accept(this);
                 StringBuilder.Append('.');
-            StringBuilder.Append(@struct.Name);
+            }
 
+            StringBuilder.Append(@struct.Name);
             if (@struct.GenericParameters.Any())
             {
                 StringBuilder.Append('<');
@@ -123,10 +123,13 @@ namespace CodeMap.Html
 
         protected internal override void VisitDelegate(DelegateDeclaration @delegate)
         {
-            if (StringBuilder.Length > 0)
+            if (@delegate.DeclaringType is object)
+            {
+                @delegate.DeclaringType.Accept(this);
                 StringBuilder.Append('.');
-            StringBuilder.Append(@delegate.Name);
+            }
 
+            StringBuilder.Append(@delegate.Name);
             if (@delegate.GenericParameters.Any())
             {
                 StringBuilder.Append('<');
@@ -159,31 +162,37 @@ namespace CodeMap.Html
 
         protected internal override void VisitEnum(EnumDeclaration @enum)
         {
-            if (StringBuilder.Length > 0)
+            if (@enum.DeclaringType is object)
+            {
+                @enum.DeclaringType.Accept(this);
                 StringBuilder.Append('.');
+            }
+
             StringBuilder.Append(@enum.Name);
         }
 
         protected internal override void VisitConstant(ConstantDeclaration constant)
         {
-            if (StringBuilder.Length > 0)
-                StringBuilder.Append('.');
+            constant.DeclaringType.Accept(this);
+            StringBuilder.Append('.');
+
             StringBuilder.Append(constant.Name);
         }
 
         protected internal override void VisitField(FieldDeclaration field)
         {
-            if (StringBuilder.Length > 0)
-                StringBuilder.Append('.');
+            field.DeclaringType.Accept(this);
+            StringBuilder.Append('.');
+
             StringBuilder.Append(field.Name);
         }
 
         protected internal override void VisitConstructor(ConstructorDeclaration constructor)
         {
-            if (StringBuilder.Length > 0)
-                StringBuilder.Append('.');
-            StringBuilder.Append(constructor.Name);
+            constructor.DeclaringType.Accept(this);
+            StringBuilder.Append('.');
 
+            StringBuilder.Append(constructor.Name);
             StringBuilder.Append('(');
             var isFirst = true;
             foreach (var parameter in constructor.Parameters)
@@ -199,17 +208,18 @@ namespace CodeMap.Html
 
         protected internal override void VisitEvent(EventDeclaration @event)
         {
-            if (StringBuilder.Length > 0)
-                StringBuilder.Append('.');
+            @event.DeclaringType.Accept(this);
+            StringBuilder.Append('.');
+
             StringBuilder.Append(@event.Name);
         }
 
         protected internal override void VisitProperty(PropertyDeclaration property)
         {
-            if (StringBuilder.Length > 0)
-                StringBuilder.Append('.');
-            StringBuilder.Append(property.Name);
+            property.DeclaringType.Accept(this);
+            StringBuilder.Append('.');
 
+            StringBuilder.Append(property.Name);
             if (property.Parameters.Any())
             {
                 StringBuilder.Append('[');
@@ -228,10 +238,10 @@ namespace CodeMap.Html
 
         protected internal override void VisitMethod(MethodDeclaration method)
         {
-            if (StringBuilder.Length > 0)
-                StringBuilder.Append('.');
-            StringBuilder.Append(method.Name);
+            method.DeclaringType.Accept(this);
+            StringBuilder.Append('.');
 
+            StringBuilder.Append(method.Name);
             if (method.GenericParameters.Any())
             {
                 StringBuilder.Append('<');

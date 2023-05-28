@@ -6,34 +6,17 @@ namespace CodeMap.Html
 {
     internal class FullNameDeclarationNodeVisitor : DeclarationNodeVisitor
     {
-        public FullNameDeclarationNodeVisitor()
-            : this(null)
-        {
-        }
-
-        public FullNameDeclarationNodeVisitor(StringBuilder stringBuilder)
-            => StringBuilder = stringBuilder ?? new StringBuilder();
-
-        public StringBuilder StringBuilder { get; set; }
+        public StringBuilder StringBuilder { get; } = new StringBuilder();
 
         protected internal override void VisitAssembly(AssemblyDeclaration assembly)
-        {
-        }
+            => StringBuilder.Append(assembly.Name);
 
         protected internal override void VisitNamespace(NamespaceDeclaration @namespace)
-        {
-            @namespace.Assembly.Accept(this);
-            if (!(@namespace is GlobalNamespaceDeclaration))
-            {
-                if (StringBuilder.Length > 0)
-                    StringBuilder.Append('.');
-                StringBuilder.Append(@namespace.Name);
-            }
-        }
+            => StringBuilder.Append(@namespace.Name);
 
         protected internal override void VisitEnum(EnumDeclaration @enum)
         {
-            if (@enum.DeclaringType != (DeclarationNode)null)
+            if (@enum.DeclaringType is object)
                 @enum.DeclaringType.Accept(this);
             else
                 @enum.Namespace.Accept(this);
@@ -45,7 +28,7 @@ namespace CodeMap.Html
 
         protected internal override void VisitDelegate(DelegateDeclaration @delegate)
         {
-            if (@delegate.DeclaringType != (DeclarationNode)null)
+            if (@delegate.DeclaringType is object)
                 @delegate.DeclaringType.Accept(this);
             else
                 @delegate.Namespace.Accept(this);
@@ -55,7 +38,7 @@ namespace CodeMap.Html
             StringBuilder.Append(@delegate.Name);
             if (@delegate.GenericParameters.Any())
             {
-                StringBuilder.Append('[');
+                StringBuilder.Append('<');
                 var isFirst = true;
                 foreach (var genericParameter in @delegate.GenericParameters)
                 {
@@ -65,7 +48,7 @@ namespace CodeMap.Html
                         StringBuilder.Append(',');
                     StringBuilder.Append(genericParameter.Name);
                 }
-                StringBuilder.Append(']');
+                StringBuilder.Append('>');
             }
 
             {
@@ -85,7 +68,7 @@ namespace CodeMap.Html
 
         protected internal override void VisitInterface(InterfaceDeclaration @interface)
         {
-            if (@interface.DeclaringType != (DeclarationNode)null)
+            if (@interface.DeclaringType is object)
                 @interface.DeclaringType.Accept(this);
             else
                 @interface.Namespace.Accept(this);
@@ -95,7 +78,7 @@ namespace CodeMap.Html
             StringBuilder.Append(@interface.Name);
             if (@interface.GenericParameters.Any())
             {
-                StringBuilder.Append('[');
+                StringBuilder.Append('<');
                 var isFirst = true;
                 foreach (var genericParameter in @interface.GenericParameters)
                 {
@@ -105,13 +88,13 @@ namespace CodeMap.Html
                         StringBuilder.Append(',');
                     StringBuilder.Append(genericParameter.Name);
                 }
-                StringBuilder.Append(']');
+                StringBuilder.Append('>');
             }
         }
 
         protected internal override void VisitClass(ClassDeclaration @class)
         {
-            if (@class.DeclaringType != (DeclarationNode)null)
+            if (@class.DeclaringType is object)
                 @class.DeclaringType.Accept(this);
             else
                 @class.Namespace.Accept(this);
@@ -121,7 +104,7 @@ namespace CodeMap.Html
             StringBuilder.Append(@class.Name);
             if (@class.GenericParameters.Any())
             {
-                StringBuilder.Append('[');
+                StringBuilder.Append('<');
                 var isFirst = true;
                 foreach (var genericParameter in @class.GenericParameters)
                 {
@@ -131,13 +114,13 @@ namespace CodeMap.Html
                         StringBuilder.Append(',');
                     StringBuilder.Append(genericParameter.Name);
                 }
-                StringBuilder.Append(']');
+                StringBuilder.Append('>');
             }
         }
 
         protected internal override void VisitRecord(RecordDeclaration record)
         {
-            if (record.DeclaringType != (DeclarationNode)null)
+            if (record.DeclaringType is object)
                 record.DeclaringType.Accept(this);
             else
                 record.Namespace.Accept(this);
@@ -147,7 +130,7 @@ namespace CodeMap.Html
             StringBuilder.Append(record.Name);
             if (record.GenericParameters.Any())
             {
-                StringBuilder.Append('[');
+                StringBuilder.Append('<');
                 var isFirst = true;
                 foreach (var genericParameter in record.GenericParameters)
                 {
@@ -157,13 +140,13 @@ namespace CodeMap.Html
                         StringBuilder.Append(',');
                     StringBuilder.Append(genericParameter.Name);
                 }
-                StringBuilder.Append(']');
+                StringBuilder.Append('>');
             }
         }
 
         protected internal override void VisitStruct(StructDeclaration @struct)
         {
-            if (@struct.DeclaringType != (DeclarationNode)null)
+            if (@struct.DeclaringType is object)
                 @struct.DeclaringType.Accept(this);
             else
                 @struct.Namespace.Accept(this);
@@ -173,7 +156,7 @@ namespace CodeMap.Html
             StringBuilder.Append(@struct.Name);
             if (@struct.GenericParameters.Any())
             {
-                StringBuilder.Append('[');
+                StringBuilder.Append('<');
                 var isFirst = true;
                 foreach (var genericParameter in @struct.GenericParameters)
                 {
@@ -183,7 +166,7 @@ namespace CodeMap.Html
                         StringBuilder.Append(',');
                     StringBuilder.Append(genericParameter.Name);
                 }
-                StringBuilder.Append(']');
+                StringBuilder.Append('>');
             }
         }
 
@@ -250,19 +233,33 @@ namespace CodeMap.Html
             StringBuilder.Append('.').Append(method.Name);
 
             if (method.GenericParameters.Any())
-                StringBuilder.Append("``").Append(method.GenericParameters.Count);
-
-            StringBuilder.Append('(');
-            var isFirst = true;
-            foreach (var parameter in method.Parameters)
             {
-                if (isFirst)
-                    isFirst = false;
-                else
-                    StringBuilder.Append(',');
-                StringBuilder.Append(parameter.Type.GetFullNameReference());
+                StringBuilder.Append('<');
+                var isFirst = true;
+                foreach (var genericParameter in method.GenericParameters)
+                {
+                    if (isFirst)
+                        isFirst = false;
+                    else
+                        StringBuilder.Append(',');
+                    StringBuilder.Append(genericParameter.Name);
+                }
+                StringBuilder.Append('>');
             }
-            StringBuilder.Append(')');
+
+            {
+                StringBuilder.Append('(');
+                var isFirst = true;
+                foreach (var parameter in method.Parameters)
+                {
+                    if (isFirst)
+                        isFirst = false;
+                    else
+                        StringBuilder.Append(',');
+                    StringBuilder.Append(parameter.Type.GetFullNameReference());
+                }
+                StringBuilder.Append(')');
+            }
         }
     }
 }

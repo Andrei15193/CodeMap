@@ -1319,7 +1319,7 @@ namespace CodeMap.Html
                 case TypeDeclaration type:
                     _WriteDeclarationItems(type.Namespace);
 
-                    if (type.DeclaringType != (TypeDeclaration)null)
+                    if (type.DeclaringType is object)
                         _WriteDeclarationItems(type.DeclaringType);
 
                     if (isLeaf)

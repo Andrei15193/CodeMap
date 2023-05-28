@@ -57,13 +57,13 @@ namespace CodeMap.Tests.Data
         {
         }
 
-        /// <summary>A nested struct.</summary>
-        public struct NestedTestStruct
+        /// <summary>A nested record.</summary>
+        public record NestedTestRecord
         {
         }
 
-        /// <summary>A nested record.</summary>
-        public record NestedTestRecord
+        /// <summary>A nested struct.</summary>
+        public struct NestedTestStruct
         {
         }
 

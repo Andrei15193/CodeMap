@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using CodeMap.DeclarationNodes;
@@ -71,7 +72,15 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
 
         [Fact]
         public void HasAttributesSet()
-            => Assert.Equal(4, DeclarationNode.Attributes.Count);
+            => Assert.Equal(5, DeclarationNode.Attributes.Count);
+
+        [Fact]
+        public void HasnformationalVersionkAttribute()
+            => AssertAttribute<AssemblyInformationalVersionAttribute>(
+                DeclarationNode.Attributes,
+                new (string, object, Type)[] { ("informationalVersion", "test-data", typeof(string)) },
+                Enumerable.Empty<(string, object, Type)>()
+            );
 
 #if DEBUG
         [Fact]

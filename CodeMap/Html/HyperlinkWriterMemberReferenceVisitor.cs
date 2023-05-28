@@ -28,7 +28,7 @@ namespace CodeMap.Html
 
         protected internal override void VisitType(TypeReference type)
         {
-            if (type.DeclaringType != (TypeReference)null)
+            if (type.DeclaringType is object)
             {
                 type.DeclaringType.Accept(this);
                 WriteSafeHtml(".");

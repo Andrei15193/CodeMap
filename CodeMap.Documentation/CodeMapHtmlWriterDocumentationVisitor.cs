@@ -14,7 +14,7 @@ namespace CodeMap.Documentation
     {
         private static readonly IReadOnlyDictionary<string, Func<Lexer>> _lexers = new Dictionary<string, Func<Lexer>>(StringComparer.OrdinalIgnoreCase)
         {
-            { "C#", () => new CSharpLexer() },
+            { "c#", () => new CSharpLexer() },
             { "csharp", () => new CSharpLexer() },
             { "html", () => new HtmlLexer() },
             { "xml", () => new XmlLexer() },

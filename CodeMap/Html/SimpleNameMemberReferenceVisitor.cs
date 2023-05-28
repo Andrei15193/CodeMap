@@ -6,29 +6,24 @@ namespace CodeMap.Html
 {
     internal class SimpleNameMemberReferenceVisitor : MemberReferenceVisitor
     {
-        public SimpleNameMemberReferenceVisitor()
-            : this(null)
-        {
-        }
-
-        public SimpleNameMemberReferenceVisitor(StringBuilder stringBuilder)
-            => StringBuilder ??= new StringBuilder();
-
-        public StringBuilder StringBuilder { get; set; }
+        public StringBuilder StringBuilder { get; } = new StringBuilder();
 
         protected internal override void VisitAssembly(AssemblyReference assembly)
-            => StringBuilder
-                .Append(assembly.Name)
-                .Append('@')
-                .Append(assembly.Version);
+            => StringBuilder.Append(assembly.Name);
 
         protected internal override void VisitNamespace(NamespaceReference @namespace)
             => StringBuilder.Append(@namespace.Name);
 
         protected internal override void VisitType(TypeReference type)
         {
-            if (type == typeof(void))
+            if (type is DynamicTypeReference)
+                StringBuilder.Append("dynamic");
+
+            else if (type == typeof(void))
                 StringBuilder.Append("void");
+
+            else if (type == typeof(object))
+                StringBuilder.Append("object");
 
             else if (type == typeof(bool))
                 StringBuilder.Append("bool");
@@ -41,6 +36,10 @@ namespace CodeMap.Html
                 StringBuilder.Append("short");
             else if (type == typeof(ushort))
                 StringBuilder.Append("ushort");
+            else if (type == typeof(int))
+                StringBuilder.Append("int");
+            else if (type == typeof(uint))
+                StringBuilder.Append("uint");
             else if (type == typeof(long))
                 StringBuilder.Append("long");
             else if (type == typeof(ulong))
@@ -59,7 +58,7 @@ namespace CodeMap.Html
                 StringBuilder.Append("decimal");
             else
             {
-                if (type.DeclaringType != (MemberReference)null)
+                if (type.DeclaringType is object)
                     type.DeclaringType.Accept(this);
 
                 if (StringBuilder.Length > 0)
@@ -119,7 +118,20 @@ namespace CodeMap.Html
         protected internal override void VisitConstructor(ConstructorReference constructor)
         {
             constructor.DeclaringType.Accept(this);
-            StringBuilder.Append('.').Append(constructor.DeclaringType.Name);
+            StringBuilder.Append('.');
+
+            StringBuilder.Append(constructor.DeclaringType.Name);
+            StringBuilder.Append('(');
+            var isFirst = true;
+            foreach (var parameterType in constructor.ParameterTypes)
+            {
+                if (isFirst)
+                    isFirst = false;
+                else
+                    StringBuilder.Append(", ");
+                StringBuilder.Append(parameterType.GetSimpleNameReference());
+            }
+            StringBuilder.Append(')');
         }
 
         protected internal override void VisitEvent(EventReference @event)
