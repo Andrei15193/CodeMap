@@ -20,19 +20,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Generate Package Info
-      id: package_info
-      if: false
-      shell: pwsh
-      run: |
-        $codeMapDescription = (Select-Xml -Path ./CodeMap/CodeMap.csproj -XPath "//Project/PropertyGroup/Description/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
-        $codeMapReleaseNotes = (Select-Xml -Path ./CodeMap/CodeMap.csproj -XPath "//Project/PropertyGroup/PackageReleaseNotes/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
-        Write-Host "::set-output name=package_version::$packageVersion"
-        Write-Host "::set-output name=assembly_version::$assemblyVersion"
-        Write-Host "::set-output name=codemap_package_description::$codeMapDescription"
-        Write-Host "::set-output name=codemap_package_release_notes::$codeMapReleaseNotes"
-        [Convert]::FromBase64String("${{ secrets.KeyFile }}") | Set-Content ./CodeMap.snk -AsByteStream
-
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
@@ -84,7 +71,6 @@ jobs:
 
     - name: Test
       shell: pwsh
-      if: false
       run: |
         dotnet test `
           --configuration Release `
@@ -95,11 +81,16 @@ jobs:
       if: github.event_name == 'release'
       shell: pwsh
       run: |
+        [string] $releaseNotes = @"
+        ${{ github.event.release.description }}
+        "@
+
         dotnet pack `
           --configuration Release `
           --output publish `
           --no-build `
           -property:PackageVersion='${{ github.ref_name }}' `
+          -property:PackageReleaseNotes="$releaseNotes" `
           -property:RepositoryCommit='${{ github.sha }}'
 
     - name: Upload CodeMap NuGet Package to Release
