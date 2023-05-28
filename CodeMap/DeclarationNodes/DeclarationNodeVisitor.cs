@@ -28,13 +28,13 @@
         /// <param name="interface">The <see cref="InterfaceDeclaration"/> to visit.</param>
         protected internal abstract void VisitInterface(InterfaceDeclaration @interface);
 
-        /// <summary>Visits a <see cref="RecordDeclaration"/>.</summary>
-        /// <param name="record">The <see cref="RecordDeclaration"/> to visit.</param>
-        protected internal abstract void VisitRecord(RecordDeclaration record);
-
         /// <summary>Visits a <see cref="ClassDeclaration"/>.</summary>
         /// <param name="class">The <see cref="ClassDeclaration"/> to visit.</param>
         protected internal abstract void VisitClass(ClassDeclaration @class);
+
+        /// <summary>Visits a <see cref="RecordDeclaration"/>.</summary>
+        /// <param name="record">The <see cref="RecordDeclaration"/> to visit.</param>
+        protected internal abstract void VisitRecord(RecordDeclaration record);
 
         /// <summary>Visits a <see cref="StructDeclaration"/>.</summary>
         /// <param name="struct">The <see cref="StructDeclaration"/> to visit.</param>

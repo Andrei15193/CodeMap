@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CodeMap.Handlebars\CodeMap.Handlebars.csproj" />
     <ProjectReference Include="..\CodeMap.Documentation\CodeMap.Documentation.csproj" />
     <ProjectReference Include="..\CodeMap.Tests.Data\CodeMap.Tests.Data.csproj" />
     <ProjectReference Include="..\CodeMap\CodeMap.csproj" />

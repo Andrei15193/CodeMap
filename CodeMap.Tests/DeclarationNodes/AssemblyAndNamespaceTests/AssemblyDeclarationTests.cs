@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using CodeMap.DeclarationNodes;
@@ -71,7 +72,15 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
 
         [Fact]
         public void HasAttributesSet()
-            => Assert.Equal(4, DeclarationNode.Attributes.Count);
+            => Assert.Equal(5, DeclarationNode.Attributes.Count);
+
+        [Fact]
+        public void HasnformationalVersionkAttribute()
+            => AssertAttribute<AssemblyInformationalVersionAttribute>(
+                DeclarationNode.Attributes,
+                new (string, object, Type)[] { ("informationalVersion", "test-data", typeof(string)) },
+                Enumerable.Empty<(string, object, Type)>()
+            );
 
 #if DEBUG
         [Fact]
@@ -110,8 +119,8 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasTargetFrameworkAttribute()
             => AssertAttribute<TargetFrameworkAttribute>(
                 DeclarationNode.Attributes,
-                new (string, object, Type)[] { ("frameworkName", ".NETCoreApp,Version=v5.0", typeof(string)) },
-                new (string, object, Type)[] { ("FrameworkDisplayName", "", typeof(string)) }
+                new (string, object, Type)[] { ("frameworkName", ".NETCoreApp,Version=v6.0", typeof(string)) },
+                new (string, object, Type)[] { ("FrameworkDisplayName", ".NET 6.0", typeof(string)) }
             );
 
         [Fact]
@@ -126,7 +135,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasSystemCollectionsDependencySet()
             => Assert.Single(DeclarationNode.Dependencies, dependency =>
                 dependency.Name == "System.Collections"
-                && dependency.Version == new Version(5, 0, 0, 0)
+                && dependency.Version == new Version(6, 0, 0, 0)
                 && dependency.Culture == string.Empty
                 && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
 
@@ -134,7 +143,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasSystemLinqExpressionsDependencySet()
             => Assert.Single(DeclarationNode.Dependencies, dependency =>
                 dependency.Name == "System.Linq.Expressions"
-                && dependency.Version == new Version(5, 0, 0, 0)
+                && dependency.Version == new Version(6, 0, 0, 0)
                 && dependency.Culture == string.Empty
                 && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
 
@@ -142,7 +151,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasSystemRuntimeDependencySet()
             => Assert.Single(DeclarationNode.Dependencies, dependency =>
                 dependency.Name == "System.Runtime"
-                && dependency.Version == new Version(5, 0, 0, 0)
+                && dependency.Version == new Version(6, 0, 0, 0)
                 && dependency.Culture == string.Empty
                 && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
 
@@ -150,7 +159,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasSystemRuntimegInteropServicesSet()
             => Assert.Single(DeclarationNode.Dependencies, dependency =>
                 dependency.Name == "System.Runtime.InteropServices"
-                && dependency.Version == new Version(5, 0, 0, 0)
+                && dependency.Version == new Version(6, 0, 0, 0)
                 && dependency.Culture == string.Empty
                 && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
 
@@ -158,7 +167,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests
         public void HasSystemThreadingSet()
             => Assert.Single(DeclarationNode.Dependencies, dependency =>
                 dependency.Name == "System.Threading"
-                && dependency.Version == new Version(5, 0, 0, 0)
+                && dependency.Version == new Version(6, 0, 0, 0)
                 && dependency.Culture == string.Empty
                 && dependency.PublicKeyToken == "b03f5f7f11d50a3a");
 

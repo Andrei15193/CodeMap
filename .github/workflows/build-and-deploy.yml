@@ -3,8 +3,11 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - dev
-      - releases/*
+    - dev
+
+  release:
+    types:
+    - published
 
 jobs:
   build-and-deploy:
@@ -12,126 +15,58 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Generate Package Info
-      id: package_info
-      shell: pwsh
-      run: |
-        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-        $releaseBranchName = $env:GITHUB_REF.Substring($env:GITHUB_REF.LastIndexOf('/') + 1)
-        if (-not ($releaseBranchName -match "^\d+\.\d+(-(alpha|beta|rc))?$"))
-        {
-          $majorVersion = 0
-          (git tag) |
-            Where-Object { $_ -match "^\d+\.\d+\.\d+(-\w+\d*)?$" } |
-            ForEach-Object { $majorVersion = [Math]::Max($majorVersion, $_.Split('.')[0]) }
-
-          $majorVersion = $majorVersion + 1
-          $minorVersion = 0
-          $preRelease = $null
-        }
-        else
-        {
-          $minorVersionSeparatorIndex = $releaseBranchName.IndexOf('.')
-          $preReleaseVersionSeparatorIndex = $releaseBranchName.IndexOf('-')
-
-          $majorVersion = $releaseBranchName.Substring(0, $minorVersionSeparatorIndex)
-          if ($preReleaseVersionSeparatorIndex -gt -1)
-          {
-            $minorVersion = $releaseBranchName.Substring($minorVersionSeparatorIndex + 1, $preReleaseVersionSeparatorIndex - $minorVersionSeparatorIndex - 1)
-            $preRelease = $releaseBranchName.Substring($preReleaseVersionSeparatorIndex + 1)
-          }
-          else
-          {
-            $minorVersion = $releaseBranchName.Substring($minorVersionSeparatorIndex + 1)
-            $preRelease = $null
-          }
-        }
-
-        $preReleaseOffset = switch ($preRelease)
-        {
-          'alpha' { 1000 }
-          'beta' { 2000 }
-          'rc' { 3000 }
-          default { 0 }
-        }
-
-        $latestRevision = 0
-        (git tag) |
-          Where-Object { $_ -match "^${majorVersion}\.${minorVersion}\.\d+(-\w+\d*)?$" } |
-          ForEach-Object { $latestRevision = [Math]::Max($latestRevision, $_.Split('.')[2].Split('-')[0]) }
-
-        $hasRelease = $false
-        $latestPreRelease = 0
-        (git tag) |
-          Where-Object { $_ -match "^${majorVersion}\.${minorVersion}\.${latestRevision}(-\w+\d*)?$" } |
-          ForEach-Object {
-            if ($_.Contains('-'))
-            {
-              $preReleasePart = $_.Split('-')[1]
-              if ($preRelease -ne $null -and $preReleasePart.StartsWith($preRelease))
-              {
-                $latestPreRelease = [Math]::Max($latestPreRelease, $preReleasePart.Substring($preRelease.Length))
-              }
-            }
-            else
-            {
-              $hasRelease = $true
-            }
-          }
-
-        $currentRevision = if ($hasRelease) { $latestRevision + 1 } else { $latestRevision }
-
-        if ($null -ne $preRelease)
-        {
-          $assemblyVersion = "${majorVersion}.${minorVersion}.$($preReleaseOffset + $latestPreRelease + 1).${currentRevision}"
-          $packageVersion = "${majorVersion}.${minorVersion}.${currentRevision}-${preRelease}$($latestPreRelease + 1)"
-        }
-        else
-        {
-          $assemblyVersion = "${majorVersion}.${minorVersion}.0.$($currentRevision)"
-          $packageVersion = "${majorVersion}.${minorVersion}.$($currentRevision)"
-        }
-        $codeMapDescription = (Select-Xml -Path ./CodeMap/CodeMap.csproj -XPath "//Project/PropertyGroup/Description/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
-        $codeMapReleaseNotes = (Select-Xml -Path ./CodeMap/CodeMap.csproj -XPath "//Project/PropertyGroup/PackageReleaseNotes/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
-        $codeMapHandlebarsDescription = (Select-Xml -Path ./CodeMap.Handlebars/CodeMap.Handlebars.csproj -XPath "//Project/PropertyGroup/Description/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
-        $codeMapHandlebarsReleaseNotes = (Select-Xml -Path ./CodeMap.Handlebars/CodeMap.Handlebars.csproj -XPath "//Project/PropertyGroup/PackageReleaseNotes/text()").Node.Data.Trim() -replace '\r?\n\r?','%0A'
-        Write-Host "::set-output name=package_version::$packageVersion"
-        Write-Host "::set-output name=assembly_version::$assemblyVersion"
-        Write-Host "::set-output name=codemap_package_description::$codeMapDescription"
-        Write-Host "::set-output name=codemap_package_release_notes::$codeMapReleaseNotes"
-        Write-Host "::set-output name=codemap_handlebars_package_description::$codeMapHandlebarsDescription"
-        Write-Host "::set-output name=codemap_handlebars_package_release_notes::$codeMapHandlebarsReleaseNotes"
-        Write-Host "::set-output name=is_pre_release::$(($null -ne $preRelease).ToString().ToLowerInvariant())"
-        [Convert]::FromBase64String("${{ secrets.KeyFile }}") | Set-Content ./CodeMap.snk -AsByteStream
-
-    - name: Push Tag
-      uses: anothrNick/github-tag-action@1.17.2
-      if: startsWith(github.ref, 'refs/heads/releases/')
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        CUSTOM_TAG : ${{ steps.package_info.outputs.package_version }}
-        RELEASE_BRANCHES: releases/*
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 5.0.404
+        dotnet-version: 6.0.x
 
-    - name: Install dependencies
+    - name: Restore
       run: dotnet restore
 
     - name: Build
       shell: pwsh
       run: |
+        $additionalBuildArgs = @()
+
+        if ('${{ github.event_name }}' -ieq 'release') {
+          [string] $baseVersionPart, [string] $preReleaseVersionPart = '${{ github.ref_name }}' -split '\-'
+          [int] $major, [int] $minor, [int] $revision = $baseVersionPart -split '\.', 3
+
+          # The build version represents a build of the same sources, this seldom happens with releases.
+          # Pre-releases have only major and minor version leaving the build and revision numbers as undefined.
+          #
+          # Releases map the major, minor and patch version numbers to major, minor and revision respectively,
+          # leaving the build number to always be 0. If there will be a case where the same sources are build
+          # and released in a separate NuGet package it will be addressed at that point, right now I don't see
+          # how that will ever happen since releases are tagged in git (must be unique) using SemVer.
+          #
+          # https://learn.microsoft.com/dotnet/api/system.version
+          # https://semver.org
+          [string] $version = "$major.$minor.0.$revision"
+
+          if ($preReleaseVersionPart -ne [string]::Empty) {
+            $version = "$major.$minor"
+          }
+
+          $additionalBuildArgs += "-property:Version=$version"
+        }
+
+        $additionalBuildArgs += '-property:InformationalVersion=${{ github.ref_name }}'
+
+        [Convert]::FromBase64String('${{ secrets.KeyFile }}') `
+        | Set-Content ./CodeMap.snk -AsByteStream
+
         dotnet build `
           --configuration Release `
           --no-restore `
-          -property:Version=${{ steps.package_info.outputs.assembly_version }} `
           -property:SignAssembly=True `
           -property:AssemblyOriginatorKeyFile=../CodeMap.snk `
-          -property:DisableStrongNamer=False
+          -property:DisableStrongNamer=False `
+          @additionalBuildArgs
 
     - name: Test
       shell: pwsh
@@ -142,106 +77,63 @@ jobs:
           --verbosity normal
 
     - name: Pack
-      if: startsWith(github.ref, 'refs/heads/releases/')
+      if: github.event_name == 'release'
       shell: pwsh
       run: |
+        [string] $releaseNotes = @"
+        ${{ github.event.release.description }}
+        "@
+
         dotnet pack `
           --configuration Release `
           --output publish `
           --no-build `
-          -property:PackageVersion=${{ steps.package_info.outputs.package_version }} `
-          -property:RepositoryCommit=$env:GITHUB_SHA
-
-    - name: Create Release
-      uses: actions/create-release@v1
-      if: startsWith(github.ref, 'refs/heads/releases/')
-      id: create_release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.package_info.outputs.package_version }}
-        release_name: Release ${{ steps.package_info.outputs.package_version }}
-        body: |
-          ## CodeMap
-          ${{ steps.package_info.outputs.codemap_package_description }}
-          ### Release Notes
-          ${{ steps.package_info.outputs.codemap_package_release_notes }}
-          
-          ## CodeMap.Handlebars
-          ${{ steps.package_info.outputs.codemap_handlebars_package_description }}
-          ### Release Notes
-          ${{ steps.package_info.outputs.codemap_handlebars_package_release_notes }}
-        draft: true
-        prerelease: ${{ steps.package_info.outputs.is_pre_release }}
+          -property:PackageVersion='${{ github.ref_name }}' `
+          -property:PackageReleaseNotes="$releaseNotes" `
+          -property:RepositoryCommit='${{ github.sha }}'
 
     - name: Upload CodeMap NuGet Package to Release
       uses: actions/upload-release-asset@v1
-      if: startsWith(github.ref, 'refs/heads/releases/')
+      if: github.event_name == 'release'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./publish/CodeMap.${{ steps.package_info.outputs.package_version }}.nupkg
-        asset_name: CodeMap.${{ steps.package_info.outputs.package_version }}.nupkg
-        asset_content_type: application/zip
-
-    - name: Upload CodeMap.Handlebars NuGet Package to Release
-      uses: actions/upload-release-asset@v1
-      if: startsWith(github.ref, 'refs/heads/releases/')
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./publish/CodeMap.Handlebars.${{ steps.package_info.outputs.package_version }}.nupkg
-        asset_name: CodeMap.Handlebars.${{ steps.package_info.outputs.package_version }}.nupkg
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./publish/CodeMap.${{ github.ref_name }}.nupkg
+        asset_name: CodeMap.${{ github.ref_name }}.nupkg
         asset_content_type: application/zip
 
     - name: Generate Project Site
       shell: pwsh
       run: |
-        $projectDirectoryPath = "${{ steps.package_info.outputs.package_version }}"
-        if ($env:GITHUB_REF -imatch "^refs/heads/releases/\d+\.\d+(-(alpha|beta|rc))?$")
-        {
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+        [string] $documentationDirectoryPath = if ('${{ github.ref_name }}' -ieq 'dev') { '${{ github.ref_name }}' } else { 'dev/${{ github.ref_name }}' }
+        dotnet run `
+          --project CodeMap.Documentation `
+          --configuration Release `
+          --no-build `
+          -- `
+          -OutputFilePath "./docs/$documentationDirectoryPath/index.html"
+
+        New-Item `
+          -Type Directory `
+          -Name docs `
+          -ErrorAction SilentlyContinue
+        New-Item `
+          -Type Directory `
+          -Name _data `
+          -Path docs `
+          -ErrorAction SilentlyContinue
+
+        if (Test-Path 'CodeMap.Documentation/GitHub Pages') {
+          Copy-Item `
+            -Path 'CodeMap.Documentation/GitHub Pages/*' `
+            -Destination './docs' `
+            -Recurse
         }
-        else
-        {
-          $projectDirectoryPath = $env:GITHUB_REF.Substring("refs/heads/".Length)
-          dotnet ./CodeMap.Tests.Data.Documentation/bin/Release/net5.0/CodeMap.Tests.Data.Documentation.dll -OutputPath "./docs" -TargetSubdirectory "$($projectDirectoryPath)/test-data"
-        }
-        dotnet ./CodeMap.Documentation/bin/Release/net5.0/CodeMap.Documentation.dll -OutputPath "./docs" -TargetSubdirectory $projectDirectoryPath
-        
-        mkdir ./docs/_data
-        (git tag) |
-          Where-Object { $_ -imatch "^\d+\.\d+\.\d+(-\w+\d*)?$" } |
-          ForEach-Object {
-            $parts = $_.Split('-')
-            $version_parts = $parts.Split('.')
-            @{
-              Major = [int]$version_parts[0];
-              Minor = [int]$version_parts[1];
-              Patch = [int]$version_parts[2];
-              Prerelease = if ($parts[1]) { '-' + $parts[1] } }
-          } |
-          Sort-Object -Property `
-            @{
-              Expression = "Major";
-              Descending = $true
-            }, `
-            @{
-              Expression = "Major";
-              Descending = $true
-            }, `
-            @{
-              Expression = "Patch";
-              Descending = $true
-            }, `
-            @{
-              Expression = { $_.Prerelease ?? 'zzzz' };
-              Descending = $true
-            } |
-          ForEach-Object { "- $($_.Major).$($_.Minor).$($_.Patch)$($_.Prerelease)" } |
-          Set-Content -Path "./docs/_data/versions.yml" -Encoding utf8
+
+        git tag `
+        | ForEach-Object { "- $_" } `
+        | Out-File ./docs/_data/tags.yml -Encoding utf8
 
     - name: Publish Project Site
       uses: peaceiris/actions-gh-pages@v3

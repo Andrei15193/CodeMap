@@ -569,6 +569,7 @@ namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
             yield return new DeclarationNodesNamespaceDocumentationAddition();
             yield return new DocumentationElementsNamespaceDocumentationAddition();
             yield return new ReferenceDataNamespaceDocumentationAddition();
+            yield return new HtmlNamespaceDocumentationAddition();
         }
     }
 }

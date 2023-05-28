@@ -1,19 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Extras\_config.yml" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Extras\_layouts\default.html" />
-    <EmbeddedResource Include="Themes\Bootstrap_Jekyll\Extras\index.html" />
+    <ProjectReference Include="..\CodeMap\CodeMap.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CodeMap.Handlebars\CodeMap.Handlebars.csproj" />
-    <ProjectReference Include="..\CodeMap\CodeMap.csproj" />
+    <PackageReference Include="PygmentSharp.Core" Version="0.3.1" />
   </ItemGroup>
 
 </Project>
