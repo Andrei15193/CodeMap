@@ -34,10 +34,12 @@
                                 {% endif %}
                             {% endfor %}
 
-                        {% unless site.data.tags contains page.version %}
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item active" href="{{ page.url | relative_url }}">{{ page.version }}</a></li>
-                        {% endunless %}
+                        {% if page.version %}
+                            {% unless site.data.tags contains page.version %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item active" href="{{ page.url | relative_url }}">{{ page.version }}</a></li>
+                            {% endunless %}
+                        {% endif %}
                         </ul>
                     </li>
 
@@ -56,7 +58,9 @@
         </div>
     </nav>
 
-    {{ content }}
+    <div class="mt-2 mx-3 flex-fill">
+        {{ content }}
+    </div>
 
     <footer class="mt-2 px-3 py-2 border-top text-center">
         {% if site.data.tags contains page.version %}
