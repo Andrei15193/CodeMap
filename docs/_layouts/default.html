@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html class="h-100">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="shortcut icon" href="{{ 'favicon.ico' | relative_url }}" type="image/x-icon">
+    <link rel="icon" href="{{ 'favicon.ico' | relative_url }}" type="image/x-icon">
+    <title>{{ site.github.repository_name }} - {{ page.title }}</title>
+    <link href="{{ 'assets/bootstrap/5.2.3/bootstrap.css' | relative_url }}" rel="stylesheet">
+</head>
+<body class="min-vh-100 d-flex flex-column">
+    <nav class="border-bottom navbar sticky-top navbar-expand-md navbar-light bg-light">
+        <div class="container-fluid">
+            {% assign page_path_elements = page.path | split: '.' %}
+            <a class="navbar-brand{% if page_path_elements.size == 2 and page_path_elements[0] == 'index' %} active{% endif %}" href="{{ '/' | relative_url }}">Home</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Documentation
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% assign page_directories = site.pages | map: 'dir' %}
+                            {% for tag in site.data.tags %}
+                                {% assign target_directory = tag | prepend: '/' | append: '/' %}
+                                {% if page_directories contains target_directory %}
+                                    <li><a class="dropdown-item{% if page.version == tag %} active{% endif %}" href="{{ tag | relative_url }}">{{ tag }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                        {% unless site.data.tags contains page.version %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item active" href="{{ page.url | relative_url }}">{{ page.version }}</a></li>
+                        {% endunless %}
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ site.github.repository_url }}">View on GitHub</a>
+                    </li>
+                    <li class="nav-item">
+                        {% if site.data.tags contains page.version %}
+                            <a class="nav-link" href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{{ page.version }}">View on NuGet</a>
+                        {% else %}
+                            <a class="nav-link" href="https://www.nuget.org/packages/{{ site.github.repository_name }}">View on NuGet</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {{ content }}
+
+    <footer class="mt-2 px-3 py-2 border-top text-center">
+        {% if site.data.tags contains page.version %}
+            <a href="{{site.github.repository_url}}/releases/tag/{{ page.version }}">{{ site.github.repository_name }} {{ page.version }}</a>
+        {% else %}
+            <a href="{{site.github.repository_url}}/tree/{{ page.version }}">{{ site.github.repository_name }}@{{ page.version }}</a>
+        {% endif %}
+        -
+        <a href="{{site.github.repository_url}}">View on GitHub</a>
+        -
+        {% if site.data.tags contains page.version %}
+            <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}/{{ page.version }}">View on NuGet</a>
+        {% else %}
+            <a href="https://www.nuget.org/packages/{{ site.github.repository_name }}">View on NuGet</a>
+        {% endif %}
+    </footer>
+
+    <script src="{{ 'assets/bootstrap/5.2.3/bootstrap.bundle.min.js' | relative_url }}"></script>
+</body>
+</html>
