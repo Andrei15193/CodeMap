@@ -221,6 +221,7 @@ jobs:
           git tag `
           | Where-Object { $_ -imatch '^\d+\.\d+\.\d+(-[a-zA-Z0-1]+(\.[a-zA-Z0-1]+)*)?(\+[a-zA-Z0-1]+(\.[a-zA-Z0-1]+)*)?$' }
         ) `
+        | ForEach-Object { "- $_" } `
         | Out-File ./docs/_data/tags.yml -Encoding utf8
 
     - name: Publish Project Site
