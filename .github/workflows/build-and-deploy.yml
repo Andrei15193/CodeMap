@@ -80,9 +80,9 @@ jobs:
       if: github.event_name == 'release'
       shell: pwsh
       run: |
-        [string] $releaseNotes = @"
-        ${{ github.event.release.description }}
-        "@
+        [string] $releaseNotes = (@"
+        ${{ github.event.release.body }}
+        "@ -split '# Release Notes', 2 | Select-Object -Last 1).Trim()
 
         dotnet pack `
           --configuration Release `
