@@ -256,6 +256,7 @@ namespace CodeMap.Documentation
 
             TextWriter.WriteLine("---");
             TextWriter.WriteLine("title: Home");
+            TextWriter.WriteLine("layout: bootstrap/5.2.3");
             TextWriter.WriteLine($"version: {version}");
             TextWriter.WriteLine("---");
 
