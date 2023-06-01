@@ -1,0 +1,66 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "copy Gemfile",
+            "hide": true,
+            "type": "shell",
+            "command": "cp",
+            "args": [
+                "Gemfile",
+                "${workspaceFolder}/docs"
+            ],
+            "problemMatcher": [],
+            "windows": {
+                "command": "copy"
+            }
+        },
+        {
+            "label": "install gems",
+            "icon": {
+                "id": "ruby",
+                "color": "terminal.ansiRed"
+            },
+            "type": "shell",
+            "dependsOn": "generate Gemfile",
+            "command": "bundle",
+            "args": [
+                "install"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/docs"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "watch jekyll",
+            "icon": {
+                "id": "watch",
+                "color": "terminal.ansiGreen"
+            },
+            "type": "process",
+            "command": "bundle",
+            "args": [
+                "exec",
+                "jekyll",
+                "serve",
+                "--watch",
+                "--incremental",
+                "--baseurl",
+                "/CodeMap",
+                "--open-url",
+                "--trace",
+                "--force_polling"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/docs"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
