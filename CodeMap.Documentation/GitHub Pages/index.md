@@ -3,7 +3,7 @@ title: Home
 ---
 
 Home
-----
+====
 
 CodeMap is a library for generating complete documentation out of compiled source code.
 
