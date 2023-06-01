@@ -18,9 +18,6 @@ namespace CodeMap.Documentation
         protected override DocumentationVisitor CreateDocumentationVisitor()
             => new CodeMapHtmlWriterDocumentationVisitor(TextWriter, MemberReferenceResolver);
 
-        protected override void WriteOtherSectionAttributes(DeclarationNode declarationNode)
-            => TextWriter.Write(" class=\"mt-2 mx-3 flex-fill\"");
-
         protected override void WriteNavigation(DeclarationNode declarationNode)
         {
             TextWriter.Write("<nav class=\"badge bg-light p-2 w-100 mb-2\">");
