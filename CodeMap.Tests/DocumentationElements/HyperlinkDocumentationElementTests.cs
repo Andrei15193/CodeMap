@@ -9,7 +9,7 @@ namespace CodeMap.Tests.DocumentationElements
         [Fact]
         public void CreatingHyperlinkElementWithNullDestinationThrowsException()
         {
-            var exception = Assert.Throws<ArgumentNullException>("destination", () => DocumentationElement.Hyperlink(null, "text"));
+            var exception = Assert.Throws<ArgumentNullException>("destination", () => DocumentationElement.Hyperlink(null, DocumentationElement.Text("text")));
 
             Assert.Equal(new ArgumentNullException("destination").Message, exception.Message);
         }
@@ -17,15 +17,15 @@ namespace CodeMap.Tests.DocumentationElements
         [Fact]
         public void CreatingHyperlinkElementWithNullTextThrowsException()
         {
-            var exception = Assert.Throws<ArgumentNullException>("text", () => DocumentationElement.Hyperlink("destination", null));
+            var exception = Assert.Throws<ArgumentNullException>("content", () => DocumentationElement.Hyperlink("destination", null));
 
-            Assert.Equal(new ArgumentNullException("text").Message, exception.Message);
+            Assert.Equal(new ArgumentNullException("content").Message, exception.Message);
         }
 
         [Fact]
         public void HyperlinkElementCallsVisitorMethod()
         {
-            var hyperlinkElement = DocumentationElement.Hyperlink("destination", "text");
+            var hyperlinkElement = DocumentationElement.Hyperlink("destination", DocumentationElement.Text("text"));
             var visitor = new DocumentationVisitorMock<HyperlinkDocumentationElement>(hyperlinkElement);
 
             hyperlinkElement.Accept(visitor);

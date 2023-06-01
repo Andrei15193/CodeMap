@@ -38,8 +38,8 @@ namespace CodeMap.DeclarationNodes
 
         /// <summary>Gets the related members addition for the provided <paramref name="namespace"/>.</summary>
         /// <param name="namespace">The <see cref="NamespaceDeclaration"/> for which to get the related members addition.</param>
-        /// <returns>Returns a collection of <see cref="MemberReferenceDocumentationElement"/> for the provided <paramref name="namespace"/>.</returns>
-        public virtual IEnumerable<MemberReferenceDocumentationElement> GetRelatedMembers(NamespaceDeclaration @namespace)
+        /// <returns>Returns a collection of <see cref="ReferenceDocumentationElement"/> for the provided <paramref name="namespace"/>.</returns>
+        public virtual IEnumerable<ReferenceDocumentationElement> GetRelatedMembers(NamespaceDeclaration @namespace)
             => null;
     }
 }

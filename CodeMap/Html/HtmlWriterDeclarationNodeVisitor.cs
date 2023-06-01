@@ -1559,9 +1559,9 @@ namespace CodeMap.Html
             => remarks.Accept(CreateDocumentationVisitor());
 
         /// <summary>Writes an HTML list for the provided <paramref name="relatedMembers"/>.</summary>
-        /// <param name="relatedMembers">The <see cref="MemberReferenceDocumentationElement"/>s for which to write the HTML list.</param>
+        /// <param name="relatedMembers">The <see cref="ReferenceDocumentationElement"/>s for which to write the HTML list.</param>
         /// <seealso cref="CreateDocumentationVisitor"/>
-        protected virtual void WriteRelatedMembers(IEnumerable<MemberReferenceDocumentationElement> relatedMembers)
+        protected virtual void WriteRelatedMembers(IEnumerable<ReferenceDocumentationElement> relatedMembers)
         {
             if (relatedMembers.Any())
             {

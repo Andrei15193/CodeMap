@@ -46,7 +46,7 @@ namespace CodeMap.DeclarationNodes
         public IReadOnlyList<ExampleDocumentationElement> Examples { get; internal set; }
 
         /// <summary>The assembly related members.</summary>
-        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; internal set; }
+        public IReadOnlyList<ReferenceDocumentationElement> RelatedMembers { get; internal set; }
 
         /// <summary>Applies the first applicable <see cref="AssemblyDocumentationAddition"/> from the provided <paramref name="additions"/>.</summary>
         /// <param name="additions">The <see cref="AssemblyDocumentationAddition"/>s to look through.</param>

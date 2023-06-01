@@ -154,7 +154,12 @@ namespace CodeMap.Html
         protected internal override void VisitHyperlink(HyperlinkDocumentationElement hyperlink)
         {
             WriteElementOpening("a", new Dictionary<string, string>(hyperlink.XmlAttributes) { { "href", hyperlink.Destination } });
-            WriteSafeHtml(hyperlink.Text);
+            if (hyperlink.Content.Any())
+                foreach (var element in hyperlink.Content)
+                    element.Accept(this);
+            else
+                WriteSafeHtml(hyperlink.Destination);
+
             WriteElementClosing("a");
         }
 

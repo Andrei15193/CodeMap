@@ -40,7 +40,7 @@ namespace CodeMap.DeclarationNodes
                 Summary = DocumentationElement.Summary(),
                 Remarks = DocumentationElement.Remarks(),
                 Examples = Array.Empty<ExampleDocumentationElement>(),
-                RelatedMembers = Array.Empty<MemberReferenceDocumentationElement>()
+                RelatedMembers = Array.Empty<ReferenceDocumentationElement>()
             };
 
             assemblyDocumentationElement.Namespaces = assembly
@@ -58,7 +58,7 @@ namespace CodeMap.DeclarationNodes
                         @namespace.Summary = DocumentationElement.Summary();
                         @namespace.Remarks = DocumentationElement.Remarks();
                         @namespace.Examples = Array.Empty<ExampleDocumentationElement>();
-                        @namespace.RelatedMembers = Array.Empty<MemberReferenceDocumentationElement>();
+                        @namespace.RelatedMembers = Array.Empty<ReferenceDocumentationElement>();
 
                         var declaredTypes = _GetTypes(typesByNamespace, @namespace, null);
                         @namespace.DeclaredTypes = declaredTypes;

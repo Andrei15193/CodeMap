@@ -30,7 +30,7 @@ namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
             => DocumentationElement.Remarks(
                 DocumentationElement.Paragraph(
                     DocumentationElement.Text("Visual Studio enables developers to write comprehensive documentation inside their code using XML in three slashed comments, see "),
-                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments", "XML Documentation Comments (C# Programming Guide)"),
+                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments", DocumentationElement.Text("XML Documentation Comments (C# Programming Guide)")),
                     DocumentationElement.Text(" for more details about supported tags.")
                 ),
                 DocumentationElement.Paragraph(
@@ -67,11 +67,11 @@ namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
                 ),
                 DocumentationElement.UnorderedList(
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/include", "include"),
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/include", DocumentationElement.Text("include")),
                         DocumentationElement.Text(" is being ignored because its usage is rather complex and can be misleading. The documentation is being kept separate from the source code which can easily lead to discrepancies when changes to code occur.")
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/permission", "permission"),
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/permission", DocumentationElement.Text("permission")),
                         DocumentationElement.Text(" is being ignored because its usage is more of an edge case and code permissions are not supported in .NET Core making this element obsolete in this case.")
                     )
                 ),
@@ -85,36 +85,36 @@ namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
                 ),
                 DocumentationElement.UnorderedList(
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/summary", "summary")
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/summary", DocumentationElement.Text("summary"))
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/typeparam", "typeparam"),
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/typeparam", DocumentationElement.Text("typeparam")),
                         DocumentationElement.Text(" (available only for types and methods) in .NET Core making this element obsolete in this case.")
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/param", "param"),
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/param", DocumentationElement.Text("param")),
                         DocumentationElement.Text(" (available only for delegates, constructors, methods, properties with parameters)")
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/returns", "returns"),
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/returns", DocumentationElement.Text("returns")),
                         DocumentationElement.Text(" (available only for delegates and methods with result)")
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/exception", "exception"),
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/exception", DocumentationElement.Text("exception")),
                         DocumentationElement.Text(" (available only for delegates, constructors, methods and properties)")
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/remarks", "remarks")
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/remarks", DocumentationElement.Text("remarks"))
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/example", "example")
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/example", DocumentationElement.Text("example"))
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/value", "value"),
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/value", DocumentationElement.Text("value")),
                         DocumentationElement.Text(" (available only for properties)")
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/seealso", "seealso")
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/seealso", DocumentationElement.Text("seealso"))
                     )
                 ),
                 DocumentationElement.Paragraph(
@@ -125,27 +125,27 @@ namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
                 ),
                 DocumentationElement.UnorderedList(
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para", "para")
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para", DocumentationElement.Text("para"))
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code", "code")
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code", DocumentationElement.Text("code"))
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list", "list")
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list", DocumentationElement.Text("list"))
                     )
                 ),
                 DocumentationElement.Paragraph(
                     DocumentationElement.Text("It is not mandatory to specify the "),
-                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para", "para"),
+                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para", DocumentationElement.Text("para")),
                     DocumentationElement.Text(" element because it is inferred. It is mandatory to do so only when you want to distinguish two paragraphs that are one after the other, but if there is plain text that has a "),
-                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code", "code"),
+                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code", DocumentationElement.Text("code")),
                     DocumentationElement.Text(" or a "),
-                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list", "list"),
+                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list", DocumentationElement.Text("list")),
                     DocumentationElement.Text(" element then the text before the respective tag is considered a paragraph and the text afterwards is considered a separate paragraph.")
                 ),
                 DocumentationElement.Paragraph(
                     DocumentationElement.Text("For instance, the following "),
-                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/returns", "returns"),
+                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/returns", DocumentationElement.Text("returns")),
                     DocumentationElement.Text(" section contains three paragraphs, a code block and a list.")
                 ),
                 DocumentationElement.CodeBlock(@"
@@ -189,23 +189,23 @@ namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
                 ),
                 DocumentationElement.UnorderedList(
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code-inline", "c")
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code-inline", DocumentationElement.Text("c"))
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see", "see")
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see", DocumentationElement.Text("see"))
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/paramref", "paramref")
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/paramref", DocumentationElement.Text("paramref"))
                     ),
                     DocumentationElement.ListItem(
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/typeparamref", "typeparamref")
+                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/typeparamref", DocumentationElement.Text("typeparamref"))
                     )
                 ),
                 DocumentationElement.Paragraph(
                     DocumentationElement.Text("Some XML elements lack a proper documentation and are not properly interpreted by Visual Studio.")
                 ),
                 DocumentationElement.Paragraph(
-                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list", "List"),
+                    DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list", DocumentationElement.Text("List")),
                     DocumentationElement.Text(" is one of these elements, regardless of how you define the list element, Visual Studio will display the contents as plain text. This is understandable, there should not be such complex markup in the summary of a method or parameter description.")
                 ),
                 DocumentationElement.Paragraph(
@@ -517,46 +517,6 @@ namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
                             <description>Row 3, Column 1</description>
                         </item>
                     </list>".CollapseIndentation(),
-                    new Dictionary<string, string>
-                    {
-                        { "language", "xml" }
-                    }
-                ),
-
-                DocumentationElement.Paragraph(
-                    new[] { DocumentationElement.Text("There are no additions at this moment.") },
-                    new Dictionary<string, string>
-                    {
-                        { "section", "Additions" }
-                    }
-                ),
-                DocumentationElement.Paragraph(
-                    new InlineDocumentationElement[]
-                    {
-                        DocumentationElement.Text(@"
-                            Anchor elements can be used in documentation to generate custom hyperlinks.
-                            This is useful to reference different pages, repositories and so on that
-                            cannot be done through the ".CollapseIndentation()
-                        ),
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see", "see"),
-                        DocumentationElement.Text(" and "),
-                        DocumentationElement.Hyperlink("https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/seealso", "seealso"),
-                        DocumentationElement.Text(" elements.")
-                    },
-                    new Dictionary<string, string>
-                    {
-                        { "subsection", "Hyperlinks (#29)" }
-                    }
-                ),
-                DocumentationElement.Paragraph(
-                    new[] { DocumentationElement.Text("The following will generate a hyperlink towards GitHub.") },
-                    new Dictionary<string, string>
-                    {
-                        { "subsectionExample", "Example" }
-                    }
-                ),
-                DocumentationElement.CodeBlock(
-                    "This is a <a href=\"http://github.com\">hyperlink</a> example.",
                     new Dictionary<string, string>
                     {
                         { "language", "xml" }

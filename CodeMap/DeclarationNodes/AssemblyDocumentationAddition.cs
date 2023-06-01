@@ -90,8 +90,8 @@ namespace CodeMap.DeclarationNodes
 
         /// <summary>Gets the related members addition for the provided <paramref name="assembly"/>.</summary>
         /// <param name="assembly">The <see cref="AssemblyDeclaration"/> for which to get the related members addition.</param>
-        /// <returns>Returns a collection of <see cref="MemberReferenceDocumentationElement"/> for the provided <paramref name="assembly"/>.</returns>
-        public virtual IEnumerable<MemberReferenceDocumentationElement> GetRelatedMembers(AssemblyDeclaration assembly)
+        /// <returns>Returns a collection of <see cref="ReferenceDocumentationElement"/> for the provided <paramref name="assembly"/>.</returns>
+        public virtual IEnumerable<ReferenceDocumentationElement> GetRelatedMembers(AssemblyDeclaration assembly)
             => null;
 
         /// <summary>Gets the namespace additions for the provided <paramref name="assembly"/>.</summary>

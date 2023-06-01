@@ -595,23 +595,31 @@ namespace CodeMap.DocumentationElements
         public static TextDocumentationElement Text(string text)
             => new TextDocumentationElement(text);
 
-        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="text"/>.</summary>
+        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="content"/>.</summary>
         /// <param name="destination">The hyperlink destination (URL).</param>
-        /// <param name="text">The hyperlink text.</param>
-        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="text"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="text"/> are <c>null</c>.</exception>
-        public static HyperlinkDocumentationElement Hyperlink(string destination, string text)
-            => new HyperlinkDocumentationElement(destination, text, null);
+        /// <param name="content">The hyperlink content (text).</param>
+        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="content"/> are <c>null</c>.</exception>
+        public static HyperlinkDocumentationElement Hyperlink(string destination, IEnumerable<InlineDocumentationElement> content)
+            => new HyperlinkDocumentationElement(destination, content, null);
 
-        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="text"/>.</summary>
+        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="content"/>.</summary>
         /// <param name="destination">The hyperlink destination (URL).</param>
-        /// <param name="text">The hyperlink text.</param>
+        /// <param name="content">The hyperlink content (text).</param>
+        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="content"/> are <c>null</c>.</exception>
+        public static HyperlinkDocumentationElement Hyperlink(string destination, params InlineDocumentationElement[] content)
+            => new HyperlinkDocumentationElement(destination, content, null);
+
+        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="content"/>.</summary>
+        /// <param name="destination">The hyperlink destination (URL).</param>
+        /// <param name="content">The hyperlink content (text).</param>
         /// <param name="xmlAttributes">The XML attributes specified on the inline code element.</param>
-        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="text"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="text"/> are <c>null</c>.</exception>
+        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="content"/> are <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
-        public static HyperlinkDocumentationElement Hyperlink(string destination, string text, IReadOnlyDictionary<string, string> xmlAttributes)
-            => new HyperlinkDocumentationElement(destination, text, xmlAttributes);
+        public static HyperlinkDocumentationElement Hyperlink(string destination, IEnumerable<InlineDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
+            => new HyperlinkDocumentationElement(destination, content, xmlAttributes);
 
         /// <summary>Creates an <see cref="InlineCodeDocumentationElement"/> with the provided <paramref name="code"/>.</summary>
         /// <param name="code">The code inside a <c>c</c> XML element.</param>

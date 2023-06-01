@@ -13,7 +13,7 @@ namespace CodeMap.Documentation.DocumentationAdditions.Version1_0
             => DocumentationElement.Summary(
                 DocumentationElement.Paragraph(
                     DocumentationElement.Text("Contains the "),
-                    DocumentationElement.Hyperlink("https://github.com/Handlebars-Net/Handlebars.Net", "Handlebars.NET"),
+                    DocumentationElement.Hyperlink("https://github.com/Handlebars-Net/Handlebars.Net", DocumentationElement.Text("Handlebars.NET")),
                     DocumentationElement.Text(" based type declarations and implementation for generating documentation.")
                 )
             );

@@ -16,7 +16,7 @@ namespace CodeMap.Tests.DocumentationElements
                 <typeparamref name=""generic parameter reference"" test=""typeparamref""/>
                 <see cref=""member reference"" test=""see""/>
                 <c test=""c"">some code</c>
-                <a href=""url"" test=""a"">hyperlink</a>"
+                <see href=""url"" test=""a"">hyperlink</see>"
             .Trim();
         private static readonly string _richBlockContent = $@"
                 {_richInlineContent}
@@ -69,7 +69,7 @@ namespace CodeMap.Tests.DocumentationElements
                 DocumentationElement.Text(" "),
                 DocumentationElement.InlineCode("some code"),
                 DocumentationElement.Text(" "),
-                DocumentationElement.Hyperlink("url", "hyperlink")
+                DocumentationElement.Hyperlink("url", new[] { DocumentationElement.Text("hyperlink") }, new Dictionary<string, string>{ { "test", "a" } })
         };
         private static readonly BlockDescriptionDocumentationElement _richBlockElements = DocumentationElement.BlockDescription(
             new BlockDocumentationElement[]
@@ -1984,7 +1984,7 @@ fourth line
         private static void _AssertAreEqual(HyperlinkDocumentationElement expected, HyperlinkDocumentationElement actual)
         {
             Assert.Equal(expected.Destination, actual.Destination);
-            Assert.Equal(expected.Text, actual.Text);
+            _AssertAreEqual(expected.Content, actual.Content);
         }
 
         private static void _AssertAreEqual(GenericParameterReferenceDocumentationElement expected, GenericParameterReferenceDocumentationElement actual)
@@ -2077,7 +2077,7 @@ fourth line
             _AssertBlockElementsXmlAttributes(value.Content);
         }
 
-        private static void _AssertRelatedMemberXmlAttributes(MemberReferenceDocumentationElement relatedMember)
+        private static void _AssertRelatedMemberXmlAttributes(ReferenceDocumentationElement relatedMember)
         {
             switch (relatedMember)
             {

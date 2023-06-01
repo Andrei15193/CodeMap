@@ -354,20 +354,3 @@ Table with missing values for last column:
     </item>
 </list>
 ```
-
-Additions
----------
-
-### Hyperlinks (#29)
-
-Anchor elements can be used in documentation to generate custom hyperlinks.
-This is useful to reference different pages, repositories and so on that
-cannot be done through the [see](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see) and [seealso](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/seealso)
-elements.
-
-#### Example
-
-The following will generate a hyperlink towards GitHub.
-```xml
-This is a <a href="http://github.com">hyperlink</a> example.
-```

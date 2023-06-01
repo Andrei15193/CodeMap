@@ -173,16 +173,22 @@ namespace CodeMap.DocumentationElements
             return DocumentationElement.Value(_ReadBlocks(valueXmlElement), _ReadXmlAttributes(valueXmlElement));
         }
 
-        private IReadOnlyList<MemberReferenceDocumentationElement> _ReadRelatedMembers(XElement memberDocumentationXmlElement)
+        private IReadOnlyList<ReferenceDocumentationElement> _ReadRelatedMembers(XElement memberDocumentationXmlElement)
             => (
                 from relatedMemberXmlElement in memberDocumentationXmlElement.Elements("seealso")
                 let relatedMemberCrefAttribute = relatedMemberXmlElement.Attribute("cref")
-                where relatedMemberCrefAttribute is object
-                let referencedMember = _canonicalNameResolver?.TryFindMemberInfoFor(relatedMemberCrefAttribute.Value)
-                select referencedMember is object
-                    ? DocumentationElement.MemberReference(_memberReferenceFactory.Create(referencedMember), _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
-                    : DocumentationElement.MemberReference(relatedMemberCrefAttribute.Value, _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
-                as MemberReferenceDocumentationElement
+                let relatedMemberHrefAttribute = relatedMemberXmlElement.Attribute("href")
+                let referencedMember = relatedMemberCrefAttribute is object ? _canonicalNameResolver?.TryFindMemberInfoFor(relatedMemberCrefAttribute.Value) : null
+                select relatedMemberCrefAttribute is object
+                        ? (referencedMember is object
+                            ? DocumentationElement.MemberReference(_memberReferenceFactory.Create(referencedMember), _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref"))
+                            : (ReferenceDocumentationElement)DocumentationElement.MemberReference(relatedMemberCrefAttribute.Value, _ReadXmlAttributesExcept(relatedMemberXmlElement, "cref")))
+                        : relatedMemberHrefAttribute is object
+                        ? DocumentationElement.Hyperlink(relatedMemberCrefAttribute.Value, _ReadContent(relatedMemberXmlElement.Nodes()), _ReadXmlAttributesExcept(relatedMemberXmlElement, "href"))
+                        : null
+                    into referenceDocumentationElement
+                where referenceDocumentationElement is object
+                select referenceDocumentationElement
             )
             .ToReadOnlyList();
 
@@ -437,25 +443,22 @@ namespace CodeMap.DocumentationElements
                         break;
 
                     case XElement xmlElement when xmlElement.Name.LocalName.Equals("see", StringComparison.Ordinal):
-                        var memberReferenceCrefAttribute = xmlElement.Attribute("cref");
-                        if (memberReferenceCrefAttribute is object)
+                        var referenceCrefAttribute = xmlElement.Attribute("cref");
+                        var referenceHrefAttribute = xmlElement.Attribute("href");
+                        if (referenceCrefAttribute is object)
                         {
                             _AddTextElementIfExists();
-                            var referencedMember = _canonicalNameResolver?.TryFindMemberInfoFor(memberReferenceCrefAttribute.Value);
+                            var referencedMember = _canonicalNameResolver?.TryFindMemberInfoFor(referenceCrefAttribute.Value);
                             inlineElements.Add(referencedMember is object
                                 ? DocumentationElement.MemberReference(_memberReferenceFactory.Create(referencedMember), _ReadXmlAttributesExcept(xmlElement, "cref"))
-                                : DocumentationElement.MemberReference(memberReferenceCrefAttribute.Value, _ReadXmlAttributesExcept(xmlElement, "cref"))
+                                : DocumentationElement.MemberReference(referenceCrefAttribute.Value, _ReadXmlAttributesExcept(xmlElement, "cref"))
                                 as MemberReferenceDocumentationElement
                             );
                         }
-                        break;
-
-                    case XElement xmlElement when xmlElement.Name.LocalName.Equals("a", StringComparison.Ordinal):
-                        var hyperlinkHrefAttribute = xmlElement.Attribute("href");
-                        if (hyperlinkHrefAttribute is object)
+                        else if (referenceHrefAttribute is object)
                         {
                             _AddTextElementIfExists();
-                            inlineElements.Add(DocumentationElement.Hyperlink(hyperlinkHrefAttribute.Value, xmlElement.Value, _ReadXmlAttributesExcept(xmlElement, "href")));
+                            inlineElements.Add(DocumentationElement.Hyperlink(referenceHrefAttribute.Value, _ReadContent(xmlElement.Nodes()), _ReadXmlAttributesExcept(xmlElement, "href")));
                         }
                         break;
 

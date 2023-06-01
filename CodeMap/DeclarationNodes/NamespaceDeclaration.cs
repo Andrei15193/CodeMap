@@ -51,7 +51,7 @@ namespace CodeMap.DeclarationNodes
         public IReadOnlyList<ExampleDocumentationElement> Examples { get; internal set; }
 
         /// <summary>The namespace related members.</summary>
-        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; internal set; }
+        public IReadOnlyList<ReferenceDocumentationElement> RelatedMembers { get; internal set; }
 
         /// <summary>Accepts the provided <paramref name="visitor"/> for traversing the documentation tree.</summary>
         /// <param name="visitor">The <see cref="DeclarationNodeVisitor"/> traversing the documentation tree.</param>

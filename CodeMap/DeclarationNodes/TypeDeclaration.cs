@@ -41,6 +41,6 @@ namespace CodeMap.DeclarationNodes
         public IReadOnlyList<ExampleDocumentationElement> Examples { get; internal set; }
 
         /// <summary>The type related members.</summary>
-        public IReadOnlyList<MemberReferenceDocumentationElement> RelatedMembers { get; internal set; }
+        public IReadOnlyList<ReferenceDocumentationElement> RelatedMembers { get; internal set; }
     }
 }

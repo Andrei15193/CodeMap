@@ -14,7 +14,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests.Mocks
 
         public IEnumerable<ExampleDocumentationElement> Examples { get; set; }
 
-        public IEnumerable<MemberReferenceDocumentationElement> RelatedMembers { get; set; }
+        public IEnumerable<ReferenceDocumentationElement> RelatedMembers { get; set; }
 
         public IEnumerable<NamespaceDocumentationAddition> NamespaceAdditions { get; set; }
 
@@ -30,7 +30,7 @@ namespace CodeMap.Tests.DeclarationNodes.AssemblyAndNamespaceTests.Mocks
         public override IEnumerable<ExampleDocumentationElement> GetExamples(AssemblyDeclaration assemblyDeclaration)
             => Examples;
 
-        public override IEnumerable<MemberReferenceDocumentationElement> GetRelatedMembers(AssemblyDeclaration assemblyDeclaration)
+        public override IEnumerable<ReferenceDocumentationElement> GetRelatedMembers(AssemblyDeclaration assemblyDeclaration)
             => RelatedMembers;
 
         public override IEnumerable<NamespaceDocumentationAddition> GetNamespaceAdditions(AssemblyDeclaration assemblyDeclaration)
