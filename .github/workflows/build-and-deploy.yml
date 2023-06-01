@@ -27,6 +27,11 @@ jobs:
     - name: Restore
       run: dotnet restore
 
+    - name: Trim readme.md
+      shell: pwsh
+      run: |
+        (Get-Content .\readme.md | Select-Object -Skip 2) | Out-File readme.md
+
     - name: Build
       shell: pwsh
       run: |
