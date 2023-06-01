@@ -106,6 +106,92 @@ jobs:
     - name: Generate Project Site
       shell: pwsh
       run: |
+        function Sort-SemVerDescending([string[]] $versions) {
+          [string[]] $sortedVersions = @()
+
+          while ($versions.Length -gt 0) {
+            [string] $maxVersion = $versions[0]
+            $versions | Select-Object -Skip 1 | ForEach-Object {
+              if ((Compare-SemVer $maxVersion $_) -lt 0) {
+                $maxVersion = $_
+              }
+            }
+            $sortedVersions += $maxVersion
+            $versions = $versions | Where-Object { $_ -ne $maxVersion }
+          }
+
+          return $sortedVersions
+        }
+
+        function Compare-SemVer([string] $left, [string] $right) {
+          [string] $leftVersionParts = Get-VersionParts $left
+          [string] $rightVersionParts = Get-VersionParts $right
+
+          [int] $index = 0
+          [int] $result = 0
+          while ($index -lt $leftVersionParts.Length -and $index -lt $rightVersionParts.Length -and $result -eq 0) {
+            if ($leftVersionParts[$index] -lt $rightVersionParts[$index]) {
+              $result = -1
+            }
+            elseif ($leftVersionParts[$index] -gt $rightVersionParts[$index]) {
+              $result = 1
+            }
+            else {
+              $index++
+            }
+          }
+
+          if ($result -eq 0 -and ($leftVersionParts.Length -ne $rightVersionParts.Length)) {
+            if ($index -eq $leftVersionParts.Length) {
+              $result = -1
+            }
+            elseif ($index -eq $rightVersionParts.Length) {
+              $result = 1
+            }
+          }
+
+          return $result
+        }
+
+        function Get-VersionParts([string] $version) {
+          [string] $baseAndPreRelease, [string] $build = $version -split '\+', 2
+          [string] $base, [string] $preRelease = $baseAndPreRelease -split '-', 2
+          [int] $major, [int] $minor, [int] $patch = $base -split '\.', 3
+          $versionParts = @($major, $minor, $patch)
+
+          if (-not [string]::IsNullOrWhiteSpace($preRelease)) {
+            $versionParts += 0
+            ($preRelease -split '\.') `
+            | ForEach-Object {
+              if ($_ -imatch '^\d+$') {
+                $versionParts += 0
+                $versionParts += [int]$_
+              }
+              else {
+                $versionParts += 1
+                $versionParts += $_
+              }
+            }
+          }
+
+          if (-not [string]::IsNullOrWhiteSpace($build)) {
+            $versionParts += 1
+            ($build -split '\.') `
+            | ForEach-Object {
+              if ($_ -imatch '^\d+$') {
+                $versionParts += 0
+                $versionParts += [int]$_
+              }
+              else {
+                $versionParts += 1
+                $versionParts += $_
+              }
+            }
+          }
+
+          return $versionParts
+        }
+
         [string] $documentationDirectoryPath = if ('${{ github.ref_name }}' -ieq 'dev') { '${{ github.ref_name }}' } else { 'dev/${{ github.ref_name }}' }
         dotnet run `
           --project CodeMap.Documentation `
@@ -131,8 +217,10 @@ jobs:
             -Recurse
         }
 
-        git tag `
-        | ForEach-Object { "- $_" } `
+        Sort-SemVerDescending (
+          git tag `
+          | Where-Object { $_ -imatch '^\d+\.\d+\.\d+(-[a-zA-Z0-1]+(\.[a-zA-Z0-1]+)*)?(\+[a-zA-Z0-1]+(\.[a-zA-Z0-1]+)*)?$' }
+        ) `
         | Out-File ./docs/_data/tags.yml -Encoding utf8
 
     - name: Publish Project Site
