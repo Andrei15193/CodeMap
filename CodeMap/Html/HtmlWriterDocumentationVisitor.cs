@@ -145,7 +145,11 @@ namespace CodeMap.Html
         protected internal override void VisitInlineReference(ReferenceDataDocumentationElement memberInfoReference)
         {
             WriteElementOpening("a", new Dictionary<string, string>(memberInfoReference.XmlAttributes) { { "href", MemberReferenceResolver.GetUrl(memberInfoReference.ReferredMember) } });
-            WriteSafeHtml(memberInfoReference.ReferredMember.GetSimpleNameReference());
+            if (memberInfoReference.Content.Any())
+                foreach (var element in memberInfoReference.Content)
+                    element.Accept(this);
+            else
+                WriteSafeHtml(memberInfoReference.ReferredMember.GetSimpleNameReference());
             WriteElementClosing("a");
         }
 

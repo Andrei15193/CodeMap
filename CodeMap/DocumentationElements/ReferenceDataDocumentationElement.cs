@@ -8,9 +8,12 @@ namespace CodeMap.DocumentationElements
     /// <summary>Represents a resolved member reference corresponding to the <c>see</c> and <c>seealso</c> XML elements.</summary>
     public sealed class ReferenceDataDocumentationElement : MemberReferenceDocumentationElement
     {
-        internal ReferenceDataDocumentationElement(MemberReference referredMember, IReadOnlyDictionary<string, string> xmlAttributes)
+        internal ReferenceDataDocumentationElement(MemberReference referredMember, IEnumerable<InlineDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
         {
             ReferredMember = referredMember ?? throw new ArgumentNullException(nameof(referredMember));
+            Content = content.ToReadOnlyList() ?? throw new ArgumentNullException(nameof(content));
+            if (Content.Contains(null))
+                throw new ArgumentException("Cannot contain 'null' elements.", nameof(content));
 
             XmlAttributes = xmlAttributes ?? Extensions.EmptyDictionary<string, string>();
             if (XmlAttributes.Any(pair => pair.Value is null))
@@ -19,6 +22,9 @@ namespace CodeMap.DocumentationElements
 
         /// <summary>The referred member.</summary>
         public MemberReference ReferredMember { get; }
+
+        /// <summary>The content of the member reference.</summary>
+        public IReadOnlyList<InlineDocumentationElement> Content { get; }
 
         /// <summary>The XML attributes specified on the member reference element.</summary>
         public IReadOnlyDictionary<string, string> XmlAttributes { get; }

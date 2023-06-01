@@ -595,32 +595,6 @@ namespace CodeMap.DocumentationElements
         public static TextDocumentationElement Text(string text)
             => new TextDocumentationElement(text);
 
-        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="content"/>.</summary>
-        /// <param name="destination">The hyperlink destination (URL).</param>
-        /// <param name="content">The hyperlink content (text).</param>
-        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="content"/> are <c>null</c>.</exception>
-        public static HyperlinkDocumentationElement Hyperlink(string destination, IEnumerable<InlineDocumentationElement> content)
-            => new HyperlinkDocumentationElement(destination, content, null);
-
-        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="content"/>.</summary>
-        /// <param name="destination">The hyperlink destination (URL).</param>
-        /// <param name="content">The hyperlink content (text).</param>
-        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="content"/> are <c>null</c>.</exception>
-        public static HyperlinkDocumentationElement Hyperlink(string destination, params InlineDocumentationElement[] content)
-            => new HyperlinkDocumentationElement(destination, content, null);
-
-        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="content"/>.</summary>
-        /// <param name="destination">The hyperlink destination (URL).</param>
-        /// <param name="content">The hyperlink content (text).</param>
-        /// <param name="xmlAttributes">The XML attributes specified on the inline code element.</param>
-        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="content"/> are <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
-        public static HyperlinkDocumentationElement Hyperlink(string destination, IEnumerable<InlineDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
-            => new HyperlinkDocumentationElement(destination, content, xmlAttributes);
-
         /// <summary>Creates an <see cref="InlineCodeDocumentationElement"/> with the provided <paramref name="code"/>.</summary>
         /// <param name="code">The code inside a <c>c</c> XML element.</param>
         /// <returns>Returns an <see cref="InlineCodeDocumentationElement"/> with the provided <paramref name="code"/>.</returns>
@@ -642,7 +616,7 @@ namespace CodeMap.DocumentationElements
         /// <returns>Returns a <see cref="ReferenceDataDocumentationElement"/> with the provided <paramref name="referredMember"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="referredMember"/> is <c>null</c>.</exception>
         public static ReferenceDataDocumentationElement MemberReference(MemberReference referredMember)
-            => new ReferenceDataDocumentationElement(referredMember, null);
+            => new ReferenceDataDocumentationElement(referredMember, Array.Empty<InlineDocumentationElement>(), null);
 
         /// <summary>Creates a <see cref="ReferenceDataDocumentationElement"/> with the provided <paramref name="referredMember"/>.</summary>
         /// <param name="referredMember">The resolved <see cref="ReferenceData.MemberReference"/> referred by a canonical name using a <c>see</c> XML element.</param>
@@ -651,30 +625,49 @@ namespace CodeMap.DocumentationElements
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="referredMember"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
         public static ReferenceDataDocumentationElement MemberReference(MemberReference referredMember, IReadOnlyDictionary<string, string> xmlAttributes)
-            => new ReferenceDataDocumentationElement(referredMember, xmlAttributes);
+            => new ReferenceDataDocumentationElement(referredMember, Array.Empty<InlineDocumentationElement>(), xmlAttributes);
 
         /// <summary>Creates a <see cref="MemberInfo"/> with the provided <paramref name="memberInfo"/>.</summary>
         /// <param name="memberInfo">The resolved <see cref="MemberInfo"/> referred by a canonical name using a <c>see</c> XML element.</param>
         /// <returns>Returns a <see cref="MemberInfo"/> with the provided <paramref name="memberInfo"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="memberInfo"/> is <c>null</c>.</exception>
         public static ReferenceDataDocumentationElement MemberReference(MemberInfo memberInfo)
-            => new ReferenceDataDocumentationElement(ReferenceData.MemberReference.Create(memberInfo), null);
+            => new ReferenceDataDocumentationElement(ReferenceData.MemberReference.Create(memberInfo), Array.Empty<InlineDocumentationElement>(), null);
 
         /// <summary>Creates a <see cref="ReferenceDataDocumentationElement"/> with the provided <paramref name="memberInfo"/>.</summary>
         /// <param name="memberInfo">The resolved <see cref="MemberInfo"/> referred by a canonical name using a <c>see</c> XML element.</param>
+        /// <param name="content">The reference content to display when generating links.</param>
+        /// <returns>Returns a <see cref="ReferenceDataDocumentationElement"/> with the provided <paramref name="memberInfo"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="memberInfo"/> or <paramref name="content"/> are <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> contains <c>null</c> values.</exception>
+        public static ReferenceDataDocumentationElement MemberReference(MemberInfo memberInfo, IEnumerable<InlineDocumentationElement> content)
+            => new ReferenceDataDocumentationElement(ReferenceData.MemberReference.Create(memberInfo), content, null);
+
+        /// <summary>Creates a <see cref="ReferenceDataDocumentationElement"/> with the provided <paramref name="memberInfo"/>.</summary>
+        /// <param name="memberInfo">The resolved <see cref="MemberInfo"/> referred by a canonical name using a <c>see</c> XML element.</param>
+        /// <param name="content">The reference content to display when generating links.</param>
+        /// <returns>Returns a <see cref="ReferenceDataDocumentationElement"/> with the provided <paramref name="memberInfo"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="memberInfo"/> or <paramref name="content"/> are <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> contains <c>null</c> values.</exception>
+        public static ReferenceDataDocumentationElement MemberReference(MemberInfo memberInfo, params InlineDocumentationElement[] content)
+            => new ReferenceDataDocumentationElement(ReferenceData.MemberReference.Create(memberInfo), content, null);
+
+        /// <summary>Creates a <see cref="ReferenceDataDocumentationElement"/> with the provided <paramref name="memberInfo"/>.</summary>
+        /// <param name="memberInfo">The resolved <see cref="MemberInfo"/> referred by a canonical name using a <c>see</c> XML element.</param>
+        /// <param name="content">The reference content to display when generating links.</param>
         /// <param name="xmlAttributes">The XML attributes specified on the member reference element.</param>
         /// <returns>Returns a <see cref="ReferenceDataDocumentationElement"/> with the provided <paramref name="memberInfo"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="memberInfo"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
-        public static ReferenceDataDocumentationElement MemberReference(MemberInfo memberInfo, IReadOnlyDictionary<string, string> xmlAttributes)
-            => new ReferenceDataDocumentationElement(ReferenceData.MemberReference.Create(memberInfo), xmlAttributes);
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="memberInfo"/> or <paramref name="content"/> are <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="xmlAttributes"/> or <paramref name="content"/> contain <c>null</c> values.</exception>
+        public static ReferenceDataDocumentationElement MemberReference(MemberInfo memberInfo, IEnumerable<InlineDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
+            => new ReferenceDataDocumentationElement(ReferenceData.MemberReference.Create(memberInfo), content, xmlAttributes);
 
         /// <summary>Creates a <see cref="MemberNameReferenceDocumentationElement"/> with the provided <paramref name="canonicalName"/>.</summary>
         /// <param name="canonicalName">The canonical name for a member referred using a <c>see</c> XML element.</param>
         /// <returns>Returns a <see cref="MemberNameReferenceDocumentationElement"/> with the provided <paramref name="canonicalName"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="canonicalName"/> is <c>null</c>.</exception>
         public static MemberNameReferenceDocumentationElement MemberReference(string canonicalName)
-            => new MemberNameReferenceDocumentationElement(canonicalName, null);
+            => new MemberNameReferenceDocumentationElement(canonicalName, Array.Empty<InlineDocumentationElement>(), null);
 
         /// <summary>Creates a <see cref="MemberNameReferenceDocumentationElement"/> with the provided <paramref name="canonicalName"/>.</summary>
         /// <param name="canonicalName">The canonical name for a member referred using a <c>see</c> XML element.</param>
@@ -683,7 +676,61 @@ namespace CodeMap.DocumentationElements
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="canonicalName"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="xmlAttributes"/> contain <c>null</c> values.</exception>
         public static MemberNameReferenceDocumentationElement MemberReference(string canonicalName, IReadOnlyDictionary<string, string> xmlAttributes)
-            => new MemberNameReferenceDocumentationElement(canonicalName, xmlAttributes);
+            => new MemberNameReferenceDocumentationElement(canonicalName, Array.Empty<InlineDocumentationElement>(), xmlAttributes);
+
+        /// <summary>Creates a <see cref="MemberNameReferenceDocumentationElement"/> with the provided <paramref name="canonicalName"/>.</summary>
+        /// <param name="canonicalName">The canonical name for a member referred using a <c>see</c> XML element.</param>
+        /// <param name="content">The reference content to display when generating links.</param>
+        /// <returns>Returns a <see cref="MemberNameReferenceDocumentationElement"/> with the provided <paramref name="canonicalName"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="canonicalName"/> or <paramref name="content"/> are <c>null</c>.</exception>
+        public static MemberNameReferenceDocumentationElement MemberReference(string canonicalName, IEnumerable<InlineDocumentationElement> content)
+            => new MemberNameReferenceDocumentationElement(canonicalName, content, null);
+
+        /// <summary>Creates a <see cref="MemberNameReferenceDocumentationElement"/> with the provided <paramref name="canonicalName"/>.</summary>
+        /// <param name="canonicalName">The canonical name for a member referred using a <c>see</c> XML element.</param>
+        /// <param name="content">The reference content to display when generating links.</param>
+        /// <returns>Returns a <see cref="MemberNameReferenceDocumentationElement"/> with the provided <paramref name="canonicalName"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="canonicalName"/> or <paramref name="content"/> are <c>null</c>.</exception>
+        public static MemberNameReferenceDocumentationElement MemberReference(string canonicalName, params InlineDocumentationElement[] content)
+            => new MemberNameReferenceDocumentationElement(canonicalName, content, null);
+
+        /// <summary>Creates a <see cref="MemberNameReferenceDocumentationElement"/> with the provided <paramref name="canonicalName"/>.</summary>
+        /// <param name="canonicalName">The canonical name for a member referred using a <c>see</c> XML element.</param>
+        /// <param name="content">The reference content to display when generating links.</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the member reference element.</param>
+        /// <returns>Returns a <see cref="MemberNameReferenceDocumentationElement"/> with the provided <paramref name="canonicalName"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="canonicalName"/> or <paramref name="content"/> are <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="xmlAttributes"/> or <paramref name="content"/> contain <c>null</c> values.</exception>
+        public static MemberNameReferenceDocumentationElement MemberReference(string canonicalName, IEnumerable<InlineDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
+            => new MemberNameReferenceDocumentationElement(canonicalName, content, xmlAttributes);
+
+        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="content"/>.</summary>
+        /// <param name="destination">The hyperlink destination (URL).</param>
+        /// <param name="content">The hyperlink content to display when generating links.</param>
+        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="content"/> are <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> contains <c>null</c> values.</exception>
+        public static HyperlinkDocumentationElement Hyperlink(string destination, IEnumerable<InlineDocumentationElement> content)
+            => new HyperlinkDocumentationElement(destination, content, null);
+
+        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="content"/>.</summary>
+        /// <param name="destination">The hyperlink destination (URL).</param>
+        /// <param name="content">The hyperlink content to display when generating links.</param>
+        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="content"/> are <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="content"/> contains <c>null</c> values.</exception>
+        public static HyperlinkDocumentationElement Hyperlink(string destination, params InlineDocumentationElement[] content)
+            => new HyperlinkDocumentationElement(destination, content, null);
+
+        /// <summary>Creates a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="destination"/> and <paramref name="content"/>.</summary>
+        /// <param name="destination">The hyperlink destination (URL).</param>
+        /// <param name="content">The hyperlink content (text).</param>
+        /// <param name="xmlAttributes">The XML attributes specified on the inline code element.</param>
+        /// <returns>Returns a <see cref="HyperlinkDocumentationElement"/> with the provided <paramref name="content"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> or <paramref name="content"/> are <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="xmlAttributes"/> or <paramref name="content"/> contain <c>null</c> values.</exception>
+        public static HyperlinkDocumentationElement Hyperlink(string destination, IEnumerable<InlineDocumentationElement> content, IReadOnlyDictionary<string, string> xmlAttributes)
+            => new HyperlinkDocumentationElement(destination, content, xmlAttributes);
 
         /// <summary>Creates a <see cref="ParameterReferenceDocumentationElement"/> with the provided <paramref name="parameterName"/>.</summary>
         /// <param name="parameterName">The name of the referred parameter using the <c>paramref</c> XML element.</param>
