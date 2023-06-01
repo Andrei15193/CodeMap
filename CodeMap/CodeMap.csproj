@@ -13,6 +13,7 @@
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Andrei15193/CodeMap.git</RepositoryUrl>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageReleaseNotes>* Added code documentation models and visitors.</PackageReleaseNotes>
     <PackageTags>code documentation browser</PackageTags>
   </PropertyGroup>
