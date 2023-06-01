@@ -13,10 +13,10 @@ title: Home
 </p>
 <p>
     The aim is to generate a graph of objects that represent the assembly and the associated documentation in a way that is closest to the
-    source code itself. For instance, when you declare a method, it is implicitly <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a>
-    unless you use the <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/virtual">virtual</a> keyword (for classes and structs).
+    source code itself. For instance, when you declare a method, it is implicitly <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a>
+    unless you use the <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/virtual">virtual</a> keyword (for classes and structs).
     The library will not set the <code>IsSealed</code> flag to <code>true</code> for non-virtual methods, it will only do so when a method is
-    <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/override">overriden</a> and <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a>.
+    <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/override">overriden</a> and <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a>.
 </p>
 <p>
     The aim in this regard is to provide a model from which the declaration inside one assembly can be recreated just by using the flags directly.
@@ -24,12 +24,12 @@ title: Home
 </p>
 <p>
     A second area that this library covers is the associated XML documentation by representing elements in a specific model that can be easily traversed.
-    This model covers the XML documentation elements described in this article <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments">XML Documentation Comments (C# Programming Guide)</a>.
+    This model covers the XML documentation elements described in this article <a href="https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments">XML Documentation Comments (C# Programming Guide)</a>.
     To check the full list of supported elements and any additions see the CodeMap documentation page, remarks section.
 </p>
 <p>
     The third, and final area, that this library covers is member references. Both when declaring types and when writing documentation we reference
-    other members (e.g.: method parameter types reference other types, the <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see">see</a>
+    other members (e.g.: method parameter types reference other types, the <a href="https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see">see</a>
     XML element is used to reference a member). The aim is to provide enough information to be able to generate a hyperlink to the referenced member
     (even if it is part of .NET, like core types such as <code>string</code> and <code>int</code>).
 </p>

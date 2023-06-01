@@ -2,7 +2,7 @@
 
 Visual Studio enables developers to write comprehensive documentation inside
 their code using XML in three slashed comments,
-see [XML Documentation Comments (C# Programming Guide)](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments) for
+see [XML Documentation Comments (C# Programming Guide)](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments) for
 more details about supported tags.
 
 When we build a project that has been configured to generate XML documentation
@@ -51,12 +51,12 @@ Exceptions
 Some elements are ignored when processing the XML document because they either
 are complex to use or there is little support for them.
 
-* [include](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/include)
+* [include](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/include)
 is being ignored because its usage is rather complex and can be misleading.
 The documentation is being kept separate from the source code which can easily
 lead to discrepancies when changes to code occur.
 
-* [permission](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/permission)
+* [permission](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/permission)
 is being ignored because its usage is more of an edge case and code permissions
 are not supported in .NET Core making this element obsolete in this case.
 
@@ -66,35 +66,35 @@ Interpretations
 There are XML elements defined for various sections and limited markup support.
 The main sections for documentation are the following:
 
-* [summary](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/summary)
-* [typeparam](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/typeparam) (available only for types and methods)
-* [param](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/param) (available only for delegates, constructors, methods, properties with parameters)
-* [returns](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/returns) (available only for delegates and methods with result)
-* [exception](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/exception) (available only for delegates, constructors, methods and properties)
-* [remarks](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/remarks)
-* [example](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/example)
-* [value](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/value) (available only for properties)
-* [seealso](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/seealso)
+* [summary](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/summary)
+* [typeparam](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/typeparam) (available only for types and methods)
+* [param](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/param) (available only for delegates, constructors, methods, properties with parameters)
+* [returns](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/returns) (available only for delegates and methods with result)
+* [exception](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/exception) (available only for delegates, constructors, methods and properties)
+* [remarks](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/remarks)
+* [example](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/example)
+* [value](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/value) (available only for properties)
+* [seealso](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/seealso)
 
 All of the above sections can contain documentation made out of blocks, text
-and limited markup. [seealso](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/seealso) does
+and limited markup. [seealso](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/seealso) does
 not contain any content and are interpreted as references.
 
 The content blocks are made using the following tags:
 
-* [para](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para)
-* [code](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code)
-* [list](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list)
+* [para](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para)
+* [code](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code)
+* [list](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list)
 
-It is not mandatory to specify the [para](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para) element
+It is not mandatory to specify the [para](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para) element
 because it is inferred. It is mandatory to do so only when you want to
 distinguish two paragraphs that are one after the other, but if there is plain
-text that has a [code](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code)
-or a [list](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list) element
+text that has a [code](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code)
+or a [list](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list) element
 then the text before the respective tag is considered a paragraph and the text
 afterwards is considered a separate paragraph.
 
-For instance, the following [returns](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/returns) section
+For instance, the following [returns](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/returns) section
 contains three paragraphs, a code block and a list.
 
 ```xml
@@ -113,7 +113,7 @@ This is my third paragraph.
 </remarks>
 ```
 
-To distinguish two paragraphs one after the other you need to use the [para](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para) tag.
+To distinguish two paragraphs one after the other you need to use the [para](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/para) tag.
 
 ```xml
 <remarks>
@@ -128,15 +128,15 @@ To distinguish two paragraphs one after the other you need to use the [para](htt
 
 Each content block can contain plain text and limited markup using the following tags:
 
-* [c](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code-inline)
-* [see](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see)
-* [paramref](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/paramref)
-* [typeparamref](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/typeparamref)
+* [c](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/code-inline)
+* [see](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/see)
+* [paramref](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/paramref)
+* [typeparamref](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/typeparamref)
 
 Some XML elements lack a proper documentation and are not properly interpreted
 by Visual Studio.
 
-[List](https://docs.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list) is
+[List](https://learn.microsoft.com/dotnet/csharp/programming-guide/xmldoc/list) is
 one of these elements, regardless of how you define the list element, Visual
 Studio will display the contents as plain text. This is understandable, there
 should not be such complex markup in the summary of a method or parameter

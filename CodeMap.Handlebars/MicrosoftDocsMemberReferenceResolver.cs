@@ -26,7 +26,7 @@ namespace CodeMap.Handlebars
 
         private class MemberReferenceMicrosoftLinkVisitor : MemberReferenceVisitor
         {
-            private readonly StringBuilder _linkBuilder = new StringBuilder("https://docs.microsoft.com/dotnet/api/");
+            private readonly StringBuilder _linkBuilder = new StringBuilder("https://learn.microsoft.com/dotnet/api/");
             private readonly string _view;
             private string _result;
 
