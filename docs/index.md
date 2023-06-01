@@ -39,7 +39,7 @@ to ease traversing these object graphs. The included HTML tooling exposes concre
 
 For more information check the documentation pages. For a demo, the documentation for this site is generated using this library. You can
 have almost anything related to what you would expect from a documentation page. From a simple summary at the top to complex examples containing
-highlighed code snippets (see [PygmentSharp](https://github.com/akatakritos/PygmentSharp")).
+highlighed code snippets (see [PygmentSharp](https://github.com/akatakritos/PygmentSharp)).
 
 
 For suggestions and issues, create GitHub issues. Looking forward to hearing from you.
