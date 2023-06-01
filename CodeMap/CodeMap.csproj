@@ -15,7 +15,7 @@
     <RepositoryUrl>https://github.com/Andrei15193/CodeMap.git</RepositoryUrl>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageReleaseNotes>* Added code documentation models and visitors.</PackageReleaseNotes>
-    <PackageTags>code documentation browser</PackageTags>
+    <PackageTags>code documentation generator html browser page</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
