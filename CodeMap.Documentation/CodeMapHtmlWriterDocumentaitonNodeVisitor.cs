@@ -258,7 +258,6 @@ namespace CodeMap.Documentation
             };
 
             TextWriter.WriteLine("---");
-            TextWriter.WriteLine("layout: default_new");
             TextWriter.WriteLine("title: Home");
             TextWriter.WriteLine($"version: {version}");
             TextWriter.WriteLine("---");
