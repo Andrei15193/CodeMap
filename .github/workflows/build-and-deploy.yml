@@ -225,7 +225,7 @@ jobs:
 
         Sort-SemVerDescending (
           git tag `
-          | Where-Object { $_ -imatch '^\d+\.\d+\.\d+(-[a-zA-Z0-1]+(\.[a-zA-Z0-1]+)*)?(\+[a-zA-Z0-1]+(\.[a-zA-Z0-1]+)*)?$' }
+          | Where-Object { $_ -imatch '^\d+\.\d+\.\d+(-[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*)?(\+[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*)?$' }
         ) `
         | ForEach-Object { "- $_" } `
         | Out-File ./docs/_data/tags.yml -Encoding utf8
