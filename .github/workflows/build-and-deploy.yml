@@ -198,7 +198,7 @@ jobs:
           return $versionParts
         }
 
-        [string] $documentationDirectoryPath = if ('${{ github.ref_name }}' -ieq 'dev') { '${{ github.ref_name }}' } else { 'dev/${{ github.ref_name }}' }
+        [string] $documentationDirectoryPath = if ('${{ github.event_name }}' -ieq 'release' -or '${{ github.ref_name }}' -ieq 'dev') { '${{ github.ref_name }}' } else { 'dev/${{ github.ref_name }}' }
         dotnet run `
           --project CodeMap.Documentation `
           --configuration Release `
