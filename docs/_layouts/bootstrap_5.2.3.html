@@ -65,12 +65,14 @@
     </div>
 
     <footer class="mt-2 px-3 py-2 border-top text-center">
-        {% if site.data.tags contains page.version %}
-            <a href="{{site.github.repository_url}}/releases/tag/{{ page.version }}">{{ site.github.repository_name }} {{ page.version }}</a>
-        {% else %}
-            <a href="{{site.github.repository_url}}/tree/{{ page.version }}">{{ site.github.repository_name }}@{{ page.version }}</a>
-        {% endif %}
+        {% if page.version %}
+            {% if site.data.tags contains page.version %}
+                <a href="{{site.github.repository_url}}/releases/tag/{{ page.version }}">{{ site.github.repository_name }} {{ page.version }}</a>
+            {% else %}
+                <a href="{{site.github.repository_url}}/tree/{{ page.version }}">{{ site.github.repository_name }}@{{ page.version }}</a>
+            {% endif %}
         -
+        {% endif %}
         <a href="{{site.github.repository_url}}">View on GitHub</a>
         -
         {% if site.data.tags contains page.version %}
