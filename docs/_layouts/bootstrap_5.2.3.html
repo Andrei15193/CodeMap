@@ -61,9 +61,6 @@
     <div class="mt-2 mx-3 flex-fill">
         {% assign page_path = page.path | prepend: '/' %}
         {% if page_path contains '/_posts/' %}<h1>{{ page.title }}</h1>{% endif %}
-        <p>Dir: {{ page.dir }}</p>
-        <p>Path: {{ page.path }}</p>
-        <p>Id: {{ page.id }}</p>
 
         {{ content }}
     </div>
