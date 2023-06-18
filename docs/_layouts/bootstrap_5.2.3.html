@@ -59,6 +59,8 @@
     </nav>
 
     <div class="mt-2 mx-3 flex-fill">
+        {% if page.title %}<h1>{{ page.title }}</h1>{% endif %}
+
         {{ content }}
     </div>
 
