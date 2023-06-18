@@ -1,5 +1,9 @@
-Is this a blog? No really... is it?
+Alright, so, no front matter is required (unless you want to change things)
 
-I may have forgotten about the extension...
+Follow the post filename constraints and ALL will be GOOD. Yep, that's it.
 
-Kebab
+### To Do
+
+* Add posts copy constraints, posts only on the `dev` branch should be published
+* Tags might be useful, for architecture decision records
+* Add blog index/paginated landing page, and add it to the navigation
