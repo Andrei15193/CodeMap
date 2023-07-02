@@ -57,7 +57,7 @@ title: CodeMap - Blog
       </li>
     {% else %}
       <li class="page-item">
-        <a class="page-link" href="{% if paginator.total_pages == 1 %}{{ '/blog' | relative_url }}{% else %}{{ '/blog/page/' | append: paginator.total_pages | relative_url }}{% endif %">Last</a>
+        <a class="page-link" href="{% if paginator.total_pages == 1 %}{{ '/blog' | relative_url }}{% else %}{{ '/blog/page/' | append: paginator.total_pages | relative_url }}{% endif %}">Last</a>
       </li>
     {% endif %}
   </ul>
