@@ -59,9 +59,6 @@
     </nav>
 
     <div class="mt-2 mx-3 d-flex flex-column flex-fill">
-        {% assign page_path = page.path | prepend: '/' %}
-        {% if page_path contains '/_posts/' %}<h1>{{ page.title }}</h1>{% endif %}
-
         {{ content }}
     </div>
 
