@@ -28,7 +28,7 @@ title: CodeMap - Blog
     {% endif %}
 
     {% for page_offset in (1..5) %}
-      {% assign page = page_offset - page_offset_previous + paginator.page %}
+      {% assign page = paginator.page | plus: page_offset | minus: page_offset_previous  %}
 
       {% if forloop.first and page > 1 %}
         <li class="page-item disabled">
