@@ -1,6 +1,6 @@
 paginate: 5
 paginate_path: /blog/page/:num/
-permalink: /posts/:categories/:year/:month/:day/:title:output_ext
+permalink: /posts/:categories/:year/:month/:day/:title/index:output_ext
 defaults:
   - values:
       layout: bootstrap_5.2.3
