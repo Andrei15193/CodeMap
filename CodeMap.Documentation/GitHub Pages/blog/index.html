@@ -14,8 +14,8 @@ title: CodeMap - Blog
 
 <nav>
   <ul class="mt-3 pagination pagination-sm justify-content-center">
-    {% assign page_offset_range = (1..5) %}
-    {% assign page_offset_previous = page_offset_range.size | divided_by: 2 %}
+    {% assign page_offset_range = (0..4) %}
+    {% assign page_offset_previous = page_offset_range | size | divided_by: 2 %}
 
     {% if paginator.page == 1 %}
       <li class="page-item disabled">
@@ -27,7 +27,7 @@ title: CodeMap - Blog
       </li>
     {% endif %}
 
-    {% for page_offset in (1..5) %}
+    {% for page_offset in page_offset_range %}
       {% assign page = paginator.page | plus: page_offset | minus: page_offset_previous  %}
 
       {% if forloop.first and page > 1 %}
