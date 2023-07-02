@@ -6,9 +6,9 @@ title: CodeMap - Blog
 <div class="flex-fill">
   {% for post in paginator.posts %}
     {% unless forloop.first %}<hr>{% endunless %}
-    <h3><a href="{{ post.url | relative_url | url_escape }}">{{ post.title }}</a></h3>
+    <h3 class="mb-0"><a href="{{ post.url | relative_url | url_escape }}">{{ post.title }}</a></h3>
+    <p class="fst-italic fw-light"><small>Posted on {{ post.date | date: '%A, %-d %B %Y' }}</small></p>
     {{ post.excerpt }}
-    <p class="fs-6 fst-italic fw-light">Posted on {{ post.date | date: '%A, %-d %B %Y' }}</p>
   {% endfor %}
 </div>
 
