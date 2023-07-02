@@ -44,7 +44,7 @@ title: CodeMap - Blog
         </li>
       {% endif %}
 
-      {% if forloop.first and page < paginator.total_pages %}
+      {% if forloop.last and page < paginator.total_pages %}
         <li class="page-item disabled">
           <span class="page-link">...</span>
         </li>
