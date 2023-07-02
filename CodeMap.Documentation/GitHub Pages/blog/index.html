@@ -16,8 +16,26 @@ title: CodeMap - Blog
   <ul class="mt-3 pagination pagination-sm justify-content-center">
     {% assign page_offset_range = (1..5) %}
     {% assign page_offset_previous = page_offset_range | size | divide_by: 2 %}
+
+    {% if paginator.page == 1 %}
+      <li class="page-item disabled">
+        <span class="page-link">First</span>
+      </li>
+    {% else %}
+      <li class="page-item">
+        <a class="page-link" href="{{ '/blog' | relative_url }}">First</a>
+      </li>
+    {% endif %}
+
     {% for page_offset in (1..5) %}
       {% assign page = page_offset - page_offset_previous + paginator.page %}
+
+      {% if forloop.first and page > 1 %}
+        <li class="page-item disabled">
+          <span class="page-link">...</span>
+        </li>
+      {% endif %}
+
       {% if 1 <= page and page <= paginator.total_pages %}
         <li class="page-item{% if page == paginator.page %} active{% endif %}">
           <a class="page-link" href="{% if page == 1 %}{{ '/blog' | relative_url }}{% else %}{{ '/blog/page/' | append: page | relative_url }}{% endif %}">
@@ -25,6 +43,22 @@ title: CodeMap - Blog
           </a>
         </li>
       {% endif %}
+
+      {% if forloop.first and page < paginator.total_pages %}
+        <li class="page-item disabled">
+          <span class="page-link">...</span>
+        </li>
+      {% endif %}
     {% endfor %}
+
+    {% if paginator.page == paginator.total_pages %}
+      <li class="page-item disabled">
+        <span class="page-link">Last</span>
+      </li>
+    {% else %}
+      <li class="page-item">
+        <a class="page-link" href="{% if paginator.total_pages == 1 %}{{ '/blog' | relative_url }}{% else %}{{ '/blog/page/' | append: paginator.total_pages | relative_url }}{% endif %">Last</a>
+      </li>
+    {% endif %}
   </ul>
 </nav>
