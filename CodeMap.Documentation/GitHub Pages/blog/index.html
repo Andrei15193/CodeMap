@@ -30,6 +30,10 @@ title: CodeMap - Blog
     {% for page_offset in (1..5) %}
       {% assign page = paginator.page | plus: page_offset | minus: page_offset_previous  %}
 
+      <p>page: {{ page }}</p>
+      <p>paginator.page: {{ paginator.page }}</p>
+      <p>page_offset_previous: {{ page_offset_previous }}</p>
+
       {% if forloop.first and page > 1 %}
         <li class="page-item disabled">
           <span class="page-link">...</span>
