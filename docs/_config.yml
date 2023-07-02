@@ -1,3 +1,4 @@
+paginate_path: /blog/page/:num/
 defaults:
   - values:
       layout: bootstrap_5.2.3
