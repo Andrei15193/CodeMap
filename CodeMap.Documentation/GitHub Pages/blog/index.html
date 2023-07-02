@@ -1,32 +1,30 @@
 ---
 title: CodeMap - Blog
 ---
-<div class="d-flex flex-column">
-  <h1>Blog posts</h1>
+<h1 class="mb-4">Blog posts</h1>
 
-  <div class="flex-fill">
-    {% for post in paginator.posts %}
-      {% unless forloop.first %}<hr>{% endunless %}
-      <h3><a href="{{ post.url | relative_url | url_escape }}">{{ post.title }}</a></h3>
-      {{ post.excerpt }}
-      <p class="text-end fst-italic fw-light">Posted on {{ post.date | date: '%A, %-d %B %Y' }}</p>
-    {% endfor %}
-  </div>
-
-  <nav>
-    <ul class="mt-3 pagination pagination-sm justify-content-center">
-      {% assign page_offset_range = (1..5) %}
-      {% assign page_offset_previous = page_offset_range | size | divide_by: 2 %}
-      {% for page_offset in (1..5) %}
-        {% assign page = page_offset - page_offset_previous + paginator.page %}
-        {% if 1 <= page and page <= paginator.total_pages %}
-          <li class="page-item{% if page == paginator.page %} active{% endif %}">
-            <a class="page-link" href="{% if page == 1 %}{{ '/blog' | relative_url }}{% else %}{{ '/blog/page/' | append: page | relative_url }}{% endif %}">
-              {{ page }}
-            </a>
-          </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-  </nav>
+<div class="flex-fill">
+  {% for post in paginator.posts %}
+    {% unless forloop.first %}<hr>{% endunless %}
+    <h3><a href="{{ post.url | relative_url | url_escape }}">{{ post.title }}</a></h3>
+    {{ post.excerpt }}
+    <p class="fs-6 fst-italic fw-light">Posted on {{ post.date | date: '%A, %-d %B %Y' }}</p>
+  {% endfor %}
 </div>
+
+<nav>
+  <ul class="mt-3 pagination pagination-sm justify-content-center">
+    {% assign page_offset_range = (1..5) %}
+    {% assign page_offset_previous = page_offset_range | size | divide_by: 2 %}
+    {% for page_offset in (1..5) %}
+      {% assign page = page_offset - page_offset_previous + paginator.page %}
+      {% if 1 <= page and page <= paginator.total_pages %}
+        <li class="page-item{% if page == paginator.page %} active{% endif %}">
+          <a class="page-link" href="{% if page == 1 %}{{ '/blog' | relative_url }}{% else %}{{ '/blog/page/' | append: page | relative_url }}{% endif %}">
+            {{ page }}
+          </a>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</nav>
