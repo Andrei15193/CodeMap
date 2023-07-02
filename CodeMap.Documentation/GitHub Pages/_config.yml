@@ -1,5 +1,5 @@
 paginate: 1
-paginate_path: /blog/page/:num/
+paginate_path: /posts/page/:num/
 permalink: /posts/:categories/:year/:month/:day/:title/index:output_ext
 defaults:
   - values:
