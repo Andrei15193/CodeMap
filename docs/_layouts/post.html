@@ -1,16 +1,16 @@
 ---
 layout: bootstrap_5.2.3
 ---
-{% assign post_number = 1 %}
+{% assign post_index = 0 %}
 {% for post in site.posts %}
   {% if post == page %}
-    {% assign post_number = forloop.index %}
+    {% assign post_index = forloop.index %}
     {% break %}
   {% endif %}
 {% endfor %}
-{% assign post_page = post_number | divided_by: site.paginate %}
+{% assign post_page_number = post_index | divided_by: site.paginate | plus: 1 %}
 
-<h1 class="mb-0">{{ page.title }} | <small><a href="{% if post_page == 1 %}{{ '/posts' | relative_url }}{% else %}{{ '/posts/page/' | append: post_page | relative_url }}{% endif %}">back</a></small></h1>
+<h1 class="mb-0">{{ page.title }} | <small><a href="{% if post_page_number == 1 %}{{ '/posts' | relative_url }}{% else %}{{ '/posts/page/' | append: post_page_number | relative_url }}{% endif %}">back</a></small></h1>
 <p class="{% if page.tags.size > 0 %}mb-0 {% endif %}fst-italic fw-light"><small>Posted on {{ page.date | date: '%A, %-d %B %Y' }}</small></p>
 {% if page.tags.size > 0 %}
   <p>
