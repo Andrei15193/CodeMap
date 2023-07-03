@@ -200,14 +200,6 @@ jobs:
           return $versionParts
         }
 
-        [string] $documentationDirectoryPath = if ('${{ github.event_name }}' -ieq 'release' -or '${{ github.ref_name }}' -ieq 'dev') { '${{ github.ref_name }}' } else { 'dev/${{ github.ref_name }}' }
-        dotnet run `
-          --project CodeMap.Documentation `
-          --configuration Release `
-          --no-build `
-          -- `
-          -OutputFilePath "./docs/$documentationDirectoryPath/index.html"
-
         New-Item `
           -Type Directory `
           -Name docs `
@@ -218,11 +210,26 @@ jobs:
           -Path docs `
           -ErrorAction SilentlyContinue
 
+        [string] $documentationDirectoryPath = if ('${{ github.event_name }}' -ieq 'release' -or '${{ github.ref_name }}' -ieq 'dev') { '${{ github.ref_name }}' } else { 'dev/${{ github.ref_name }}' }
+        dotnet run `
+          --project CodeMap.Documentation `
+          --configuration Release `
+          --no-build `
+          -- `
+          -OutputFilePath "./docs/$documentationDirectoryPath/index.html"
+
         if (Test-Path 'CodeMap.Documentation/GitHub Pages') {
+          [string[]] $additionalCopyArguments = @()
+
+          if ('${{ github.ref_name }}' -ine 'dev') {
+            $additionalCopyArguments += @('-Exclude', 'CodeMap.Documentation/GitHub Pages/_posts/*')
+          }
+
           Copy-Item `
             -Path 'CodeMap.Documentation/GitHub Pages/*' `
             -Destination './docs' `
-            -Recurse
+            -Recurse `
+            @additionalCopyArguments
         }
 
         Sort-SemVerDescending (
