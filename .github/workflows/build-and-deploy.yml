@@ -224,7 +224,7 @@ jobs:
           [string[]] $exclude = @()
 
           if ('${{ github.ref_name }}' -ine 'dev') {
-            $exclude += 'CodeMap.Documentation/GitHub Pages/_posts/*'
+            $exclude += '_posts/*'
           }
 
           Copy-Item `
