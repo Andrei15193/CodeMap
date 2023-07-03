@@ -4,7 +4,7 @@ layout: bootstrap_5.2.3
 {% assign post_index = 0 %}
 {% for post in site.posts %}
   {% if post == page %}
-    {% assign post_index = forloop.index %}
+    {% assign post_index = forloop.index0 %}
     {% break %}
   {% endif %}
 {% endfor %}
