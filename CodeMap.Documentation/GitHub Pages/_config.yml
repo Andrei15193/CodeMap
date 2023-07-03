@@ -1,4 +1,4 @@
-paginate: 1
+paginate: 5
 paginate_path: /posts/page/:num/
 permalink: /posts/:categories/:year/:month/:day/:title/index:output_ext
 defaults:
