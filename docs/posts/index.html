@@ -3,6 +3,9 @@ title: CodeMap - Posts
 ---
 <h1 class="mb-4">CodeMap Posts</h1>
 
+<p>Page id: {{ page.id }}</p>
+<p>Page path: {{ page.path }}</p>
+
 <div class="flex-fill">
   {% for post in paginator.posts %}
     {% unless forloop.first %}<hr>{% endunless %}
