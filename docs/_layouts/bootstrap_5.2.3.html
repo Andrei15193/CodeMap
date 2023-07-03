@@ -22,7 +22,18 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link{% if site.posts contains page %} active{% endif %}" href="{{ 'posts' | relative_url }}">Posts</a>
+                        {% assign is_post_page = false %}
+                        {% if page.path == 'posts/index.html' %}
+                          {% assign is_post_page = true %}
+                        {% else %}
+                          {% for post in site.posts %}
+                            {% if post == page %}
+                              {% assign is_post_page = true %}
+                              {% break %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                        <a class="nav-link{% if is_post_page %} active{% endif %}" href="{{ 'posts' | relative_url }}">Posts</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle{% if page.version %} active{% endif %}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
