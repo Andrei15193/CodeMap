@@ -1,7 +1,7 @@
 ---
-title: CodeMap - Blog
+title: CodeMap - Posts
 ---
-<h1 class="mb-4">Blog posts</h1>
+<h1 class="mb-4">CodeMap Posts</h1>
 
 <div class="flex-fill">
   {% for post in paginator.posts %}
@@ -23,7 +23,7 @@ title: CodeMap - Blog
       </li>
     {% else %}
       <li class="page-item">
-        <a class="page-link" href="{{ '/blog' | relative_url }}">First</a>
+        <a class="page-link" href="{{ '/posts' | relative_url }}">First</a>
       </li>
     {% endif %}
 
@@ -43,7 +43,7 @@ title: CodeMap - Blog
           </li>
         {% else %}
           <li class="page-item">
-            <a class="page-link" href="{% if page == 1 %}{{ '/blog' | relative_url }}{% else %}{{ '/blog/page/' | append: page | relative_url }}{% endif %}">{{ page }}</a>
+            <a class="page-link" href="{% if page == 1 %}{{ '/posts' | relative_url }}{% else %}{{ '/posts/page/' | append: page | relative_url }}{% endif %}">{{ page }}</a>
           </li>
         {% endif %}
       {% endif %}
@@ -61,7 +61,7 @@ title: CodeMap - Blog
       </li>
     {% else %}
       <li class="page-item">
-        <a class="page-link" href="{% if paginator.total_pages == 1 %}{{ '/blog' | relative_url }}{% else %}{{ '/blog/page/' | append: paginator.total_pages | relative_url }}{% endif %}">Last</a>
+        <a class="page-link" href="{% if paginator.total_pages == 1 %}{{ '/posts' | relative_url }}{% else %}{{ '/posts/page/' | append: paginator.total_pages | relative_url }}{% endif %}">Last</a>
       </li>
     {% endif %}
   </ul>
