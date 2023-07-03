@@ -224,7 +224,7 @@ jobs:
             -Destination './docs' `
             -Recurse
 
-          if ('${{ github.ref_name }}' -ine 'dev') {
+          if ('${{ github.ref_name }}' -ine 'dev' -and Test-Path './docs/_posts') {
             Remove-Item `
               -Path './docs/_posts' `
               -Recurse
