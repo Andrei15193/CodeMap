@@ -4,7 +4,6 @@ on:
   push:
     branches:
     - dev
-    - add-blog-posts
 
   release:
     types:
@@ -77,7 +76,6 @@ jobs:
 
     - name: Test
       shell: pwsh
-      if: false
       run: |
         dotnet test `
           --configuration Release `
