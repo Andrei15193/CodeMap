@@ -6,7 +6,7 @@ layout: bootstrap_5.2.3
 
 {% assign number = 0 %}
 {% for post in site.posts %}
-  {% if post == this %}
+  {% if post == page %}
     {% assign number = forloop.index %}
     {% break %}
   {% endif %}
