@@ -21,6 +21,22 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto">
+                    {% if site.posts.size > 0 %}
+                      <li class="nav-item">
+                        {% assign is_post_page = false %}
+                        {% if page.path == 'posts/index.html' %}
+                          {% assign is_post_page = true %}
+                        {% else %}
+                          {% for post in site.posts %}
+                            {% if post == page %}
+                              {% assign is_post_page = true %}
+                              {% break %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                        <a class="nav-link{% if is_post_page %} active{% endif %}" href="{{ 'posts' | relative_url }}">Posts</a>
+                      </li>
+                    {% endif %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle{% if page.version %} active{% endif %}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Documentation
@@ -58,17 +74,19 @@
         </div>
     </nav>
 
-    <div class="mt-2 mx-3 flex-fill">
+    <div class="mt-2 mx-3 d-flex flex-column flex-fill">
         {{ content }}
     </div>
 
     <footer class="mt-2 px-3 py-2 border-top text-center">
-        {% if site.data.tags contains page.version %}
-            <a href="{{site.github.repository_url}}/releases/tag/{{ page.version }}">{{ site.github.repository_name }} {{ page.version }}</a>
-        {% else %}
-            <a href="{{site.github.repository_url}}/tree/{{ page.version }}">{{ site.github.repository_name }}@{{ page.version }}</a>
-        {% endif %}
+        {% if page.version %}
+            {% if site.data.tags contains page.version %}
+                <a href="{{site.github.repository_url}}/releases/tag/{{ page.version }}">{{ site.github.repository_name }} {{ page.version }}</a>
+            {% else %}
+                <a href="{{site.github.repository_url}}/tree/{{ page.version }}">{{ site.github.repository_name }}@{{ page.version }}</a>
+            {% endif %}
         -
+        {% endif %}
         <a href="{{site.github.repository_url}}">View on GitHub</a>
         -
         {% if site.data.tags contains page.version %}
