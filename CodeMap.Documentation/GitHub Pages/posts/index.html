@@ -10,7 +10,14 @@ title: CodeMap - Posts
     {% assign post_url_length = post.url | size | minus: post_url_index_length %}
     {% assign post_url = post.url | slice: 0, post_url_length %}
     <h3 class="mb-0"><a href="{{ post_url | relative_url }}">{{ post.title }}</a></h3>
-    <p class="fst-italic fw-light"><small>Posted on {{ post.date | date: '%A, %-d %B %Y' }}</small></p>
+    <p class="{% if post.tags.size > 0 %}mb-0 {% endif %}fst-italic fw-light"><small>Posted on {{ post.date | date: '%A, %-d %B %Y' }}</small></p>
+    {% if post.tags.size > 0 %}
+      <p>
+        {% for tag in post.tags %}
+          <span class="badge text-bg-primary">{{ tag }}</span>
+        {% endfor %}
+      </p>
+    {% endif %}
     {{ post.excerpt }}
   {% endfor %}
 </div>
