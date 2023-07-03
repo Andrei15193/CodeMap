@@ -6,7 +6,10 @@ title: CodeMap - Posts
 <div class="flex-fill">
   {% for post in paginator.posts %}
     {% unless forloop.first %}<hr>{% endunless %}
-    <h3 class="mb-0"><a href="{{ post.url | relative_url | url_escape }}">{{ post.title }}</a></h3>
+    {% assign post_url_index_length = '/index.html' | size %}
+    {% assign post_url_length = post.url | size | minus: post_url_index_length %}
+    {% assign post_url = post.url | slice: 0, post_url_length %}
+    <h3 class="mb-0"><a href="{{ post_url | relative_url }}">{{ post.title }}</a></h3>
     <p class="fst-italic fw-light"><small>Posted on {{ post.date | date: '%A, %-d %B %Y' }}</small></p>
     {{ post.excerpt }}
   {% endfor %}
