@@ -203,12 +203,14 @@ jobs:
         New-Item `
           -Type Directory `
           -Name docs `
-          -ErrorAction SilentlyContinue
+          -ErrorAction SilentlyContinue `
+        | Out-Null
         New-Item `
           -Type Directory `
           -Name _data `
           -Path docs `
-          -ErrorAction SilentlyContinue
+          -ErrorAction SilentlyContinue `
+        | Out-Null
 
         [string] $documentationDirectoryPath = if ('${{ github.event_name }}' -ieq 'release' -or '${{ github.ref_name }}' -ieq 'dev') { '${{ github.ref_name }}' } else { 'dev/${{ github.ref_name }}' }
         dotnet run `
