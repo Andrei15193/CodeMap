@@ -1,18 +1,16 @@
 ---
 layout: bootstrap_5.2.3
 ---
-<h1 class="mb-0">{{ page.title }} | <small><a href="#">back</a></small></h1>
-<p class="fst-italic fw-light"><small>Posted on {{ page.date | date: '%A, %-d %B %Y' }}</small></p>
-
-{% assign number = 0 %}
+{% assign post_number = 1 %}
 {% for post in site.posts %}
   {% if post == page %}
-    {% assign number = forloop.index %}
+    {% assign post_number = forloop.index %}
     {% break %}
   {% endif %}
 {% endfor %}
+{% assign post_page = post_number | divided_by: site.paginate %}
 
-<p>site.pagiange: {{ site.paginate }}</p>
-<p>Post number: {{ number }}</p>
+<h1 class="mb-0">{{ page.title }} | <small><a href="{% if post_page == 1 %}{{ '/posts' | relative_url }}{% else %}{{ '/posts/page/' | append: post_page | relative_url }}{% endif %}">back</a></small></h1>
+<p class="fst-italic fw-light"><small>Posted on {{ page.date | date: '%A, %-d %B %Y' }}</small></p>
 
 {{ content }}
