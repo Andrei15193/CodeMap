@@ -14,9 +14,11 @@ layout: bootstrap_5.2.3
 <p class="{% if post.tags.size > 0 %}mb-0 {% endif %}fst-italic fw-light"><small>Posted on {{ page.date | date: '%A, %-d %B %Y' }}</small></p>
 {% if post.tags.size > 0 %}
   <p>
-    {% for tag in post.tags %}
+    <small>
+      {% for tag in post.tags %}
       <span class="badge text-bg-primary">{{ tag }}</span>
-    {% endfor %}
+      {% endfor %}
+    </small>
   </p>
 {% endif %}
 
