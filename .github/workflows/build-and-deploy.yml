@@ -221,17 +221,16 @@ jobs:
           -OutputFilePath "./docs/$documentationDirectoryPath/index.html"
 
         if (Test-Path 'CodeMap.Documentation/GitHub Pages') {
-          [string[]] $exclude = @()
-
-          if ('${{ github.ref_name }}' -ine 'dev') {
-            $exclude += '_posts/*'
-          }
-
           Copy-Item `
             -Path 'CodeMap.Documentation/GitHub Pages/*' `
-            -Exclude $exclude `
             -Destination './docs' `
             -Recurse
+
+          if ('${{ github.ref_name }}' -ine 'dev') {
+            Remove-Item `
+              -Path './docs/_posts' `
+              -Recurse
+          }
         }
 
         Sort-SemVerDescending (
