@@ -134,7 +134,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = constantDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.ClassShadowedTestConstant", simpleNameReference);
+            Assert.Equal("ClassShadowedTestConstant", simpleNameReference);
         }
 
         [Fact]
@@ -152,7 +152,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = fieldDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.StaticTestField", simpleNameReference);
+            Assert.Equal("StaticTestField", simpleNameReference);
         }
 
         [Fact]
@@ -170,7 +170,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = constructorDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.TestClass(int)", simpleNameReference);
+            Assert.Equal("TestClass(int)", simpleNameReference);
         }
 
         [Fact]
@@ -188,7 +188,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = eventDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.AbstractTestEvent", simpleNameReference);
+            Assert.Equal("AbstractTestEvent", simpleNameReference);
         }
 
         [Fact]
@@ -206,7 +206,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = propertyDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.InterfaceShadowedTestProperty", simpleNameReference);
+            Assert.Equal("InterfaceShadowedTestProperty", simpleNameReference);
         }
 
         [Fact]
@@ -224,7 +224,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = propertyDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.Item[int]", simpleNameReference);
+            Assert.Equal("Item[int]", simpleNameReference);
         }
 
         [Fact]
@@ -242,7 +242,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = methodDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.TestMethod(int, string)", simpleNameReference);
+            Assert.Equal("TestMethod(int, string)", simpleNameReference);
         }
 
         [Fact]
@@ -260,7 +260,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = methodDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.TestMethod38<TMethodParam>(TMethodParam)", simpleNameReference);
+            Assert.Equal("TestMethod38<TMethodParam>(TMethodParam)", simpleNameReference);
         }
 
         [Fact]
@@ -278,7 +278,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = typeDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.NestedTestEnum", simpleNameReference);
+            Assert.Equal("NestedTestEnum", simpleNameReference);
         }
 
         [Fact]
@@ -296,7 +296,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = typeDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.NestedTestDelegate()", simpleNameReference);
+            Assert.Equal("NestedTestDelegate()", simpleNameReference);
         }
 
         [Fact]
@@ -314,7 +314,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = typeDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.INestedTestInterface", simpleNameReference);
+            Assert.Equal("INestedTestInterface", simpleNameReference);
         }
 
         [Fact]
@@ -332,7 +332,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = typeDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.NestedTestClass<TParam2, TParam3>", simpleNameReference);
+            Assert.Equal("NestedTestClass<TParam2, TParam3>", simpleNameReference);
         }
 
         [Fact]
@@ -350,7 +350,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = typeDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.NestedTestRecord", simpleNameReference);
+            Assert.Equal("NestedTestRecord", simpleNameReference);
         }
 
         [Fact]
@@ -368,7 +368,7 @@ namespace CodeMap.Tests.Html
 
             var simpleNameReference = typeDeclaration.GetSimpleNameReference();
 
-            Assert.Equal("TestClass<TParam>.NestedTestStruct", simpleNameReference);
+            Assert.Equal("NestedTestStruct", simpleNameReference);
         }
     }
 }
